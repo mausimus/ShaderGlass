@@ -1,0 +1,38 @@
+/*
+%HEADER%
+*/
+
+#pragma once
+
+namespace %LIB_NAME%%CLASS_NAME%ShaderDefs
+{
+static const BYTE sVertexByteCode[] =
+%VERTEX_BYTECODE%
+
+static const BYTE sFragmentByteCode[] =
+%FRAGMENT_BYTECODE%
+}
+
+namespace %LIB_NAME%
+{
+class %CLASS_NAME%ShaderDef : public ShaderDef
+{
+public:
+	%CLASS_NAME%ShaderDef() : ShaderDef{}
+	{
+		Name = "%SHADER_NAME%";
+		VertexByteCode = %LIB_NAME%%CLASS_NAME%ShaderDefs::sVertexByteCode;
+		VertexLength = sizeof(%LIB_NAME%%CLASS_NAME%ShaderDefs::sVertexByteCode);
+		FragmentByteCode = %LIB_NAME%%CLASS_NAME%ShaderDefs::sFragmentByteCode;
+		FragmentLength = sizeof(%LIB_NAME%%CLASS_NAME%ShaderDefs::sFragmentByteCode);
+%PARAM%		Params.push_back(ShaderParam("%PARAM_NAME%", %PARAM_BUFFER%, %PARAM_OFFSET%, %PARAM_SIZE%, %PARAM_MIN%f, %PARAM_MAX%f, %PARAM_DEF%f));
+%TEXTURE%		Samplers.push_back(ShaderSampler("%TEXTURE_NAME%", %TEXTURE_BINDING%));
+/*
+VertexSource = %*VERTEX_SOURCE*%;
+*/
+/*
+FragmentSource = %*FRAGMENT_SOURCE*%;
+*/
+	}
+};
+}

@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShaderGlass", "ShaderGlass\ShaderGlass.vcxproj", "{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShaderGen", "ShaderGen\ShaderGen.vcxproj", "{0AC8C8E0-010B-4829-9282-060EAB89D5D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B5AD96E-AB36-49F5-8BBD-29308CFBA704}"
+	ProjectSection(SolutionItems) = preProject
+		Tools\glslangValidator.exe = Tools\glslangValidator.exe
+		LICENSE = LICENSE
+		README.md = README.md
+		Tools\spirv-cross.exe = Tools\spirv-cross.exe
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}.Debug|x64.ActiveCfg = Debug|x64
+		{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}.Debug|x64.Build.0 = Debug|x64
+		{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}.Debug|x86.ActiveCfg = Debug|Win32
+		{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}.Debug|x86.Build.0 = Debug|Win32
+		{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}.Release|x64.ActiveCfg = Release|x64
+		{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}.Release|x64.Build.0 = Release|x64
+		{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}.Release|x86.ActiveCfg = Release|Win32
+		{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}.Release|x86.Build.0 = Release|Win32
+		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Debug|x64.ActiveCfg = Debug|x64
+		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Debug|x64.Build.0 = Debug|x64
+		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Debug|x86.ActiveCfg = Debug|Win32
+		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Debug|x86.Build.0 = Debug|Win32
+		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Release|x64.ActiveCfg = Release|x64
+		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Release|x64.Build.0 = Release|x64
+		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Release|x86.ActiveCfg = Release|Win32
+		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF79E8E6-DE38-4BBA-9464-47D0B981765F}
+	EndGlobalSection
+EndGlobal

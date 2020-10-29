@@ -1,0 +1,23 @@
+/*
+%HEADER%
+*/
+
+#pragma once
+
+namespace %LIB_NAME%
+{
+class %CLASS_NAME%PresetDef : public PresetDef
+{
+public:
+	%CLASS_NAME%PresetDef() : PresetDef{}
+	{
+		Name = "%PRESET_NAME%";
+		Category = "%PRESET_CATEGORY%";
+	}
+
+	virtual void Build() {
+%SHADERS%	ShaderDefs.push_back(%SHADER_NAME%ShaderDef()%PRESET_PARAMS%);
+%TEXTURES%  TextureDefs.push_back(%TEXTURE_NAME%TextureDef()%TEXTURE_PARAMS%);
+	}
+};
+}

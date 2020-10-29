@@ -1,0 +1,14 @@
+#pragma once
+
+// %SHADER_INCLUDE%
+
+// %TEXTURE_INCLUDE%
+
+// %PRESET_INCLUDE%
+
+namespace %LIB_NAME%
+{
+const static std::vector<PresetDef*> PresetList = {
+// %PRESET_CLASS%
+};
+}
