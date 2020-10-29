@@ -217,7 +217,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     // set defaults
     SendMessage(mainWindow, WM_COMMAND, WM_PIXEL_SIZE(2), 0);
     SendMessage(mainWindow, WM_COMMAND, WM_ASPECT_RATIO(0), 0);
-    SendMessage(mainWindow, WM_COMMAND, WM_SHADER(1), 0);
+    SendMessage(mainWindow, WM_COMMAND, WM_SHADER(20), 0);
     SendMessage(mainWindow, WM_COMMAND, WM_FRAME_SKIP(1), 0);
     SendMessage(mainWindow, WM_COMMAND, WM_OUTPUT_SCALE(0), 0);
     SendMessage(mainWindow, WM_COMMAND, IDM_MODE_GLASS, 0);
