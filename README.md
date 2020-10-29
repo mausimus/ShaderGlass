@@ -33,6 +33,10 @@ Feel free to post any problematic scenarios you're experiencing in the Issues ta
 
 Since the app uses DirectX for both capture and shading it will remain Windows-only for the foreseeable future.
 
+### Download
+
+Latest release (Win 10, x64): https://github.com/rohatsu/ShaderGlass/releases/download/v0.1/ShaderGlass-0.1-win-x64.zip
+
 ### Screenshots
 
 ##### Desktop Glass mode
