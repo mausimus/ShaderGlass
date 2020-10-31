@@ -45,9 +45,9 @@ In this mode a transparent floating window will apply a shader to anything behin
 
 This mode is not OBS-friendly, use Window Clone mode to capture/screenshot ShaderGlass.
 
-![screenshot](images/screen1.png)
-
 Wikipedia in Chrome processed by crt-geom shader which applies scanlines and CRT curvature.
+
+![screenshot](images/screen1.png)
 
 ##### Window Clone mode
 
@@ -56,36 +56,36 @@ and image can also be recaptured (screenshot/OBS etc.)
 
 ###### FS-UAE
 
-![screenshot](images/screen4.png)
-
 Amiga version of [The Secret of Monkey Island (1990)](https://store.steampowered.com/app/32360/The_Secret_of_Monkey_Island_Special_Edition/)
 running in FS-UAE with crt-interlaced-halation shader applied.
 
-###### Altirra
+![screenshot](images/screen4.png)
 
-![screenshot](images/screen5.png)
+###### Altirra
 
 [Ninja (1986)](https://www.mobygames.com/game/ninja_) for the Atari XL
 running in Altirra with a TV-OUT simulation shader.
 
-###### Adventure Game Studio
+![screenshot](images/screen5.png)
 
-![screenshot](images/screen3.png)
+###### Adventure Game Studio
 
 [The Crimson Diamond (2020)](https://store.steampowered.com/app/1242790/The_Crimson_Diamond_Chapter_1/),
 a modern AGS game softened using crt-fast-bilateral-super-xbr shader.
 
+![screenshot](images/screen3.png)
+
 ###### DOSBox
+
+[Police Quest (1987)](https://store.steampowered.com/app/494740/Police_Quest_Collection/)
+with its massive half-EGA pixels, aspect-ratio corrected and post-processed using newpixie-crt shader.
 
 ![screenshot](images/screen2.png)
 
-[Police Quest (1987)](https://store.steampowered.com/app/494740/Police_Quest_Collection/) upscaled
-(from 160x200) using scalefx-9x shader and aspect ratio corrected.
-
-![screenshot](images/screen6.png)
-
 [Rick Dangerous (1989)](https://store.steampowered.com/app/494740/Police_Quest_Collection/)
 with C64 monitor shader applied.
+
+![screenshot](images/screen6.png)
 
 ### Options
 
