@@ -16,22 +16,18 @@ ShaderGlass::~ShaderGlass()
     DestroyShaders();
     delete m_preprocessPass;
     DestroyPasses();
-    m_rasterizerState->Release();
     delete m_preprocessShader;
     DestroyTargets();
-    m_displayRenderTarget->Release();
-    m_swapChain->Release();
     m_context->Flush();
-    m_context->Release();
 }
 
-void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, bool clone, ID3D11Device* device)
+void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, bool clone, winrt::com_ptr<ID3D11Device> device)
 {
     m_outputWindow  = outputWindow;
     m_captureWindow = captureWindow;
     m_clone         = clone;
     m_device        = device;
-    m_device->GetImmediateContext(&m_context);
+    m_device->GetImmediateContext(m_context.put());
 
     // remember initial size
     m_lastPos.x = 0;
@@ -43,16 +39,15 @@ void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, bool clone, 
 
     // create swapchain
     {
-        IDXGIFactory2* dxgiFactory;
+        winrt::com_ptr<IDXGIFactory2> dxgiFactory;
         {
-            IDXGIDevice1* dxgiDevice;
-            hr = m_device->QueryInterface(__uuidof(IDXGIDevice1), (void**)&dxgiDevice);
+            winrt::com_ptr<IDXGIDevice1> dxgiDevice;
+            hr = m_device->QueryInterface(__uuidof(IDXGIDevice1), (void**)dxgiDevice.put());
             assert(SUCCEEDED(hr));
 
-            IDXGIAdapter* dxgiAdapter;
-            hr = dxgiDevice->GetAdapter(&dxgiAdapter);
+            winrt::com_ptr<IDXGIAdapter> dxgiAdapter;
+            hr = dxgiDevice->GetAdapter(dxgiAdapter.put());
             assert(SUCCEEDED(hr));
-            dxgiDevice->Release();
 
             DXGI_ADAPTER_DESC adapterDesc;
             dxgiAdapter->GetDesc(&adapterDesc);
@@ -60,9 +55,8 @@ void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, bool clone, 
             OutputDebugStringA("Graphics Device: ");
             OutputDebugStringW(adapterDesc.Description);
 
-            hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory2), (void**)&dxgiFactory);
+            hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory2), (void**)dxgiFactory.put());
             assert(SUCCEEDED(hr));
-            dxgiAdapter->Release();
         }
 
         DXGI_SWAP_CHAIN_DESC1 d3d11SwapChainDesc = {};
@@ -81,30 +75,27 @@ void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, bool clone, 
         d3d11SwapChainDesc.AlphaMode  = DXGI_ALPHA_MODE_UNSPECIFIED;
         d3d11SwapChainDesc.Flags      = 0;
 
-        hr = dxgiFactory->CreateSwapChainForHwnd(m_device, m_outputWindow, &d3d11SwapChainDesc, 0, 0, &m_swapChain);
+        hr = dxgiFactory->CreateSwapChainForHwnd(m_device.get(), m_outputWindow, &d3d11SwapChainDesc, 0, 0, m_swapChain.put());
         assert(SUCCEEDED(hr));
-
-        dxgiFactory->Release();
     }
 
-    ID3D11Texture2D* framebuffer {nullptr};
-    hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&framebuffer);
+    winrt::com_ptr<ID3D11Texture2D> framebuffer {nullptr};
+    hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)framebuffer.put());
     assert(SUCCEEDED(hr));
     if(!framebuffer)
         throw std::exception("Unable to create framebuffer");
 
-    m_device->CreateRenderTargetView(framebuffer, 0, &m_displayRenderTarget);
-    framebuffer->Release();
+    m_device->CreateRenderTargetView(framebuffer.get(), 0, m_displayRenderTarget.put());
 
     D3D11_RASTERIZER_DESC desc = {};
     desc.CullMode              = D3D11_CULL_NONE;
     desc.FillMode              = D3D11_FILL_SOLID;
     desc.DepthClipEnable       = FALSE;
     desc.MultisampleEnable     = FALSE;
-    hr                         = m_device->CreateRasterizerState(&desc, &m_rasterizerState);
+    hr                         = m_device->CreateRasterizerState(&desc, m_rasterizerState.put());
     assert(SUCCEEDED(hr));
 
-    m_context->RSSetState(m_rasterizerState);
+    m_context->RSSetState(m_rasterizerState.get());
 
     m_preprocessShader = new Shader(new PreprocessShaderDef());
     m_preprocessShader->Create(m_device);
@@ -173,11 +164,8 @@ void ShaderGlass::DestroyTargets()
 {
     if(m_preprocessedRenderTarget != nullptr)
     {
-        m_preprocessedRenderTarget->Release();
         m_preprocessedRenderTarget = nullptr;
-        m_originalView->Release();
         m_originalView = nullptr;
-        m_preprocessedTexture->Release();
         m_preprocessedTexture = nullptr;
     }
 }
@@ -192,20 +180,18 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
         m_lastSize.x = clientRect.right;
         m_lastSize.y = clientRect.bottom;
 
-        m_context->OMSetRenderTargets(0, 0, 0);
-        m_displayRenderTarget->Release();
+        m_displayRenderTarget = nullptr;
 
         hr = m_swapChain->ResizeBuffers(
             0, static_cast<UINT>(clientRect.right), static_cast<UINT>(clientRect.bottom), DXGI_FORMAT_UNKNOWN, 0);
         assert(SUCCEEDED(hr));
 
-        ID3D11Texture2D* frameBuffer;
-        hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&frameBuffer);
+        winrt::com_ptr<ID3D11Texture2D> frameBuffer {nullptr};
+        hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)frameBuffer.put());
         assert(SUCCEEDED(hr));
 
-        hr = m_device->CreateRenderTargetView(frameBuffer, NULL, &m_displayRenderTarget);
+        hr = m_device->CreateRenderTargetView(frameBuffer.get(), NULL, m_displayRenderTarget.put());
         assert(SUCCEEDED(hr));
-        frameBuffer->Release();
 
         return true;
     }
@@ -226,23 +212,16 @@ void ShaderGlass::DestroyPasses()
     {
         if(rs.first.starts_with("PassOutput") || rs.first.starts_with("PassFeedback"))
         {
-            rs.second->Release();
             rs.second = nullptr;
         }
     }
-    for(auto& tg : m_passTargets)
-        tg->Release();
     m_passTargets.clear();
-
-    for(auto& tx : m_passTextures)
-        tx->Release();
     m_passTextures.clear();
-
     m_passResources.clear();
     m_requiresFeedback = false;
 }
 
-void ShaderGlass::Process(ID3D11Texture2D* texture)
+void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 {
     if(!m_running || (m_frameSkip != 0 && m_frameCounter++ % m_frameSkip != 0))
     {
@@ -349,19 +328,19 @@ void ShaderGlass::Process(ID3D11Texture2D* texture)
         desc2.Width          = originalWidth;
         desc2.Height         = originalHeight;
 
-        hr = m_device->CreateTexture2D(&desc2, nullptr, &m_preprocessedTexture);
+        hr = m_device->CreateTexture2D(&desc2, nullptr, m_preprocessedTexture.put());
         assert(SUCCEEDED(hr));
         outputResized = true;
         rebuildPasses = true;
 
-        hr = m_device->CreateShaderResourceView(m_preprocessedTexture, nullptr, &m_originalView);
+        hr = m_device->CreateShaderResourceView(m_preprocessedTexture.get(), nullptr, m_originalView.put());
         assert(SUCCEEDED(hr));
     }
 
     // create texture render target
     if(m_preprocessedRenderTarget == nullptr)
     {
-        hr = m_device->CreateRenderTargetView(m_preprocessedTexture, NULL, &m_preprocessedRenderTarget);
+        hr = m_device->CreateRenderTargetView(m_preprocessedTexture.get(), NULL, m_preprocessedRenderTarget.put());
         assert(SUCCEEDED(hr));
         rebuildPasses = true;
     }
@@ -439,7 +418,7 @@ void ShaderGlass::Process(ID3D11Texture2D* texture)
 
         m_passResources.insert(std::make_pair("Original", m_originalView));
 
-        m_preprocessPass->m_targetView = m_preprocessedRenderTarget;
+        m_preprocessPass->m_targetView = m_preprocessedRenderTarget.get();
         if(m_shaderPasses.size() > 1)
         {
             D3D11_TEXTURE2D_DESC desc2 = {};
@@ -469,18 +448,18 @@ void ShaderGlass::Process(ID3D11Texture2D* texture)
                 desc2.Width  = pass->m_destWidth;
                 desc2.Height = pass->m_destHeight;
 
-                ID3D11Texture2D* passTexture;
-                hr = m_device->CreateTexture2D(&desc2, nullptr, &passTexture);
+                winrt::com_ptr<ID3D11Texture2D> passTexture;
+                hr = m_device->CreateTexture2D(&desc2, nullptr, passTexture.put());
                 assert(SUCCEEDED(hr));
                 m_passTextures.push_back(passTexture);
 
-                ID3D11RenderTargetView* passTarget;
-                hr = m_device->CreateRenderTargetView(passTexture, nullptr, &passTarget);
+                winrt::com_ptr<ID3D11RenderTargetView> passTarget;
+                hr = m_device->CreateRenderTargetView(passTexture.get(), nullptr, passTarget.put());
                 assert(SUCCEEDED(hr));
                 m_passTargets.push_back(passTarget);
 
-                ID3D11ShaderResourceView* passResource;
-                hr = m_device->CreateShaderResourceView(passTexture, nullptr, &passResource);
+                winrt::com_ptr<ID3D11ShaderResourceView> passResource;
+                hr = m_device->CreateShaderResourceView(passTexture.get(), nullptr, passResource.put());
                 assert(SUCCEEDED(hr));
                 m_passResources.insert(std::make_pair(std::string("PassOutput") + std::to_string(p - 1), passResource));
                 if(!pass->m_shader->m_alias.empty())
@@ -491,12 +470,12 @@ void ShaderGlass::Process(ID3D11Texture2D* texture)
                 // create feedback textures if needed
                 if(m_requiresFeedback)
                 {
-                    ID3D11Texture2D* feedbackTexture;
-                    hr = m_device->CreateTexture2D(&desc2, nullptr, &feedbackTexture);
+                    winrt::com_ptr<ID3D11Texture2D> feedbackTexture;
+                    hr = m_device->CreateTexture2D(&desc2, nullptr, feedbackTexture.put());
                     assert(SUCCEEDED(hr));
                     m_passTextures.push_back(feedbackTexture);
-                    ID3D11ShaderResourceView* feedbackResource;
-                    hr = m_device->CreateShaderResourceView(feedbackTexture, nullptr, &feedbackResource);
+                    winrt::com_ptr<ID3D11ShaderResourceView> feedbackResource;
+                    hr = m_device->CreateShaderResourceView(feedbackTexture.get(), nullptr, feedbackResource.put());
                     assert(SUCCEEDED(hr));
                     m_passResources.insert(std::make_pair(std::string("PassFeedback") + std::to_string(p - 1), feedbackResource));
                     if(!pass->m_shader->m_alias.empty())
@@ -505,11 +484,11 @@ void ShaderGlass::Process(ID3D11Texture2D* texture)
                     }
                 }
 
-                m_shaderPasses[p - 1]->m_targetView = passTarget;
-                m_shaderPasses[p]->m_sourceView     = passResource;
+                m_shaderPasses[p - 1]->m_targetView = passTarget.get();
+                m_shaderPasses[p]->m_sourceView     = passResource.get();
             }
         }
-        m_shaderPasses[m_shaderPasses.size() - 1]->m_targetView = m_displayRenderTarget;
+        m_shaderPasses[m_shaderPasses.size() - 1]->m_targetView = m_displayRenderTarget.get();
     }
 
     if(outputMoved || outputResized || (m_lastPos.x != topLeft.x || m_lastPos.y != topLeft.y))
@@ -588,21 +567,20 @@ void ShaderGlass::Process(ID3D11Texture2D* texture)
     {
         // clear any blanks around captured window
         float background_colour[4] = {0, 0, 0, 1.0f};
-        m_context->ClearRenderTargetView(m_preprocessedRenderTarget, background_colour);
+        m_context->ClearRenderTargetView(m_preprocessedRenderTarget.get(), background_colour);
     }
 
-    ID3D11ShaderResourceView* textureView;
-    hr = m_device->CreateShaderResourceView(texture, nullptr, &textureView);
+    winrt::com_ptr<ID3D11ShaderResourceView> textureView;
+    hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
     assert(SUCCEEDED(hr));
-    m_preprocessPass->Render(textureView, m_passResources);
-    textureView->Release();
+    m_preprocessPass->Render(textureView.get(), m_passResources);
 
     int p = 0;
     for(auto& shaderPass : m_shaderPasses)
     {
         if(p == 0)
         {
-            shaderPass->Render(m_originalView, m_passResources);
+            shaderPass->Render(m_originalView.get(), m_passResources);
         }
         else
         {
@@ -619,21 +597,17 @@ void ShaderGlass::Process(ID3D11Texture2D* texture)
             const auto&     pass         = m_shaderPasses[p];
             auto            passOutput   = m_passResources.find(std::string("PassOutput") + std::to_string(p));
             auto            passFeedback = m_passResources.find(std::string("PassFeedback") + std::to_string(p));
-            ID3D11Resource* outputResource;
-            ID3D11Resource* feedbackResource;
-            passOutput->second->GetResource(&outputResource);
-            passFeedback->second->GetResource(&feedbackResource);
-            m_context->CopyResource(feedbackResource, outputResource);
-            outputResource->Release();
-            feedbackResource->Release();
+            winrt::com_ptr<ID3D11Resource> outputResource;
+            winrt::com_ptr<ID3D11Resource> feedbackResource;
+            passOutput->second->GetResource(outputResource.put());
+            passFeedback->second->GetResource(feedbackResource.put());
+            m_context->CopyResource(feedbackResource.get(), outputResource.get());
         }
     }
 
     DXGI_PRESENT_PARAMETERS presentParameters {};
     m_swapChain->Present1(1, 0, &presentParameters);
     PostMessage(m_outputWindow, WM_PAINT, 0, 0);
-
-    m_context->Flush();
 }
 
 void ShaderGlass::Stop()

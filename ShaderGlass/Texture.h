@@ -14,11 +14,11 @@ public:
     bool                      m_clamp;
     bool                      m_repeat;
     bool                      m_mirror;
-    ID3D11Resource*           m_textureResource;
-    ID3D11ShaderResourceView* m_textureView;
+    winrt::com_ptr<ID3D11Resource> m_textureResource;
+    winrt::com_ptr<ID3D11ShaderResourceView> m_textureView;
 
     Texture(TextureDef* textureDef);
-    void Create(ID3D11Device* d3dDevice);
+    void Create(winrt::com_ptr<ID3D11Device> d3dDevice);
     ~Texture();
 
 private:

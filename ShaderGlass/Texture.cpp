@@ -26,9 +26,9 @@ Texture::Texture(TextureDef* textureDef) : m_textureDef(textureDef)
     }
 }
 
-void Texture::Create(ID3D11Device* d3dDevice)
+void Texture::Create(winrt::com_ptr<ID3D11Device> d3dDevice)
 {
-    DirectX::CreateWICTextureFromMemory(d3dDevice, m_textureDef->Data, m_textureDef->DataLength, &m_textureResource, &m_textureView, 0);
+    DirectX::CreateWICTextureFromMemory(d3dDevice.get(), m_textureDef->Data, m_textureDef->DataLength, m_textureResource.put(), m_textureView.put(), 0);
 }
 
 bool Texture::Get(const std::string& presetParam, std::string& value)
@@ -45,14 +45,4 @@ bool Texture::Get(const std::string& presetParam, std::string& value)
 
 Texture::~Texture()
 {
-    if(m_textureResource)
-    {
-        m_textureResource->Release();
-        m_textureResource = nullptr;
-    }
-    if(m_textureView)
-    {
-        m_textureView->Release();
-        m_textureView = nullptr;
-    }
 }

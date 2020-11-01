@@ -30,8 +30,8 @@ class Shader
 {
 public:
     ShaderDef*          m_shaderDef;
-    ID3D11VertexShader* m_vertexShader;
-    ID3D11PixelShader*  m_pixelShader;
+    winrt::com_ptr<ID3D11VertexShader> m_vertexShader;
+    winrt::com_ptr<ID3D11PixelShader> m_pixelShader;
     std::string         m_alias {};
     float               m_scaleX {1.0f};
     float               m_scaleY {1.0f};
@@ -47,7 +47,7 @@ public:
     Shader(ShaderDef* shaderDef);
     ~Shader();
 
-    void   Create(ID3D11Device* d3dDevice);
+    void   Create(winrt::com_ptr<ID3D11Device> d3dDevice);
     void   Compile();
     void   FillParams(int buffer, void* data);
     void   SetParam(std::string name, void* p);

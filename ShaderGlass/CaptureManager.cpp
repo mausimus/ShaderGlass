@@ -42,11 +42,11 @@ void CaptureManager::StartSession()
         m_options.captureWindow ? CreateCaptureItemForWindow(m_options.captureWindow) : CreateCaptureItemForMonitor(m_options.monitor);
 
 #ifdef _DEBUG
-    m_d3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_debug));
+    m_d3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(m_debug.put()));
 #endif
 
     m_shaderGlass = make_unique<ShaderGlass>();
-    m_shaderGlass->Initialize(m_options.outputWindow, m_options.captureWindow, m_options.clone, m_d3dDevice.get());
+    m_shaderGlass->Initialize(m_options.outputWindow, m_options.captureWindow, m_options.clone, m_d3dDevice);
     UpdatePixelSize();
     UpdateOutputSize();
     UpdateOutputFlip();

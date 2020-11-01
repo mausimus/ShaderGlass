@@ -68,15 +68,15 @@ Shader::Shader(ShaderDef* shaderDef) :
     }
 }
 
-void Shader::Create(ID3D11Device* d3dDevice)
+void Shader::Create(winrt::com_ptr<ID3D11Device> d3dDevice)
 {
     if(m_shaderDef->VertexLength == 0)
         Compile();
 
-    hr = d3dDevice->CreateVertexShader(m_shaderDef->VertexByteCode, m_shaderDef->VertexLength, NULL, &m_vertexShader);
+    hr = d3dDevice->CreateVertexShader(m_shaderDef->VertexByteCode, m_shaderDef->VertexLength, NULL, m_vertexShader.put());
     assert(SUCCEEDED(hr));
 
-    hr = d3dDevice->CreatePixelShader(m_shaderDef->FragmentByteCode, m_shaderDef->FragmentLength, NULL, &m_pixelShader);
+    hr = d3dDevice->CreatePixelShader(m_shaderDef->FragmentByteCode, m_shaderDef->FragmentLength, NULL, m_pixelShader.put());
     assert(SUCCEEDED(hr));
 }
 
@@ -191,9 +191,4 @@ Shader::~Shader()
 {
     delete[] m_pushBuffer;
     delete[] m_uboBuffer;
-
-    if(m_vertexShader)
-        m_vertexShader->Release();
-    if(m_pixelShader)
-        m_pixelShader->Release();
 }
