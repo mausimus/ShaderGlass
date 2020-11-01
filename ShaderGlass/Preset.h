@@ -8,7 +8,7 @@ class Preset
 {
 public:
     Preset(PresetDef* presetDef);
-    void Create(ID3D11Device* d3dDevice);
+    void Create(winrt::com_ptr<ID3D11Device> d3dDevice);
 
     PresetDef*                      m_presetDef;
     std::vector<Shader*>            m_shaders;

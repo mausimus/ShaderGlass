@@ -7,8 +7,8 @@ class ShaderGlass
 {
 public:
     ShaderGlass();
-    void Initialize(HWND outputWindow, HWND captureWindow, bool clone, ID3D11Device* device);
-    void Process(ID3D11Texture2D* texture);
+    void Initialize(HWND outputWindow, HWND captureWindow, bool clone, winrt::com_ptr<ID3D11Device> device);
+    void Process(winrt::com_ptr<ID3D11Texture2D> texture);
     void SetInputScale(float w, float h);
     void SetOutputScale(float w, float h);
     void SetOutputFlip(bool h, bool v);
@@ -24,24 +24,24 @@ private:
     void DestroyTargets();
     void RebuildShaders();
 
-    POINT                     m_lastSize;
-    POINT                     m_lastPos;
-    POINT                     m_lastCaptureWindowPos;
-    ID3D11DeviceContext*      m_context {nullptr};
-    ID3D11Device*             m_device {nullptr};
-    ID3D11ShaderResourceView* m_originalView {nullptr};
-    IDXGISwapChain1*          m_swapChain {nullptr};
-    ID3D11RasterizerState*    m_rasterizerState {nullptr};
-    ID3D11RenderTargetView*   m_displayRenderTarget {nullptr};
-    ID3D11Texture2D*          m_preprocessedTexture {nullptr};
-    ID3D11RenderTargetView*   m_preprocessedRenderTarget {nullptr};
+    POINT                                    m_lastSize;
+    POINT                                    m_lastPos;
+    POINT                                    m_lastCaptureWindowPos;
+    winrt::com_ptr<ID3D11DeviceContext>      m_context {nullptr};
+    winrt::com_ptr<ID3D11Device>             m_device {nullptr};
+    winrt::com_ptr<ID3D11ShaderResourceView> m_originalView {nullptr};
+    winrt::com_ptr<IDXGISwapChain1>          m_swapChain {nullptr};
+    winrt::com_ptr<ID3D11RasterizerState>    m_rasterizerState {nullptr};
+    winrt::com_ptr<ID3D11RenderTargetView>   m_displayRenderTarget {nullptr};
+    winrt::com_ptr<ID3D11Texture2D>          m_preprocessedTexture {nullptr};
+    winrt::com_ptr<ID3D11RenderTargetView>   m_preprocessedRenderTarget {nullptr};
 
-    std::vector<ID3D11Texture2D*>                    m_passTextures;
-    std::vector<ID3D11RenderTargetView*>             m_passTargets;
-    std::map<std::string, ID3D11ShaderResourceView*> m_passResources;
-    std::map<std::string, ID3D11ShaderResourceView*> m_presetTextures;
-    std::map<std::string, float4>                    m_textureSizes;
-    std::vector<ShaderPass*>                         m_shaderPasses;
+    std::vector<winrt::com_ptr<ID3D11Texture2D>>                    m_passTextures;
+    std::vector<winrt::com_ptr<ID3D11RenderTargetView>>             m_passTargets;
+    std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>> m_passResources;
+    std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>> m_presetTextures;
+    std::map<std::string, float4>                                   m_textureSizes;
+    std::vector<ShaderPass*>                                        m_shaderPasses;
 
     HWND        m_outputWindow {0};
     HWND        m_captureWindow {0};

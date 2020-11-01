@@ -8,7 +8,7 @@ Preset::Preset(PresetDef* presetDef) : m_presetDef(presetDef), m_shaders {}
         presetDef->Build();
 }
 
-void Preset::Create(ID3D11Device* d3dDevice)
+void Preset::Create(winrt::com_ptr<ID3D11Device> d3dDevice)
 {
     for(auto& sd : m_presetDef->ShaderDefs)
     {

@@ -449,6 +449,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch(wmId)
         {
         case IDM_START: {
+            if(options.captureWindow && !IsWindow(options.captureWindow))
+                return 0;
             captureManager.StartSession();
             EnableMenuItem(programMenu, IDM_START, MF_BYCOMMAND | MF_DISABLED);
             EnableMenuItem(programMenu, IDM_STOP, MF_BYCOMMAND | MF_ENABLED);

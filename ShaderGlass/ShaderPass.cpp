@@ -5,13 +5,13 @@
 
 static HRESULT hr;
 
-ShaderPass::ShaderPass(ID3D11Device* device, ID3D11DeviceContext* context, Shader* shader, Preset* preset) :
+ShaderPass::ShaderPass(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context, Shader* shader, Preset* preset) :
     m_device {device}, m_context {context}, m_shader {shader}, m_preset {preset}
 { }
 
 static float sVertexBuffer[] = {-1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,
-                                     1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f,
-                                     1.0f,  -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f};
+                                1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f,
+                                1.0f,  -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f};
 
 void ShaderPass::Initialize()
 {
@@ -20,10 +20,10 @@ void ShaderPass::Initialize()
         {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}};
 
     hr = m_device->CreateInputLayout(inputElementDesc,
-                                             ARRAYSIZE(inputElementDesc),
-                                             m_shader->m_shaderDef->VertexByteCode,
-                                             m_shader->m_shaderDef->VertexLength,
-                                             &m_inputLayout);
+                                     ARRAYSIZE(inputElementDesc),
+                                     m_shader->m_shaderDef->VertexByteCode,
+                                     m_shader->m_shaderDef->VertexLength,
+                                     m_inputLayout.put());
     assert(SUCCEEDED(hr));
     {
         D3D11_BUFFER_DESC vertex_buff_descr = {};
@@ -32,14 +32,14 @@ void ShaderPass::Initialize()
         vertex_buff_descr.BindFlags         = D3D11_BIND_VERTEX_BUFFER;
         D3D11_SUBRESOURCE_DATA sr_data      = {0};
         sr_data.pSysMem                     = sVertexBuffer;
-        hr                                  = m_device->CreateBuffer(&vertex_buff_descr, &sr_data, &m_vertexBuffer);
+        hr                                  = m_device->CreateBuffer(&vertex_buff_descr, &sr_data, m_vertexBuffer.put());
         assert(SUCCEEDED(hr));
     }
 
     for(const auto& texture : m_shader->m_shaderDef->Samplers)
     {
-        ID3D11SamplerState* samplerState;
-        D3D11_SAMPLER_DESC  samplerDesc = {};
+        winrt::com_ptr<ID3D11SamplerState> samplerState;
+        D3D11_SAMPLER_DESC                 samplerDesc = {};
 
         samplerDesc.Filter         = D3D11_FILTER_MIN_MAG_MIP_POINT;
         samplerDesc.AddressU       = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -85,7 +85,7 @@ void ShaderPass::Initialize()
             }
         }
 
-        m_device->CreateSamplerState(&samplerDesc, &samplerState);
+        m_device->CreateSamplerState(&samplerDesc, samplerState.put());
         m_samplers.insert(std::make_pair(texture.binding, samplerState));
     }
 
@@ -97,7 +97,7 @@ void ShaderPass::Initialize()
         constantBufferDesc.BindFlags         = D3D11_BIND_CONSTANT_BUFFER;
         constantBufferDesc.CPUAccessFlags    = D3D11_CPU_ACCESS_WRITE;
 
-        hr = m_device->CreateBuffer(&constantBufferDesc, nullptr, &m_constantBuffer);
+        hr = m_device->CreateBuffer(&constantBufferDesc, nullptr, m_constantBuffer.put());
         assert(SUCCEEDED(hr));
     }
     else
@@ -113,7 +113,7 @@ void ShaderPass::Initialize()
         pushBufferDesc.BindFlags         = D3D11_BIND_CONSTANT_BUFFER;
         pushBufferDesc.CPUAccessFlags    = D3D11_CPU_ACCESS_WRITE;
 
-        hr = m_device->CreateBuffer(&pushBufferDesc, nullptr, &m_pushBuffer);
+        hr = m_device->CreateBuffer(&pushBufferDesc, nullptr, m_pushBuffer.put());
         assert(SUCCEEDED(hr));
     }
     else
@@ -145,15 +145,6 @@ void ShaderPass::UpdateMVP(float sx, float sy, float tx, float ty)
 
 ShaderPass::~ShaderPass()
 {
-    m_inputLayout->Release();
-    m_vertexBuffer->Release();
-    for(auto& s : m_samplers)
-        s.second->Release();
-    if(m_constantBuffer)
-        m_constantBuffer->Release();
-    if(m_pushBuffer)
-        m_pushBuffer->Release();
-
     m_inputLayout    = nullptr;
     m_vertexBuffer   = nullptr;
     m_constantBuffer = nullptr;
@@ -184,12 +175,13 @@ void ShaderPass::Resize(int sourceWidth, int sourceHeight, int destWidth, int de
     }
 }
 
-void ShaderPass::Render(const std::map<std::string, ID3D11ShaderResourceView*>& resources)
+void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources)
 {
     Render(m_sourceView, resources);
 }
 
-void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, const std::map<std::string, ID3D11ShaderResourceView*>& resources)
+void ShaderPass::Render(ID3D11ShaderResourceView*                               sourceView,
+                        std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources)
 {
     params_FrameCount++;
     if(params_FrameCount == m_shader->m_frameCountMod)
@@ -201,38 +193,41 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, const std::map<std
     if(m_constantBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-        m_context->Map(m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+        m_context->Map(m_constantBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
         m_shader->FillParams(0, (char*)mappedSubresource.pData);
-        m_context->Unmap(m_constantBuffer, 0);
+        m_context->Unmap(m_constantBuffer.get(), 0);
     }
 
     if(m_pushBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-        m_context->Map(m_pushBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+        m_context->Map(m_pushBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
         m_shader->FillParams(-1, (char*)mappedSubresource.pData);
-        m_context->Unmap(m_pushBuffer, 0);
+        m_context->Unmap(m_pushBuffer.get(), 0);
     }
 
     D3D11_VIEWPORT viewport = {0.0f, 0.0f, static_cast<float>(m_destWidth), static_cast<float>(m_destHeight), 0.0f, 1.0f};
     m_context->RSSetViewports(1, &viewport);
 
-    m_context->OMSetRenderTargets(1, &m_targetView, NULL);
+    ID3D11RenderTargetView* targets[1] = {m_targetView};
+    m_context->OMSetRenderTargets(1, targets, NULL);
 
     m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    m_context->IASetInputLayout(m_inputLayout);
-    m_context->IASetVertexBuffers(0, 1, &m_vertexBuffer, &s_vertexStride, &s_vertexOffset);
+    m_context->IASetInputLayout(m_inputLayout.get());
+    ID3D11Buffer* vertexBuffer[1] = {m_vertexBuffer.get()};
+    m_context->IASetVertexBuffers(0, 1, vertexBuffer, &s_vertexStride, &s_vertexOffset);
 
-    m_context->VSSetShader(m_shader->m_vertexShader, NULL, 0);
-    m_context->PSSetShader(m_shader->m_pixelShader, NULL, 0);
+    m_context->VSSetShader(m_shader->m_vertexShader.get(), NULL, 0);
+    m_context->PSSetShader(m_shader->m_pixelShader.get(), NULL, 0);
 
     std::vector<int> bindings;
     for(const auto& texture : m_shader->m_shaderDef->Samplers)
     {
-        const auto& sampler = m_samplers.at(texture.binding);
+        auto& sampler = m_samplers.at(texture.binding);
         if(texture.name == "Source")
         {
-            m_context->PSSetShaderResources(texture.binding, 1, &sourceView);
+            ID3D11ShaderResourceView* resources[1] = {sourceView};
+            m_context->PSSetShaderResources(texture.binding, 1, resources);
             bindings.push_back(texture.binding);
         }
         else
@@ -244,7 +239,8 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, const std::map<std
             }
             if(it != resources.end())
             {
-                m_context->PSSetShaderResources(texture.binding, 1, &it->second);
+                ID3D11ShaderResourceView* resources[1] = {it->second.get()};
+                m_context->PSSetShaderResources(texture.binding, 1, resources);
                 bindings.push_back(texture.binding);
             }
             else
@@ -255,18 +251,21 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, const std::map<std
 #endif
             }
         }
-        m_context->PSSetSamplers(texture.binding, 1, &sampler);
+        ID3D11SamplerState* samplers[1] = {sampler.get()};
+        m_context->PSSetSamplers(texture.binding, 1, samplers);
     }
 
     if(m_constantBuffer != nullptr)
     {
-        m_context->VSSetConstantBuffers(0, 1, &m_constantBuffer);
-        m_context->PSSetConstantBuffers(0, 1, &m_constantBuffer);
+        ID3D11Buffer* buffer[1] = {m_constantBuffer.get()};
+        m_context->VSSetConstantBuffers(0, 1, buffer);
+        m_context->PSSetConstantBuffers(0, 1, buffer);
     }
     if(m_pushBuffer != nullptr)
     {
-        m_context->VSSetConstantBuffers(1, 1, &m_pushBuffer);
-        m_context->PSSetConstantBuffers(1, 1, &m_pushBuffer);
+        ID3D11Buffer* buffer[1] = {m_pushBuffer.get()};
+        m_context->VSSetConstantBuffers(1, 1, buffer);
+        m_context->PSSetConstantBuffers(1, 1, buffer);
     }
 
     m_context->Draw(s_vertexCount, 0);

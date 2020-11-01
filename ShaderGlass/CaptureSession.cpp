@@ -35,7 +35,7 @@ void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sen
 {
 	auto frame = sender.TryGetNextFrame();
 	auto texture = GetDXGIInterfaceFromObject<ID3D11Texture2D>(frame.Surface());
-	m_shaderGlass.Process(texture.get());
+	m_shaderGlass.Process(texture);
 }
 
 void CaptureSession::Stop()

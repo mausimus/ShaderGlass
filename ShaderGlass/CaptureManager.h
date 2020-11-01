@@ -38,10 +38,10 @@ public:
     void UpdateInput();
 
 private:
-    const CaptureOptions&                                          m_options;
-    winrt::com_ptr<ID3D11Device>                                   m_d3dDevice;
-    ID3D11Debug*                                                   m_debug {nullptr};
-    std::vector<PresetDef*>                                        m_presetList;
-    std::unique_ptr<CaptureSession>                                m_session {nullptr};
-    std::unique_ptr<ShaderGlass>                                   m_shaderGlass {nullptr};
+    const CaptureOptions&           m_options;
+    winrt::com_ptr<ID3D11Device>    m_d3dDevice;
+    winrt::com_ptr<ID3D11Debug>     m_debug {nullptr};
+    std::vector<PresetDef*>         m_presetList;
+    std::unique_ptr<CaptureSession> m_session {nullptr};
+    std::unique_ptr<ShaderGlass>    m_shaderGlass {nullptr};
 };
