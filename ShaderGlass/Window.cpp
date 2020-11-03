@@ -22,6 +22,7 @@ HMENU                        flipMenu;
 HMENU                        windowMenu;
 HMENU                        modeMenu;
 HMENU                        displayMenu;
+HMENU                        outputWindowMenu;
 ATOM                         MyRegisterClass(HINSTANCE hInstance);
 BOOL                         InitInstance(HINSTANCE, int);
 LRESULT CALLBACK             WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -123,7 +124,6 @@ void BuildInputMenu()
 
     displayMenu = GetSubMenu(sMenu, 0);
     windowMenu  = GetSubMenu(sMenu, 1);
-    modeMenu    = GetSubMenu(sMenu, 3);
 }
 
 void BuildOutputMenu()
@@ -131,7 +131,9 @@ void BuildOutputMenu()
     auto sMenu = GetSubMenu(mainMenu, 2);
     DeleteMenu(sMenu, 0, MF_BYPOSITION);
 
-    flipMenu = GetSubMenu(sMenu, 0);
+    modeMenu = GetSubMenu(sMenu, 0);
+    outputWindowMenu = GetSubMenu(sMenu, 1);
+    flipMenu         = GetSubMenu(sMenu, 2);
 
     outputScaleMenu = CreatePopupMenu();
     for(const auto& os : outputScales)
@@ -380,7 +382,7 @@ void UpdateWindowState()
         SetWindowPos(mainWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
     LONG cur_style = GetWindowLong(mainWindow, GWL_EXSTYLE);
-    if(captureManager.IsActive() && !options.clone)
+    if(captureManager.IsActive() && options.transparent)
         // active desktop glass mode - layered/transparent window
         SetWindowLong(mainWindow, GWL_EXSTYLE, cur_style | WS_EX_LAYERED);
     else
@@ -488,10 +490,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 CheckMenuItem(flipMenu, IDM_FLIP_VERTICAL, MF_UNCHECKED | MF_BYCOMMAND);
             captureManager.UpdateOutputFlip();
             break;
+        case IDM_WINDOW_SOLID:
+            options.transparent = false;
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
+            UpdateWindowState();
+            break;
+        case IDM_WINDOW_TRANSPARENT:
+            options.transparent = true;
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
+            UpdateWindowState();
+            break;
         case IDM_MODE_GLASS:
             options.clone = false;
             CheckMenuItem(modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
             CheckMenuItem(modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
+            options.transparent = true;
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
             captureManager.UpdateInput();
             UpdateWindowState();
             break;
@@ -499,6 +516,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             options.clone = true;
             CheckMenuItem(modeMenu, IDM_MODE_GLASS, MF_UNCHECKED | MF_BYCOMMAND);
             CheckMenuItem(modeMenu, IDM_MODE_CLONE, MF_CHECKED | MF_BYCOMMAND);
+            options.transparent = false;
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
             captureManager.UpdateInput();
             UpdateWindowState();
             break;
@@ -511,8 +531,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             CheckMenuItem(displayMenu, IDM_DISPLAY_ALLDISPLAYS, MF_CHECKED | MF_BYCOMMAND);
             options.captureWindow = NULL;
             options.clone         = false;
+            options.transparent   = true;
             CheckMenuItem(modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
             CheckMenuItem(modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+            CheckMenuItem(outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
             captureManager.UpdateInput();
             UpdateWindowState();
             break;
@@ -555,8 +578,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     CheckMenuItem(displayMenu, IDM_DISPLAY_ALLDISPLAYS, MF_UNCHECKED | MF_BYCOMMAND);
                     options.captureWindow = captureWindows.at(wmId - WM_CAPTURE_WINDOW(0)).hwnd;
                     options.clone         = true;
+                    options.transparent   = false;
                     CheckMenuItem(modeMenu, IDM_MODE_GLASS, MF_UNCHECKED | MF_BYCOMMAND);
                     CheckMenuItem(modeMenu, IDM_MODE_CLONE, MF_CHECKED | MF_BYCOMMAND);
+                    CheckMenuItem(outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
+                    CheckMenuItem(outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
                     captureManager.UpdateInput();
                     UpdateWindowState();
                     break;
@@ -609,6 +635,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_SIZE: {
+        switch (wParam)
+        {
+        case SIZE_MINIMIZED:
+            if(captureManager.IsActive())
+            {
+                options.paused = true;
+                captureManager.StopSession();
+            }
+            break;
+        case SIZE_MAXIMIZED:
+        case SIZE_RESTORED:
+            if(options.paused)
+            {
+                captureManager.StartSession();
+                options.paused = false;
+            }
+            break;
+        }
         //SendMessage(hWnd, WM_PRINT, (WPARAM)NULL, PRF_NONCLIENT); -- not sure what bug this was
         AdjustWindowSize(hWnd);
         return 0;
@@ -627,7 +671,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     case WM_PAINT: {
-        if(captureManager.IsActive() && !options.clone)
+        if(captureManager.IsActive() && options.transparent)
         {
             POINT p;
             if(GetCursorPos(&p) && ScreenToClient(hWnd, &p))

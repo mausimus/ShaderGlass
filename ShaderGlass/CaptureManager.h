@@ -16,6 +16,8 @@ struct CaptureOptions
     bool     flipHorizontal {false};
     bool     flipVertical {false};
     bool     clone {false};
+    bool     transparent {false};
+    bool     paused {false};
 };
 
 class CaptureManager
