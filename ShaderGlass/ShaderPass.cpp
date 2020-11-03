@@ -5,24 +5,31 @@
 
 static HRESULT hr;
 
-ShaderPass::ShaderPass(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context, Shader* shader, Preset* preset) :
-    m_device {device}, m_context {context}, m_shader {shader}, m_preset {preset}
-{ }
+ShaderPass::ShaderPass(Shader& shader, Preset& preset) : m_shader {shader}, m_preset {preset} { }
+
+ShaderPass::ShaderPass(Shader& shader, Preset& preset, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context) :
+    ShaderPass(shader, preset)
+{
+    Initialize(device, context);
+}
 
 static float sVertexBuffer[] = {-1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,
                                 1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f,
                                 1.0f,  -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f};
 
-void ShaderPass::Initialize()
+void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context)
 {
+    m_device  = device;
+    m_context = context;
+
     D3D11_INPUT_ELEMENT_DESC inputElementDesc[] = {
         {"TEXCOORD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
         {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}};
 
     hr = m_device->CreateInputLayout(inputElementDesc,
                                      ARRAYSIZE(inputElementDesc),
-                                     m_shader->m_shaderDef->VertexByteCode,
-                                     m_shader->m_shaderDef->VertexLength,
+                                     m_shader.m_shaderDef.VertexByteCode,
+                                     m_shader.m_shaderDef.VertexLength,
                                      m_inputLayout.put());
     assert(SUCCEEDED(hr));
     {
@@ -36,7 +43,7 @@ void ShaderPass::Initialize()
         assert(SUCCEEDED(hr));
     }
 
-    for(const auto& texture : m_shader->m_shaderDef->Samplers)
+    for(const auto& texture : m_shader.m_shaderDef.Samplers)
     {
         winrt::com_ptr<ID3D11SamplerState> samplerState;
         D3D11_SAMPLER_DESC                 samplerDesc = {};
@@ -52,26 +59,26 @@ void ShaderPass::Initialize()
         samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 
         // is it a static texture?
-        if(m_preset)
+        //if(m_preset)
         {
-            auto ti = m_preset->m_textures.find(texture.name);
-            if(ti != m_preset->m_textures.end())
+            auto ti = m_preset.m_textures.find(texture.name);
+            if(ti != m_preset.m_textures.end())
             {
-                if(ti->second->m_linear)
+                if(ti->second.m_linear)
                     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-                if(ti->second->m_repeat)
+                if(ti->second.m_repeat)
                 {
                     samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
                     samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
                     samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
                 }
-                if(ti->second->m_clamp)
+                if(ti->second.m_clamp)
                 {
                     samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
                     samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
                     samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
                 }
-                if(ti->second->m_mirror)
+                if(ti->second.m_mirror)
                 {
                     samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
                     samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
@@ -80,7 +87,7 @@ void ShaderPass::Initialize()
             }
             else
             {
-                if(this->m_shader->m_filterLinear)
+                if(m_shader.m_filterLinear)
                     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
             }
         }
@@ -89,10 +96,10 @@ void ShaderPass::Initialize()
         m_samplers.insert(std::make_pair(texture.binding, samplerState));
     }
 
-    if(m_shader->BufferSize(0) > 0)
+    if(m_shader.BufferSize(0) > 0)
     {
         D3D11_BUFFER_DESC constantBufferDesc = {};
-        constantBufferDesc.ByteWidth         = (m_shader->BufferSize(0) + 0xf) & 0xfffffff0;
+        constantBufferDesc.ByteWidth         = (m_shader.BufferSize(0) + 0xf) & 0xfffffff0;
         constantBufferDesc.Usage             = D3D11_USAGE_DYNAMIC;
         constantBufferDesc.BindFlags         = D3D11_BIND_CONSTANT_BUFFER;
         constantBufferDesc.CPUAccessFlags    = D3D11_CPU_ACCESS_WRITE;
@@ -105,10 +112,10 @@ void ShaderPass::Initialize()
         m_constantBuffer = nullptr;
     }
 
-    if(m_shader->BufferSize(-1) > 0)
+    if(m_shader.BufferSize(-1) > 0)
     {
         D3D11_BUFFER_DESC pushBufferDesc = {};
-        pushBufferDesc.ByteWidth         = (m_shader->BufferSize(-1) + 0xf) & 0xfffffff0;
+        pushBufferDesc.ByteWidth         = (m_shader.BufferSize(-1) + 0xf) & 0xfffffff0;
         pushBufferDesc.Usage             = D3D11_USAGE_DYNAMIC;
         pushBufferDesc.BindFlags         = D3D11_BIND_CONSTANT_BUFFER;
         pushBufferDesc.CPUAccessFlags    = D3D11_CPU_ACCESS_WRITE;
@@ -165,13 +172,13 @@ void ShaderPass::Resize(int sourceWidth, int sourceHeight, int destWidth, int de
     params_OutputSize[1] = static_cast<float>(destHeight);
     params_OutputSize[2] = 1.0f / destWidth;
     params_OutputSize[3] = 1.0f / destHeight;
-    m_shader->SetParam("SourceSize", params_SourceSize);
-    m_shader->SetParam("OutputSize", params_OutputSize);
+    m_shader.SetParam("SourceSize", params_SourceSize);
+    m_shader.SetParam("OutputSize", params_OutputSize);
 
     for(const auto& tx : textureSizes)
     {
         auto sizeParam = tx.first + "Size";
-        m_shader->SetParam(sizeParam, (void*)&tx.second);
+        m_shader.SetParam(sizeParam, (void*)&tx.second);
     }
 }
 
@@ -180,21 +187,20 @@ void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourc
     Render(m_sourceView, resources);
 }
 
-void ShaderPass::Render(ID3D11ShaderResourceView*                               sourceView,
-                        std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources)
+void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources)
 {
     params_FrameCount++;
-    if(params_FrameCount == m_shader->m_frameCountMod)
+    if(params_FrameCount == m_shader.m_frameCountMod)
         params_FrameCount = 0;
 
-    m_shader->SetParam("FrameCount", &params_FrameCount);
-    m_shader->SetParam("MVP", &m_modelViewProj);
+    m_shader.SetParam("FrameCount", &params_FrameCount);
+    m_shader.SetParam("MVP", &m_modelViewProj);
 
     if(m_constantBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
         m_context->Map(m_constantBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
-        m_shader->FillParams(0, (char*)mappedSubresource.pData);
+        m_shader.FillParams(0, (char*)mappedSubresource.pData);
         m_context->Unmap(m_constantBuffer.get(), 0);
     }
 
@@ -202,7 +208,7 @@ void ShaderPass::Render(ID3D11ShaderResourceView*                               
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
         m_context->Map(m_pushBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
-        m_shader->FillParams(-1, (char*)mappedSubresource.pData);
+        m_shader.FillParams(-1, (char*)mappedSubresource.pData);
         m_context->Unmap(m_pushBuffer.get(), 0);
     }
 
@@ -217,17 +223,17 @@ void ShaderPass::Render(ID3D11ShaderResourceView*                               
     ID3D11Buffer* vertexBuffer[1] = {m_vertexBuffer.get()};
     m_context->IASetVertexBuffers(0, 1, vertexBuffer, &s_vertexStride, &s_vertexOffset);
 
-    m_context->VSSetShader(m_shader->m_vertexShader.get(), NULL, 0);
-    m_context->PSSetShader(m_shader->m_pixelShader.get(), NULL, 0);
+    m_context->VSSetShader(m_shader.m_vertexShader.get(), NULL, 0);
+    m_context->PSSetShader(m_shader.m_pixelShader.get(), NULL, 0);
 
     std::vector<int> bindings;
-    for(const auto& texture : m_shader->m_shaderDef->Samplers)
+    for(const auto& texture : m_shader.m_shaderDef.Samplers)
     {
         auto& sampler = m_samplers.at(texture.binding);
         if(texture.name == "Source")
         {
-            ID3D11ShaderResourceView* resources[1] = {sourceView};
-            m_context->PSSetShaderResources(texture.binding, 1, resources);
+            ID3D11ShaderResourceView* localResources[1] = {sourceView};
+            m_context->PSSetShaderResources(texture.binding, 1, localResources);
             bindings.push_back(texture.binding);
         }
         else
@@ -239,8 +245,8 @@ void ShaderPass::Render(ID3D11ShaderResourceView*                               
             }
             if(it != resources.end())
             {
-                ID3D11ShaderResourceView* resources[1] = {it->second.get()};
-                m_context->PSSetShaderResources(texture.binding, 1, resources);
+                ID3D11ShaderResourceView* localResources[1] = {it->second.get()};
+                m_context->PSSetShaderResources(texture.binding, 1, localResources);
                 bindings.push_back(texture.binding);
             }
             else
@@ -280,9 +286,9 @@ void ShaderPass::Render(ID3D11ShaderResourceView*                               
     m_context->OMSetRenderTargets(1, null, NULL);
 }
 
-bool ShaderPass::RequiresFeedback()
+bool ShaderPass::RequiresFeedback() const
 {
-    for(const auto& texture : m_shader->m_shaderDef->Samplers)
+    for(const auto& texture : m_shader.m_shaderDef.Samplers)
     {
         if(texture.name.ends_with("Feedback") || texture.name.starts_with("PassFeedback"))
         {

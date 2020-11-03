@@ -14,12 +14,12 @@ CaptureManager::CaptureManager(const CaptureOptions& options) : m_options(option
 
 bool CaptureManager::Initialize()
 {
-    m_presetList.push_back(new PassthroughPresetDef());
+    m_presetList.push_back(make_unique<PassthroughPresetDef>());
     m_presetList.insert(m_presetList.begin(), RetroArchPresetList.begin(), RetroArchPresetList.end());
     return false;
 }
 
-const vector<PresetDef*>& CaptureManager::Presets()
+const vector<unique_ptr<PresetDef>>& CaptureManager::Presets()
 {
     return m_presetList;
 }
@@ -78,7 +78,10 @@ void CaptureManager::StopSession()
         delete m_shaderGlass.release();
 
         if(m_debug)
-            m_debug->Release();
+        {
+            m_debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+            m_debug = nullptr;
+        }
     }
 }
 
@@ -110,7 +113,7 @@ void CaptureManager::UpdateShaderPreset()
 {
     if(m_shaderGlass)
     {
-        m_shaderGlass->SetShaderPreset(m_presetList.at(m_options.presetNo));
+        m_shaderGlass->SetShaderPreset(m_presetList.at(m_options.presetNo).get());
     }
 }
 
