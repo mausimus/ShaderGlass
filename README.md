@@ -18,9 +18,9 @@ Overlay for running GPU shaders on top of Windows desktop.
   * [ScummVM](https://github.com/scummvm/scummvm)
   * [AGS](https://github.com/adventuregamestudio/ags)
 * you can even use it on top of YouTube or Twitch, albeit with some option tuning necessary to clean up video scaling
+* able to save and load profiles
 * currently in __alpha__ with features still being worked on:
   * shader parameter control
-  * saving/loading profiles
   * more shaders and bugfixes (some still broken)
 
 Feel free to post any problematic scenarios you're experiencing in the Issues tab.
@@ -116,6 +116,9 @@ Currently supported options are:
 * _Output -> Frame Skip_ - in order to improve performance divide frame rate by n (capture is done at VSync rate)
 
 * _Shader_ - choose RetroArch shader to apply, or _none_ shader for testing
+
+You can save and load profile files which will store all the options. It's also possible to pass profile file path on the command
+line and ShaderGlass will load it on startup.
 
 #### Tuning
 
