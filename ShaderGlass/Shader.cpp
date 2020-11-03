@@ -4,13 +4,13 @@
 
 static HRESULT hr;
 
-Shader::Shader(ShaderDef* shaderDef) :
+Shader::Shader(ShaderDef& shaderDef) :
     m_shaderDef(shaderDef), m_vertexShader {}, m_pixelShader {}, m_alias {}, m_scaleAbsoluteX {}, m_scaleAbsoluteY {}, m_scaleViewportX {},
     m_scaleViewportY {}
 {
-    m_pushBuffer = new int[BufferSize(PUSH_BUFFER)];
-    m_uboBuffer  = new int[BufferSize(UBO_BUFFER)];
-    for(auto& p : shaderDef->Params)
+    m_pushBuffer = std::make_unique<int[]>(BufferSize(PUSH_BUFFER));
+    m_uboBuffer  = std::make_unique<int[]>(BufferSize(UBO_BUFFER));
+    for(auto& p : shaderDef.Params)
     {
         SetParam(p.name, &p.defaultValue);
     }
@@ -70,50 +70,43 @@ Shader::Shader(ShaderDef* shaderDef) :
 
 void Shader::Create(winrt::com_ptr<ID3D11Device> d3dDevice)
 {
-    if(m_shaderDef->VertexLength == 0)
+    if(m_shaderDef.VertexLength == 0)
         Compile();
 
-    hr = d3dDevice->CreateVertexShader(m_shaderDef->VertexByteCode, m_shaderDef->VertexLength, NULL, m_vertexShader.put());
+    hr = d3dDevice->CreateVertexShader(m_shaderDef.VertexByteCode, m_shaderDef.VertexLength, NULL, m_vertexShader.put());
     assert(SUCCEEDED(hr));
 
-    hr = d3dDevice->CreatePixelShader(m_shaderDef->FragmentByteCode, m_shaderDef->FragmentLength, NULL, m_pixelShader.put());
+    hr = d3dDevice->CreatePixelShader(m_shaderDef.FragmentByteCode, m_shaderDef.FragmentLength, NULL, m_pixelShader.put());
     assert(SUCCEEDED(hr));
 }
 
 void Shader::Compile()
 {
-    UINT      flags      = 0; // D3DCOMPILE_ENABLE_STRICTNESS;
-    ID3DBlob* error_blob = NULL;
-    ID3DBlob* vertexBlob = NULL;
-    ID3DBlob* pixelBlob  = NULL;
+    UINT                     flags = 0; // D3DCOMPILE_ENABLE_STRICTNESS;
+    winrt::com_ptr<ID3DBlob> errorBlob;
 
-    hr = D3DCompile(m_shaderDef->VertexSource,
-                            strlen(m_shaderDef->VertexSource),
-                            "Vertex",
-                            NULL,
-                            D3D_COMPILE_STANDARD_FILE_INCLUDE,
-                            "main",
-                            "vs_5_0",
-                            flags,
-                            0,
-                            &vertexBlob,
-                            &error_blob);
+    hr = D3DCompile(m_shaderDef.VertexSource,
+                    strlen(m_shaderDef.VertexSource),
+                    "Vertex",
+                    NULL,
+                    D3D_COMPILE_STANDARD_FILE_INCLUDE,
+                    "main",
+                    "vs_5_0",
+                    flags,
+                    0,
+                    m_vertexBlob.put(),
+                    errorBlob.put());
     if(FAILED(hr))
     {
-        if(error_blob)
+        if(errorBlob)
         {
-            OutputDebugStringA((char*)error_blob->GetBufferPointer());
-            error_blob->Release();
-        }
-        if(vertexBlob)
-        {
-            vertexBlob->Release();
+            OutputDebugStringA((char*)errorBlob->GetBufferPointer());
         }
         assert(false);
     }
 
-    hr = D3DCompile(m_shaderDef->FragmentSource,
-                    strlen(m_shaderDef->FragmentSource),
+    hr = D3DCompile(m_shaderDef.FragmentSource,
+                    strlen(m_shaderDef.FragmentSource),
                     "Fragment",
                     NULL,
                     D3D_COMPILE_STANDARD_FILE_INCLUDE,
@@ -121,43 +114,38 @@ void Shader::Compile()
                     "ps_5_0",
                     flags,
                     0,
-                    &pixelBlob,
-                    &error_blob);
+                    m_pixelBlob.put(),
+                    errorBlob.put());
     if(FAILED(hr))
     {
-        if(error_blob)
+        if(errorBlob)
         {
-            OutputDebugStringA((char*)error_blob->GetBufferPointer());
-            error_blob->Release();
-        }
-        if(pixelBlob)
-        {
-            pixelBlob->Release();
+            OutputDebugStringA((char*)errorBlob->GetBufferPointer());
         }
         assert(false);
     }
 
-    m_shaderDef->VertexByteCode   = (BYTE*)vertexBlob->GetBufferPointer();
-    m_shaderDef->VertexLength     = vertexBlob->GetBufferSize();
-    m_shaderDef->FragmentByteCode = (BYTE*)pixelBlob->GetBufferPointer();
-    m_shaderDef->FragmentLength   = pixelBlob->GetBufferSize();
+    m_shaderDef.VertexByteCode   = (BYTE*)m_vertexBlob->GetBufferPointer();
+    m_shaderDef.VertexLength     = m_vertexBlob->GetBufferSize();
+    m_shaderDef.FragmentByteCode = (BYTE*)m_pixelBlob->GetBufferPointer();
+    m_shaderDef.FragmentLength   = m_pixelBlob->GetBufferSize();
 }
 
 void Shader::FillParams(int buffer, void* data)
 {
     if(buffer == PUSH_BUFFER)
-        memcpy(data, m_pushBuffer, BufferSize(buffer));
+        memcpy(data, m_pushBuffer.get(), BufferSize(buffer));
     else
-        memcpy(data, m_uboBuffer, BufferSize(buffer));
+        memcpy(data, m_uboBuffer.get(), BufferSize(buffer));
 }
 
 void Shader::SetParam(std::string name, void* v)
 {
-    for(const auto& p : m_shaderDef->Params)
+    for(const auto& p : m_shaderDef.Params)
     {
         if(p.name == name)
         {
-            char* buf = (char*)(p.buffer == PUSH_BUFFER ? m_pushBuffer : m_uboBuffer);
+            char* buf = (char*)(p.buffer == PUSH_BUFFER ? m_pushBuffer.get() : m_uboBuffer.get());
             memcpy(buf + p.offset, v, p.size);
             // return; // same param can be in both bufs
         }
@@ -166,19 +154,19 @@ void Shader::SetParam(std::string name, void* v)
 
 size_t Shader::BufferSize(int buffer)
 {
-    return m_shaderDef->ParamsSize(buffer);
+    return m_shaderDef.ParamsSize(buffer);
 }
 
 bool Shader::IsTrue(const std::string& presetParam)
 {
-    auto it = m_shaderDef->PresetParams.find(presetParam);
-    return it != m_shaderDef->PresetParams.end() && (it->second == "true" || it->second == "1");
+    auto it = m_shaderDef.PresetParams.find(presetParam);
+    return it != m_shaderDef.PresetParams.end() && (it->second == "true" || it->second == "1");
 }
 
 bool Shader::Get(const std::string& presetParam, std::string& value)
 {
-    auto it = m_shaderDef->PresetParams.find(presetParam);
-    if(it != m_shaderDef->PresetParams.end())
+    auto it = m_shaderDef.PresetParams.find(presetParam);
+    if(it != m_shaderDef.PresetParams.end())
     {
         value = it->second;
         return true;
@@ -186,9 +174,14 @@ bool Shader::Get(const std::string& presetParam, std::string& value)
     return false;
 }
 
-
-Shader::~Shader()
+Shader::Shader(Shader&& shader) : m_shaderDef(shader.m_shaderDef)
 {
-    delete[] m_pushBuffer;
-    delete[] m_uboBuffer;
+    throw new std::runtime_error("This shouldn't happen");
+}
+
+Shader::~Shader() {
+    m_pixelShader = nullptr;
+    m_vertexShader = nullptr;
+    m_vertexBlob = nullptr;
+    m_pixelBlob = nullptr;
 }

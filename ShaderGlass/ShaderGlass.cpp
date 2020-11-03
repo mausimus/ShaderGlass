@@ -4,19 +4,18 @@
 
 static HRESULT hr;
 
-ShaderGlass::ShaderGlass() : m_lastSize {}, m_lastPos {}, m_lastCaptureWindowPos {}
-{
-    m_shaderPreset = new Preset(new PassthroughPresetDef());
-}
+ShaderGlass::ShaderGlass() :
+    m_lastSize {}, m_lastPos {}, m_lastCaptureWindowPos {}, m_passthroughDef(), m_shaderPreset(new Preset(m_passthroughDef)),
+    m_preprocessShader(m_preprocessShaderDef), m_preprocessPreset(m_preprocessPresetDef),
+    m_preprocessPass(m_preprocessShader, m_preprocessPreset)
+{ }
 
 ShaderGlass::~ShaderGlass()
 {
     std::unique_lock lock(m_mutex);
 
     DestroyShaders();
-    delete m_preprocessPass;
     DestroyPasses();
-    delete m_preprocessShader;
     DestroyTargets();
     m_context->Flush();
 }
@@ -97,11 +96,8 @@ void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, bool clone, 
 
     m_context->RSSetState(m_rasterizerState.get());
 
-    m_preprocessShader = new Shader(new PreprocessShaderDef());
-    m_preprocessShader->Create(m_device);
-    m_preprocessPass = new ShaderPass(m_device, m_context, m_preprocessShader, nullptr);
-    m_preprocessPass->Initialize();
-
+    m_preprocessShader.Create(m_device);
+    m_preprocessPass.Initialize(m_device, m_context);
     RebuildShaders();
 
     m_running = true;
@@ -110,17 +106,16 @@ void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, bool clone, 
 void ShaderGlass::RebuildShaders()
 {
     m_shaderPreset->Create(m_device);
+    m_shaderPasses.reserve(m_shaderPreset->m_shaders.size());
     for(auto& shader : m_shaderPreset->m_shaders)
     {
-        auto shaderPass = new ShaderPass(m_device, m_context, shader, m_shaderPreset);
-        shaderPass->Initialize();
-        m_shaderPasses.emplace_back(shaderPass);
+        m_shaderPasses.emplace_back(shader, *m_shaderPreset, m_device, m_context);
     }
 
     m_presetTextures.clear();
     for(auto& texture : m_shaderPreset->m_textures)
     {
-        m_presetTextures.insert(make_pair(texture.second->m_name, texture.second->m_textureView));
+        m_presetTextures.insert(make_pair(texture.second.m_name, texture.second.m_textureView));
     }
 }
 
@@ -147,12 +142,7 @@ void ShaderGlass::SetOutputFlip(bool h, bool v)
 
 void ShaderGlass::SetShaderPreset(PresetDef* p)
 {
-    auto oldShaderPreset = m_newShaderPreset;
-    m_newShaderPreset    = new Preset(p);
-    if(oldShaderPreset)
-    {
-        delete oldShaderPreset;
-    }
+    m_newShaderPreset = std::make_unique<Preset>(*p);
 }
 
 void ShaderGlass::SetFrameSkip(int s)
@@ -165,8 +155,8 @@ void ShaderGlass::DestroyTargets()
     if(m_preprocessedRenderTarget != nullptr)
     {
         m_preprocessedRenderTarget = nullptr;
-        m_originalView = nullptr;
-        m_preprocessedTexture = nullptr;
+        m_originalView             = nullptr;
+        m_preprocessedTexture      = nullptr;
     }
 }
 
@@ -200,10 +190,10 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
 
 void ShaderGlass::DestroyShaders()
 {
-    for(auto& p : m_shaderPasses)
-        delete p;
+    //for(auto& p : m_shaderPasses)
+    //  delete p;
     m_shaderPasses.clear();
-    delete m_shaderPreset;
+    // delete m_shaderPreset;
 }
 
 void ShaderGlass::DestroyPasses()
@@ -300,12 +290,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
     bool rebuildPasses = false;
 
-    auto newShaderPreset = m_newShaderPreset;
-    if(newShaderPreset)
+    if(m_newShaderPreset)
     {
         DestroyShaders();
-        m_shaderPreset    = newShaderPreset;
-        m_newShaderPreset = nullptr;
+        m_shaderPreset.swap(m_newShaderPreset);
+        m_newShaderPreset.reset();
         RebuildShaders();
         inputRescaled = true;
         outputResized = true;
@@ -354,7 +343,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             "FinalViewport", float4 {(float)viewportWidth, (float)viewportHeight, 1.0f / viewportWidth, 1.0f / viewportHeight}));
 
         // preprocess takes original texture full size
-        m_preprocessPass->Resize(desc.Width, desc.Height, originalWidth, originalHeight, m_textureSizes);
+        m_preprocessPass.Resize(desc.Width, desc.Height, originalWidth, originalHeight, m_textureSizes);
 
         UINT                             sourceWidth  = originalWidth;
         UINT                             sourceHeight = originalHeight;
@@ -368,29 +357,29 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             {
                 UINT outputWidth  = sourceWidth;
                 UINT outputHeight = sourceHeight;
-                if(shaderPass->m_shader->m_scaleX != 1.0f)
+                if(shaderPass.m_shader.m_scaleX != 1.0f)
                 {
-                    if(shaderPass->m_shader->m_scaleViewportX)
-                        outputWidth = static_cast<UINT>(viewportWidth * shaderPass->m_shader->m_scaleX);
-                    else if(shaderPass->m_shader->m_scaleAbsoluteX)
-                        outputWidth = static_cast<UINT>(shaderPass->m_shader->m_scaleX);
+                    if(shaderPass.m_shader.m_scaleViewportX)
+                        outputWidth = static_cast<UINT>(viewportWidth * shaderPass.m_shader.m_scaleX);
+                    else if(shaderPass.m_shader.m_scaleAbsoluteX)
+                        outputWidth = static_cast<UINT>(shaderPass.m_shader.m_scaleX);
                     else
-                        outputWidth = static_cast<UINT>(sourceWidth * shaderPass->m_shader->m_scaleX);
+                        outputWidth = static_cast<UINT>(sourceWidth * shaderPass.m_shader.m_scaleX);
                 }
-                if(shaderPass->m_shader->m_scaleY != 1.0f)
+                if(shaderPass.m_shader.m_scaleY != 1.0f)
                 {
-                    if(shaderPass->m_shader->m_scaleViewportY)
-                        outputHeight = static_cast<UINT>(viewportHeight * shaderPass->m_shader->m_scaleY);
-                    else if(shaderPass->m_shader->m_scaleAbsoluteY)
-                        outputHeight = static_cast<UINT>(shaderPass->m_shader->m_scaleY);
+                    if(shaderPass.m_shader.m_scaleViewportY)
+                        outputHeight = static_cast<UINT>(viewportHeight * shaderPass.m_shader.m_scaleY);
+                    else if(shaderPass.m_shader.m_scaleAbsoluteY)
+                        outputHeight = static_cast<UINT>(shaderPass.m_shader.m_scaleY);
                     else
-                        outputHeight = static_cast<UINT>(sourceHeight * shaderPass->m_shader->m_scaleY);
+                        outputHeight = static_cast<UINT>(sourceHeight * shaderPass.m_shader.m_scaleY);
                 }
                 passSizes.push_back({sourceWidth, sourceHeight, outputWidth, outputHeight});
-                if(!shaderPass->m_shader->m_alias.empty())
+                if(!shaderPass.m_shader.m_alias.empty())
                 {
                     m_textureSizes.insert(
-                        std::make_pair(shaderPass->m_shader->m_alias,
+                        std::make_pair(shaderPass.m_shader.m_alias,
                                        float4 {(float)outputWidth, (float)outputHeight, 1.0f / outputWidth, 1.0f / outputHeight}));
                 }
                 sourceWidth  = outputWidth;
@@ -402,7 +391,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         for(int p = 0; p < m_shaderPasses.size(); p++)
         {
             auto& shaderPass = m_shaderPasses[p];
-            shaderPass->Resize(passSizes[p][0], passSizes[p][1], passSizes[p][2], passSizes[p][3], m_textureSizes);
+            shaderPass.Resize(passSizes[p][0], passSizes[p][1], passSizes[p][2], passSizes[p][3], m_textureSizes);
         }
     }
 
@@ -418,7 +407,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
         m_passResources.insert(std::make_pair("Original", m_originalView));
 
-        m_preprocessPass->m_targetView = m_preprocessedRenderTarget.get();
+        m_preprocessPass.m_targetView = m_preprocessedRenderTarget.get();
         if(m_shaderPasses.size() > 1)
         {
             D3D11_TEXTURE2D_DESC desc2 = {};
@@ -430,23 +419,23 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
             for(const auto& pass : m_shaderPasses)
             {
-                m_requiresFeedback |= pass->RequiresFeedback();
+                m_requiresFeedback |= pass.RequiresFeedback();
             }
 
             for(size_t p = 1; p < m_shaderPasses.size(); p++)
             {
                 const auto& pass = m_shaderPasses[p - 1];
 
-                if(pass->m_shader->m_formatFloat)
+                if(pass.m_shader.m_formatFloat)
                     desc2.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
-                else if(pass->m_shader->m_formatSRGB)
+                else if(pass.m_shader.m_formatSRGB)
                     desc2.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
                 else
                     desc2.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
                 // use shader output size
-                desc2.Width  = pass->m_destWidth;
-                desc2.Height = pass->m_destHeight;
+                desc2.Width  = pass.m_destWidth;
+                desc2.Height = pass.m_destHeight;
 
                 winrt::com_ptr<ID3D11Texture2D> passTexture;
                 hr = m_device->CreateTexture2D(&desc2, nullptr, passTexture.put());
@@ -462,9 +451,9 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
                 hr = m_device->CreateShaderResourceView(passTexture.get(), nullptr, passResource.put());
                 assert(SUCCEEDED(hr));
                 m_passResources.insert(std::make_pair(std::string("PassOutput") + std::to_string(p - 1), passResource));
-                if(!pass->m_shader->m_alias.empty())
+                if(!pass.m_shader.m_alias.empty())
                 {
-                    m_passResources.insert(std::make_pair(pass->m_shader->m_alias, passResource));
+                    m_passResources.insert(std::make_pair(pass.m_shader.m_alias, passResource));
                 }
 
                 // create feedback textures if needed
@@ -478,17 +467,17 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
                     hr = m_device->CreateShaderResourceView(feedbackTexture.get(), nullptr, feedbackResource.put());
                     assert(SUCCEEDED(hr));
                     m_passResources.insert(std::make_pair(std::string("PassFeedback") + std::to_string(p - 1), feedbackResource));
-                    if(!pass->m_shader->m_alias.empty())
+                    if(!pass.m_shader.m_alias.empty())
                     {
-                        m_passResources.insert(std::make_pair(pass->m_shader->m_alias + "Feedback", feedbackResource));
+                        m_passResources.insert(std::make_pair(pass.m_shader.m_alias + "Feedback", feedbackResource));
                     }
                 }
 
-                m_shaderPasses[p - 1]->m_targetView = passTarget.get();
-                m_shaderPasses[p]->m_sourceView     = passResource.get();
+                m_shaderPasses[p - 1].m_targetView = passTarget.get();
+                m_shaderPasses[p].m_sourceView     = passResource.get();
             }
         }
-        m_shaderPasses[m_shaderPasses.size() - 1]->m_targetView = m_displayRenderTarget.get();
+        m_shaderPasses[m_shaderPasses.size() - 1].m_targetView = m_displayRenderTarget.get();
     }
 
     if(outputMoved || outputResized || (m_lastPos.x != topLeft.x || m_lastPos.y != topLeft.y))
@@ -558,7 +547,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         tx += 0.0001f;
         ty += 0.0001f;
 
-        m_preprocessPass->UpdateMVP(sx, sy, tx, ty);
+        m_preprocessPass.UpdateMVP(sx, sy, tx, ty);
         m_lastPos.x = topLeft.x;
         m_lastPos.y = topLeft.y;
     }
@@ -573,18 +562,18 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     winrt::com_ptr<ID3D11ShaderResourceView> textureView;
     hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
     assert(SUCCEEDED(hr));
-    m_preprocessPass->Render(textureView.get(), m_passResources);
+    m_preprocessPass.Render(textureView.get(), m_passResources);
 
     int p = 0;
     for(auto& shaderPass : m_shaderPasses)
     {
         if(p == 0)
         {
-            shaderPass->Render(m_originalView.get(), m_passResources);
+            shaderPass.Render(m_originalView.get(), m_passResources);
         }
         else
         {
-            shaderPass->Render(m_passResources);
+            shaderPass.Render(m_passResources);
         }
         p++;
     }
@@ -592,11 +581,10 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     if(m_requiresFeedback)
     {
         // copy output to feedback
-        for(size_t p = 0; p < m_shaderPasses.size() - 1; p++)
+        for(size_t q = 0; q < m_shaderPasses.size() - 1; q++)
         {
-            const auto&     pass         = m_shaderPasses[p];
-            auto            passOutput   = m_passResources.find(std::string("PassOutput") + std::to_string(p));
-            auto            passFeedback = m_passResources.find(std::string("PassFeedback") + std::to_string(p));
+            auto                           passOutput   = m_passResources.find(std::string("PassOutput") + std::to_string(q));
+            auto                           passFeedback = m_passResources.find(std::string("PassFeedback") + std::to_string(q));
             winrt::com_ptr<ID3D11Resource> outputResource;
             winrt::com_ptr<ID3D11Resource> feedbackResource;
             passOutput->second->GetResource(outputResource.put());

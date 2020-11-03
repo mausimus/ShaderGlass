@@ -2,6 +2,9 @@
 
 #include "Preset.h"
 #include "ShaderPass.h"
+#include "Shaders\PreprocessShaderDef.h"
+#include "Shaders\PassthroughShaderDef.h"
+#include "Shaders\PassthroughPresetDef.h"
 
 class ShaderGlass
 {
@@ -41,19 +44,23 @@ private:
     std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>> m_passResources;
     std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>> m_presetTextures;
     std::map<std::string, float4>                                   m_textureSizes;
-    std::vector<ShaderPass*>                                        m_shaderPasses;
+    std::vector<ShaderPass>                                         m_shaderPasses;
 
-    HWND        m_outputWindow {0};
-    HWND        m_captureWindow {0};
-    bool        m_clone {false};
-    Shader*     m_preprocessShader {nullptr};
-    Preset*     m_shaderPreset {nullptr};
-    ShaderPass* m_preprocessPass {nullptr};
-    int         m_frameCounter {0};
-    bool        m_requiresFeedback {false};
-    std::mutex  m_mutex {};
+    HWND       m_outputWindow {0};
+    HWND       m_captureWindow {0};
+    bool       m_clone {false};
+    int        m_frameCounter {0};
+    bool       m_requiresFeedback {false};
+    std::mutex m_mutex {};
 
-    Preset* volatile m_newShaderPreset {nullptr};
+    PassthroughPresetDef    m_passthroughDef;
+    PreprocessShaderDef     m_preprocessShaderDef;
+    PresetDef               m_preprocessPresetDef;
+    Preset                  m_preprocessPreset;
+    Shader                  m_preprocessShader;
+    ShaderPass              m_preprocessPass;
+    std::unique_ptr<Preset> m_shaderPreset {nullptr};
+    std::unique_ptr<Preset> m_newShaderPreset {nullptr};
     volatile int   m_frameSkip {0};
     volatile bool  m_running {false};
     volatile float m_inputScaleW {3.0f};

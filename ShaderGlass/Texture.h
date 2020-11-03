@@ -7,7 +7,7 @@
 class Texture
 {
 public:
-    TextureDef*               m_textureDef;
+    TextureDef&               m_textureDef;
     std::string               m_name;
     bool                      m_linear;
     bool                      m_mipmap;
@@ -17,7 +17,7 @@ public:
     winrt::com_ptr<ID3D11Resource> m_textureResource;
     winrt::com_ptr<ID3D11ShaderResourceView> m_textureView;
 
-    Texture(TextureDef* textureDef);
+    Texture(TextureDef& textureDef);
     void Create(winrt::com_ptr<ID3D11Device> d3dDevice);
     ~Texture();
 

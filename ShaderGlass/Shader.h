@@ -29,7 +29,7 @@ union float4x4
 class Shader
 {
 public:
-    ShaderDef*          m_shaderDef;
+    ShaderDef&          m_shaderDef;
     winrt::com_ptr<ID3D11VertexShader> m_vertexShader;
     winrt::com_ptr<ID3D11PixelShader> m_pixelShader;
     std::string         m_alias {};
@@ -44,7 +44,8 @@ public:
     bool                m_filterLinear {false};
     int                 m_frameCountMod {0};
 
-    Shader(ShaderDef* shaderDef);
+    Shader(ShaderDef& shaderDef);
+    Shader(Shader&& shader);
     ~Shader();
 
     void   Create(winrt::com_ptr<ID3D11Device> d3dDevice);
@@ -54,8 +55,10 @@ public:
     size_t BufferSize(int buffer);
 
 private:
-    int* m_pushBuffer;
-    int* m_uboBuffer;
+    std::unique_ptr<int[]> m_pushBuffer;
+    std::unique_ptr<int[]> m_uboBuffer;
+    winrt::com_ptr<ID3DBlob> m_vertexBlob;
+    winrt::com_ptr<ID3DBlob> m_pixelBlob;
 
     bool IsTrue(const std::string& presetParam);
     bool Get(const std::string& presetParam, std::string& value);
