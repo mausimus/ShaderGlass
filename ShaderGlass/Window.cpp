@@ -34,6 +34,7 @@ unsigned                     numPresets;
 unsigned                     selectedPixelSize;
 unsigned                     selectedOutputScale;
 unsigned                     selectedAspectRatio;
+unsigned                     selectedFrameSkip;
 bool                         isTransparent = false;
 
 // See http://blogs.msdn.com/b/oldnewthing/archive/2007/10/08/5351207.aspx
@@ -61,6 +62,249 @@ std::string GetWindowStringText(HWND hwnd)
     std::wstring wide = &buf[0];
     std::string  s(wide.begin(), wide.end());
     return s;
+}
+
+void LoadProfile(const std::string& fileName)
+{
+    try
+    {
+        bool paused = captureManager.IsActive();
+        if(paused)
+            SendMessage(mainWindow, WM_COMMAND, IDM_STOP, 0);
+
+        std::ifstream              infile(fileName);
+        std::string                shaderCategory;
+        std::string                shaderName;
+        std::optional<std::string> windowName;
+        std::optional<std::string> desktopName;
+        std::optional<bool>        transparent;
+        std::optional<bool>        clone;
+        while(!infile.eof())
+        {
+            std::string key;
+            std::string value;
+            infile >> key;
+            infile >> std::quoted(value);
+            if(key == "ProfileVersion")
+            {
+                if(!value.starts_with("1."))
+                    return;
+            }
+            else if(key == "CaptureWindow")
+            {
+                windowName = value;
+            }
+            else if(key == "CaptureDesktop")
+            {
+                desktopName = value;
+            }
+            else if(key == "PixelSize")
+            {
+                for(const auto& p : pixelSizes)
+                {
+                    if(value == p.second.mnemonic)
+                        SendMessage(mainWindow, WM_COMMAND, p.first, 0);
+                }
+            }
+            else if(key == "AspectRatio")
+            {
+                for(const auto& p : aspectRatios)
+                {
+                    if(value == p.second.mnemonic)
+                        SendMessage(mainWindow, WM_COMMAND, p.first, 0);
+                }
+            }
+            else if(key == "ShaderCategory")
+            {
+                shaderCategory = value;
+            }
+            else if(key == "ShaderName")
+            {
+                shaderName = value;
+            }
+            else if(key == "FrameSkip")
+            {
+                for(const auto& p : frameSkips)
+                {
+                    if(value == p.second.mnemonic)
+                        SendMessage(mainWindow, WM_COMMAND, p.first, 0);
+                }
+            }
+            else if(key == "OutputScale")
+            {
+                for(const auto& p : outputScales)
+                {
+                    if(value == p.second.mnemonic)
+                        SendMessage(mainWindow, WM_COMMAND, p.first, 0);
+                }
+            }
+            else if(key == "FlipH")
+            {
+                options.flipHorizontal = (value == "1");
+                if(options.flipHorizontal)
+                    CheckMenuItem(flipMenu, IDM_FLIP_HORIZONTAL, MF_CHECKED | MF_BYCOMMAND);
+                else
+                    CheckMenuItem(flipMenu, IDM_FLIP_HORIZONTAL, MF_UNCHECKED | MF_BYCOMMAND);
+            }
+            else if(key == "FlipV")
+            {
+                options.flipVertical = (value == "1");
+                if(options.flipVertical)
+                    CheckMenuItem(flipMenu, IDM_FLIP_VERTICAL, MF_CHECKED | MF_BYCOMMAND);
+                else
+                    CheckMenuItem(flipMenu, IDM_FLIP_VERTICAL, MF_UNCHECKED | MF_BYCOMMAND);
+            }
+            else if(key == "Clone")
+            {
+                clone = (value == "1");
+            }
+            else if(key == "Transparent")
+            {
+                transparent = (value == "1");
+            }
+        }
+        infile.close();
+
+        // try to find shader
+        if(shaderName.size())
+        {
+            const auto& presets = captureManager.Presets();
+            for(unsigned i = 0; i < presets.size(); i++)
+            {
+                if(presets.at(i)->Category == shaderCategory && presets.at(i)->Name == shaderName)
+                {
+                    SendMessage(mainWindow, WM_COMMAND, WM_SHADER(i), 0);
+                    break;
+                }
+            }
+        }
+
+        // try to find window
+        if(windowName.has_value() && windowName.value().size())
+        {
+            SendMessage(mainWindow, WM_COMMAND, IDM_WINDOW_SCAN, 0);
+            for(unsigned i = 0; i < captureWindows.size(); i++)
+            {
+                if(captureWindows.at(i).name == windowName.value())
+                {
+                    SendMessage(mainWindow, WM_COMMAND, WM_CAPTURE_WINDOW(i), 0);
+                    break;
+                }
+            }
+        }
+        else if(desktopName.has_value() && desktopName.value() == "All")
+        {
+            SendMessage(mainWindow, WM_COMMAND, IDM_DISPLAY_ALLDISPLAYS, 0);
+        }
+
+        // only now set IO modes to override defaults
+        if(clone.has_value())
+        {
+            options.clone = clone.value();
+            if(options.clone)
+            {
+                CheckMenuItem(modeMenu, IDM_MODE_CLONE, MF_CHECKED | MF_BYCOMMAND);
+                CheckMenuItem(modeMenu, IDM_MODE_GLASS, MF_UNCHECKED | MF_BYCOMMAND);
+            }
+            else
+            {
+                CheckMenuItem(modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
+                CheckMenuItem(modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
+            }
+        }
+
+        if(transparent.has_value())
+        {
+            options.transparent = transparent.value();
+            if(options.transparent)
+            {
+                CheckMenuItem(outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+                CheckMenuItem(outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
+            }
+            else
+            {
+                CheckMenuItem(outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
+                CheckMenuItem(outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
+            }
+        }
+
+        if(paused)
+            SendMessage(mainWindow, WM_COMMAND, IDM_START, 0);
+    }
+    catch(std::exception& e)
+    {
+        MessageBox(NULL,
+                   convertCharArrayToLPCWSTR((std::string("Error loading profile: ") + std::string(e.what())).c_str()),
+                   L"ShaderGlass",
+                   MB_OK | MB_ICONERROR);
+    }
+}
+
+void LoadProfile()
+{
+    OPENFILENAMEW ofn;
+    char          szFileName[MAX_PATH] = "";
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner   = NULL;
+    ofn.lpstrFilter = (LPCWSTR)L"ShaderGlass Profiles (*.sgp)\0*.sgp\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFile   = (LPWSTR)szFileName;
+    ofn.nMaxFile    = MAX_PATH;
+    ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    ofn.lpstrDefExt = (LPCWSTR)L"sgp";
+
+    if(GetOpenFileName(&ofn))
+    {
+        std::wstring ws(ofn.lpstrFile);
+        LoadProfile(std::string(ws.begin(), ws.end()));
+    }
+}
+
+void SaveProfile(const std::string& fileName)
+{
+    const auto& pixelSize   = pixelSizes.at(WM_PIXEL_SIZE(selectedPixelSize));
+    const auto& outputScale = outputScales.at(WM_OUTPUT_SCALE(selectedOutputScale));
+    const auto& aspectRatio = aspectRatios.at(WM_ASPECT_RATIO(selectedAspectRatio));
+    const auto& frameSkip   = frameSkips.at(WM_FRAME_SKIP(selectedFrameSkip));
+    const auto& shader      = captureManager.Presets().at(options.presetNo);
+
+    std::ofstream outfile(fileName);
+    outfile << "ProfileVersion " << std::quoted("1.0") << std::endl;
+    outfile << "PixelSize " << std::quoted(pixelSize.mnemonic) << std::endl;
+    outfile << "AspectRatio " << std::quoted(aspectRatio.mnemonic) << std::endl;
+    outfile << "ShaderCategory " << std::quoted(shader->Category) << std::endl;
+    outfile << "ShaderName " << std::quoted(shader->Name) << std::endl;
+    outfile << "FrameSkip " << std::quoted(frameSkip.mnemonic) << std::endl;
+    outfile << "OutputScale " << std::quoted(outputScale.mnemonic) << std::endl;
+    outfile << "FlipH " << std::quoted(std::to_string(options.flipHorizontal)) << std::endl;
+    outfile << "FlipV " << std::quoted(std::to_string(options.flipVertical)) << std::endl;
+    outfile << "Clone " << std::quoted(std::to_string(options.clone)) << std::endl;
+    outfile << "Transparent " << std::quoted(std::to_string(options.transparent)) << std::endl;
+    if(options.captureWindow)
+        outfile << "CaptureWindow " << std::quoted(GetWindowStringText(options.captureWindow)) << std::endl;
+    else
+        outfile << "CaptureDesktop " << std::quoted("All") << std::endl;
+    outfile.close();
+}
+
+void SaveProfile()
+{
+    OPENFILENAMEW ofn;
+    char          szFileName[MAX_PATH] = "";
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner   = NULL;
+    ofn.lpstrFilter = (LPCWSTR)L"ShaderGlass Profiles (*.sgp)\0*.sgp\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFile   = (LPWSTR)szFileName;
+    ofn.nMaxFile    = MAX_PATH;
+    ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    ofn.lpstrDefExt = (LPCWSTR)L"sgp";
+
+    if(GetSaveFileName(&ofn))
+    {
+        std::wstring ws(ofn.lpstrFile);
+        SaveProfile(std::string(ws.begin(), ws.end()));
+    }
 }
 
 BOOL CALLBACK EnumWindowsProc(_In_ HWND hwnd, _In_ LPARAM /*lParam*/)
@@ -131,7 +375,7 @@ void BuildOutputMenu()
     auto sMenu = GetSubMenu(mainMenu, 2);
     DeleteMenu(sMenu, 0, MF_BYPOSITION);
 
-    modeMenu = GetSubMenu(sMenu, 0);
+    modeMenu         = GetSubMenu(sMenu, 0);
     outputWindowMenu = GetSubMenu(sMenu, 1);
     flipMenu         = GetSubMenu(sMenu, 2);
 
@@ -190,6 +434,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+    if(!winrt::Windows::Foundation::Metadata::ApiInformation::IsApiContractPresent(L"Windows.Foundation.UniversalApiContract", 8))
+    {
+        MessageBox(NULL, L"ShaderGlass requires Windows 10 version 1903 or later.", L"ShaderGlass", MB_OK | MB_ICONERROR);
+        return -1;
+    }
+
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_SHADERGLASS, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
@@ -225,6 +475,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     SendMessage(mainWindow, WM_COMMAND, IDM_MODE_GLASS, 0);
 
     // auto-start
+    if(lpCmdLine)
+    {
+        std::wstring ws(lpCmdLine);
+        if(ws.size())
+            LoadProfile(std::string(ws.begin(), ws.end()));
+    }
+
     SendMessage(mainWindow, WM_COMMAND, IDM_START, 0);
 
     // Main message loop:
@@ -546,6 +803,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             UpdateWindowState();
         }
         break;
+        case IDM_PROCESSING_LOADPROFILE:
+            LoadProfile();
+            break;
+        case IDM_PROCESSING_SAVEPROFILEAS:
+            SaveProfile();
+            break;
         case IDM_EXIT:
             captureManager.StopSession();
             DestroyWindow(hWnd);
@@ -624,6 +887,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 const auto& frameSkip = frameSkips.find(wmId);
                 if(frameSkip != frameSkips.end())
                 {
+                    selectedFrameSkip = wmId - WM_FRAME_SKIP(0);
                     CheckMenuRadioItem(frameSkipMenu, 0, static_cast<UINT>(frameSkips.size()), wmId - WM_FRAME_SKIP(0), MF_BYPOSITION);
                     options.frameSkip = frameSkip->second.s;
                     captureManager.UpdateFrameSkip();
@@ -635,7 +899,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_SIZE: {
-        switch (wParam)
+        switch(wParam)
         {
         case SIZE_MINIMIZED:
             if(captureManager.IsActive())

@@ -5,12 +5,15 @@
 // Windows Header Files
 #include <windows.h>
 #include <shellapi.h>
+#include <commdlg.h>
 // C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
 #include <dwmapi.h>
+#include <fstream>
+#include <iomanip>
 
 #include <Unknwn.h>
 #include <inspectable.h>

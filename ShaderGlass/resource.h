@@ -106,6 +106,10 @@
 #define ID_WINDOW_SOLID                 32870
 #define IDM_WINDOW_SOLID                32871
 #define IDM_WINDOW_TRANSPARENT          32872
+#define ID_PROCESSING_LOADPROFILE       32873
+#define ID_PROCESSING_SAVEPROFILEAS     32874
+#define IDM_PROCESSING_LOADPROFILE      32875
+#define IDM_PROCESSING_SAVEPROFILEAS    32876
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -114,7 +118,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
-#define _APS_NEXT_COMMAND_VALUE         32873
+#define _APS_NEXT_COMMAND_VALUE         32877
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           111
 #endif
