@@ -95,13 +95,19 @@ Currently supported options are:
 
 * _Input -> Window_ - captures the selected window, defaults to Clone mode
 
-* _Input -> Mode_, you can override default mode for the input:
-
-  * _Glass_ - ShaderGlass window appears transparent and is clickable-through, use this if you need the desktop mouse cursor (when captured window doesn't capture cursor, for example ScummVM)
-
-  * _Clone_ - ShaderGlass copies the content of capture, if you don't need mouse click-through it's faster and more compatible
-
 * _Input -> Pixel Size_ - indicates the size of input pixels (pre-scaling), i.e. if you run a game in x3 scaling mode set this to x3 as well so that ShaderGlass can tell the original resolution
+
+* _Output -> Mode_ - overrides default mode for the input type:
+
+  * _Glass_ (default for Desktop) - ShaderGlass window appears transparent, you have to position it over the window or are you'd like to capture
+
+  * _Clone_ (default for Window) - ShaderGlass copies the content of capture so you can position it anywhere; this mode is also faster and more compatible
+
+* _Output -> Window_ - override mouse behavior:
+
+  * _Solid_ (default for Clone) - ShaderGlass window area is solid (traps mouse events), with the only exception of passing focus to captured window when clicked
+
+  * _Click-through_ (default for Glass) - ShaderGlass window area is transparent and clickable/scrollable-through to window(s) underneath
 
 * _Output -> Scale_ - apply additional scaling to the output if you'd like it to be larger; using no pre-scaling and only output scaling should result in best performance
 
@@ -125,6 +131,24 @@ __Always check that input is crisply pixelated using the "none" shader__ as ther
 scaling happening (for example even when Chrome displays an image at 100%, Windows display scaling is still applied).
 The none shader should display a pixelated image with no smoothing whatsoever,
 try to match Input Pixel Size setting with your input's size to achieve that.
+
+##### Emulators
+
+Most emulators (DOSBox, FS-UAE, Altirra etc.) will capture mouse by default so you can use them in Window Clone mode.
+ShaderGlass window will remain topmost so just position it over the
+game window and Alt-Tab to the game to have mouse and focus captured.
+
+##### ScummVM
+
+ScummVM doesn't capture mouse cursor by default so for best results follow below steps:
+1) Use Window Clone mode, set Input/Output/Shader options to your liking
+2) Switch Output Window to Click-through
+3) Click or Alt-Tab to ScummVM game window so that it has focus
+4) Press Ctrl-M which will force ScummVM to capture mouse
+
+This way you should have the mouse captured by ScummVM so that it remains within
+the game window until you press Ctrl-M again. You can apply output scaling
+and/or aspect ratio correction in ShaderGlass and enjoy the game.
 
 ### Code
 
