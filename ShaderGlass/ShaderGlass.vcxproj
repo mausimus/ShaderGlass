@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Helpers.h" />
+    <ClInclude Include="ParamsWindow.h" />
     <ClInclude Include="Preset.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="Shader.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Shaders\PassthroughPresetDef.h" />
     <ClInclude Include="Shaders\PassthroughShaderDef.h" />
     <ClInclude Include="Shaders\PreprocessShaderDef.h" />
+    <ClInclude Include="ShaderWindow.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Util\capture.desktop.interop.h" />
     <ClInclude Include="Util\d3dHelpers.desktop.h" />
@@ -188,6 +190,8 @@
   <ItemGroup>
     <ClCompile Include="CaptureManager.cpp" />
     <ClCompile Include="CaptureSession.cpp" />
+    <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="ParamsWindow.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -201,7 +205,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="ShaderList.cpp" />
     <ClCompile Include="WIC\WICTextureLoader11.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="ShaderWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ShaderGlass.rc" />
