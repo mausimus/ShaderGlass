@@ -1,0 +1,913 @@
+#include "pch.h"
+
+#include "resource.h"
+#include "ShaderWindow.h"
+
+ShaderWindow::ShaderWindow(CaptureManager& captureManager) :
+    m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass()
+{ }
+
+void ShaderWindow::LoadProfile(const std::string& fileName)
+{
+    try
+    {
+        bool paused = m_captureManager.IsActive();
+        if(paused)
+            SendMessage(m_mainWindow, WM_COMMAND, IDM_STOP, 0);
+
+        std::ifstream              infile(fileName);
+        std::string                shaderCategory;
+        std::string                shaderName;
+        std::optional<std::string> windowName;
+        std::optional<std::string> desktopName;
+        std::optional<bool>        transparent;
+        std::optional<bool>        clone;
+        while(!infile.eof())
+        {
+            std::string key;
+            std::string value;
+            infile >> key;
+            infile >> std::quoted(value);
+            if(key == "ProfileVersion")
+            {
+                if(!value.starts_with("1."))
+                    return;
+            }
+            else if(key == "CaptureWindow")
+            {
+                windowName = value;
+            }
+            else if(key == "CaptureDesktop")
+            {
+                desktopName = value;
+            }
+            else if(key == "PixelSize")
+            {
+                for(const auto& p : pixelSizes)
+                {
+                    if(value == p.second.mnemonic)
+                        SendMessage(m_mainWindow, WM_COMMAND, p.first, 0);
+                }
+            }
+            else if(key == "AspectRatio")
+            {
+                for(const auto& p : aspectRatios)
+                {
+                    if(value == p.second.mnemonic)
+                        SendMessage(m_mainWindow, WM_COMMAND, p.first, 0);
+                }
+            }
+            else if(key == "ShaderCategory")
+            {
+                shaderCategory = value;
+            }
+            else if(key == "ShaderName")
+            {
+                shaderName = value;
+            }
+            else if(key == "FrameSkip")
+            {
+                for(const auto& p : frameSkips)
+                {
+                    if(value == p.second.mnemonic)
+                        SendMessage(m_mainWindow, WM_COMMAND, p.first, 0);
+                }
+            }
+            else if(key == "OutputScale")
+            {
+                for(const auto& p : outputScales)
+                {
+                    if(value == p.second.mnemonic)
+                        SendMessage(m_mainWindow, WM_COMMAND, p.first, 0);
+                }
+            }
+            else if(key == "FlipH")
+            {
+                m_captureOptions.flipHorizontal = (value == "1");
+                if(m_captureOptions.flipHorizontal)
+                    CheckMenuItem(m_flipMenu, IDM_FLIP_HORIZONTAL, MF_CHECKED | MF_BYCOMMAND);
+                else
+                    CheckMenuItem(m_flipMenu, IDM_FLIP_HORIZONTAL, MF_UNCHECKED | MF_BYCOMMAND);
+            }
+            else if(key == "FlipV")
+            {
+                m_captureOptions.flipVertical = (value == "1");
+                if(m_captureOptions.flipVertical)
+                    CheckMenuItem(m_flipMenu, IDM_FLIP_VERTICAL, MF_CHECKED | MF_BYCOMMAND);
+                else
+                    CheckMenuItem(m_flipMenu, IDM_FLIP_VERTICAL, MF_UNCHECKED | MF_BYCOMMAND);
+            }
+            else if(key == "Clone")
+            {
+                clone = (value == "1");
+            }
+            else if(key == "Transparent")
+            {
+                transparent = (value == "1");
+            }
+        }
+        infile.close();
+
+        // try to find shader
+        if(shaderName.size())
+        {
+            const auto& presets = m_captureManager.Presets();
+            for(unsigned i = 0; i < presets.size(); i++)
+            {
+                if(presets.at(i)->Category == shaderCategory && presets.at(i)->Name == shaderName)
+                {
+                    SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(i), 0);
+                    break;
+                }
+            }
+        }
+
+        // try to find window
+        if(windowName.has_value() && windowName.value().size())
+        {
+            SendMessage(m_mainWindow, WM_COMMAND, IDM_WINDOW_SCAN, 0);
+            for(unsigned i = 0; i < m_captureWindows.size(); i++)
+            {
+                if(m_captureWindows.at(i).name == windowName.value())
+                {
+                    SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_WINDOW(i), 0);
+                    break;
+                }
+            }
+        }
+        else if(desktopName.has_value() && desktopName.value() == "All")
+        {
+            SendMessage(m_mainWindow, WM_COMMAND, IDM_DISPLAY_ALLDISPLAYS, 0);
+        }
+
+        // only now set IO modes to override defaults
+        if(clone.has_value())
+        {
+            m_captureOptions.clone = clone.value();
+            if(m_captureOptions.clone)
+            {
+                CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_CHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_UNCHECKED | MF_BYCOMMAND);
+            }
+            else
+            {
+                CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
+            }
+        }
+
+        if(transparent.has_value())
+        {
+            m_captureOptions.transparent = transparent.value();
+            if(m_captureOptions.transparent)
+            {
+                CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
+            }
+            else
+            {
+                CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
+            }
+        }
+
+        if(paused)
+            SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
+    }
+    catch(std::exception& e)
+    {
+        MessageBox(NULL,
+                   convertCharArrayToLPCWSTR((std::string("Error loading profile: ") + std::string(e.what())).c_str()),
+                   L"ShaderGlass",
+                   MB_OK | MB_ICONERROR);
+    }
+}
+
+void ShaderWindow::LoadProfile()
+{
+    OPENFILENAMEW ofn;
+    char          szFileName[MAX_PATH] = "";
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner   = NULL;
+    ofn.lpstrFilter = (LPCWSTR)L"ShaderGlass Profiles (*.sgp)\0*.sgp\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFile   = (LPWSTR)szFileName;
+    ofn.nMaxFile    = MAX_PATH;
+    ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    ofn.lpstrDefExt = (LPCWSTR)L"sgp";
+
+    if(GetOpenFileName(&ofn))
+    {
+        std::wstring ws(ofn.lpstrFile);
+        LoadProfile(std::string(ws.begin(), ws.end()));
+    }
+}
+
+void ShaderWindow::SaveProfile(const std::string& fileName)
+{
+    const auto& pixelSize   = pixelSizes.at(WM_PIXEL_SIZE(m_selectedPixelSize));
+    const auto& outputScale = outputScales.at(WM_OUTPUT_SCALE(m_selectedOutputScale));
+    const auto& aspectRatio = aspectRatios.at(WM_ASPECT_RATIO(m_selectedAspectRatio));
+    const auto& frameSkip   = frameSkips.at(WM_FRAME_SKIP(m_selectedFrameSkip));
+    const auto& shader      = m_captureManager.Presets().at(m_captureOptions.presetNo);
+
+    std::ofstream outfile(fileName);
+    outfile << "ProfileVersion " << std::quoted("1.0") << std::endl;
+    outfile << "PixelSize " << std::quoted(pixelSize.mnemonic) << std::endl;
+    outfile << "AspectRatio " << std::quoted(aspectRatio.mnemonic) << std::endl;
+    outfile << "ShaderCategory " << std::quoted(shader->Category) << std::endl;
+    outfile << "ShaderName " << std::quoted(shader->Name) << std::endl;
+    outfile << "FrameSkip " << std::quoted(frameSkip.mnemonic) << std::endl;
+    outfile << "OutputScale " << std::quoted(outputScale.mnemonic) << std::endl;
+    outfile << "FlipH " << std::quoted(std::to_string(m_captureOptions.flipHorizontal)) << std::endl;
+    outfile << "FlipV " << std::quoted(std::to_string(m_captureOptions.flipVertical)) << std::endl;
+    outfile << "Clone " << std::quoted(std::to_string(m_captureOptions.clone)) << std::endl;
+    outfile << "Transparent " << std::quoted(std::to_string(m_captureOptions.transparent)) << std::endl;
+    if(m_captureOptions.captureWindow)
+        outfile << "CaptureWindow " << std::quoted(GetWindowStringText(m_captureOptions.captureWindow)) << std::endl;
+    else
+        outfile << "CaptureDesktop " << std::quoted("All") << std::endl;
+    outfile.close();
+}
+
+void ShaderWindow::SaveProfile()
+{
+    OPENFILENAMEW ofn;
+    char          szFileName[MAX_PATH] = "";
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner   = NULL;
+    ofn.lpstrFilter = (LPCWSTR)L"ShaderGlass Profiles (*.sgp)\0*.sgp\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFile   = (LPWSTR)szFileName;
+    ofn.nMaxFile    = MAX_PATH;
+    ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    ofn.lpstrDefExt = (LPCWSTR)L"sgp";
+
+    if(GetSaveFileName(&ofn))
+    {
+        std::wstring ws(ofn.lpstrFile);
+        SaveProfile(std::string(ws.begin(), ws.end()));
+    }
+}
+
+BOOL CALLBACK ShaderWindow::EnumWindowsProc(_In_ HWND hwnd, _In_ LPARAM lParam)
+{
+    if(m_captureWindows.size() >= MAX_CAPTURE_WINDOWS)
+        return false;
+
+    if(hwnd != m_mainWindow && IsWindowVisible(hwnd) && IsAltTabWindow(hwnd))
+    {
+        DWORD isCloaked;
+        DWORD size = sizeof(isCloaked);
+        DwmGetWindowAttribute(hwnd, DWMWA_CLOAKED, &isCloaked, size);
+
+        if(!isCloaked)
+        {
+            TITLEBARINFO ti;
+            ti.cbSize = sizeof(ti);
+            GetTitleBarInfo(hwnd, &ti);
+            if(ti.rgstate[0] & STATE_SYSTEM_INVISIBLE)
+                return true;
+
+            if(GetWindowLong(hwnd, GWL_EXSTYLE) & WS_EX_TOOLWINDOW)
+                return true;
+
+            CaptureWindow cw(hwnd, GetWindowStringText(hwnd));
+            if(cw.name.size())
+                m_captureWindows.emplace_back(cw);
+        }
+    }
+    return true;
+}
+
+void ShaderWindow::ScanWindows()
+{
+    m_captureWindows.clear();
+    EnumWindows(&ShaderWindow::EnumWindowsProcProxy, (LPARAM)this);
+
+    for(UINT i = 0; i < MAX_CAPTURE_WINDOWS; i++)
+    {
+        RemoveMenu(m_windowMenu, WM_CAPTURE_WINDOW(i), MF_BYCOMMAND);
+    }
+    UINT i = 0;
+    for(const auto& w : m_captureWindows)
+    {
+        AppendMenu(m_windowMenu, MF_STRING, WM_CAPTURE_WINDOW(i++), convertCharArrayToLPCWSTR(w.name.c_str()));
+        if(m_captureOptions.captureWindow == w.hwnd)
+            CheckMenuItem(m_windowMenu, WM_CAPTURE_WINDOW(i - 1), MF_CHECKED | MF_BYCOMMAND);
+    }
+}
+
+void ShaderWindow::BuildInputMenu()
+{
+    auto sMenu      = GetSubMenu(m_mainMenu, 1);
+    m_pixelSizeMenu = CreatePopupMenu();
+    AppendMenu(m_pixelSizeMenu, MF_STRING, IDM_PIXELSIZE_NEXT, L"Next\tp");
+    for(const auto& px : pixelSizes)
+    {
+        AppendMenu(m_pixelSizeMenu, MF_STRING, px.first, convertCharArrayToLPCWSTR(px.second.text));
+    }
+    AppendMenu(sMenu, MF_STRING | MF_POPUP, (UINT_PTR)m_pixelSizeMenu, L"Pixel Size");
+
+    m_displayMenu = GetSubMenu(sMenu, 0);
+    m_windowMenu  = GetSubMenu(sMenu, 1);
+}
+
+void ShaderWindow::BuildOutputMenu()
+{
+    auto sMenu = GetSubMenu(m_mainMenu, 2);
+    DeleteMenu(sMenu, 0, MF_BYPOSITION);
+
+    m_modeMenu         = GetSubMenu(sMenu, 0);
+    m_outputWindowMenu = GetSubMenu(sMenu, 1);
+    m_flipMenu         = GetSubMenu(sMenu, 2);
+
+    m_outputScaleMenu = CreatePopupMenu();
+    for(const auto& os : outputScales)
+    {
+        AppendMenu(m_outputScaleMenu, MF_STRING, os.first, os.second.text);
+    }
+    AppendMenu(sMenu, MF_STRING | MF_POPUP, (UINT_PTR)m_outputScaleMenu, L"Scale");
+
+    m_aspectRatioMenu = CreatePopupMenu();
+    for(const auto& ar : aspectRatios)
+    {
+        AppendMenu(m_aspectRatioMenu, MF_STRING, ar.first, ar.second.text);
+    }
+    AppendMenu(sMenu, MF_STRING | MF_POPUP, (UINT_PTR)m_aspectRatioMenu, L"Aspect Ratio Correction");
+
+    m_frameSkipMenu = CreatePopupMenu();
+    for(const auto& fs : frameSkips)
+    {
+        AppendMenu(m_frameSkipMenu, MF_STRING, fs.first, fs.second.text);
+    }
+    AppendMenu(sMenu, MF_STRING | MF_POPUP, (UINT_PTR)m_frameSkipMenu, L"Frame Skip");
+}
+
+void ShaderWindow::BuildShaderMenu()
+{
+    m_shaderMenu = GetSubMenu(m_mainMenu, 3);
+    DeleteMenu(m_shaderMenu, 0, MF_BYPOSITION);
+    unsigned i = 0;
+
+    for(const auto& sp : m_captureManager.Presets())
+    {
+        if(strcmp(sp->Category, "general") == 0)
+        {
+            AppendMenu(m_shaderMenu, MF_STRING, WM_SHADER(i++), convertCharArrayToLPCWSTR(sp->Name));
+            continue;
+        }
+        if(m_categoryMenus.find(sp->Category) == m_categoryMenus.end())
+        {
+            m_categoryMenus.insert(std::make_pair(sp->Category, CreatePopupMenu()));
+        }
+        auto menu = m_categoryMenus.find(sp->Category)->second;
+        AppendMenu(menu, MF_STRING, WM_SHADER(i++), convertCharArrayToLPCWSTR(sp->Name));
+    }
+
+    for(auto m : m_categoryMenus)
+    {
+        AppendMenu(m_shaderMenu, MF_STRING | MF_POPUP, (UINT_PTR)m.second, convertCharArrayToLPCWSTR(m.first.c_str()));
+    }
+    m_numPresets = i;
+}
+
+LRESULT CALLBACK ShaderWindow::WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    ShaderWindow* app;
+    if(msg == WM_CREATE)
+    {
+        app = (ShaderWindow*)(((LPCREATESTRUCT)lParam)->lpCreateParams);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)app);
+    }
+    else
+    {
+        app = (ShaderWindow*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+    }
+    return app->WndProc(hWnd, msg, wParam, lParam);
+}
+
+BOOL CALLBACK ShaderWindow::EnumWindowsProcProxy(_In_ HWND hwnd, _In_ LPARAM lParam)
+{
+    return ((ShaderWindow*)lParam)->EnumWindowsProc(hwnd, 0);
+}
+
+ATOM ShaderWindow::MyRegisterClass(HINSTANCE hInstance)
+{
+    WNDCLASSEXW wcex;
+
+    wcex.cbSize = sizeof(WNDCLASSEX);
+
+    wcex.style         = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc   = ShaderWindow::WndProcProxy;
+    wcex.cbClsExtra    = 0;
+    wcex.cbWndExtra    = 0;
+    wcex.hInstance     = hInstance;
+    wcex.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SHADERGLASS));
+    wcex.hCursor       = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hbrBackground = CreateSolidBrush(0x00000000);
+    wcex.lpszMenuName  = MAKEINTRESOURCEW(IDC_SHADERGLASS);
+    wcex.lpszClassName = m_windowClass;
+    wcex.hIconSm       = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    //wcex.hCursor = NULL;
+
+    return RegisterClassExW(&wcex);
+}
+
+BOOL ShaderWindow::InitInstance(HINSTANCE hInstance, int nCmdShow)
+{
+    m_instance = hInstance;
+
+    RECT rect;
+    rect.left   = 0;
+    rect.top    = 0;
+    rect.right  = 960;
+    rect.bottom = 600;
+    AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, true, WS_EX_WINDOWEDGE);
+
+    HWND hWnd = CreateWindowW(m_windowClass,
+                              m_title,
+                              WS_OVERLAPPEDWINDOW | WS_EX_WINDOWEDGE,
+                              CW_USEDEFAULT,
+                              CW_USEDEFAULT,
+                              rect.right - rect.left,
+                              rect.bottom - rect.top,
+                              nullptr,
+                              nullptr,
+                              hInstance,
+                              this);
+
+    if(!hWnd)
+    {
+        return FALSE;
+    }
+
+    m_mainWindow = hWnd;
+
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd);
+
+    return TRUE;
+}
+
+void ShaderWindow::SetTransparent(bool transparent)
+{
+    if(transparent != m_isTransparent)
+    {
+        LONG cur_style = GetWindowLong(m_mainWindow, GWL_EXSTYLE);
+        if(transparent)
+            SetWindowLong(m_mainWindow, GWL_EXSTYLE, cur_style | WS_EX_TRANSPARENT);
+        else
+            SetWindowLong(m_mainWindow, GWL_EXSTYLE, cur_style & ~WS_EX_TRANSPARENT);
+        m_isTransparent = transparent;
+    }
+}
+
+void ShaderWindow::AdjustWindowSize(HWND hWnd)
+{
+    if(m_captureManager.IsActive() && m_captureOptions.captureWindow && m_captureOptions.clone)
+    {
+        // resize client area to captured window x scale
+        RECT captureRect;
+        GetClientRect(m_captureOptions.captureWindow, &captureRect);
+
+        RECT r;
+        GetClientRect(hWnd, &r);
+
+        auto requiredW = static_cast<LONG>(captureRect.right * m_captureOptions.outputScale / m_captureOptions.aspectRatio);
+        auto requiredH = static_cast<LONG>(captureRect.bottom * m_captureOptions.outputScale);
+        if(requiredW == 0)
+            requiredW = 1;
+        if(requiredH == 0)
+            requiredH = 1;
+
+        if(r.right != requiredW || r.bottom != requiredH)
+        {
+            r.right  = requiredW;
+            r.bottom = requiredH;
+            AdjustWindowRect(&r, GetWindowLong(hWnd, GWL_STYLE), TRUE);
+            SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER);
+        }
+    }
+    else
+    {
+        float xAlign = m_captureOptions.pixelWidth * m_captureOptions.outputScale;
+        float yAlign = m_captureOptions.pixelHeight * m_captureOptions.outputScale;
+        if(xAlign != 1 || yAlign != 1)
+        {
+            RECT clientRect;
+            GetClientRect(hWnd, &clientRect);
+
+            int requiredW = static_cast<LONG>(static_cast<int>(clientRect.right / xAlign) * xAlign);
+            int requiredH = static_cast<LONG>(static_cast<int>(clientRect.bottom / yAlign) * yAlign);
+            if(requiredW == 0)
+                requiredW = 1;
+            if(requiredH == 0)
+                requiredH = 1;
+
+            if(requiredW != clientRect.right || requiredH != clientRect.bottom)
+            {
+                clientRect.right  = requiredW;
+                clientRect.bottom = requiredH;
+                AdjustWindowRect(&clientRect, GetWindowLong(hWnd, GWL_STYLE), TRUE);
+
+                RECT windowRect;
+                GetWindowRect(hWnd, &windowRect);
+                SetWindowPos(hWnd,
+                             HWND_TOPMOST,
+                             0,
+                             0,
+                             clientRect.right - clientRect.left,
+                             clientRect.bottom - clientRect.top,
+                             SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER);
+            }
+        }
+    }
+}
+
+void ShaderWindow::UpdateWindowState()
+{
+    // always topmost when processing
+    if(m_captureManager.IsActive())
+        SetWindowPos(m_mainWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    else
+        SetWindowPos(m_mainWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+    LONG cur_style = GetWindowLong(m_mainWindow, GWL_EXSTYLE);
+    if(m_captureManager.IsActive() && m_captureOptions.transparent)
+        // active desktop glass mode - layered/transparent window
+        SetWindowLong(m_mainWindow, GWL_EXSTYLE, cur_style | WS_EX_LAYERED);
+    else
+        // clone or normal window
+        SetWindowLong(m_mainWindow, GWL_EXSTYLE, cur_style & ~WS_EX_LAYERED);
+
+    if(m_captureManager.IsActive() && !m_captureOptions.clone && !m_captureOptions.captureWindow)
+        // desktop glass - exclude from capture
+        SetWindowDisplayAffinity(m_mainWindow, WDA_EXCLUDEFROMCAPTURE);
+    else
+        SetWindowDisplayAffinity(m_mainWindow, WDA_NONE);
+
+    // update title
+    if(m_captureManager.IsActive())
+    {
+        const auto& pixelSize   = pixelSizes.at(WM_PIXEL_SIZE(m_selectedPixelSize));
+        const auto& outputScale = outputScales.at(WM_OUTPUT_SCALE(m_selectedOutputScale));
+        const auto& aspectRatio = aspectRatios.at(WM_ASPECT_RATIO(m_selectedAspectRatio));
+        const auto& shader      = m_captureManager.Presets().at(m_captureOptions.presetNo);
+
+        char windowName[26];
+        windowName[0] = 0;
+        if(m_captureOptions.captureWindow)
+        {
+            auto captureTitle = GetWindowStringText(m_captureOptions.captureWindow);
+            if(captureTitle.size())
+            {
+                if(captureTitle.find(',') > 0)
+                {
+                    captureTitle = captureTitle.substr(0, captureTitle.find(','));
+                }
+                if(captureTitle.size() > 20)
+                {
+                    captureTitle = captureTitle.substr(0, 20) + "...";
+                }
+                captureTitle += ", ";
+                strncpy_s(windowName, captureTitle.c_str(), 26);
+            }
+        }
+
+        char title[200];
+        snprintf(title,
+                 200,
+                 "ShaderGlass (%s%s, x%s, %s%%, ~%s)",
+                 windowName,
+                 shader->Name,
+                 pixelSize.mnemonic,
+                 outputScale.mnemonic,
+                 aspectRatio.mnemonic);
+        SetWindowTextA(m_mainWindow, title);
+    }
+    else
+    {
+        SetWindowTextA(m_mainWindow, "ShaderGlass");
+    }
+
+    AdjustWindowSize(m_mainWindow);
+}
+
+LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch(message)
+    {
+    case WM_COMMAND: {
+        UINT wmId = LOWORD(wParam);
+        switch(wmId)
+        {
+        case IDM_START: {
+            if(m_captureOptions.captureWindow && !IsWindow(m_captureOptions.captureWindow))
+                return 0;
+            m_captureManager.StartSession();
+            EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_DISABLED);
+            EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_ENABLED);
+            UpdateWindowState();
+        }
+        break;
+        case IDM_TOGGLEMENU:
+            if(GetMenu(hWnd))
+                SetMenu(hWnd, NULL);
+            else
+                SetMenu(hWnd, m_mainMenu);
+            break;
+        case IDM_SHADER_NEXT:
+            SendMessage(hWnd, WM_COMMAND, WM_SHADER((m_captureOptions.presetNo + 1) % m_numPresets), 0);
+            break;
+        case IDM_SHADER_RANDOM:
+            SendMessage(hWnd, WM_COMMAND, WM_SHADER(rand() % m_numPresets), 0);
+            break;
+        case IDM_PIXELSIZE_NEXT:
+            SendMessage(hWnd, WM_COMMAND, WM_PIXEL_SIZE((m_selectedPixelSize + 1) % pixelSizes.size()), 0);
+            break;
+        case IDM_FLIP_HORIZONTAL:
+            m_captureOptions.flipHorizontal = !m_captureOptions.flipHorizontal;
+            if(m_captureOptions.flipHorizontal)
+                CheckMenuItem(m_flipMenu, IDM_FLIP_HORIZONTAL, MF_CHECKED | MF_BYCOMMAND);
+            else
+                CheckMenuItem(m_flipMenu, IDM_FLIP_HORIZONTAL, MF_UNCHECKED | MF_BYCOMMAND);
+            m_captureManager.UpdateOutputFlip();
+            break;
+        case IDM_FLIP_VERTICAL:
+            m_captureOptions.flipVertical = !m_captureOptions.flipVertical;
+            if(m_captureOptions.flipVertical)
+                CheckMenuItem(m_flipMenu, IDM_FLIP_VERTICAL, MF_CHECKED | MF_BYCOMMAND);
+            else
+                CheckMenuItem(m_flipMenu, IDM_FLIP_VERTICAL, MF_UNCHECKED | MF_BYCOMMAND);
+            m_captureManager.UpdateOutputFlip();
+            break;
+        case IDM_WINDOW_SOLID:
+            m_captureOptions.transparent = false;
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
+            UpdateWindowState();
+            break;
+        case IDM_WINDOW_TRANSPARENT:
+            m_captureOptions.transparent = true;
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
+            UpdateWindowState();
+            break;
+        case IDM_MODE_GLASS:
+            m_captureOptions.clone = false;
+            CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
+            CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
+            m_captureOptions.transparent = true;
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
+            m_captureManager.UpdateInput();
+            UpdateWindowState();
+            break;
+        case IDM_MODE_CLONE:
+            m_captureOptions.clone = true;
+            CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_UNCHECKED | MF_BYCOMMAND);
+            CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_CHECKED | MF_BYCOMMAND);
+            m_captureOptions.transparent = false;
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
+            m_captureManager.UpdateInput();
+            UpdateWindowState();
+            break;
+        case IDM_WINDOW_SCAN:
+            ScanWindows();
+            break;
+        case IDM_DISPLAY_ALLDISPLAYS:
+            CheckMenuRadioItem(
+                m_windowMenu, WM_CAPTURE_WINDOW(0), WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())), 0, MF_BYCOMMAND);
+            CheckMenuItem(m_displayMenu, IDM_DISPLAY_ALLDISPLAYS, MF_CHECKED | MF_BYCOMMAND);
+            m_captureOptions.captureWindow = NULL;
+            m_captureOptions.clone         = false;
+            m_captureOptions.transparent   = true;
+            CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
+            CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
+            m_captureManager.UpdateInput();
+            UpdateWindowState();
+            break;
+        case IDM_STOP: {
+            m_captureManager.StopSession();
+            EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_DISABLED);
+            EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_ENABLED);
+            UpdateWindowState();
+        }
+        break;
+        case IDM_PROCESSING_LOADPROFILE:
+            LoadProfile();
+            break;
+        case IDM_PROCESSING_SAVEPROFILEAS:
+            SaveProfile();
+            break;
+        case IDM_EXIT:
+            m_captureManager.StopSession();
+            DestroyWindow(hWnd);
+            break;
+        case IDM_ABOUT1:
+        case IDM_ABOUT2:
+        case IDM_ABOUT3:
+#ifdef _DEBUG
+            m_captureManager.Debug();
+#else
+            ShellExecute(0, 0, L"https://github.com/rohatsu/ShaderGlass", 0, 0, SW_SHOW);
+#endif
+            break;
+        default:
+            if(wmId >= WM_USER && wmId <= 0x7FFF)
+            {
+                if(wmId >= WM_SHADER(0) && wmId < WM_SHADER(MAX_SHADERS))
+                {
+                    CheckMenuItem(m_shaderMenu, wmId, MF_CHECKED | MF_BYCOMMAND);
+                    CheckMenuItem(m_shaderMenu, m_captureOptions.presetNo + WM_SHADER(0), MF_UNCHECKED | MF_BYCOMMAND);
+                    m_captureOptions.presetNo = wmId - WM_SHADER(0);
+                    m_captureManager.UpdateShaderPreset();
+                    UpdateWindowState();
+                    break;
+                }
+                if(wmId >= WM_CAPTURE_WINDOW(0) && wmId < WM_CAPTURE_WINDOW(MAX_CAPTURE_WINDOWS))
+                {
+                    CheckMenuRadioItem(m_windowMenu,
+                                       WM_CAPTURE_WINDOW(0),
+                                       WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())),
+                                       wmId,
+                                       MF_BYCOMMAND);
+                    CheckMenuItem(m_displayMenu, IDM_DISPLAY_ALLDISPLAYS, MF_UNCHECKED | MF_BYCOMMAND);
+                    m_captureOptions.captureWindow = m_captureWindows.at(wmId - WM_CAPTURE_WINDOW(0)).hwnd;
+                    m_captureOptions.clone         = true;
+                    m_captureOptions.transparent   = false;
+                    CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_UNCHECKED | MF_BYCOMMAND);
+                    CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_CHECKED | MF_BYCOMMAND);
+                    CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
+                    CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
+                    m_captureManager.UpdateInput();
+                    UpdateWindowState();
+                    break;
+                }
+                const auto& pixelSize = pixelSizes.find(wmId);
+                if(pixelSize != pixelSizes.end())
+                {
+                    m_selectedPixelSize = wmId - WM_PIXEL_SIZE(0);
+                    CheckMenuRadioItem(
+                        m_pixelSizeMenu, WM_PIXEL_SIZE(0), WM_PIXEL_SIZE(static_cast<UINT>(pixelSizes.size() - 1)), wmId, MF_BYCOMMAND);
+                    m_captureOptions.pixelWidth  = pixelSize->second.w;
+                    m_captureOptions.pixelHeight = pixelSize->second.h;
+                    m_captureManager.UpdatePixelSize();
+                    UpdateWindowState();
+                    break;
+                }
+                const auto& outputScale = outputScales.find(wmId);
+                if(outputScale != outputScales.end())
+                {
+                    m_selectedOutputScale = wmId - WM_OUTPUT_SCALE(0);
+                    CheckMenuRadioItem(
+                        m_outputScaleMenu, 0, static_cast<UINT>(outputScales.size()), wmId - WM_OUTPUT_SCALE(0), MF_BYPOSITION);
+                    m_captureOptions.outputScale = outputScale->second.s;
+                    m_captureManager.UpdateOutputSize();
+                    UpdateWindowState();
+                    break;
+                }
+                const auto& aspectRatio = aspectRatios.find(wmId);
+                if(aspectRatio != aspectRatios.end())
+                {
+                    m_selectedAspectRatio = wmId - WM_ASPECT_RATIO(0);
+                    CheckMenuRadioItem(
+                        m_aspectRatioMenu, 0, static_cast<UINT>(aspectRatios.size()), wmId - WM_ASPECT_RATIO(0), MF_BYPOSITION);
+                    m_captureOptions.aspectRatio = aspectRatio->second.r;
+                    m_captureManager.UpdateOutputSize();
+                    UpdateWindowState();
+                    break;
+                }
+                const auto& frameSkip = frameSkips.find(wmId);
+                if(frameSkip != frameSkips.end())
+                {
+                    m_selectedFrameSkip = wmId - WM_FRAME_SKIP(0);
+                    CheckMenuRadioItem(m_frameSkipMenu, 0, static_cast<UINT>(frameSkips.size()), wmId - WM_FRAME_SKIP(0), MF_BYPOSITION);
+                    m_captureOptions.frameSkip = frameSkip->second.s;
+                    m_captureManager.UpdateFrameSkip();
+                    break;
+                }
+            }
+            return DefWindowProc(hWnd, message, wParam, lParam);
+        }
+    }
+    break;
+    case WM_SIZE: {
+        switch(wParam)
+        {
+        case SIZE_MINIMIZED:
+            if(m_captureManager.IsActive())
+            {
+                m_captureOptions.paused = true;
+                m_captureManager.StopSession();
+            }
+            break;
+        case SIZE_MAXIMIZED:
+        case SIZE_RESTORED:
+            if(m_captureOptions.paused)
+            {
+                m_captureManager.StartSession();
+                m_captureOptions.paused = false;
+            }
+            break;
+        }
+        //SendMessage(hWnd, WM_PRINT, (WPARAM)NULL, PRF_NONCLIENT); -- not sure what bug this was
+        AdjustWindowSize(hWnd);
+        return 0;
+    }
+    case WM_ERASEBKGND:
+    case WM_SIZING: {
+        // prevent flicker
+        return 0;
+    }
+    case WM_LBUTTONDOWN: {
+        if(m_captureManager.IsActive() && m_captureOptions.captureWindow)
+        {
+            // if we click in our client area, active the captured window
+            SetForegroundWindow(m_captureOptions.captureWindow);
+        }
+        break;
+    }
+    case WM_PAINT: {
+        if(m_captureManager.IsActive() && m_captureOptions.transparent)
+        {
+            POINT p;
+            if(GetCursorPos(&p) && ScreenToClient(hWnd, &p))
+            {
+                RECT r;
+                GetClientRect(hWnd, &r);
+                if(p.x > 0 && p.x < r.right && p.y > 0 && p.y < r.bottom)
+                {
+                    SetTransparent(true);
+                }
+                else
+                {
+                    SetTransparent(false);
+                }
+            }
+        }
+        ValidateRect(hWnd, NULL);
+        return 0;
+    }
+    case WM_DESTROY:
+        m_captureManager.StopSession();
+        PostQuitMessage(0);
+        break;
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+    return 0;
+}
+
+bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
+{
+    LoadStringW(hInstance, IDS_APP_TITLE, m_title, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_SHADERGLASS, m_windowClass, MAX_LOADSTRING);
+    MyRegisterClass(hInstance);
+    if(!InitInstance(hInstance, nCmdShow))
+    {
+        return FALSE;
+    }
+
+    m_captureManager.Initialize();
+
+    m_mainMenu = LoadMenu(hInstance, MAKEINTRESOURCEW(IDC_SHADERGLASS));
+
+    m_programMenu = GetSubMenu(m_mainMenu, 0);
+    BuildInputMenu();
+    BuildOutputMenu();
+    BuildShaderMenu();
+    ScanWindows();
+    SetMenu(m_mainWindow, m_mainMenu);
+    srand(static_cast<unsigned>(time(NULL)));
+
+    m_captureOptions.monitor      = nullptr;
+    m_captureOptions.outputWindow = m_mainWindow;
+
+    // set defaults
+    SendMessage(m_mainWindow, WM_COMMAND, WM_PIXEL_SIZE(2), 0);
+    SendMessage(m_mainWindow, WM_COMMAND, WM_ASPECT_RATIO(0), 0);
+    SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(20), 0);
+    SendMessage(m_mainWindow, WM_COMMAND, WM_FRAME_SKIP(1), 0);
+    SendMessage(m_mainWindow, WM_COMMAND, WM_OUTPUT_SCALE(0), 0);
+    SendMessage(m_mainWindow, WM_COMMAND, IDM_MODE_GLASS, 0);
+
+    return TRUE;
+}
+
+void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
+{
+    // auto-start
+    if(lpCmdLine)
+    {
+        std::wstring ws(lpCmdLine);
+        if(ws.size())
+            LoadProfile(std::string(ws.begin(), ws.end()));
+    }
+
+    SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
+}

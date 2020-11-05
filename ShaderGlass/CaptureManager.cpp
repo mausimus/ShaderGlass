@@ -10,7 +10,7 @@ using namespace std;
 using namespace util;
 using namespace util::uwp;
 
-CaptureManager::CaptureManager(const CaptureOptions& options) : m_options(options) { }
+CaptureManager::CaptureManager() : m_options() { }
 
 bool CaptureManager::Initialize()
 {
