@@ -38,7 +38,7 @@ Since the app uses DirectX for both capture and shading it will remain Windows-o
 
 Latest release (Win 10, x64):
 
-https://github.com/rohatsu/ShaderGlass/releases/download/v0.1/ShaderGlass-0.1-win-x64.zip
+https://github.com/rohatsu/ShaderGlass/releases/download/v0.3/ShaderGlass-0.3-win-x64.zip
 
 ### Screenshots
 
