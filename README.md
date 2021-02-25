@@ -19,6 +19,7 @@ Overlay for running GPU shaders on top of Windows desktop.
   * [AGS](https://github.com/adventuregamestudio/ags)
 * you can even use it on top of YouTube or Twitch, albeit with some option tuning necessary to clean up video scaling
 * able to save and load profiles
+* borderless fullscreen mode
 * currently in __alpha__ with features still being worked on:
   * shader parameter control
   * more shaders and bugfixes (some still broken)
@@ -35,7 +36,9 @@ Since the app uses DirectX for both capture and shading it will remain Windows-o
 
 ### Download
 
-Latest release (Win 10, x64): https://github.com/rohatsu/ShaderGlass/releases/download/v0.1/ShaderGlass-0.1-win-x64.zip
+Latest release (Win 10, x64):
+
+https://github.com/rohatsu/ShaderGlass/releases/download/v0.1/ShaderGlass-0.1-win-x64.zip
 
 ### Screenshots
 
@@ -43,7 +46,7 @@ Latest release (Win 10, x64): https://github.com/rohatsu/ShaderGlass/releases/do
 
 In this mode a transparent floating window will apply a shader to anything behind it.
 
-This mode is not OBS-friendly, use Window Clone mode to capture/screenshot ShaderGlass.
+This mode is not OBS-friendly, use Window Glass or Clone modes to capture/screenshot ShaderGlass.
 
 Wikipedia in Chrome processed by crt-geom shader which applies scanlines and CRT curvature.
 
@@ -114,6 +117,9 @@ Currently supported options are:
 * _Output -> Aspect Ratio Correction_ - presets for common aspect ratio correction factors (DOS, etc.), applied horizontally to preserve scanline count
 
 * _Output -> Frame Skip_ - in order to improve performance divide frame rate by n (capture is done at VSync rate)
+
+* _Output -> Fullscreen_ (Ctrl+Shift+G) - turn ShaderGlass into a topmost fullscreen borderless window, in Glass mode you will still see yellow outline around the screen but if you can use
+Window Glass (surrounding black bars) or Window Clone (top-left aligned) with your source then you can avoid yellow edges; press Ctrl+Shift+G to revert
 
 * _Shader_ - choose RetroArch shader to apply, or _none_ shader for testing
 

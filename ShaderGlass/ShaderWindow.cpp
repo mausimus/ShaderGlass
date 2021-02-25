@@ -342,6 +342,8 @@ void ShaderWindow::BuildOutputMenu()
         AppendMenu(m_frameSkipMenu, MF_STRING, fs.first, fs.second.text);
     }
     AppendMenu(sMenu, MF_STRING | MF_POPUP, (UINT_PTR)m_frameSkipMenu, L"Frame Skip");
+
+    AppendMenu(sMenu, MF_STRING, ID_PROCESSING_FULLSCREEN, L"Fullscreen\tCtrl+Shift+G");
 }
 
 void ShaderWindow::BuildShaderMenu()
@@ -489,7 +491,7 @@ void ShaderWindow::AdjustWindowSize(HWND hWnd)
             SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER);
         }
     }
-    else
+    else if(!m_isBorderless)
     {
         float xAlign = m_captureOptions.pixelWidth * m_captureOptions.outputScale;
         float yAlign = m_captureOptions.pixelHeight * m_captureOptions.outputScale;
@@ -509,7 +511,7 @@ void ShaderWindow::AdjustWindowSize(HWND hWnd)
             {
                 clientRect.right  = requiredW;
                 clientRect.bottom = requiredH;
-                AdjustWindowRect(&clientRect, GetWindowLong(hWnd, GWL_STYLE), TRUE);
+                AdjustWindowRect(&clientRect, GetWindowLong(hWnd, GWL_STYLE), GetMenu(hWnd) != 0);
 
                 RECT windowRect;
                 GetWindowRect(hWnd, &windowRect);
@@ -611,6 +613,9 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             UpdateWindowState();
         }
         break;
+        case ID_PROCESSING_FULLSCREEN:
+            ToggleBorderless(hWnd);
+            break;
         case IDM_TOGGLEMENU:
             if(GetMenu(hWnd))
                 SetMenu(hWnd, NULL);
@@ -796,6 +801,10 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         }
     }
     break;
+    case WM_HOTKEY: {
+        ToggleBorderless(hWnd);
+        break;
+    }
     case WM_SIZE: {
         switch(wParam)
         {
@@ -863,6 +872,57 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
     return 0;
 }
 
+void ShaderWindow::ToggleBorderless(HWND hWnd)
+{
+    LONG cur_style = GetWindowLong(m_mainWindow, GWL_STYLE);
+    if(!m_isBorderless)
+    {
+        cur_style &= ~WS_OVERLAPPEDWINDOW;
+        SetMenu(hWnd, NULL);
+    }
+    else
+    {
+        cur_style |= WS_OVERLAPPEDWINDOW;
+        SetMenu(hWnd, m_mainMenu);
+    }
+    SetWindowLong(m_mainWindow, GWL_STYLE, cur_style);
+
+    m_isBorderless = !m_isBorderless;
+
+    if(m_isBorderless)
+    {
+        RECT        clientRect;
+        auto        monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+        MONITORINFO info;
+        info.cbSize = sizeof(info);
+        GetMonitorInfo(monitor, &info);
+        clientRect.top    = info.rcMonitor.top;
+        clientRect.left   = info.rcMonitor.left;
+        clientRect.right  = info.rcMonitor.right;
+        clientRect.bottom = info.rcMonitor.bottom;
+        AdjustWindowRect(&clientRect, GetWindowLong(hWnd, GWL_STYLE), GetMenu(hWnd) != 0);
+
+        GetWindowRect(hWnd, &m_lastPosition);
+        SetWindowPos(hWnd,
+                     HWND_TOPMOST,
+                     info.rcMonitor.left,
+                     info.rcMonitor.top,
+                     clientRect.right - clientRect.left,
+                     clientRect.bottom - clientRect.top,
+                     0);
+    }
+    else
+    {
+        SetWindowPos(hWnd,
+                     0,
+                     m_lastPosition.left,
+                     m_lastPosition.top,
+                     m_lastPosition.right - m_lastPosition.left,
+                     m_lastPosition.bottom - m_lastPosition.top,
+                     SWP_NOZORDER | SWP_NOOWNERZORDER);
+    }
+}
+
 bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 {
     LoadStringW(hInstance, IDS_APP_TITLE, m_title, MAX_LOADSTRING);
@@ -884,6 +944,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     ScanWindows();
     SetMenu(m_mainWindow, m_mainMenu);
     srand(static_cast<unsigned>(time(NULL)));
+    auto hk = RegisterHotKey(m_mainWindow, HK_FULLSCREEN, MOD_CONTROL | MOD_SHIFT, 0x47);
 
     m_captureOptions.monitor      = nullptr;
     m_captureOptions.outputWindow = m_mainWindow;

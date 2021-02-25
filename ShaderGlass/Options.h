@@ -6,6 +6,7 @@
 #define MAX_FRAME_SKIPS 20U
 #define MAX_OUTPUT_SCALES 20U
 #define MAX_CAPTURE_WINDOWS 50U
+#define HK_FULLSCREEN 1000
 
 #define WM_PIXEL_SIZE(i) (static_cast<UINT>(WM_USER) + i)
 #define WM_ASPECT_RATIO(i) (static_cast<UINT> WM_PIXEL_SIZE(MAX_PIXEL_SIZES) + i)
