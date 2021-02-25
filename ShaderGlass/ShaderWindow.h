@@ -41,6 +41,8 @@ private:
     unsigned                     m_selectedAspectRatio {0};
     unsigned                     m_selectedFrameSkip {0};
     bool                         m_isTransparent {false};
+    bool                         m_isBorderless {false};
+    RECT                         m_lastPosition;
 
     void LoadProfile(const std::string& fileName);
     void LoadProfile();
@@ -53,6 +55,7 @@ private:
     void SetTransparent(bool transparent);
     void AdjustWindowSize(HWND hWnd);
     void UpdateWindowState();
+    void ToggleBorderless(HWND hWnd);
 
     static BOOL CALLBACK    EnumWindowsProcProxy(_In_ HWND hwnd, _In_ LPARAM lParam);
     static LRESULT CALLBACK WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
