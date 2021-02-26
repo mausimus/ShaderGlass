@@ -85,7 +85,7 @@ with its massive half-EGA pixels, aspect-ratio corrected and post-processed usin
 
 ![screenshot](images/screen2.png)
 
-[Rick Dangerous (1989)](https://store.steampowered.com/app/494740/Police_Quest_Collection/)
+[Rick Dangerous (1989)](https://www.mobygames.com/game/rick-dangerous)
 with C64 monitor shader applied.
 
 ![screenshot](images/screen6.png)
