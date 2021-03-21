@@ -300,7 +300,17 @@ void ShaderWindow::ScanWindows()
 
 void ShaderWindow::BuildInputMenu()
 {
-    auto sMenu      = GetSubMenu(m_mainMenu, 1);
+    auto sMenu = GetSubMenu(m_mainMenu, 1);
+
+    if(Is1903())
+    {
+        ModifyMenu(GetSubMenu(sMenu, 0),
+                   IDM_DISPLAY_ALLDISPLAYS,
+                   MF_BYCOMMAND | MF_STRING | MF_CHECKED,
+                   IDM_DISPLAY_ALLDISPLAYS,
+                   L"Current Display");
+    }
+
     m_pixelSizeMenu = CreatePopupMenu();
     AppendMenu(m_pixelSizeMenu, MF_STRING, IDM_PIXELSIZE_NEXT, L"Next\tp");
     for(const auto& px : pixelSizes)
@@ -607,6 +617,8 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case IDM_START: {
             if(m_captureOptions.captureWindow && !IsWindow(m_captureOptions.captureWindow))
                 return 0;
+
+            m_captureOptions.monitor = Is1903() ? MonitorFromWindow(hWnd, MONITOR_DEFAULTTOPRIMARY) : nullptr;
             m_captureManager.StartSession();
             EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_DISABLED);
             EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_ENABLED);
@@ -687,12 +699,27 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 m_windowMenu, WM_CAPTURE_WINDOW(0), WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())), 0, MF_BYCOMMAND);
             CheckMenuItem(m_displayMenu, IDM_DISPLAY_ALLDISPLAYS, MF_CHECKED | MF_BYCOMMAND);
             m_captureOptions.captureWindow = NULL;
-            m_captureOptions.clone         = false;
-            m_captureOptions.transparent   = true;
-            CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
-            CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
-            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
-            CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
+            if(Is1903())
+            {
+                // switch to clone mode
+                m_captureOptions.monitor     = MonitorFromWindow(hWnd, MONITOR_DEFAULTTOPRIMARY);
+                m_captureOptions.clone       = true;
+                m_captureOptions.transparent = false;
+                CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_UNCHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_CHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
+            }
+            else
+            {
+                // switch to glass mode
+                m_captureOptions.clone       = false;
+                m_captureOptions.transparent = true;
+                CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+                CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
+            }
             m_captureManager.UpdateInput();
             UpdateWindowState();
             break;
@@ -955,7 +982,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(20), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_FRAME_SKIP(1), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_OUTPUT_SCALE(0), 0);
-    SendMessage(m_mainWindow, WM_COMMAND, IDM_MODE_GLASS, 0);
+    SendMessage(m_mainWindow, WM_COMMAND, Is1903() ? IDM_MODE_CLONE : IDM_MODE_GLASS, 0);
 
     return TRUE;
 }

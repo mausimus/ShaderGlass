@@ -33,3 +33,8 @@ inline std::string GetWindowStringText(HWND hwnd)
     std::string  s(wide.begin(), wide.end());
     return s;
 }
+
+inline bool Is1903()
+{
+    return !winrt::Windows::Foundation::Metadata::ApiInformation::IsApiContractPresent(L"Windows.Foundation.UniversalApiContract", 9);
+}
