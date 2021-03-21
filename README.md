@@ -28,7 +28,7 @@ Feel free to post any problematic scenarios you're experiencing in the Issues ta
 
 ### Requirements
 
-* Windows 10, version 2004 (build 19041); will work on 1903 in limited capacity
+* Windows 10, version 2004 (build 19041); will work on 1903 in limited capacity (no Desktop Glass mode)
 * DirectX 11-capable GPU
 * [Visual C++ Redistributable 2019](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
@@ -38,7 +38,7 @@ Since the app uses DirectX for both capture and shading it will remain Windows-o
 
 Latest release (Win 10, x64):
 
-https://github.com/rohatsu/ShaderGlass/releases/download/v0.3/ShaderGlass-0.3-win-x64.zip
+https://github.com/rohatsu/ShaderGlass/releases/download/v0.3.1/ShaderGlass-0.3.1-win-x64.zip
 
 ### Screenshots
 
@@ -47,6 +47,8 @@ https://github.com/rohatsu/ShaderGlass/releases/download/v0.3/ShaderGlass-0.3-wi
 In this mode a transparent floating window will apply a shader to anything behind it.
 
 This mode is not OBS-friendly, use Window Glass or Clone modes to capture/screenshot ShaderGlass.
+
+Requires Windows 10 2004 - on 1903/1909 you will see only a black window if you switch to this mode.
 
 Wikipedia in Chrome processed by crt-geom shader which applies scanlines and CRT curvature.
 
