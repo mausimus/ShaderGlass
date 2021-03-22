@@ -30,7 +30,8 @@ Feel free to post any problematic scenarios you're experiencing in the Issues ta
 
 ### Requirements
 
-* __Windows 10, version 2004__ (build 19041); will work on 1903 in limited capacity (no Desktop Glass mode)
+* __Windows 10, version 2004__ (build 19041)
+  * will work on version 1903 but in limited capacity (no Desktop Glass mode)
 * DirectX 11-capable GPU
 * [Visual C++ Redistributable 2019](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
@@ -40,7 +41,7 @@ Since the app uses DirectX for both capture and shading it will remain Windows-o
 
 ### Download
 
-Latest release (Win 10, x64):
+Latest release (Windows 10 version 1903 or newer, 2004 recommended):
 
 https://github.com/rohatsu/ShaderGlass/releases/download/v0.3.1/ShaderGlass-0.3.1-win-x64.zip
 
