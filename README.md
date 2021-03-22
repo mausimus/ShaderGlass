@@ -113,7 +113,7 @@ Currently supported options are:
 
 * _Output -> Mode_ - overrides default mode for the input type:
 
-  * _Glass_ (default for Desktop) - ShaderGlass window appears transparent, you have to position it over the window or are you'd like to capture
+  * _Glass_ (default for Desktop) - ShaderGlass window appears transparent, you have to position it over the window or area you'd like to capture
 
   * _Clone_ (default for Window) - ShaderGlass copies the content of capture so you can position it anywhere; this mode is also faster and more compatible
 
