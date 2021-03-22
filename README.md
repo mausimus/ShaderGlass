@@ -26,19 +26,25 @@ Overlay for running GPU shaders on top of Windows desktop.
 
 Feel free to post any problematic scenarios you're experiencing in the Issues tab.
 
+<br/>
+
 ### Requirements
 
-* Windows 10, version 2004 (build 19041); will work on 1903 in limited capacity (no Desktop Glass mode)
+* __Windows 10, version 2004__ (build 19041); will work on 1903 in limited capacity (no Desktop Glass mode)
 * DirectX 11-capable GPU
 * [Visual C++ Redistributable 2019](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
 Since the app uses DirectX for both capture and shading it will remain Windows-only for the foreseeable future.
+
+<br/>
 
 ### Download
 
 Latest release (Win 10, x64):
 
 https://github.com/rohatsu/ShaderGlass/releases/download/v0.3.1/ShaderGlass-0.3.1-win-x64.zip
+
+<br/>
 
 ### Screenshots
 
@@ -92,6 +98,8 @@ with C64 monitor shader applied.
 
 ![screenshot](images/screen6.png)
 
+<br/>
+
 ### Options
 
 Currently supported options are:
@@ -128,6 +136,14 @@ Window Glass (surrounding black bars) or Window Clone (top-left aligned) with yo
 You can save and load profile files which will store all the options. It's also possible to pass profile file path on the command
 line and ShaderGlass will load it on startup.
 
+<br/>
+
+### Command Line
+
+You can pass profile filename as a command-line parameter to ShaderGlass.exe and it will be auto-loaded.
+
+<br/>
+
 #### Tuning
 
 In order to achieve the best effect it's necessary to tune parameters to match your input:
@@ -161,6 +177,8 @@ This way you should have the mouse captured by ScummVM so that it remains within
 the game window until you press Ctrl-M again. You can apply output scaling
 and/or aspect ratio correction in ShaderGlass and enjoy the game.
 
+<br/>
+
 ### Code
 
 Built using Visual Studio 2019 using latest C++ draft, Windows SDK 10.0.19041, Windows Capture API and DirectX 11.
@@ -171,6 +189,8 @@ into .h files which can be merged into ShaderGlass. The conversion process requi
 1. [glslang](https://github.com/KhronosGroup/glslang) for converting Slang/GLSL shaders to SPIR-V
 2. [SPIR-V cross-compiler](https://github.com/KhronosGroup/SPIRV-Cross) for converting those to HLSL (DX11 format)
 3. [Direct3D Shader Compiler (fxc.exe)](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/) for pre-compiling into bytecode
+
+<br/>
 
 ### Notices
 
