@@ -16,6 +16,16 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
             SendMessage(m_mainWindow, WM_COMMAND, IDM_STOP, 0);
 
         std::ifstream              infile(fileName);
+        if(!infile.good())
+        {
+            MessageBox(NULL,
+                       convertCharArrayToLPCWSTR((std::string("Unable to find profile ") + fileName).c_str()),
+                       L"ShaderGlass",
+                       MB_OK | MB_ICONERROR);
+
+            return;
+        }
+
         std::string                shaderCategory;
         std::string                shaderName;
         std::optional<std::string> windowName;
@@ -105,6 +115,14 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
             {
                 transparent = (value == "1");
             }
+            else if(key == "CaptureCursor")
+            {
+                m_captureOptions.captureCursor = (value == "1");
+                if(m_captureOptions.captureCursor)
+                    CheckMenuItem(m_inputMenu, IDM_INPUT_CAPTURECURSOR, MF_CHECKED | MF_BYCOMMAND);
+                else
+                    CheckMenuItem(m_inputMenu, IDM_INPUT_CAPTURECURSOR, MF_UNCHECKED | MF_BYCOMMAND);
+            }
         }
         infile.close();
 
@@ -135,9 +153,16 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
                 }
             }
         }
-        else if(desktopName.has_value() && desktopName.value() == "All")
+        else if(desktopName.has_value() && desktopName.value().size())
         {
-            SendMessage(m_mainWindow, WM_COMMAND, IDM_DISPLAY_ALLDISPLAYS, 0);
+            for(unsigned i = 0; i < m_captureDisplays.size(); i++)
+            {
+                if(m_captureDisplays.at(i).name == desktopName.value())
+                {
+                    SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_DISPLAY(i), 0);
+                    break;
+                }
+            }
         }
 
         // only now set IO modes to override defaults
@@ -222,11 +247,18 @@ void ShaderWindow::SaveProfile(const std::string& fileName)
     outfile << "FlipH " << std::quoted(std::to_string(m_captureOptions.flipHorizontal)) << std::endl;
     outfile << "FlipV " << std::quoted(std::to_string(m_captureOptions.flipVertical)) << std::endl;
     outfile << "Clone " << std::quoted(std::to_string(m_captureOptions.clone)) << std::endl;
+    outfile << "CaptureCursor " << std::quoted(std::to_string(m_captureOptions.clone)) << std::endl;
     outfile << "Transparent " << std::quoted(std::to_string(m_captureOptions.transparent)) << std::endl;
     if(m_captureOptions.captureWindow)
         outfile << "CaptureWindow " << std::quoted(GetWindowStringText(m_captureOptions.captureWindow)) << std::endl;
-    else
-        outfile << "CaptureDesktop " << std::quoted("All") << std::endl;
+    else if(m_captureOptions.monitor)
+    {
+        MONITORINFOEX info;
+        info.cbSize = sizeof(info);
+        GetMonitorInfo(m_captureOptions.monitor, &info);
+        std::wstring   wname(info.szDevice);
+        outfile << "CaptureDesktop " << std::quoted(std::string(wname.begin(), wname.end())) << std::endl;
+    }
     outfile.close();
 }
 
@@ -248,6 +280,22 @@ void ShaderWindow::SaveProfile()
         std::wstring ws(ofn.lpstrFile);
         SaveProfile(std::string(ws.begin(), ws.end()));
     }
+}
+
+BOOL CALLBACK ShaderWindow::EnumDisplayMonitorsProc(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam) {
+    if(m_captureDisplays.size() >= MAX_CAPTURE_DISPLAYS)
+        return false;
+
+    MONITORINFOEX info;
+    info.cbSize = sizeof(info);
+    GetMonitorInfo(hMonitor, &info);
+
+    std::wstring   wname(info.szDevice);
+    CaptureDisplay cd(hMonitor, std::string(wname.begin(), wname.end()));
+    if(cd.name.size())
+        m_captureDisplays.emplace_back(cd);
+
+    return true;
 }
 
 BOOL CALLBACK ShaderWindow::EnumWindowsProc(_In_ HWND hwnd, _In_ LPARAM lParam)
@@ -298,18 +346,41 @@ void ShaderWindow::ScanWindows()
     }
 }
 
+void ShaderWindow::ScanDisplays()
+{
+    m_captureDisplays.clear();
+
+    if(!Is1903())
+    {
+        CaptureDisplay cd(NULL, "All Displays");
+        m_captureDisplays.emplace_back(cd);
+    }
+    else
+    {
+        CaptureDisplay cd(MonitorFromWindow(m_mainWindow, MONITOR_DEFAULTTOPRIMARY), "Current Display");
+        m_captureDisplays.emplace_back(cd);
+    }
+
+    EnumDisplayMonitors(NULL, NULL, &ShaderWindow::EnumDisplayMonitorsProcProxy, (LPARAM)this);
+
+    for(UINT i = 0; i < MAX_CAPTURE_DISPLAYS; i++)
+    {
+        RemoveMenu(m_displayMenu, WM_CAPTURE_DISPLAY(i), MF_BYCOMMAND);
+    }
+    UINT i = 0;
+    for(const auto& w : m_captureDisplays)
+    {
+        AppendMenu(m_displayMenu, MF_STRING, WM_CAPTURE_DISPLAY(i++), convertCharArrayToLPCWSTR(w.name.c_str()));
+        if(m_captureOptions.monitor == w.monitor)
+            CheckMenuItem(m_displayMenu, WM_CAPTURE_DISPLAY(i - 1), MF_CHECKED | MF_BYCOMMAND);
+    }
+}
+
 void ShaderWindow::BuildInputMenu()
 {
-    auto sMenu = GetSubMenu(m_mainMenu, 1);
+    m_inputMenu = GetSubMenu(m_mainMenu, 1);
 
-    if(Is1903())
-    {
-        ModifyMenu(GetSubMenu(sMenu, 0),
-                   IDM_DISPLAY_ALLDISPLAYS,
-                   MF_BYCOMMAND | MF_STRING | MF_CHECKED,
-                   IDM_DISPLAY_ALLDISPLAYS,
-                   L"Current Display");
-    }
+    RemoveMenu(GetSubMenu(m_inputMenu, 0), ID_DESKTOP_DUMMY, MF_BYCOMMAND);
 
     m_pixelSizeMenu = CreatePopupMenu();
     AppendMenu(m_pixelSizeMenu, MF_STRING, IDM_PIXELSIZE_NEXT, L"Next\tp");
@@ -317,10 +388,10 @@ void ShaderWindow::BuildInputMenu()
     {
         AppendMenu(m_pixelSizeMenu, MF_STRING, px.first, convertCharArrayToLPCWSTR(px.second.text));
     }
-    AppendMenu(sMenu, MF_STRING | MF_POPUP, (UINT_PTR)m_pixelSizeMenu, L"Pixel Size");
+    AppendMenu(m_inputMenu, MF_STRING | MF_POPUP, (UINT_PTR)m_pixelSizeMenu, L"Pixel Size");
 
-    m_displayMenu = GetSubMenu(sMenu, 0);
-    m_windowMenu  = GetSubMenu(sMenu, 1);
+    m_displayMenu = GetSubMenu(m_inputMenu, 0);
+    m_windowMenu  = GetSubMenu(m_inputMenu, 1);
 }
 
 void ShaderWindow::BuildOutputMenu()
@@ -402,6 +473,11 @@ LRESULT CALLBACK ShaderWindow::WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, 
 BOOL CALLBACK ShaderWindow::EnumWindowsProcProxy(_In_ HWND hwnd, _In_ LPARAM lParam)
 {
     return ((ShaderWindow*)lParam)->EnumWindowsProc(hwnd, 0);
+}
+
+BOOL CALLBACK ShaderWindow::EnumDisplayMonitorsProcProxy(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam)
+{
+    return ((ShaderWindow*)lParam)->EnumDisplayMonitorsProc(hMonitor, hDC, lpRect, lParam);
 }
 
 ATOM ShaderWindow::MyRegisterClass(HINSTANCE hInstance)
@@ -618,7 +694,6 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             if(m_captureOptions.captureWindow && !IsWindow(m_captureOptions.captureWindow))
                 return 0;
 
-            m_captureOptions.monitor = Is1903() ? MonitorFromWindow(hWnd, MONITOR_DEFAULTTOPRIMARY) : nullptr;
             m_captureManager.StartSession();
             EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_DISABLED);
             EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_ENABLED);
@@ -633,6 +708,14 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 SetMenu(hWnd, NULL);
             else
                 SetMenu(hWnd, m_mainMenu);
+            break;
+        case IDM_INPUT_CAPTURECURSOR:
+            m_captureOptions.captureCursor = !m_captureOptions.captureCursor;
+            m_captureManager.UpdateCursor();
+            if(m_captureOptions.captureCursor)
+                CheckMenuItem(m_inputMenu, IDM_INPUT_CAPTURECURSOR, MF_CHECKED | MF_BYCOMMAND);
+            else
+                CheckMenuItem(m_inputMenu, IDM_INPUT_CAPTURECURSOR, MF_UNCHECKED | MF_BYCOMMAND);
             break;
         case IDM_SHADER_NEXT:
             SendMessage(hWnd, WM_COMMAND, WM_SHADER((m_captureOptions.presetNo + 1) % m_numPresets), 0);
@@ -694,7 +777,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case IDM_WINDOW_SCAN:
             ScanWindows();
             break;
-        case IDM_DISPLAY_ALLDISPLAYS:
+        /*case IDM_DISPLAY_ALLDISPLAYS:
             CheckMenuRadioItem(
                 m_windowMenu, WM_CAPTURE_WINDOW(0), WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())), 0, MF_BYCOMMAND);
             CheckMenuItem(m_displayMenu, IDM_DISPLAY_ALLDISPLAYS, MF_CHECKED | MF_BYCOMMAND);
@@ -722,7 +805,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             }
             m_captureManager.UpdateInput();
             UpdateWindowState();
-            break;
+            break;*/
         case IDM_STOP: {
             m_captureManager.StopSession();
             EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_DISABLED);
@@ -768,14 +851,37 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                                        WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())),
                                        wmId,
                                        MF_BYCOMMAND);
-                    CheckMenuItem(m_displayMenu, IDM_DISPLAY_ALLDISPLAYS, MF_UNCHECKED | MF_BYCOMMAND);
+                    CheckMenuRadioItem(
+                        m_displayMenu, WM_CAPTURE_DISPLAY(0), WM_CAPTURE_DISPLAY(static_cast<UINT>(m_captureDisplays.size())), 0, MF_BYCOMMAND);
                     m_captureOptions.captureWindow = m_captureWindows.at(wmId - WM_CAPTURE_WINDOW(0)).hwnd;
+                    m_captureOptions.monitor       = NULL;
                     m_captureOptions.clone         = true;
                     m_captureOptions.transparent   = false;
                     CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_UNCHECKED | MF_BYCOMMAND);
                     CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_CHECKED | MF_BYCOMMAND);
                     CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
                     CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
+                    m_captureManager.UpdateInput();
+                    UpdateWindowState();
+                    break;
+                }
+                if(wmId >= WM_CAPTURE_DISPLAY(0) && wmId < WM_CAPTURE_DISPLAY(MAX_CAPTURE_DISPLAYS))
+                {
+                    CheckMenuRadioItem(
+                        m_windowMenu, WM_CAPTURE_WINDOW(0), WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())), 0, MF_BYCOMMAND);
+                    CheckMenuRadioItem(m_displayMenu,
+                                       WM_CAPTURE_DISPLAY(0),
+                                       WM_CAPTURE_DISPLAY(static_cast<UINT>(m_captureDisplays.size())),
+                                       wmId,
+                                       MF_BYCOMMAND);
+                    m_captureOptions.captureWindow = NULL;
+                    m_captureOptions.monitor       = m_captureDisplays.at(wmId - WM_CAPTURE_DISPLAY(0)).monitor;
+                    m_captureOptions.clone         = false;
+                    m_captureOptions.transparent   = true;
+                    CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
+                    CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
+                    CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
+                    CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
                     m_captureManager.UpdateInput();
                     UpdateWindowState();
                     break;
@@ -969,6 +1075,17 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     BuildOutputMenu();
     BuildShaderMenu();
     ScanWindows();
+    ScanDisplays();
+
+    if(Is1903())
+    {
+        ModifyMenu(GetSubMenu(m_mainMenu, 4),
+                   ID_HELP_WINDOWSVERSION,
+                   MF_BYCOMMAND | MF_STRING | MF_DISABLED,
+                   ID_HELP_WINDOWSVERSION,
+                   L"Limited functionality, update to Windows 10 May 2020 Update (2004)!");
+    }
+
     SetMenu(m_mainWindow, m_mainMenu);
     srand(static_cast<unsigned>(time(NULL)));
     auto hk = RegisterHotKey(m_mainWindow, HK_FULLSCREEN, MOD_CONTROL | MOD_SHIFT, 0x47);
@@ -982,6 +1099,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(20), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_FRAME_SKIP(1), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_OUTPUT_SCALE(0), 0);
+    SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_DISPLAY(0), 0);
     SendMessage(m_mainWindow, WM_COMMAND, Is1903() ? IDM_MODE_CLONE : IDM_MODE_GLASS, 0);
 
     return TRUE;
@@ -989,13 +1107,34 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 
 void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
 {
-    // auto-start
+    bool autoStart = true;
+    bool fullScreen = false;
+
     if(lpCmdLine)
     {
-        std::wstring ws(lpCmdLine);
-        if(ws.size())
-            LoadProfile(std::string(ws.begin(), ws.end()));
+        int  numArgs;
+        auto args = CommandLineToArgvW(lpCmdLine, &numArgs);
+        for(int a = 0; a < numArgs; a++)
+        {
+            if(args[a] == L"-paused" || args[a] == L"-p")
+                autoStart = false;
+            else if(args[a] == L"-fullscreen" || args[a] == L"-f")
+                fullScreen = true;
+            else if (a == numArgs - 1)
+            {
+                std::wstring ws(args[a]);
+                if(ws.size())
+                    LoadProfile(std::string(ws.begin(), ws.end()));
+            }
+        }
     }
 
-    SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
+    if(autoStart)
+    {
+        SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
+    }
+    if(fullScreen)
+    {
+        SendMessage(m_mainWindow, WM_COMMAND, ID_PROCESSING_FULLSCREEN, 0);
+    }
 }

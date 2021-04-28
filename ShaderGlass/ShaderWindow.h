@@ -31,8 +31,10 @@ private:
     HMENU                        m_modeMenu {nullptr};
     HMENU                        m_displayMenu {nullptr};
     HMENU                        m_outputWindowMenu {nullptr};
+    HMENU                        m_inputMenu {nullptr};
     std::map<std::string, HMENU> m_categoryMenus;
     std::vector<CaptureWindow>   m_captureWindows;
+    std::vector<CaptureDisplay>  m_captureDisplays;
     CaptureManager&              m_captureManager;
     CaptureOptions&              m_captureOptions;
     unsigned                     m_numPresets {0};
@@ -49,6 +51,7 @@ private:
     void SaveProfile(const std::string& fileName);
     void SaveProfile();
     void ScanWindows();
+    void ScanDisplays();
     void BuildInputMenu();
     void BuildOutputMenu();
     void BuildShaderMenu();
@@ -58,9 +61,11 @@ private:
     void ToggleBorderless(HWND hWnd);
 
     static BOOL CALLBACK    EnumWindowsProcProxy(_In_ HWND hwnd, _In_ LPARAM lParam);
+    static BOOL CALLBACK    EnumDisplayMonitorsProcProxy(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam);
     static LRESULT CALLBACK WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     ATOM                    MyRegisterClass(HINSTANCE hInstance);
     BOOL                    InitInstance(HINSTANCE hInstance, int nCmdShow);
     BOOL CALLBACK           EnumWindowsProc(_In_ HWND hwnd, _In_ LPARAM lParam);
+    BOOL CALLBACK           EnumDisplayMonitorsProc(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam);
     LRESULT CALLBACK        WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 };

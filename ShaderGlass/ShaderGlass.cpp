@@ -20,13 +20,27 @@ ShaderGlass::~ShaderGlass()
     m_context->Flush();
 }
 
-void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, bool clone, winrt::com_ptr<ID3D11Device> device)
+void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, winrt::com_ptr<ID3D11Device> device)
 {
     m_outputWindow  = outputWindow;
     m_captureWindow = captureWindow;
     m_clone         = clone;
     m_device        = device;
     m_device->GetImmediateContext(m_context.put());
+
+    if(captureMonitor && !clone)
+    {
+        MONITORINFO monitorInfo;
+        monitorInfo.cbSize = sizeof(MONITORINFO);
+        GetMonitorInfo(captureMonitor, &monitorInfo);
+        m_monitorOffset.x = monitorInfo.rcMonitor.left;
+        m_monitorOffset.y = monitorInfo.rcMonitor.top;
+    }
+    else
+    {
+        m_monitorOffset.x = 0;
+        m_monitorOffset.y = 0;
+    }
 
     // remember initial size
     m_lastPos.x = 0;
@@ -190,10 +204,7 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
 
 void ShaderGlass::DestroyShaders()
 {
-    //for(auto& p : m_shaderPasses)
-    //  delete p;
     m_shaderPasses.clear();
-    // delete m_shaderPreset;
 }
 
 void ShaderGlass::DestroyPasses()
@@ -230,6 +241,13 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     topLeft.x = 0;
     topLeft.y = 0;
     ClientToScreen(m_outputWindow, &topLeft);
+
+    if(!m_captureWindow && !m_clone)
+    {
+        // desktop glass on specific monitor only
+        topLeft.x -= m_monitorOffset.x;
+        topLeft.y -= m_monitorOffset.y;
+    }
 
     RECT clientRect;
     GetClientRect(m_outputWindow, &clientRect);

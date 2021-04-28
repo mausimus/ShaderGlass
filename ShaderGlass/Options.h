@@ -6,6 +6,7 @@
 #define MAX_FRAME_SKIPS 20U
 #define MAX_OUTPUT_SCALES 20U
 #define MAX_CAPTURE_WINDOWS 50U
+#define MAX_CAPTURE_DISPLAYS 10U
 #define HK_FULLSCREEN 1000
 
 #define WM_PIXEL_SIZE(i) (static_cast<UINT>(WM_USER) + i)
@@ -14,6 +15,7 @@
 #define WM_FRAME_SKIP(i) (static_cast<UINT> WM_SHADER(MAX_SHADERS) + i)
 #define WM_OUTPUT_SCALE(i) (static_cast<UINT> WM_FRAME_SKIP(MAX_FRAME_SKIPS) + i)
 #define WM_CAPTURE_WINDOW(i) (static_cast<UINT> WM_OUTPUT_SCALE(MAX_OUTPUT_SCALES) + i)
+#define WM_CAPTURE_DISPLAY(i) (static_cast<UINT> WM_CAPTURE_WINDOW(MAX_CAPTURE_WINDOWS) + i)
 
 struct PixelSizeInfo
 {
@@ -56,6 +58,13 @@ struct CaptureWindow
 {
     CaptureWindow(HWND hwnd, const std::string& name) : hwnd {hwnd}, name {name} { }
     HWND        hwnd;
+    std::string name;
+};
+
+struct CaptureDisplay
+{
+    CaptureDisplay(HMONITOR monitor, const std::string& name) : monitor {monitor}, name {name} { }
+    HMONITOR    monitor;
     std::string name;
 };
 

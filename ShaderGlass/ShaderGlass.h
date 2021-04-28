@@ -10,7 +10,7 @@ class ShaderGlass
 {
 public:
     ShaderGlass();
-    void Initialize(HWND outputWindow, HWND captureWindow, bool clone, winrt::com_ptr<ID3D11Device> device);
+    void Initialize(HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, winrt::com_ptr<ID3D11Device> device);
     void Process(winrt::com_ptr<ID3D11Texture2D> texture);
     void SetInputScale(float w, float h);
     void SetOutputScale(float w, float h);
@@ -46,6 +46,7 @@ private:
     std::map<std::string, float4>                                   m_textureSizes;
     std::vector<ShaderPass>                                         m_shaderPasses;
 
+    POINT      m_monitorOffset {0, 0};
     HWND       m_outputWindow {0};
     HWND       m_captureWindow {0};
     bool       m_clone {false};
