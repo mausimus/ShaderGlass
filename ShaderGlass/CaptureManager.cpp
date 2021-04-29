@@ -46,7 +46,7 @@ void CaptureManager::StartSession()
 #endif
 
     m_shaderGlass = make_unique<ShaderGlass>();
-    m_shaderGlass->Initialize(m_options.outputWindow, m_options.captureWindow, m_options.clone, m_d3dDevice);
+    m_shaderGlass->Initialize(m_options.outputWindow, m_options.captureWindow, m_options.monitor, m_options.clone, m_d3dDevice);
     UpdatePixelSize();
     UpdateOutputSize();
     UpdateOutputFlip();
@@ -54,6 +54,12 @@ void CaptureManager::StartSession()
     UpdateFrameSkip();
     m_session = make_unique<CaptureSession>(
         device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass);
+    UpdateCursor();
+}
+
+void CaptureManager::UpdateCursor() {
+    if(m_session)
+        m_session->UpdateCursor(m_options.captureCursor);
 }
 
 void CaptureManager::Debug()

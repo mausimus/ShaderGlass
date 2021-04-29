@@ -43,7 +43,7 @@ Since the app uses DirectX for both capture and shading it will remain Windows-o
 
 Latest release (Windows 10 version 1903 or newer, 2004 recommended):
 
-https://github.com/rohatsu/ShaderGlass/releases/download/v0.3.1/ShaderGlass-0.3.1-win-x64.zip
+https://github.com/rohatsu/ShaderGlass/releases/download/v0.4/ShaderGlass-0.4-win-x64.zip
 
 <br/>
 
@@ -105,9 +105,11 @@ with C64 monitor shader applied.
 
 Currently supported options are:
 
-* _Input -> Desktop_ - captures the whole desktop, defaults to Glass mode
+* _Input -> Desktop_ - captures the whole desktop or an individual monitor, defaults to Glass mode
 
 * _Input -> Window_ - captures the selected window, defaults to Clone mode
+
+* _Input -> Capture Cursor_ - whether to include mouse cursor in capture
 
 * _Input -> Pixel Size_ - indicates the size of input pixels (pre-scaling), i.e. if you run a game in x3 scaling mode set this to x3 as well so that ShaderGlass can tell the original resolution
 
@@ -141,7 +143,13 @@ line and ShaderGlass will load it on startup.
 
 ### Command Line
 
+```
+ShaderGlass.exe [-p|--paused] [-f|--fullscreen] [profile.sgp]
+```
+
 You can pass profile filename as a command-line parameter to ShaderGlass.exe and it will be auto-loaded.
+
+In addition -p will launch in paused mode, and -f will launch in fullscreen mode.
 
 <br/>
 
