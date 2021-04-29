@@ -36,6 +36,12 @@ void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, HMONITOR cap
         m_monitorOffset.x = monitorInfo.rcMonitor.left;
         m_monitorOffset.y = monitorInfo.rcMonitor.top;
     }
+    else if (!captureWindow && !captureMonitor && !clone)
+    {
+        // All Desktops glass
+        m_monitorOffset.x = GetSystemMetrics(SM_XVIRTUALSCREEN);
+        m_monitorOffset.y = GetSystemMetrics(SM_YVIRTUALSCREEN);
+    }
     else
     {
         m_monitorOffset.x = 0;
@@ -244,7 +250,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
     if(!m_captureWindow && !m_clone)
     {
-        // desktop glass on specific monitor only
+        // desktop glass
         topLeft.x -= m_monitorOffset.x;
         topLeft.y -= m_monitorOffset.y;
     }

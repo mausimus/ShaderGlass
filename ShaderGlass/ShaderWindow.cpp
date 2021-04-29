@@ -1116,9 +1116,9 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
         auto args = CommandLineToArgvW(lpCmdLine, &numArgs);
         for(int a = 0; a < numArgs; a++)
         {
-            if(args[a] == L"-paused" || args[a] == L"-p")
+            if(wcscmp(args[a], L"-paused") == 0 || wcscmp(args[a], L"-p") == 0)
                 autoStart = false;
-            else if(args[a] == L"-fullscreen" || args[a] == L"-f")
+            else if(wcscmp(args[a], L"-fullscreen") == 0 || wcscmp(args[a], L"-f") == 0)
                 fullScreen = true;
             else if (a == numArgs - 1)
             {
