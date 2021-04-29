@@ -18,6 +18,7 @@ struct CaptureOptions
     bool     clone {false};
     bool     transparent {false};
     bool     paused {false};
+    bool     captureCursor {false};
 };
 
 class CaptureManager
@@ -40,6 +41,7 @@ public:
     void UpdateShaderPreset();
     void UpdateFrameSkip();
     void UpdateInput();
+    void UpdateCursor();
 
 private:
     winrt::com_ptr<ID3D11Device>            m_d3dDevice;

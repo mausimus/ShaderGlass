@@ -14,6 +14,7 @@
 #include <dwmapi.h>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
 
 #include <Unknwn.h>
 #include <inspectable.h>

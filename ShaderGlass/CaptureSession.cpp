@@ -22,14 +22,16 @@ CaptureSession::CaptureSession(winrt::IDirect3DDevice const& device, winrt::Grap
 	m_framePool = winrt::Direct3D11CaptureFramePool::CreateFreeThreaded(m_device, pixelFormat, 2, m_item.Size());
 	m_session = m_framePool.CreateCaptureSession(m_item);
 
-	if (winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(
-		L"Windows.Graphics.Capture.GraphicsCaptureSession", L"IsCursorCaptureEnabled"))
-		m_session.IsCursorCaptureEnabled(false);
-
 	m_framePool.FrameArrived({ this, &CaptureSession::OnFrameArrived });
 	m_session.StartCapture();
 
 	WINRT_ASSERT(m_session != nullptr);
+}
+
+void CaptureSession::UpdateCursor(bool captureCursor) {
+    if(winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession",
+                                                                               L"IsCursorCaptureEnabled"))
+        m_session.IsCursorCaptureEnabled(captureCursor);
 }
 
 void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sender, winrt::IInspectable const&)
