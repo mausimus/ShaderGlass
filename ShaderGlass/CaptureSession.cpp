@@ -22,6 +22,19 @@ CaptureSession::CaptureSession(winrt::IDirect3DDevice const& device, winrt::Grap
 	m_framePool = winrt::Direct3D11CaptureFramePool::CreateFreeThreaded(m_device, pixelFormat, 2, m_item.Size());
 	m_session = m_framePool.CreateCaptureSession(m_item);
 
+	// try to disable yellow border
+	if (winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession",
+		L"IsBorderRequired"))
+	{
+        try
+        {
+            m_session.IsBorderRequired(false);
+		}
+		catch (...)
+		{
+		}
+	}
+
 	m_framePool.FrameArrived({ this, &CaptureSession::OnFrameArrived });
 	m_session.StartCapture();
 
