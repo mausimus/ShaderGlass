@@ -5,6 +5,7 @@
 #include "Shaders\PreprocessShaderDef.h"
 #include "Shaders\PassthroughShaderDef.h"
 #include "Shaders\PassthroughPresetDef.h"
+#include <mutex>
 
 class ShaderGlass
 {
