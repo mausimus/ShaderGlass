@@ -314,8 +314,10 @@ BOOL CALLBACK ShaderWindow::EnumWindowsProc(_In_ HWND hwnd, _In_ LPARAM lParam)
             TITLEBARINFO ti;
             ti.cbSize = sizeof(ti);
             GetTitleBarInfo(hwnd, &ti);
-            if(ti.rgstate[0] & STATE_SYSTEM_INVISIBLE)
-                return true;
+            
+            // commented out to find Kodi window
+            /*if(ti.rgstate[0] & STATE_SYSTEM_INVISIBLE)
+                return true;*/
 
             if(GetWindowLong(hwnd, GWL_EXSTYLE) & WS_EX_TOOLWINDOW)
                 return true;
