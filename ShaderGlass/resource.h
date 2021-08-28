@@ -116,6 +116,8 @@
 #define ID_DESKTOP_DUMMY                32880
 #define ID_INPUT_CAPTURECURSOR          32881
 #define IDM_INPUT_CAPTURECURSOR         32882
+#define ID_INPUT_REMOVEYELLOWBORDER     32883
+#define IDM_INPUT_REMOVEBORDER          32884
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -124,7 +126,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
-#define _APS_NEXT_COMMAND_VALUE         32883
+#define _APS_NEXT_COMMAND_VALUE         32885
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           111
 #endif

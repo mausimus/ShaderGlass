@@ -38,3 +38,8 @@ inline bool Is1903()
 {
     return !winrt::Windows::Foundation::Metadata::ApiInformation::IsApiContractPresent(L"Windows.Foundation.UniversalApiContract", 9);
 }
+
+inline bool CanDisableBorder()
+{
+    return winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession", L"IsBorderRequired");
+}

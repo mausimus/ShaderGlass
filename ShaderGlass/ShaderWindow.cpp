@@ -1088,6 +1088,17 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
                    L"Limited functionality, update to Windows 10 May 2020 Update (2004)!");
     }
 
+    if (CanDisableBorder())
+    {
+        CheckMenuItem(GetSubMenu(m_mainMenu, 1), IDM_INPUT_REMOVEBORDER, MF_CHECKED | MF_BYCOMMAND);
+
+        ModifyMenu(GetSubMenu(m_mainMenu, 4),
+                   ID_HELP_WINDOWSVERSION,
+                   MF_BYCOMMAND | MF_STRING | MF_DISABLED,
+                   ID_HELP_WINDOWSVERSION,
+                   L"Excellent functionality, Windows 11");
+    }
+
     SetMenu(m_mainWindow, m_mainMenu);
     srand(static_cast<unsigned>(time(NULL)));
     auto hk = RegisterHotKey(m_mainWindow, HK_FULLSCREEN, MOD_CONTROL | MOD_SHIFT, 0x47);
@@ -1115,7 +1126,9 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
     if(lpCmdLine)
     {
         int  numArgs;
-        auto args = CommandLineToArgvW(lpCmdLine, &numArgs);
+        auto cmdLine = GetCommandLineW();
+        auto args = CommandLineToArgvW(cmdLine, &numArgs);
+
         for(int a = 0; a < numArgs; a++)
         {
             if(wcscmp(args[a], L"-paused") == 0 || wcscmp(args[a], L"-p") == 0)
