@@ -30,17 +30,9 @@ Feel free to post any problematic scenarios you're experiencing in the Issues ta
 
 ### Download
 
-Latest ___beta___ release:
-
-* allows removal of yellow capture border (only on Windows 11 at the moment)
-
-https://github.com/rohatsu/ShaderGlass/releases/download/v0.5-beta2/ShaderGlass-0.5-beta2-win-x64.zip
-
-<br/>
-
 Latest ___stable___ release:
 
-https://github.com/rohatsu/ShaderGlass/releases/download/v0.4/ShaderGlass-0.4-win-x64.zip
+https://github.com/rohatsu/ShaderGlass/releases/download/v0.5/ShaderGlass-0.5-win-x64.zip
 
 <br/>
 
@@ -48,6 +40,7 @@ https://github.com/rohatsu/ShaderGlass/releases/download/v0.4/ShaderGlass-0.4-wi
 
 * __Windows 10, version 2004__ (build 19041) or __Windows 11__
   * will work on version 1903 but in limited capacity (no Desktop Glass mode)
+  * Windows 11 allows the __removal of yellow border__ around capture
 * DirectX 11-capable GPU
 
 If the app reports missing libraries please install [Visual C++ Redistributable 2019](https://aka.ms/vs/16/release/vc_redist.x64.exe)
@@ -119,6 +112,8 @@ Currently supported options are:
 * _Input -> Window_ - captures the selected window, defaults to Clone mode
 
 * _Input -> Capture Cursor_ - whether to include mouse cursor in capture
+
+* _Input -> Remove Yellow Border_ - disables yellow frame around captured area (forced security feature); currently only supported on Windows 11
 
 * _Input -> Pixel Size_ - indicates the size of input pixels (pre-scaling), i.e. if you run a game in x3 scaling mode set this to x3 as well so that ShaderGlass can tell the original resolution
 
