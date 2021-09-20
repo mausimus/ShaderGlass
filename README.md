@@ -28,22 +28,31 @@ Feel free to post any problematic scenarios you're experiencing in the Issues ta
 
 <br/>
 
-### Requirements
+### Download
 
-* __Windows 10, version 2004__ (build 19041)
-  * will work on version 1903 but in limited capacity (no Desktop Glass mode)
-* DirectX 11-capable GPU
-* [Visual C++ Redistributable 2019](https://aka.ms/vs/16/release/vc_redist.x64.exe)
+Latest ___beta___ release:
 
-Since the app uses DirectX for both capture and shading it will remain Windows-only for the foreseeable future.
+* allows removal of yellow capture border (only on Windows 11 at the moment)
+
+https://github.com/rohatsu/ShaderGlass/releases/download/v0.5-beta2/ShaderGlass-0.5-beta2-win-x64.zip
 
 <br/>
 
-### Download
-
-Latest release (Windows 10 version 1903 or newer, 2004 recommended):
+Latest ___stable___ release:
 
 https://github.com/rohatsu/ShaderGlass/releases/download/v0.4/ShaderGlass-0.4-win-x64.zip
+
+<br/>
+
+### Requirements
+
+* __Windows 10, version 2004__ (build 19041) or __Windows 11__
+  * will work on version 1903 but in limited capacity (no Desktop Glass mode)
+* DirectX 11-capable GPU
+
+If the app reports missing libraries please install [Visual C++ Redistributable 2019](https://aka.ms/vs/16/release/vc_redist.x64.exe)
+
+Since the app uses DirectX for both capture and shading it will remain Windows-only for the foreseeable future.
 
 <br/>
 
