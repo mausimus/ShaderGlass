@@ -148,7 +148,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <AdditionalOptions>/await /Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/await /Zc:twoPhase- /Gw %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,6 +171,7 @@
     <ClInclude Include="Shaders\PassthroughPresetDef.h" />
     <ClInclude Include="Shaders\PassthroughShaderDef.h" />
     <ClInclude Include="Shaders\PreprocessShaderDef.h" />
+    <ClInclude Include="Shaders\RetroArch.h" />
     <ClInclude Include="ShaderWindow.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Util\capture.desktop.interop.h" />
@@ -220,6 +221,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ShaderGlass.aps" />
+    <None Include="Shaders\RetroArch.template" />
     <None Include="Util\LICENSE" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

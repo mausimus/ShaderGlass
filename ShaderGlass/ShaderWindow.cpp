@@ -13,7 +13,7 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
     {
         bool paused = m_captureManager.IsActive();
         if(paused)
-            SendMessage(m_mainWindow, WM_COMMAND, IDM_STOP, 0);
+            Stop();
 
         std::ifstream infile(fileName);
         if(!infile.good())
@@ -391,7 +391,7 @@ void ShaderWindow::BuildInputMenu()
     {
         AppendMenu(m_pixelSizeMenu, MF_STRING, px.first, convertCharArrayToLPCWSTR(px.second.text));
     }
-    AppendMenu(m_inputMenu, MF_STRING | MF_POPUP, (UINT_PTR)m_pixelSizeMenu, L"Pixel Size");
+    InsertMenu(m_inputMenu, 3, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_pixelSizeMenu, L"Pixel Size");
 
     m_displayMenu = GetSubMenu(m_inputMenu, 0);
     m_windowMenu  = GetSubMenu(m_inputMenu, 1);
@@ -1029,7 +1029,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         }
         break;
     case WM_DESTROY:
-        m_captureManager.StopSession();
+        m_captureManager.Exit();
         PostQuitMessage(0);
         break;
     default:
@@ -1195,7 +1195,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     // set defaults
     SendMessage(m_mainWindow, WM_COMMAND, WM_PIXEL_SIZE(2), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_ASPECT_RATIO(0), 0);
-    SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(20), 0);
+    SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(39), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_FRAME_SKIP(1), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_OUTPUT_SCALE(0), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_DISPLAY(0), 0);
