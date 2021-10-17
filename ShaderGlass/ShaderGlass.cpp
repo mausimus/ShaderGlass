@@ -630,6 +630,9 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
 winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
 {
+    if(!m_displayTexture)
+        return nullptr;
+
     winrt::com_ptr<ID3D11Texture2D> outputTexture;
 
     D3D11_TEXTURE2D_DESC desc2 = {};

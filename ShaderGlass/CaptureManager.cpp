@@ -87,6 +87,14 @@ void CaptureManager::StopSession()
     {
         GrabOutput();
 
+        Exit();
+    }
+}
+
+void CaptureManager::Exit()
+{
+    if(m_session.get())
+    {
         m_session->Stop();
         delete m_session.release();
 

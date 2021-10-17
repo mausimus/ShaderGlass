@@ -108,6 +108,9 @@
     <ClInclude Include="WIC\ScreenGrab11.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders\RetroArch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -169,5 +172,6 @@
   <ItemGroup>
     <None Include="Util\LICENSE" />
     <None Include="ShaderGlass.aps" />
+    <None Include="Shaders\RetroArch.template" />
   </ItemGroup>
 </Project>
