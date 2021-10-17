@@ -194,7 +194,7 @@ and/or aspect ratio correction in ShaderGlass and enjoy the game.
 
 ### Code
 
-Built using Visual Studio 2019 using latest C++ draft, Windows SDK 10.0.19041, Windows Capture API and DirectX 11.
+Built using Visual Studio 2019 using ISO C++ 20, Windows SDK 10.0.20348, Windows Capture API and DirectX 11.
 
 ShaderGlass includes a limited implementation of RetroArch shader back-end.
 [ShaderGen](ShaderGen) is a command-line tool for converting Slang shaders 
@@ -207,11 +207,10 @@ into .h files which can be merged into ShaderGlass. The conversion process requi
 
 ### Notices
 
-* ShaderGlass is provided under [GNU General Public License v3.0](LICENSE)
+* ShaderGlass application is provided under [GNU General Public License v3.0](LICENSE)
 
-* Includes pre-built shaders derived from [libretro/RetroArch shader repository](https://github.com/libretro/slang-shaders)
-under GPLv3 as well. Please follow links to original files for detailed copyright and license information about
-each shader.
+* Includes pre-built shaders from [libretro/RetroArch shader repository](https://github.com/libretro/slang-shaders). Please follow links to original files for detailed copyright holder and license information about
+each shader. Shaders are included in good faith for personal and non-commerical use only.
 
 * App icon courtesy of [Icons-Land](http://www.icons-land.com/)
 
