@@ -26,7 +26,7 @@ public:
 .Param("scale_x", "4.0")
 .Param("scale_y", "1.0"));
          	ShaderDefs.push_back(NtscShadersNtscAdaptiveNtscPass2ShaderDef()
-.Param("filter_linear", "false")
+.Param("filter_linear", "true")
 .Param("scale_type", "source")
 .Param("scale_x", "0.5")
 .Param("scale_y", "1.0"));

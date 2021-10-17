@@ -19,7 +19,7 @@ public:
 	}
 
 	virtual void Build() {
-         	ShaderDefs.push_back(CrtShadersCrtHyllian3dShaderDef()
+         	ShaderDefs.push_back(CrtShadersHyllianCrtHyllian3dShaderDef()
 .Param("filter_linear", "true"));
 	}
 };

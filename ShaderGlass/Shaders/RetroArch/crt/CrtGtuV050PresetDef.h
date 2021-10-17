@@ -32,6 +32,7 @@ public:
 .Param("scale_y", "1.0"));
          	ShaderDefs.push_back(CrtShadersGtuV050Pass3ShaderDef()
 .Param("filter_linear", "false")
+.Param("scale", "1.0")
 .Param("scale_type", "viewport"));
 	}
 };
