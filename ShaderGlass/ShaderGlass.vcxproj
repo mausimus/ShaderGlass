@@ -187,11 +187,13 @@
     <ClInclude Include="PresetDef.h" />
     <ClInclude Include="TextureDef.h" />
     <ClInclude Include="WIC\pch.h" />
+    <ClInclude Include="WIC\ScreenGrab11.h" />
     <ClInclude Include="WIC\WICTextureLoader11.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CaptureManager.cpp" />
     <ClCompile Include="CaptureSession.cpp" />
+    <ClCompile Include="WIC\ScreenGrab11.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="ParamsWindow.cpp" />
     <ClCompile Include="pch.cpp">

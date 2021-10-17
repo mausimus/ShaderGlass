@@ -1,6 +1,7 @@
 #pragma once
 
 #define MAX_LOADSTRING 100
+#define MENU_FADE_DELAY 1000
 
 #include "Options.h"
 #include "CaptureManager.h"
@@ -59,6 +60,9 @@ private:
     void AdjustWindowSize(HWND hWnd);
     void UpdateWindowState();
     void ToggleBorderless(HWND hWnd);
+    bool Start();
+    void Stop();
+    void Screenshot();
 
     static BOOL CALLBACK    EnumWindowsProcProxy(_In_ HWND hwnd, _In_ LPARAM lParam);
     static BOOL CALLBACK    EnumDisplayMonitorsProcProxy(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam);

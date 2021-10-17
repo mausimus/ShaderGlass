@@ -17,16 +17,22 @@ ShaderGlass::~ShaderGlass()
     DestroyShaders();
     DestroyPasses();
     DestroyTargets();
+
     m_context->Flush();
 }
 
-void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, winrt::com_ptr<ID3D11Device> device)
+void ShaderGlass::Initialize(HWND                         outputWindow,
+                             HWND                         captureWindow,
+                             HMONITOR                     captureMonitor,
+                             bool                         clone,
+                             winrt::com_ptr<ID3D11Device> device,
+                             winrt::com_ptr<ID3D11DeviceContext> context)
 {
     m_outputWindow  = outputWindow;
     m_captureWindow = captureWindow;
     m_clone         = clone;
     m_device        = device;
-    m_device->GetImmediateContext(m_context.put());
+    m_context       = context;    
 
     if(captureMonitor && !clone)
     {
@@ -36,7 +42,7 @@ void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, HMONITOR cap
         m_monitorOffset.x = monitorInfo.rcMonitor.left;
         m_monitorOffset.y = monitorInfo.rcMonitor.top;
     }
-    else if (!captureWindow && !captureMonitor && !clone)
+    else if(!captureWindow && !captureMonitor && !clone)
     {
         // All Desktops glass
         m_monitorOffset.x = GetSystemMetrics(SM_XVIRTUALSCREEN);
@@ -98,13 +104,12 @@ void ShaderGlass::Initialize(HWND outputWindow, HWND captureWindow, HMONITOR cap
         assert(SUCCEEDED(hr));
     }
 
-    winrt::com_ptr<ID3D11Texture2D> framebuffer {nullptr};
-    hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)framebuffer.put());
+    hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_displayTexture.put());
     assert(SUCCEEDED(hr));
-    if(!framebuffer)
+    if(!m_displayTexture)
         throw std::exception("Unable to create framebuffer");
 
-    m_device->CreateRenderTargetView(framebuffer.get(), 0, m_displayRenderTarget.put());
+    m_device->CreateRenderTargetView(m_displayTexture.get(), 0, m_displayRenderTarget.put());
 
     D3D11_RASTERIZER_DESC desc = {};
     desc.CullMode              = D3D11_CULL_NONE;
@@ -177,6 +182,7 @@ void ShaderGlass::DestroyTargets()
         m_preprocessedRenderTarget = nullptr;
         m_originalView             = nullptr;
         m_preprocessedTexture      = nullptr;
+        m_displayTexture           = nullptr;
     }
 }
 
@@ -190,17 +196,17 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
         m_lastSize.x = clientRect.right;
         m_lastSize.y = clientRect.bottom;
 
+        m_displayTexture      = nullptr;
         m_displayRenderTarget = nullptr;
 
         hr = m_swapChain->ResizeBuffers(
             0, static_cast<UINT>(clientRect.right), static_cast<UINT>(clientRect.bottom), DXGI_FORMAT_UNKNOWN, 0);
         assert(SUCCEEDED(hr));
 
-        winrt::com_ptr<ID3D11Texture2D> frameBuffer {nullptr};
-        hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)frameBuffer.put());
+        hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_displayTexture.put());
         assert(SUCCEEDED(hr));
 
-        hr = m_device->CreateRenderTargetView(frameBuffer.get(), NULL, m_displayRenderTarget.put());
+        hr = m_device->CreateRenderTargetView(m_displayTexture.get(), NULL, m_displayRenderTarget.put());
         assert(SUCCEEDED(hr));
 
         return true;
@@ -620,6 +626,23 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     DXGI_PRESENT_PARAMETERS presentParameters {};
     m_swapChain->Present1(1, 0, &presentParameters);
     PostMessage(m_outputWindow, WM_PAINT, 0, 0);
+}
+
+winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
+{
+    winrt::com_ptr<ID3D11Texture2D> outputTexture;
+
+    D3D11_TEXTURE2D_DESC desc2 = {};
+    m_displayTexture->GetDesc(&desc2);
+    desc2.Usage          = D3D11_USAGE_DEFAULT;
+    desc2.CPUAccessFlags = 0;
+    desc2.MiscFlags      = 0;
+
+    hr = m_device->CreateTexture2D(&desc2, nullptr, outputTexture.put());
+    assert(SUCCEEDED(hr));
+
+    m_context->CopyResource(outputTexture.get(), m_displayTexture.get());
+    return outputTexture;
 }
 
 void ShaderGlass::Stop()
