@@ -44,6 +44,7 @@ public:
     void UpdateCursor();
     void GrabOutput();
     void SaveOutput(LPWSTR fileName);
+    void Exit();
 
 private:
     winrt::com_ptr<ID3D11Device>            m_d3dDevice {nullptr};

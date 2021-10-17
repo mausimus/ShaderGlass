@@ -129,7 +129,7 @@ string splitCode(const string& input)
 
 int getSize(const std::string& mtype)
 {
-    if(mtype == "float" || mtype == "uint")
+    if(mtype == "float" || mtype == "uint" || mtype == "int")
     {
         return 4;
     }
@@ -744,6 +744,9 @@ void processPreset(const filesystem::path& input)
         string textureName;
         while((pos = textureList.find(';')) != string::npos)
         {
+            if(textureList == ";")
+                break;
+
             textureName = textureList.substr(0, pos);
             if(textureName.size())
             {
