@@ -20,7 +20,9 @@ public:
 
 	virtual void Build() {
          	ShaderDefs.push_back(AntiAliasingShadersFxaaShaderDef()
-.Param("filter_linear", "true"));
+.Param("filter_linear", "true")
+.Param("scale", "1.0")
+.Param("scale_type", "source"));
 	}
 };
 }

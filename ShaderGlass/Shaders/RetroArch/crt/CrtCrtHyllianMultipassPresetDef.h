@@ -19,14 +19,14 @@ public:
 	}
 
 	virtual void Build() {
-         	ShaderDefs.push_back(CrtShadersCrtHyllianMultipassCrtHyllianPass0ShaderDef()
+         	ShaderDefs.push_back(CrtShadersHyllianCrtHyllianMultipassCrtHyllianPass0ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type_x", "viewport")
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.0")
 .Param("scale_y", "1.0")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(CrtShadersCrtHyllianMultipassCrtHyllianPass1ShaderDef()
+         	ShaderDefs.push_back(CrtShadersHyllianCrtHyllianMultipassCrtHyllianPass1ShaderDef()
 .Param("filter_linear", "false"));
 	}
 };

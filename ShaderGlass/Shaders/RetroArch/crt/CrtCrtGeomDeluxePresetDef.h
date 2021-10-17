@@ -27,10 +27,17 @@ public:
 .Param("alias", "internal2")
 .Param("filter_linear", "true"));
          	ShaderDefs.push_back(CrtShadersGeomDeluxeGaussyShaderDef()
-.Param("alias", "blur")
+.Param("alias", "blur_texture")
 .Param("filter_linear", "true"));
          	ShaderDefs.push_back(CrtShadersGeomDeluxeCrtGeomDeluxeShaderDef()
-.Param("filter_linear", "true"));
+.Param("filter_linear", "true")
+.Param("mipmap_input", "true"));
+            TextureDefs.push_back(CrtShadersGeomDeluxeMasksAperture_2_4_rgbTextureDef()
+.Param("name", "aperture"));
+            TextureDefs.push_back(CrtShadersGeomDeluxeMasksSlot_2_5x4_bgrTextureDef()
+.Param("name", "slot"));
+            TextureDefs.push_back(CrtShadersGeomDeluxeMasksDelta_2_4x1_rgbTextureDef()
+.Param("name", "delta"));
 	}
 };
 }

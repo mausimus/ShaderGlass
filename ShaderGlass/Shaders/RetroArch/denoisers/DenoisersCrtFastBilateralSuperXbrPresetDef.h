@@ -50,7 +50,7 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "0.500000"));
-         	ShaderDefs.push_back(CrtShadersCrtHyllianShaderDef()
+         	ShaderDefs.push_back(CrtShadersHyllianCrtHyllianShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false"));
 	}
