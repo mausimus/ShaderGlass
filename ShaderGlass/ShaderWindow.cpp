@@ -15,7 +15,7 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
         if(paused)
             SendMessage(m_mainWindow, WM_COMMAND, IDM_STOP, 0);
 
-        std::ifstream              infile(fileName);
+        std::ifstream infile(fileName);
         if(!infile.good())
         {
             MessageBox(NULL,
@@ -256,7 +256,7 @@ void ShaderWindow::SaveProfile(const std::string& fileName)
         MONITORINFOEX info;
         info.cbSize = sizeof(info);
         GetMonitorInfo(m_captureOptions.monitor, &info);
-        std::wstring   wname(info.szDevice);
+        std::wstring wname(info.szDevice);
         outfile << "CaptureDesktop " << std::quoted(std::string(wname.begin(), wname.end())) << std::endl;
     }
     outfile.close();
@@ -282,7 +282,8 @@ void ShaderWindow::SaveProfile()
     }
 }
 
-BOOL CALLBACK ShaderWindow::EnumDisplayMonitorsProc(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam) {
+BOOL CALLBACK ShaderWindow::EnumDisplayMonitorsProc(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam)
+{
     if(m_captureDisplays.size() >= MAX_CAPTURE_DISPLAYS)
         return false;
 
@@ -314,7 +315,7 @@ BOOL CALLBACK ShaderWindow::EnumWindowsProc(_In_ HWND hwnd, _In_ LPARAM lParam)
             TITLEBARINFO ti;
             ti.cbSize = sizeof(ti);
             GetTitleBarInfo(hwnd, &ti);
-            
+
             // commented out to find Kodi window
             /*if(ti.rgstate[0] & STATE_SYSTEM_INVISIBLE)
                 return true;*/
@@ -692,18 +693,21 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         UINT wmId = LOWORD(wParam);
         switch(wmId)
         {
-        case IDM_START: {
-            if(m_captureOptions.captureWindow && !IsWindow(m_captureOptions.captureWindow))
+        case IDM_START:
+            if(!Start())
                 return 0;
-
-            m_captureManager.StartSession();
-            EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_DISABLED);
-            EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_ENABLED);
-            UpdateWindowState();
-        }
-        break;
+            break;
         case ID_PROCESSING_FULLSCREEN:
             ToggleBorderless(hWnd);
+            break;
+        case ID_PROCESSING_PAUSE:
+            if(m_captureManager.IsActive())
+                Stop();
+            else
+                Start();
+            break;
+        case ID_PROCESSING_SCREENSHOT:
+            SetTimer(m_mainWindow, ID_PROCESSING_SCREENSHOT, MENU_FADE_DELAY, NULL);
             break;
         case IDM_TOGGLEMENU:
             if(GetMenu(hWnd))
@@ -808,13 +812,9 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             m_captureManager.UpdateInput();
             UpdateWindowState();
             break;*/
-        case IDM_STOP: {
-            m_captureManager.StopSession();
-            EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_DISABLED);
-            EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_ENABLED);
-            UpdateWindowState();
-        }
-        break;
+        case IDM_STOP:
+            SetTimer(m_mainWindow, IDM_STOP, MENU_FADE_DELAY, NULL);
+            break;
         case IDM_PROCESSING_LOADPROFILE:
             LoadProfile();
             break;
@@ -853,8 +853,11 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                                        WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())),
                                        wmId,
                                        MF_BYCOMMAND);
-                    CheckMenuRadioItem(
-                        m_displayMenu, WM_CAPTURE_DISPLAY(0), WM_CAPTURE_DISPLAY(static_cast<UINT>(m_captureDisplays.size())), 0, MF_BYCOMMAND);
+                    CheckMenuRadioItem(m_displayMenu,
+                                       WM_CAPTURE_DISPLAY(0),
+                                       WM_CAPTURE_DISPLAY(static_cast<UINT>(m_captureDisplays.size())),
+                                       0,
+                                       MF_BYCOMMAND);
                     m_captureOptions.captureWindow = m_captureWindows.at(wmId - WM_CAPTURE_WINDOW(0)).hwnd;
                     m_captureOptions.monitor       = NULL;
                     m_captureOptions.clone         = true;
@@ -937,7 +940,22 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
     }
     break;
     case WM_HOTKEY: {
-        ToggleBorderless(hWnd);
+        switch(wParam)
+        {
+        case HK_FULLSCREEN:
+            ToggleBorderless(hWnd);
+            break;
+        case HK_SCREENSHOT:
+            Screenshot();
+            break;
+        case HK_PAUSE:
+            if(m_captureManager.IsActive())
+                Stop();
+            else
+                Start();
+            break;
+        }
+
         break;
     }
     case WM_SIZE: {
@@ -997,6 +1015,19 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         ValidateRect(hWnd, NULL);
         return 0;
     }
+    case WM_TIMER:
+        switch(wParam)
+        {
+        case IDM_STOP:
+            KillTimer(m_mainWindow, IDM_STOP);
+            Stop();
+            return 0;
+        case ID_PROCESSING_SCREENSHOT:
+            KillTimer(m_mainWindow, ID_PROCESSING_SCREENSHOT);
+            Screenshot();
+            return 0;
+        }
+        break;
     case WM_DESTROY:
         m_captureManager.StopSession();
         PostQuitMessage(0);
@@ -1005,6 +1036,59 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
+}
+
+bool ShaderWindow::Start()
+{
+    if(m_captureOptions.captureWindow && !IsWindow(m_captureOptions.captureWindow))
+        return false;
+
+    if(m_captureManager.IsActive())
+        return false;
+
+    m_captureManager.StartSession();
+    EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_DISABLED);
+    EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_ENABLED);
+    UpdateWindowState();
+
+    return true;
+}
+
+void ShaderWindow::Stop()
+{
+    if(!m_captureManager.IsActive())
+        return;
+
+    m_captureManager.StopSession();
+    EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_DISABLED);
+    EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_ENABLED);
+    UpdateWindowState();
+}
+
+void ShaderWindow::Screenshot()
+{
+    m_captureManager.GrabOutput();
+
+    OPENFILENAME ofn;
+    TCHAR        szFile[260] = {0};
+
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize     = sizeof(ofn);
+    ofn.hwndOwner       = m_mainWindow;
+    ofn.lpstrFile       = szFile;
+    ofn.nMaxFile        = sizeof(szFile);
+    ofn.lpstrFilter     = _T("PNG\0*.png\0");
+    ofn.lpstrDefExt     = _T("png");
+    ofn.nFilterIndex    = 1;
+    ofn.lpstrFileTitle  = NULL;
+    ofn.nMaxFileTitle   = 0;
+    ofn.lpstrInitialDir = NULL;
+    ofn.Flags           = OFN_PATHMUSTEXIST;
+
+    if(GetSaveFileName(&ofn) == TRUE)
+    {
+        m_captureManager.SaveOutput(ofn.lpstrFile);
+    }
 }
 
 void ShaderWindow::ToggleBorderless(HWND hWnd)
@@ -1088,7 +1172,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
                    L"Limited functionality, update to Windows 10 May 2020 Update (2004)!");
     }
 
-    if (CanDisableBorder())
+    if(CanDisableBorder())
     {
         CheckMenuItem(GetSubMenu(m_mainMenu, 1), IDM_INPUT_REMOVEBORDER, MF_CHECKED | MF_BYCOMMAND);
 
@@ -1101,7 +1185,9 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 
     SetMenu(m_mainWindow, m_mainMenu);
     srand(static_cast<unsigned>(time(NULL)));
-    auto hk = RegisterHotKey(m_mainWindow, HK_FULLSCREEN, MOD_CONTROL | MOD_SHIFT, 0x47);
+    RegisterHotKey(m_mainWindow, HK_FULLSCREEN, MOD_CONTROL | MOD_SHIFT, 0x47); // G
+    RegisterHotKey(m_mainWindow, HK_SCREENSHOT, MOD_CONTROL | MOD_SHIFT, 0x53); // S
+    RegisterHotKey(m_mainWindow, HK_PAUSE, MOD_CONTROL | MOD_SHIFT, 0x50); // P
 
     m_captureOptions.monitor      = nullptr;
     m_captureOptions.outputWindow = m_mainWindow;
@@ -1120,14 +1206,14 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 
 void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
 {
-    bool autoStart = true;
+    bool autoStart  = true;
     bool fullScreen = false;
 
     if(lpCmdLine)
     {
         int  numArgs;
         auto cmdLine = GetCommandLineW();
-        auto args = CommandLineToArgvW(cmdLine, &numArgs);
+        auto args    = CommandLineToArgvW(cmdLine, &numArgs);
 
         for(int a = 0; a < numArgs; a++)
         {
@@ -1135,7 +1221,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
                 autoStart = false;
             else if(wcscmp(args[a], L"-fullscreen") == 0 || wcscmp(args[a], L"-f") == 0)
                 fullScreen = true;
-            else if (a == numArgs - 1)
+            else if(a == numArgs - 1)
             {
                 std::wstring ws(args[a]);
                 if(ws.size())

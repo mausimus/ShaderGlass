@@ -42,11 +42,15 @@ public:
     void UpdateFrameSkip();
     void UpdateInput();
     void UpdateCursor();
+    void GrabOutput();
+    void SaveOutput(LPWSTR fileName);
 
 private:
-    winrt::com_ptr<ID3D11Device>            m_d3dDevice;
+    winrt::com_ptr<ID3D11Device>            m_d3dDevice {nullptr};
+    winrt::com_ptr<ID3D11DeviceContext>     m_context {nullptr};
     winrt::com_ptr<ID3D11Debug>             m_debug {nullptr};
-    std::vector<std::unique_ptr<PresetDef>> m_presetList;
+    winrt::com_ptr<ID3D11Texture2D>         m_outputTexture {nullptr};
     std::unique_ptr<CaptureSession>         m_session {nullptr};
     std::unique_ptr<ShaderGlass>            m_shaderGlass {nullptr};
+    std::vector<std::unique_ptr<PresetDef>> m_presetList;
 };

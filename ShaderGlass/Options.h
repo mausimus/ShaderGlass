@@ -8,6 +8,8 @@
 #define MAX_CAPTURE_WINDOWS 50U
 #define MAX_CAPTURE_DISPLAYS 10U
 #define HK_FULLSCREEN 1000
+#define HK_SCREENSHOT 1001
+#define HK_PAUSE 1002
 
 #define WM_PIXEL_SIZE(i) (static_cast<UINT>(WM_USER) + i)
 #define WM_ASPECT_RATIO(i) (static_cast<UINT> WM_PIXEL_SIZE(MAX_PIXEL_SIZES) + i)
