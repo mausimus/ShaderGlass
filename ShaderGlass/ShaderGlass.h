@@ -11,13 +11,14 @@ class ShaderGlass
 {
 public:
     ShaderGlass();
-    void Initialize(HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, winrt::com_ptr<ID3D11Device> device);
+    void Initialize(HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context);
     void Process(winrt::com_ptr<ID3D11Texture2D> texture);
     void SetInputScale(float w, float h);
     void SetOutputScale(float w, float h);
     void SetOutputFlip(bool h, bool v);
     void SetShaderPreset(PresetDef* p);
     void SetFrameSkip(int s);
+    winrt::com_ptr<ID3D11Texture2D> GrabOutput();
     void Stop();
     ~ShaderGlass();
 
@@ -36,6 +37,7 @@ private:
     winrt::com_ptr<ID3D11ShaderResourceView> m_originalView {nullptr};
     winrt::com_ptr<IDXGISwapChain1>          m_swapChain {nullptr};
     winrt::com_ptr<ID3D11RasterizerState>    m_rasterizerState {nullptr};
+    winrt::com_ptr<ID3D11Texture2D>          m_displayTexture {nullptr};
     winrt::com_ptr<ID3D11RenderTargetView>   m_displayRenderTarget {nullptr};
     winrt::com_ptr<ID3D11Texture2D>          m_preprocessedTexture {nullptr};
     winrt::com_ptr<ID3D11RenderTargetView>   m_preprocessedRenderTarget {nullptr};
@@ -63,14 +65,15 @@ private:
     ShaderPass              m_preprocessPass;
     std::unique_ptr<Preset> m_shaderPreset {nullptr};
     std::unique_ptr<Preset> m_newShaderPreset {nullptr};
-    volatile int   m_frameSkip {0};
-    volatile bool  m_running {false};
-    volatile float m_inputScaleW {3.0f};
-    volatile float m_inputScaleH {3.0f};
-    volatile bool  m_inputRescaled {false};
-    volatile float m_outputScaleW {1.0f};
-    volatile float m_outputScaleH {1.0f};
-    volatile bool  m_outputRescaled {false};
-    volatile bool  m_flipHorizontal {false};
-    volatile bool  m_flipVertical {false};
+
+    volatile int                    m_frameSkip {0};
+    volatile bool                   m_running {false};
+    volatile float                  m_inputScaleW {3.0f};
+    volatile float                  m_inputScaleH {3.0f};
+    volatile bool                   m_inputRescaled {false};
+    volatile float                  m_outputScaleW {1.0f};
+    volatile float                  m_outputScaleH {1.0f};
+    volatile bool                   m_outputRescaled {false};
+    volatile bool                   m_flipHorizontal {false};
+    volatile bool                   m_flipVertical {false};
 };
