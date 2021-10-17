@@ -31,11 +31,13 @@ public:
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true")
 .Param("frame_count_mod", "32")
+.Param("scale", "1.0")
 .Param("scale_type", "source"));
          	ShaderDefs.push_back(Nes_raw_paletteShadersGtuFamicomCombFilterShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true")
 .Param("frame_count_mod", "2")
+.Param("scale", "1.0")
 .Param("scale_type", "source"));
          	ShaderDefs.push_back(Nes_raw_paletteShadersGtuFamicomScaleXShaderDef()
 .Param("filter_linear", "false")

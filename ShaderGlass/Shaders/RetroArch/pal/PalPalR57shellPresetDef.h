@@ -28,7 +28,7 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "0"));
+.Param("srgb_framebuffer", "false"));
             TextureDefs.push_back(PalResourcesNes_lutTextureDef()
 .Param("linear", "false")
 .Param("mipmap", "false")

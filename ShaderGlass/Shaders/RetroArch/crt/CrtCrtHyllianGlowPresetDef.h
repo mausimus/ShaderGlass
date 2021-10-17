@@ -21,27 +21,43 @@ public:
 	virtual void Build() {
          	ShaderDefs.push_back(CrtShadersGlowLinearizeShaderDef()
 .Param("filter_linear", "false")
+.Param("float_framebuffer", "false")
+.Param("mipmap_input", "false")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(CrtShadersCrtHyllianGlowCrtHyllianShaderDef()
-.Param("alias", "CRT_PASS")
+         	ShaderDefs.push_back(CrtShadersHyllianCrtHyllianShaderDef()
+.Param("alias", "CRTPass")
 .Param("filter_linear", "false")
-.Param("scale", "1.0")
-.Param("scale_type", "viewport")
+.Param("float_framebuffer", "false")
+.Param("mipmap_input", "false")
+.Param("scale_type_x", "viewport")
+.Param("scale_type_y", "viewport")
+.Param("scale_x", "1.000000")
+.Param("scale_y", "1.000000")
 .Param("srgb_framebuffer", "true"));
          	ShaderDefs.push_back(CrtShadersGlowThresholdShaderDef()
 .Param("filter_linear", "false")
+.Param("float_framebuffer", "false")
+.Param("mipmap_input", "false")
 .Param("srgb_framebuffer", "true"));
          	ShaderDefs.push_back(CrtShadersGlowBlur_horizShaderDef()
 .Param("filter_linear", "true")
+.Param("float_framebuffer", "false")
 .Param("mipmap_input", "true")
-.Param("scale", "0.25")
-.Param("scale_type", "source")
+.Param("scale_type_x", "viewport")
+.Param("scale_type_y", "viewport")
+.Param("scale_x", "0.200000")
+.Param("scale_y", "0.200000")
 .Param("srgb_framebuffer", "true"));
          	ShaderDefs.push_back(CrtShadersGlowBlur_vertShaderDef()
 .Param("filter_linear", "true")
+.Param("float_framebuffer", "false")
+.Param("mipmap_input", "false")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(CrtShadersCrtHyllianGlowResolve2ShaderDef()
-.Param("filter_linear", "true"));
+         	ShaderDefs.push_back(CrtShadersGlowResolveShaderDef()
+.Param("filter_linear", "true")
+.Param("float_framebuffer", "false")
+.Param("mipmap_input", "false")
+.Param("srgb_framebuffer", "false"));
 	}
 };
 }

@@ -19,14 +19,14 @@ public:
 	}
 
 	virtual void Build() {
-         	ShaderDefs.push_back(NtscShadersNtscPass1Composite3phaseShaderDef()
+         	ShaderDefs.push_back(NtscShadersNtscAdaptiveNtscPass1ShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true")
 .Param("frame_count_mod", "2")
 .Param("scale_type", "source")
 .Param("scale_x", "4.0")
 .Param("scale_y", "1.0"));
-         	ShaderDefs.push_back(NtscShadersNtscPass23phaseShaderDef()
+         	ShaderDefs.push_back(NtscShadersNtscAdaptiveNtscPass2ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "source")
 .Param("scale_x", "0.5")

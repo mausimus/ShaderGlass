@@ -19,16 +19,23 @@ public:
 	}
 
 	virtual void Build() {
-         	ShaderDefs.push_back(AntiAliasingShadersSmaaSmaaEdgeDetectionShaderDef()
+         	ShaderDefs.push_back(StockStockShaderDef()
+.Param("alias", "SMAA_Input")
+.Param("filter_linear", "false")
+.Param("scale", "1.0")
+.Param("scale_type", "source"));
+         	ShaderDefs.push_back(AntiAliasingShadersSmaaSmaaPass0ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(AntiAliasingShadersSmaaSmaaBlendWeightCalculationShaderDef()
+         	ShaderDefs.push_back(AntiAliasingShadersSmaaSmaaPass1ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(AntiAliasingShadersSmaaSmaaNeighborhoodBlendingShaderDef()
-.Param("filter_linear", "true"));
+         	ShaderDefs.push_back(AntiAliasingShadersSmaaSmaaPass2ShaderDef()
+.Param("filter_linear", "true")
+.Param("scale", "1.0")
+.Param("scale_type", "source"));
             TextureDefs.push_back(AntiAliasingShadersSmaaAreaTexTextureDef()
 .Param("name", "areaTex"));
             TextureDefs.push_back(AntiAliasingShadersSmaaSearchTexTextureDef()
