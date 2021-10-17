@@ -30,6 +30,14 @@ Feel free to post any problematic scenarios you're experiencing in the Issues ta
 
 ### Download
 
+Latest ___beta___ release:
+* ability to export a .png screenshot
+* RetroArch shaders repo sync (~100 new shader presets)
+
+https://github.com/rohatsu/ShaderGlass/releases/download/v0.6/ShaderGlass-0.6-beta-win-x64.zip
+
+<br/>
+
 Latest ___stable___ release:
 
 https://github.com/rohatsu/ShaderGlass/releases/download/v0.5/ShaderGlass-0.5-win-x64.zip
@@ -210,7 +218,7 @@ into .h files which can be merged into ShaderGlass. The conversion process requi
 * ShaderGlass application is provided under [GNU General Public License v3.0](LICENSE)
 
 * Includes pre-built shaders from [libretro/RetroArch shader repository](https://github.com/libretro/slang-shaders). Please follow links to original files for detailed copyright holder and license information about
-each shader. Shaders are included in good faith for personal and non-commerical use only.
+each shader. Shaders are included in good faith for personal and non-commercial use only.
 
 * App icon courtesy of [Icons-Land](http://www.icons-land.com/)
 
