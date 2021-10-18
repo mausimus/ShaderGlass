@@ -1,8 +1,15 @@
 /*
 ShaderGlass shader crt-shaders-gtu-v050\pass3 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/gtu-v050/pass3.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+//////////////////////////////////////////////////////
+ GTU version 0.50
+ Author: aliaspider - aliaspider@gmail.com
+ License: GPLv3
+//////////////////////////////////////////////////////
+
 */
 
 #pragma once

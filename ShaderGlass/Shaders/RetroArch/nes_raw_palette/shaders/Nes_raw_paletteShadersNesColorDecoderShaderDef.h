@@ -1,8 +1,38 @@
 /*
 ShaderGlass shader nes_raw_palette-shaders\nes-color-decoder imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/nes-color-decoder.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+NES NTSC Color Decoder shader
+Ported from Bisqwit's C++ NES Palette Generator
+https://forums.nesdev.com/viewtopic.php?p=85060#p85060
+
+Hue Preserve Clip functions ported from Drag's Palette Generator
+http://drag.wootest.net/misc/palgen.html
+
+Use with Nestopia or FCEUmm libretro cores with the palette set to 'raw'.
+
+comment the define out to use the "common" conversion matrix instead of the FCC sanctioned one
+ Color 0xE and 0xF are black
+ Voltage levels, relative to synch voltage
+ Calculate the luma and chroma by emulating the relevant circuits:
+ NES NTSC modulator (square wave between two voltage levels):
+ De-emphasis bits attenuate a part of the signal:
+ Normalize:
+ Ideal TV NTSC demodulator:
+ Apply contrast/brightness
+ Sony CXA2025AS US conversion matrix
+ FCC sanctioned conversion matrix
+ commonly used conversion matrix
+ Convert YIQ into RGB according to selected conversion matrix
+ Apply desired clipping method to out-of-gamut colors.
+If a channel is out of range (> 1.0), it's simply clamped to 1.0. This may change hue, saturation, and/or lightness.
+If any channels are out of range, the color is darkened until it is completely in range.
+If any channels are out of range, the color is desaturated towards the luminance it would've had.
+ Extract the chroma, level, and emphasis from the normalized RGB triplet
+
 */
 
 #pragma once

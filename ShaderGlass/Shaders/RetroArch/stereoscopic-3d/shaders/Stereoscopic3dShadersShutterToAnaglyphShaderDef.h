@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader stereoscopic-3d-shaders\shutter-to-anaglyph imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/stereoscopic-3d/shaders/shutter-to-anaglyph.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ convert current and previous frames to luma to preserve details
+ image for left/right eyes alternate on each frame
+ one eye gets the red channel, the other eye goes to green and/or blue, depending on glasses
+
 */
 
 #pragma once

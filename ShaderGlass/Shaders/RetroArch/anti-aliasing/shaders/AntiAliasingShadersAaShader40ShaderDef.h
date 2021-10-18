@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader anti-aliasing-shaders\aa-shader-4.0 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/anti-aliasing/shaders/aa-shader-4.0.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Calculating texel coordinates
+	vec2 size     = X * (params.OutputSize.xy * params.SourceSize.zw) * params.SourceSize.xy;
+ Reading the texels
+
 */
 
 #pragma once

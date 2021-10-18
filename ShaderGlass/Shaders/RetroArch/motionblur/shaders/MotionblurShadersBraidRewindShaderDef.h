@@ -1,8 +1,19 @@
 /*
 ShaderGlass shader motionblur-shaders\braid-rewind imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/motionblur/shaders/braid-rewind.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Braid Rewind
+Authors: hunterk, cgwg
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+
 */
 
 #pragma once

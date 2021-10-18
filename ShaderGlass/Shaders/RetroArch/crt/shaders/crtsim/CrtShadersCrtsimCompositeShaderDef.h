@@ -1,8 +1,40 @@
 /*
 ShaderGlass shader crt-shaders-crtsim\composite imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/crtsim/composite.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+////////////////////////////////////////////////////////////////////////
+
+ CC0 1.0 Universal (CC0 1.0)
+ Public Domain Dedication
+
+ To the extent possible under law, J. Kyle Pittman has waived all
+ copyright and related or neighboring rights to this implementation
+ of CRT simulation. This work is published from the United States.
+
+ For more information, please visit
+ https://creativecommons.org/publicdomain/zero/1.0/
+
+////////////////////////////////////////////////////////////////////////
+ This is the second step of the CRT simulation process,
+ after the ntsc.fx shader has transformed the RGB values with a lookup table.
+ This is where we apply effects "inside the screen," including spatial and temporal bleeding,
+ an unsharp mask to simulate overshoot/undershoot, NTSC artifacts, and so on.
+ Weight for applying an unsharp mask at a distance of 1, 2, or 3 pixels from changes in luma.
+ The sign of each weight changes in order to alternately simulate overshooting and undershooting.
+ Calculate luma for an RGB value.
+ Passthrough vertex shader. Nothing interesting here.
+ Note: The "persistence" and "bleed" parameters have some overlap, but they are not redundant.
+ "Persistence" affects bleeding AND trails. (Scales the sum of the previous value and its scaled neighbors.)
+ "Bleed" only affects bleeding. (Scaling of neighboring previous values.)
+ Apply NTSC artifacts based on differences in luma between local pixel and neighbors..
+ Step left and right looking for changes in luma that would produce a ring or halo on this pixel due to undershooting/overshooting.
+ (Note: It would probably be more accurate to look at changes in luma between pixels at a distance of N and N+1,
+ as opposed to 0 and N as done here, but this works pretty well and is a little cheaper.)
+ Apply the NTSC artifacts to the unsharp offset as well.
+ Take the max here because adding is overkill; bleeding should only brighten up dark areas, not blow out the whole screen.
+
 */
 
 #pragma once

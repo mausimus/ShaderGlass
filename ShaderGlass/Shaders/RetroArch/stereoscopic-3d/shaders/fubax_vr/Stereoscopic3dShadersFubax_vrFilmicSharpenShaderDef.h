@@ -1,8 +1,140 @@
 /*
 ShaderGlass shader stereoscopic-3d-shaders-fubax_vr\FilmicSharpen imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/stereoscopic-3d/shaders/fubax_vr/FilmicSharpen.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+/ VR shader ///
+
+Make any game VR and any screen with lenses a VR headset.
+Thanks to this shader you'll be able to correct distortions of any lens types
+(DIY, experimental) and chromatic aberration.
+Also if a game outputs depth pass you can have a stereo-3D vision thanks to
+the parallax mapping (which needs some further improvement).
+
+Copyright (c) 2019 Jacob Max Fober
+
+This work is licensed under the Creative Commons
+Attribution-NonCommercial-ShareAlike 4.0 International License.
+To view a copy of this license, visit
+http://creativecommons.org/licenses/by-nc-sa/4.0/
+
+If you want to use it commercially, contact me at jakub.m.fober@pm.me
+If you have questions, visit https://reshade.me/forum/shader-discussion/
+
+I'm author of most of equations present here,
+beside Brown-Conrady distortion correction model and
+Parallax Steep and Occlusion mapping which
+I changed and adopted from various sources.
+
+Version 0.4.2 alpha
+
+ParallaxOffset, ParallaxCenter, ParallaxSteps, ParallaxMaskScalar,
+ParallaxSwitch 
+ Grid settings
+#pragma parameter ParallaxSwitch "Toggle Parallax Effect" 1.0 0.0 1.0 1.0
+#pragma parameter ParallaxOffset "Parallax Horizontal Offset" 0.355 0.0 1.0 0.001
+#pragma parameter ParallaxCenter "Parallax Rotation Center (ZPD)" 1.0 0.0 1.0 0.001
+#pragma parameter ParallaxSteps "Parallax Sampling Steps" 16.0 1.0 128.0 0.2
+#pragma parameter ParallaxMaskScalar "Parallax Gap Compensation" 10.0 0.0 32.0 0.2
+float ParallaxOffset = global.ParallaxOffset;
+float ParallaxCenter = global.ParallaxCenter;
+int ParallaxSteps = int(global.ParallaxSteps);
+int ParallaxMaskScalar = int(global.ParallaxMaskScalar);
+bool ParallaxSwitch = bool(global.ParallaxSwitch);
+ Adjust to limited RGB
+ Generate test grid
+ Grid settings
+ Generate grid pattern
+ Anti-aliased grid
+ Combine/solo vertical and horizontal lines
+ Generate center cross
+ Anti-aliased cross
+ Combine vertical and horizontal line
+ Blend grid and center cross
+ Solo colors
+ Reduce grid brightness
+ Divide screen into two halfs
+ Mirror left half
+ Convert stereo coordinates to mono
+ Generate border mask with anti-aliasing from UV coordinates
+ Get pixel size in transformed coordinates (for anti-aliasing)
+ Create borders mask (with anti-aliasing)
+ Combine side and top borders
+
+ Can't really use this one as RetroArch can't access the depth buffer
+float GetDepth(vec2 texcoord)
+{
+return ReShade::GetLinearizedDepth(texcoord);
+}
+
+
+ Horizontal parallax offset effect
+vec2 Parallax(vec2 Coordinates, float Offset, float Center, int GapOffset, int Steps)
+{
+ Limit amount of loop steps to make it finite
+#ifndef MaximumParallaxSteps
+#def MaximumParallaxSteps 64
+#endif
+
+ Offset per step progress
+float LayerDepth = 1.0 / min(MaximumParallaxSteps, Steps);
+
+ Netto layer offset change
+float deltaCoordinates = Offset * LayerDepth;
+
+vec2 ParallaxCoord = Coordinates;
+ Offset image horizontally so that parallax is in the depth appointed center
+ParallaxCoord.x += Offset * Center;
+float CurrentDepthMapValue = GetDepth(ParallaxCoord); // Replace function
+
+ Steep parallax mapping
+float CurrentLayerDepth = 0.0;
+[loop]
+while(CurrentLayerDepth < CurrentDepthMapValue)
+{
+ Shift coordinates horizontally in linear fasion
+ParallaxCoord.x -= deltaCoordinates;
+ Get depth value at current coordinates
+CurrentDepthMapValue = GetDepth(ParallaxCoord); // Replace function
+ Get depth of next layer
+CurrentLayerDepth += LayerDepth;
+continue;
+}
+
+ Parallax Occlusion Mapping
+vec2 PrevParallaxCoord = ParallaxCoord;
+PrevParallaxCoord.x += deltaCoordinates;
+float afterDepthValue = CurrentDepthMapValue - CurrentLayerDepth;
+float beforeDepthValue = GetDepth(PrevParallaxCoord); // Replace function
+ Store depth read difference for masking
+float DepthDifference = beforeDepthValue - CurrentDepthMapValue;
+
+beforeDepthValue += LayerDepth - CurrentLayerDepth;
+ Interpolate coordinates
+float weight = afterDepthValue / (afterDepthValue - beforeDepthValue);
+ParallaxCoord = PrevParallaxCoord * weight + ParallaxCoord * (1.0 - weight);
+
+ Apply gap masking (by JMF)
+DepthDifference *= GapOffset * Offset * 100.0;
+DepthDifference *= ReShade::PixelSize.x; // Replace function
+ParallaxCoord.x += DepthDifference;
+
+return ParallaxCoord;
+};
+
+ Lens projection model (algorithm by JMF)
+ Brown-Conrady radial distortion model (multiply by coordinates)
+ Brown-Conrady tangental distortion model (add to coordinates)
+ RGB to YUV709.luma
+ Overlay blending mode
+ Bypass sharpening
+ Sample display image
+ Luma high-pass
+ Sharpen strength
+ Clamping sharpen
+
 */
 
 #pragma once

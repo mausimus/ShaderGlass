@@ -1,8 +1,66 @@
 /*
 ShaderGlass shader xbr-shaders-xbr-mlv4-multipass\xbr-mlv4-pass3 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/xbr/shaders/xbr-mlv4-multipass/xbr-mlv4-pass3.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+
+Hyllian's xBR MultiLevel4 Shader - Pass3
+
+Copyright (C) 2011-2015 Hyllian - sergiogdb@gmail.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+ compatibility macros
+ Bx, Ay, C
+      A3 B3 C3
+      A1 B1 C1
+A2 A0  A  B  C C4 C6
+D2 D0  D  E  F F4 F6
+G2 G0  G  H  I I4 I6
+      G5 H5 I5
+      G7 H7 I7
+ Rotate address from relative to absolute.
+ Rotate straight line equation from relative to absolute.
+
+19 1
+9  1
+4  0
+2  0
+1  1
+0  0
+
+0 0000   ND
+1 0001   EDR0
+2 0010   EDR
+3 0011   EDRU
+4 0100   EDRL
+5 0101   EDRU3
+6 0110   EDRL3
+
+0   1 2 3 4
+-2 -1 0 1 2
+
+
+
 */
 
 #pragma once

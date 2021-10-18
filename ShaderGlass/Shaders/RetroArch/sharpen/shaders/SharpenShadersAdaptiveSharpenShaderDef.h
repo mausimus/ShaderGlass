@@ -1,8 +1,71 @@
 /*
 ShaderGlass shader sharpen-shaders\adaptive-sharpen imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/sharpen/shaders/adaptive-sharpen.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Copyright (c) 2015, bacondither
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer
+    in this position and unchanged.
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE AUTHORS ``AS IS'' AND ANY EXPRESS OR
+ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ Adaptive sharpen - version 2015-05-15 - (requires ps >= 3.0)
+ Tuned for use post resize, EXPECTS FULL RANGE GAMMA LIGHT
+ 0.3 <-> 1.5 is a reasonable range of values
+ Normally it should be set to false
+ Defined values under this row are "optimal" DO NOT CHANGE IF YOU DO NOT KNOW WHAT YOU ARE DOING!
+ Colour to greyscale, fast approx gamma
+ Get points and saturate out of range values (BTB & WTW)
+ [                c22               ]
+ [           c24, c9,  c23          ]
+ [      c21, c1,  c2,  c3, c18      ]
+ [ c19, c10, c4,  c0,  c5, c11, c16 ]
+ [      c20, c6,  c7,  c8, c17      ]
+ [           c15, c12, c14          ]
+ [                c13               ]
+ Blur, gauss 3x3
+ Edge detection
+ Matrix, relative weights
+ [           1          ]
+ [       4,  4,  4      ]
+ [   1,  4,  4,  4,  1  ]
+ [       4,  4,  4      ]
+ [           1          ]
+ Edge detect contrast compression, center = 0.5
+ RGB to greyscale
+ Partial laplacian outer pixel weighting scheme
+ Negative laplace matrix
+ Matrix, relative weights, *Varying 0<->8
+ [          8*         ]
+ [      4,  1,  4      ]
+ [  8*, 1,      1,  8* ]
+ [      4,  1,  4      ]
+ [          8*         ]
+ Compute sharpening magnitude function, x = edge mag, y = laplace operator mag
+ Calculate sharpening diff and scale
+ Calculate local near min & max, partial cocktail sort (No branching!)
+ Calculate tanh scale factor, pos/neg
+ Soft limit sharpening with tanh, mix to control maximum compression
+	if	(video_level_out	==	1.0) { texture(Source, vTexCoord) + sharpdiff; }
+
 */
 
 #pragma once

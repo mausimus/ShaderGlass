@@ -1,8 +1,64 @@
 /*
 ShaderGlass shader scalefx-shaders\scalefx-pass2 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scalefx/shaders/scalefx-pass2.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+ScaleFX - Pass 2
+by Sp00kyFox, 2017-03-01
+
+Filter:	Nearest
+Scale:	1x
+
+ScaleFX is an edge interpolation algorithm specialized in pixel art. It was
+originally intended as an improvement upon Scale3x but became a new filter in
+its own right.
+ScaleFX interpolates edges up to level 6 and makes smooth transitions between
+different slopes. The filtered picture will only consist of colours present
+in the original.
+
+Pass 2 resolves ambiguous configurations of corner candidates at pixel junctions.
+
+
+
+Copyright (c) 2016 Sp00kyFox - ScaleFX@web.de
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+ corner dominance at junctions
+ necessary but not sufficient junction condition for orthogonal edges
+	grid		metric		pattern
+
+A B C		x y z		x y
+D E F		  o w		w z
+G H I
+
+ metric data
+ strength data
+ strength & dominance junctions
+ majority vote for ambiguous dominance junctions
+ inject strength without creating new contradictions
+ single pixel & end of line detection
+ output
+
 */
 
 #pragma once

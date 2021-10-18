@@ -1,8 +1,32 @@
 /*
 ShaderGlass shader crt-shaders\fakelottes imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/fakelottes.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Simple scanlines with curvature and mask effects lifted from crt-lottes
+ by hunterk
+//////////////////////////////////////////////////////////////////
+//////////////////////////  SETTINGS  ////////////////////////////
+///  comment these lines to disable effects and gain speed  //////
+//////////////////////////////////////////////////////////////////
+#define ROTATE_SCANLINES // for TATE games; also disables the mask effects, which look bad with it
+//////////////////////////////////////////////////////////////////
+////////////////////////  END SETTINGS  //////////////////////////
+//////////////////////////////////////////////////////////////////
+ prevent stupid behavior
+ Distortion of scanlines, and end of screen alpha.
+ Shadow mask.
+ Very compressed TV style shadow mask.
+ Aperture-grille.
+ These can cause moire with curvature and scanlines
+ so they're an easy target for freeing up registers
+ Stretched VGA style shadow mask (same as prior shaders).
+ VGA style shadow mask.
+ mask effects look bad unless applied in linear gamma space
+ apply the mask; looks bad with vert scanlines so make them mutually exclusive
+ re-apply the gamma curve for the mask path
+
 */
 
 #pragma once

@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader crt-shaders-guest-crt-sm\blur_horiz-sm imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/guest/crt-sm/blur_horiz-sm.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Higher value, more centered glow.
+ Lower values might need more taps.
+ Adapted from crt-easymode-halation by Easymode.
+
 */
 
 #pragma once

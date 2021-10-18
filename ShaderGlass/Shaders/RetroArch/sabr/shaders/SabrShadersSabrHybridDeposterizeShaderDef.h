@@ -1,8 +1,126 @@
 /*
 ShaderGlass shader sabr-shaders\sabr-hybrid-deposterize imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/sabr/shaders/sabr-hybrid-deposterize.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+SABR v3.0 Shader
+Joshua Street
+
+Portions of this algorithm were taken from Hyllian's 5xBR v3.7c
+shader.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+
+Constants
+
+
+Inequation coefficients for interpolation
+Equations are in the form: Ay + Bx = C
+45, 30, and 60 denote the angle from x each line the cooeficient variable set builds
+
+ Coefficient for weighted edge detection
+ Threshold for if luminance values are "equal
+ Conversion from RGB to Luminance (from GIMP)
+ Performs same logic operation as && for vectors
+ Performs same logic operation as || for vectors
+ Converts 4 3-color vectors into 1 4-value luminance vector
+ Gets the difference between 2 4-value luminance vectors
+ Determines if 2 4-value luminance vectors are "equal" based on threshold
+ Gets the difference between 2 3-value rgb colors
+ luma-based edge detection
+ averaged pixel intensity from 3 color channels
+ returns pixel color
+ read neighboring pixel intensities
+ average color differences around neighboring pixels
+
+ RGB edge detection << more expensive
+vec4 rgb_pix[9];
+ read neighboring pixel intensities
+for (int i=-1; i<2; i++) {
+for(int j=-1; j<2; j++) {
+k++;
+rgb_pix[k] = (get_pixel(tex, coords, float(i) * dxtex,
+float(j) * dytex));
+}
+}
+
+ average color differences around neighboring pixels
+float delta_r = (abs(rgb_pix[1].r-rgb_pix[7].r)+
+abs(rgb_pix[5].r-rgb_pix[3].r) +
+abs(rgb_pix[0].r-rgb_pix[8].r)+
+abs(rgb_pix[2].r-rgb_pix[6].r)
+)/4.;
+
+float delta_g = (abs(rgb_pix[1].g-rgb_pix[7].g)+
+abs(rgb_pix[5].g-rgb_pix[3].g) +
+abs(rgb_pix[0].g-rgb_pix[8].g)+
+abs(rgb_pix[2].g-rgb_pix[6].g)
+)/4.;
+
+float delta_b = (abs(rgb_pix[1].b-rgb_pix[7].b)+
+abs(rgb_pix[5].b-rgb_pix[3].b) +
+abs(rgb_pix[0].b-rgb_pix[8].b)+
+abs(rgb_pix[2].b-rgb_pix[6].b)
+)/4.;
+
+float delta_rgb = max(delta_r, max(delta_g, delta_b));
+
+
+Mask for algorhithm
++-----+-----+-----+-----+-----+
+|     |  1  |  2  |  3  |     |
++-----+-----+-----+-----+-----+
+|  5  |  6  |  7  |  8  |  9  |
++-----+-----+-----+-----+-----+
+| 10  | 11  | 12  | 13  | 14  |
++-----+-----+-----+-----+-----+
+| 15  | 16  | 17  | 18  | 19  |
++-----+-----+-----+-----+-----+
+|     | 21  | 22  | 23  |     |
++-----+-----+-----+-----+-----+
+
+ Get mask values by performing texture lookup with the uniform sampler
+ Store luminance values of each point in groups of 4
+ so that we may operate on all four corners at once
+ Scale current texel coordinate to [0..1]
+ Determine amount of "smoothing" or mixing that could be done on texel corners
+ Perform edge weight calculations
+ Calculate rule results for interpolation
+ Combine rules with edge weights
+ Finalize interpolation rules and cast to float (0.0 for false, 1.0 for true)
+ Determine the color to mix with for each corner
+ Determine the mix amounts by combining the final rule result and corresponding
+ mix amount for the rule in each corner
+
+Calculate the resulting color by traversing clockwise and counter-clockwise around
+the corners of the texel
+
+Finally choose the result that has the largest difference from the texel's original
+color
+
+ single-pass gaussian blur from mrharicot https://www.shadertoy.com/view/XdfGDH
+declare stuff
+create the 1-D kernel
+get the normalization factor (as the gaussian has been clamped)
+read out the texels
+	vec4 hybrid = mix(Smooth, Sharp, test);
+
 */
 
 #pragma once

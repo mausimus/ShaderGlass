@@ -1,8 +1,54 @@
 /*
 ShaderGlass shader xbr-shaders-super-xbr\super-xbr-pass1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/xbr/shaders/super-xbr/super-xbr-pass1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+
+*******  Super XBR Shader - pass1  *******
+
+Copyright (c) 2015 Hyllian - sergiogdb@gmail.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+
+P1
+|P0|B |C |P1|         C     F4          |a0|b1|c2|d3|
+|D |E |F |F4|      B     F     I4       |b0|c1|d2|e3|   |e1|i1|i2|e2|
+|G |H |I |I4|   P0    E  A  I     P3    |c0|d1|e2|f3|   |e3|i3|i4|e4|
+|P2|H5|I5|P3|      D     H     I5       |d0|e1|f2|g3|
+G     H5
+P2
+
+ settings //
+ end settings //
+Skip pixels on wrong grid
+ Calc edgeness in diagonal directions. 
+ Calc edgeness in horizontal/vertical directions. 
+ Filter weights. Two taps only. 
+ Filter weights. Two taps only. 
+ Filtering and normalization in four direction generating four colors. 
+ Smoothly blends the two strongest directions (one in diagonal and the other in vert/horiz direction). 
+ Anti-ringing code. 
+
 */
 
 #pragma once

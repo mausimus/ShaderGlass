@@ -1,8 +1,40 @@
 /*
 ShaderGlass shader misc\ntsc-colors imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/misc/ntsc-colors.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Colorspace Tools
+ ported from Asmodean's PsxFX Shader Suite v2.00
+ NTSC color code from SimoneT
+ Jzazbz code from torridgristle
+ License: GPL v2+
+------------------------------------------------------------------------------
+[GAMMA CORRECTION CODE SECTION]
+------------------------------------------------------------------------------
+ more gamma linearization algos
+ use slower, more accurate calculation
+ use faster, less accurate calculation
+Conversion matrices
+ RGB <-> CMYK conversions require 4 channels
+ Converting pure hue to RGB
+ Converting RGB to hue/chroma/value
+ conversion from NTSC RGB Reference White D65 ( color space used by NA/Japan TV's ) to XYZ
+ conversion from XYZ to sRGB Reference White D65 ( color space used by windows )
+ NTSC RGB to sRGB
+  ---  Reference White Values  ---  //{
+D9000 apparently isn't a real standard so here's the CCT daylight calculation result
+D9300 apparently isn't a real standard so here's the CCT daylight calculation result
+Various CRT monitors, Duv describes distance from the blackbody curve. The smaller it is, the closer to "white" it is. +/- 0.006 is recommended by ANSI and EnergyStar.
+NEC Multisync C400, claims 9300K but it isn't
+KDS VS19
+}
+  ---  sRGB  ---  //
+  ---  Jzazbz  ---  //{
+-2.6274509803921568627450980392157
+2.760784313725490196078431372549
+Assume 2.761 both ways so +2.761 then / 5.522
+
 */
 
 #pragma once

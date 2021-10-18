@@ -1,8 +1,48 @@
 /*
 ShaderGlass shader nedi-shaders\nedi-jinc imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nedi/shaders/nedi-jinc.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Hyllian's jinc windowed-jinc 2-lobe with anti-ringing Shader
+
+Copyright (C) 2011-2016 Hyllian - sergiogdb@gmail.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+
+This is an approximation of Jinc(x)*Jinc(x*r1/r2) for x < 2.5,
+where r1 and r2 are the first two zeros of jinc function.
+For a jinc 2-lobe best approximation, use A=0.5 and B=0.825.
+
+ A=0.5, B=0.825 is the best jinc approximation for x<2.5. if B=1.0, it's a lanczos filter.
+ Increase A to get more blur. Decrease it to get a sharper picture.
+ B = 0.825 to get rid of dithering. Increase B to get a fine sharpness, though dithering returns.
+ Calculates the distance between two points
+weights[0][0] = weights[0][3] = weights[3][0] = weights[3][3] = 0.0;
+ reading the texels
+ Anti-ringing
+  Get min/max samples
+ final sum and weight normalization
+
 */
 
 #pragma once

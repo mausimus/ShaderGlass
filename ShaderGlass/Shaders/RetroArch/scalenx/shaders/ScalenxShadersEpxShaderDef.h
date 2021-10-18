@@ -1,8 +1,31 @@
 /*
 ShaderGlass shader scalenx-shaders\epx imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scalenx/shaders/epx.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ EPX (Eric's Pixel Scaler)
+ based on the description from Wikipedia:
+ https://en.wikipedia.org/wiki/Pixel-art_scaling_algorithms#EPX/Scale2%C3%97/AdvMAME2%C3%97
+ adapted for slang by hunterk
+ license GPL, I think
+ sample with coordinate offsets
+ The algorithm looks at the current pixel and the 4 surrounding cardinal pixels
+ ___|_A_|___
+ _C_|_P_|_B_
+    | D |
+ Our current pixel, P
+ Input pixels
+ Output: 2x2 grid. Default to the current pixel color (Nearest magnification)
+ ___one_|_two___
+  three | four
+ EPX algorithm rules:
+ IF C==A AND C!=D AND A!=B => 1=A
+ IF A==B AND A!=C AND B!=D => 2=B
+ IF D==C AND D!=B AND C!=A => 3=C
+ IF B==D AND B!=A AND D!=C => 4=D
+ split the texels into 4 and assign one of our output pixels to each
+
 */
 
 #pragma once

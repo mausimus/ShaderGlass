@@ -1,8 +1,41 @@
 /*
 ShaderGlass shader crt-shaders\tvout-tweaks imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/tvout-tweaks.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+/////////////
+	TV-out tweaks
+	Author: aliaspider - aliaspider@gmail.com
+	License: GPLv3
+//////////////////////////////////////////////////////
+ this shader is meant to be used when running
+ an emulator on a real CRT-TV @240p or @480i
+//////////////////////////////////////////////////////
+ Basic settings:
+ signal resolution
+ higher = sharper
+ simulate a composite connection instead of RGB
+ use TV video color range (16-235)
+ instead of PC full range (0-255)
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+ Advanced settings:
+
+ these values will be used instead
+ if COMPOSITE_CONNECTION is defined
+ to simulate different signal resolutions(bandwidth)
+ for luma (Y) and chroma ( I and Q )
+ this is just an approximation
+ and will only simulate the low bandwidth anspect of
+ composite signal, not the crosstalk between luma and chroma
+ Y = 4MHz I=1.3MHz Q=0.4MHz
+ formula is MHz=resolution*15750Hz
+ 15750Hz being the horizontal Frequency of NTSC
+ (=262.5*60Hz)
+//////////////////////////////////////////////////////
+#define X(i) (offset-(i))
+
 */
 
 #pragma once

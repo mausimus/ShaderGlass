@@ -1,8 +1,66 @@
 /*
 ShaderGlass shader nedi-shaders\nedi-pass0 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nedi/shaders/nedi-pass0.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+NEDI Shader  -  pass0
+
+ This file is a part of MPDN Extensions.
+ https://github.com/zachsaw/MPDN_Extensions
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 3.0 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library.
+
+
+Sources ported from this discussion thread:
+
+http://forum.doom9.org/showthread.php?t=170727
+
+Ported by Hyllian - 2015.
+
+#define offset 0.0
+Cramer's method
+
+wind[1]              wind[2]
+-3
+-2             dir        wind[0]            2                 1
+-1              4           4          4                             4
+0            1   2       1   2
+1              3           3                   3           3
+2                                        1                       2
+3
+
+
+wind[1]              wind[2]
+-3                                            3                3
+-2             dir        wind[0]
+-1            0   3        0   3      0                                1
+0
+1            2   1        2   1                  1        0
+2
+3                                        2                        2
+
+Define window and directions - original
+Initialization
+Calculate (local) autocorrelation coefficients
+Normalize
+Calculate a =  R^-1 . r
+Nomalize 'a' (prevents overshoot)
+Calculate result
+Skip pixels on wrong grid
+
 */
 
 #pragma once

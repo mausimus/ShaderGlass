@@ -1,8 +1,9 @@
 /*
 ShaderGlass shader crt-shaders-glow-trails\glow-trails1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/glow-trails/glow-trails1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
 */
 
 #pragma once

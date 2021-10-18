@@ -1,8 +1,17 @@
 /*
 ShaderGlass shader nes_raw_palette-shaders-cgwg-famicom-geom\lowpass-notch-decode-yiq imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/cgwg-famicom-geom/lowpass-notch-decode-yiq.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ frequencies are in units of the chroma subcarrier
+ these are for the lowpass+notch filter
+ Hamming window
+FragColor = vec4(dot(yiq, vec3(1.0, 0.946882, 0.623557)),
+		   dot(yiq, vec3(1.0,-0.274788,-0.635691)),
+		   dot(yiq, vec3(1.0,-1.108545, 1.709007)),
+		   0.0);
+
 */
 
 #pragma once

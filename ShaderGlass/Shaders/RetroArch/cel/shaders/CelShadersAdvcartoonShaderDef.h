@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader cel-shaders\advcartoon imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/cel/shaders/advcartoon.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Advanced Cartoon shader I and II
+ by guest(r) (guest.r@gmail.com)
+ license: GNU-GPL
+
 */
 
 #pragma once

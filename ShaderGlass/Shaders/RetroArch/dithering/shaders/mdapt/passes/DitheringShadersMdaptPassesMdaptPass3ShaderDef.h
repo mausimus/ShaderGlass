@@ -1,8 +1,24 @@
 /*
 ShaderGlass shader dithering-shaders-mdapt-passes\mdapt-pass3 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/dithering/shaders/mdapt/passes/mdapt-pass3.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Merge Dithering and Pseudo Transparency Shader v2.8 - Pass 3
+by Sp00kyFox, 2014
+
+Backpropagation and checkerboard smoothing.
+
+
+
+UL U UR
+L  C R
+DL D DR
+
+ Backpropagation
+ Checkerboard Smoothing
+
 */
 
 #pragma once

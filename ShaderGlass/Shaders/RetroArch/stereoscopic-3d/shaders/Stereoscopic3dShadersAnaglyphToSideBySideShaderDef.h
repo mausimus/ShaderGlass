@@ -1,8 +1,17 @@
 /*
 ShaderGlass shader stereoscopic-3d-shaders\anaglyph-to-side-by-side imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/stereoscopic-3d/shaders/anaglyph-to-side-by-side.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Anaglyph to Side-by-Side
+ by hunterk
+ license: public domain
+
+ This shader is designed to convert Mednafen-VB's anaglyph 3D output to
+ side-by-side 3D for use with VR headsets, such as Oculus Rift and Google Cardboard, and 3D TVs
+warp function from Lottes' scanline shader
+
 */
 
 #pragma once

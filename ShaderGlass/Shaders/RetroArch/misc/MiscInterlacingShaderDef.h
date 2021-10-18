@@ -1,8 +1,19 @@
 /*
 ShaderGlass shader misc\interlacing imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/misc/interlacing.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Interlacing
+Author: hunterk
+License: Public domain
+
+Note: This shader is designed to work with the typical interlaced output from an emulator, which displays both even and odd fields twice.
+This shader will un-weave the image, resulting in a standard, alternating-field interlacing.
+
+ assume anything with a vertical resolution greater than 400 lines is interlaced
+
 */
 
 #pragma once

@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader handheld-shaders-lcd-cgwg\lcd-grid-v2 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/lcd-cgwg/lcd-grid-v2.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ integral of (1 - x^2 - x^4 + x^6)^2
+ integral of (1 - 2x^4 + x^6)^2
+ float2 range = IN.video_size / (IN.output_size * IN.texture_size); 
+
 */
 
 #pragma once

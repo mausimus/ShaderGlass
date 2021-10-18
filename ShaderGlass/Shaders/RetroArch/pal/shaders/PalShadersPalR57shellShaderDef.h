@@ -1,8 +1,180 @@
 /*
 ShaderGlass shader pal-shaders\pal-r57shell imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/pal/shaders/pal-r57shell.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ NES PAL composite signal simulation for RetroArch
+ shader by r57shell
+ thanks to feos & HardWareMan & NewRisingSun
+ also TV subpixels and scanlines
+ LICENSE: PUBLIC DOMAIN
+ NOTE: for nice TV subpixels and scanlines I recommend to
+ disable this features here and apply CRT-specialized shader.
+ Quality considerations
+ there are three main options:
+ USE_RAW (R), USE_DELAY_LINE (D), USE_COLORIMETRY (C)
+ here is table of quality in decreasing order:
+ RDC, RD, RC, DC, D, C
+ compatibility macros
+ TWEAKS start
+ comment this to disable dynamic settings, and use static.
+ if you unable to compile shader with dynamic settings,
+ and you want to tune parameters in menu, then
+ try to reduce somewhere below Mwidth from 32 to lower,
+ or disable USE_DELAY_LINE or USE_RAW, or all at once.
+ use delay line technique
+ without delay line technique, color would interleave
+ to avoid this, set HueRotation to zero.
+ use this if you need to swap even/odd V sign.
+ sign of V changes each scanline
+ so if some scanline is positive, then next is negative
+ and if you want to match picture
+ to actual running PAL NES on TV
+ you may want to have this option, to change signs
+ if they don't match
+#define SWAP_VSIGN
+ phase shift from frame to frame as NTSC NES does.
+ but PAL NES doesn't
+#define ANIMATE_PHASE
+ rough simulation of scanlines
+ better if you use additional shader instead
+ if you still use it, make sure that SizeY
+ is at least twice lower than output height
+#define USE_SCANLINES
+ this option changes active visible fields.
+ this is not how actual NES works
+ it does not alter fields.
+#define ANIMATE_SCANLINE
+ simulate CRT TV subpixels
+ better if you use CRT-specialized shader instead
+#define USE_SUBPIXELS
+ to change gamma of virtual TV from 2.2 to something else
+#define USE_GAMMA
+ use core size. for NES use this, for other cores turn off
+ for other cores use "size" tweak.
+#define USE_CORE_SIZE
+ use raw palette, turn it on if you
+ have nestopia and having using raw palette
+#define USE_RAW
+ use lookup texture, faster but less accuracy
+ it's working only if USE_RAW enabled.
+#define USE_LUT
+ compensate filter width
+ it will make width of picture shorter
+ to make picture right border visible
+ use sampled version. it's much more slower version of shader.
+ because it is computing x4 more values. NOT RECOMMENDED.
+#define USE_SAMPLED
+#ifndef PARAMETER_UNIFORM
+ commented because parameters are always available in slang
+
+ NTSC standard gamma = 2.2
+ PAL standard gamma = 2.8
+ according to many sources, very unlikely gamma of TV is 2.8
+ most likely gamma of PAL TV is in range 2.4-2.5
+const float Gamma_static = 2.5; // gamma of virtual TV
+
+const float Brightness_static = 0.0;
+const float Contrast_static = 1.0;
+const float Saturation_static = 1.0;
+
+const int
+Ywidth_static = 12,
+Uwidth_static = 23,
+Vwidth_static = 23;
+
+ correct one is -2.5
+ works only with USE_RAW
+const float HueShift = -2.5;
+
+ rotation of hue due to luma level.
+const float HueRotation = 2.;
+
+ touch this only if you know what you doing
+const float Phase_Y = 2.; // fmod(341*10,12)
+const float Phase_One = 0.; // alternating phases.
+const float Phase_Two = 8.;
+
+ screen size, scanlines = y*2; y one field, and y other field.
+const int SizeX = 256;
+const int SizeY = 240;
+
+ count of pixels of virtual TV.
+ value close to 1000 produce small artifacts
+const int TV_Pixels = 400;
+
+const float dark_scanline = 0.5; // half
+#endif
+ this is using following matrixes.
+ it provides more scientific approach
+ by conversion into linear XYZ space
+ and back to sRGB.
+ it's using Gamma setting too.
+ define USE_GAMMA is not required.
+ TWEAKS end
+#ifdef PARAMETER_UNIFORM
+#else
+
+#define Brightness Brightness_static
+#define Gamma Gamma_static
+
+#define Ywidth Ywidth_static
+#define Uwidth Uwidth_static
+#define Vwidth Vwidth_static
+
+const int Mwidth = max(float(Ywidth), max(float(Uwidth), float(Vwidth)));
+
+#ifdef USE_CORE_SIZE
+ just use core output size.
+#define size (params.SourceSize.xy)
+#else
+float2 size = float2(SizeX,SizeY);
+#endif
+
+#endif
+ from nesdev wiki page NTSC_video
+ use LUT for RAW palette decoding for speed vs quality
+ return early to avoid costly decoding in software
+ Voltage levels, relative to synch voltage
+ Decode the NES color.
+ The square wave for this color alternates between these two voltages:
+ Generate the square wave
+ When de-emphasis bits are set, some parts of the signal are attenuated:
+#ifdef PARAMETER_UNIFORM
+#endif
+ align vertical coord to center of texel
+ 1/size.x of screen in uv coords = params.SourceSize.x/params.SourceSize.x/size.x;
+ then 1/10*size.x of screen:
+ cos(pi-alpha) = -cos(alpha)
+ sin(pi-alpha) = sin(alpha)
+ pi - alpha
+ outside of texture is 0,0,0 which is white instead of black
+#ifdef PARAMETER_UNIFORM
+#endif
+
+old stupid method
+float z =
+#ifdef ANIMATE_SCANLINE
+fmod(params.FrameCount,2.0)+
+#endif
+0.5;
+
+if (abs(fmod(q.y+0.5,2)-z)<0.5)
+rgb *= params.dark_scanline;
+
+ size of pixel screen in texture coords:
+float output_pixel_size = params.SourceSize.x/(params.OutputSize.x*params.SourceSize.x);
+ correctness check
+if (fmod(p.x*output_pixel_size,2.0) < 1.0)
+	rgb = float3(0.,0.,0.);
+ pos (left corner, sample size)
+ linear interpolation was...
+ now other thing.
+ http://imgur.com/m8Z8trV
+ AT LAST IT WORKS!!!!
+ going to check in retroarch...
+
 */
 
 #pragma once

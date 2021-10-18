@@ -1,8 +1,24 @@
 /*
 ShaderGlass shader cel-shaders-MMJ_Cel\MMJ_Cel_Shader_MP_Blur_V imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/cel/shaders/MMJ_Cel/MMJ_Cel_Shader_MP_Blur_V.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+----------------------------------------------------------------
+MMJ's Cel Shader v2.0 - Multi-Pass
+----------------------------------------------------------------
+Based on the original blur-gauss-v shader code.
+
+Used to blur the outlines, which is helpful at higher internal
+resolution settings to increase the line thickness.
+
+Parameters:
+-----------
+Blur Weight - Vertical = Adjusts vertical blur factor.
+----------------------------------------------------------------
+
+
 */
 
 #pragma once

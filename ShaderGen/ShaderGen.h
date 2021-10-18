@@ -177,6 +177,7 @@ struct ShaderDef
     vector<ShaderParam> params;
     ShaderInfo          info;
     map<string, string> presetParams;
+    vector<string>      comments;
 };
 
 struct TextureDef

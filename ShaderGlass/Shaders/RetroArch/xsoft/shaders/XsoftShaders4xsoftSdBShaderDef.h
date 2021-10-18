@@ -1,8 +1,31 @@
 /*
 ShaderGlass shader xsoft-shaders\4xsoftSdB imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/xsoft/shaders/4xsoftSdB.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ 4xSoft Smart deBlur shader
+
+Copyright (C) 2016 guest(r) - guest.r@gmail.com
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+ messy I know but we need to make it possible to have it default to input resolution x/y in case RESOLUTION_X is 0.0 
+	float filterparam = 2.0;
+
 */
 
 #pragma once

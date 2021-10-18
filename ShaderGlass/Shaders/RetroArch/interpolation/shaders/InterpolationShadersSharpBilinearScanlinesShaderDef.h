@@ -1,8 +1,26 @@
 /*
 ShaderGlass shader interpolation-shaders\sharp-bilinear-scanlines imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/sharp-bilinear-scanlines.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Author: rsn8887 (based on TheMaister)
+License: Public domain
+
+This is an integer prescale filter that should be combined
+with a bilinear hardware filtering (GL_BILINEAR filter or some such) to achieve
+a smooth scaling result with minimum blur. This is good for pixelgraphics
+that are scaled by non-integer factors.
+
+The prescale factor and texel coordinates are precalculated
+in the vertex shader for speed.
+
+ Parameter lines go here:
+ Figure out where in the texel to sample to get correct pre-scaled bilinear.
+ Uses the hardware bilinear interpolator to avoid having to sample 4 times manually.
+ thick scanlines (thickness pre-calculated in vertex shader based on source resolution)
+
 */
 
 #pragma once

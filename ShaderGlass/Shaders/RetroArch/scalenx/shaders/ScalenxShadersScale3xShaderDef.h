@@ -1,8 +1,34 @@
 /*
 ShaderGlass shader scalenx-shaders\scale3x imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scalenx/shaders/scale3x.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Scale3x
+
+Filter:	Nearest
+Scale:	3x
+
+Scale3x is real-time graphics effect able to increase the size of small bitmaps guessing the missing pixels without blurring the images.
+It was originally developed for the AdvanceMAME project in the year 2001 to improve the quality of old games with a low video resolution.
+
+Homepage: http://scale2x.sourceforge.net/
+Copyright (C) 2001, 2002, 2003, 2004 Andrea Mazzoleni
+License: GNU-GPL
+
+
+ subpixel determination
+
+A B C		E0 E1 E2
+D E F		E3 E4 E5
+G H I		E6 E7 E8
+
+ reading the texels
+ equality checks
+ rules
+ general condition & subpixel output
+
 */
 
 #pragma once

@@ -1,8 +1,16 @@
 /*
 ShaderGlass shader scanlines-shaders\scanlines-sine-abs imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scanlines/shaders/scanlines-sine-abs.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Scanlines Sine Absolute Value
+An ultra light scanline shader
+by RiskyJumps
+license: public domain
+
+
 */
 
 #pragma once

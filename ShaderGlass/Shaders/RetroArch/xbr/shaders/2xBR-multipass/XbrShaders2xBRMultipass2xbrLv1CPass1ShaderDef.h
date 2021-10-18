@@ -1,8 +1,16 @@
 /*
 ShaderGlass shader xbr-shaders-2xBR-multipass\2xbr-lv1-c-pass1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/xbr/shaders/2xBR-multipass/2xbr-lv1-c-pass1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+     A1 B1 C1
+  A0  A  B  C C4
+  D0  D  E  F F4
+  G0  G  H  I I4
+     G5 H5 I5
+get original texture coordinates relative to the current pass
+
 */
 
 #pragma once

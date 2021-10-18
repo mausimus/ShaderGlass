@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader motionblur-shaders\motionblur-color imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/motionblur/shaders/motionblur-color.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Derived from https://github.com/libretro/slang-shaders/blob/master/motionblur/motionblur-blue.slang
+To increase the effect, uncomment more OriginalHistory# lines in each color channel
+
+
 */
 
 #pragma once

@@ -1,8 +1,50 @@
 /*
 ShaderGlass shader handheld-shaders-lcd-shader\lcd-pass-0 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/lcd-shader/lcd-pass-0.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+/////////////////////////////////////////////////////////////////////////
+                                                                       //
+ LCD Shader v0.0.1                                                     //
+                                                                       //
+ Copyright (C) 2013 Harlequin : unknown92835@gmail.com                 //
+                                                                       //
+ This program is free software: you can redistribute it and/or modify  //
+ it under the terms of the GNU General Public License as published by  //
+ the Free Software Foundation, either version 3 of the License, or     //
+ (at your option) any later version.                                   //
+                                                                       //
+ This program is distributed in the hope that it will be useful,       //
+ but WITHOUT ANY WARRANTY; without even the implied warranty of        //
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         //
+ GNU General Public License for more details.                          //
+                                                                       //
+ You should have received a copy of the GNU General Public License     //
+ along with this program.  If not, see <http://www.gnu.org/licenses/>. //
+                                                                       //
+/////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+config                                                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ Simulate response time
+ Higher values result in longer color transition periods - [0, 1]
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+vertex definitions                                                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+vertex shader                                                                                                                           //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+fragment definitions                                                                                                                    //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ANY CHANGE TO THIS SHOULD BE REPEATED IN lcd_pass_3 SO IT CAN IDENTIFY LINE FRAGMENTS PROPERLY
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+fragment shader                                                                                                                         //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+motion blur
+add horizontal lines
+
 */
 
 #pragma once

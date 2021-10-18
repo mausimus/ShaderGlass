@@ -1,8 +1,22 @@
 /*
 ShaderGlass shader handheld-shaders\ds-hybrid-view imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/ds-hybrid-view.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+	DS Hybrid View
+	by hunterk
+	additional modifications by Dranyth
+	license: public domain
+
+	This shader requires 16:9 aspect ratio forced in Video > Scaling
+	and integer scaling OFF
+	Set the Screen Layout to top/bottom
+	A Screen Gap value can be set in the emulator to prevent
+	effects from bleeding across the division of the two screens
+	The Screen Gap itself will be compensated for and removed from the final output
+ screen gap setting increases fb size; modulo at original res to compensate
+
 */
 
 #pragma once
