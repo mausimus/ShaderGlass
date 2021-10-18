@@ -186,6 +186,15 @@ void ShaderGlass::DestroyTargets()
     }
 }
 
+std::vector<ShaderParam*> ShaderGlass::Params()
+{
+    std::vector<ShaderParam*> params;
+    for(auto& s : m_shaderPreset->m_shaders)
+        for(auto& p : s.Params())
+            params.push_back(p);
+    return params;
+}
+
 bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
 {
     if(force || (clientRect.right != m_lastSize.x) || (clientRect.bottom != m_lastSize.y))

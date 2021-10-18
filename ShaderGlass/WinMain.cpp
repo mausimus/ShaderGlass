@@ -2,6 +2,7 @@
 
 #include "resource.h"
 #include "ShaderWindow.h"
+#include "ParamsWindow.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -19,13 +20,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SHADERGLASS));
     MSG    msg;
 
+    INITCOMMONCONTROLSEX ccs;
+    ccs.dwICC = ICC_WIN95_CLASSES;
+    ccs.dwSize = sizeof(ccs);
+    InitCommonControlsEx(&ccs);
+
     CaptureManager captureManager;
-    ShaderWindow shaderWindow(captureManager);
+    ShaderWindow   shaderWindow(captureManager);
     if(!shaderWindow.Create(hInstance, nCmdShow))
     {
         return FALSE;
     }
-    shaderWindow.Start(lpCmdLine);
+
+    ParamsWindow paramsWindow(captureManager);
+    if(!paramsWindow.Create(hInstance, SW_HIDE))
+    {
+        return FALSE;
+    }
+
+    shaderWindow.Start(lpCmdLine, paramsWindow.m_mainWindow);
 
     while(GetMessage(&msg, nullptr, 0, 0))
     {
