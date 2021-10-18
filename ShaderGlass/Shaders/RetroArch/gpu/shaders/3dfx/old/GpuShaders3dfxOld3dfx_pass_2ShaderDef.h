@@ -4,16 +4,16 @@ https://github.com/libretro/slang-shaders/blob/master/gpu/shaders/3dfx/old/3dfx_
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- "LeiFX" shader - Pixel filtering process
-
- 	Copyright (C) 2013-2014 leilei
-
- This program is free software; you can redistribute it and/or modify it
- under the terms of the GNU General Public License as published by the Free
- Software Foundation; either version 2 of the License, or (at your option)
- any later version.
- Sample things.
- variably BLEND IT ALL TO H*CK!!!!
+// "LeiFX" shader - Pixel filtering process
+//
+// 	Copyright (C) 2013-2014 leilei
+//
+// This program is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation; either version 2 of the License, or (at your option)
+// any later version.
+// Sample things.
+// variably BLEND IT ALL TO H*CK!!!!
 
 */
 

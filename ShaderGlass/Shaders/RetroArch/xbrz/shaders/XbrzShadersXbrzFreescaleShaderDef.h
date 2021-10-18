@@ -4,8 +4,8 @@ https://github.com/libretro/slang-shaders/blob/master/xbrz/shaders/xbrz-freescal
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- xBRZ freescale
- based on :
+// xBRZ freescale
+// based on :
 
 Hyllian's xBR-vertex code and texel mapping
 
@@ -30,72 +30,72 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- This shader also uses code and/or concepts from xBRZ as it appears
- in the Desmume source code. The license for which is as follows:
- ****************************************************************************
- * This file is part of the HqMAME project. It is distributed under         *
- * GNU General Public License: http://www.gnu.org/licenses/gpl-3.0          *
- * Copyright (C) Zenju (zenju AT gmx DOT de) - All Rights Reserved          *
- *                                                                          *
- * Additionally and as a special exception, the author gives permission     *
- * to link the code of this program with the MAME library (or with modified *
- * versions of MAME that use the same license as MAME), and distribute      *
- * linked combinations including the two. You must obey the GNU General     *
- * Public License in all respects for all of the code used other than MAME. *
- * If you modify this file, you may extend this exception to your version   *
- * of the file, but you are not obligated to do so. If you do not wish to   *
- * do so, delete this exception statement from your version.                *
- ****************************************************************************
-  return step(0, v);
----------------------------------------
- Input Pixel Mapping:  -|x|x|x|-
-                       x|A|B|C|x
-                       x|D|E|F|x
-                       x|G|H|I|x
-                       -|x|x|x|-
- blendResult Mapping: x|y|
-                      w|z|
- Preprocess corners
- Pixel Tap Mapping: -|-|-|-|-
-                    -|-|B|C|-
-                    -|D|E|F|x
-                    -|G|H|I|x
-                    -|-|x|x|-
- Pixel Tap Mapping: -|-|-|-|-
-                    -|A|B|-|-
-                    x|D|E|F|-
-                    x|G|H|I|-
-                    -|x|x|-|-
- Pixel Tap Mapping: -|-|x|x|-
-                    -|A|B|C|x
-                    -|D|E|F|x
-                    -|-|H|I|-
-                    -|-|-|-|-
- Pixel Tap Mapping: -|x|x|-|-
-                    x|A|B|C|-
-                    x|D|E|F|-
-                    -|G|H|-|-
-                    -|-|-|-|-
- Pixel Tap Mapping: -|-|-|-|-
-                    -|-|B|C|-
-                    -|D|E|F|x
-                    -|G|H|I|x
-                    -|-|x|x|-
- Pixel Tap Mapping: -|-|-|-|-
-                    -|A|B|-|-
-                    x|D|E|F|-
-                    x|G|H|I|-
-                    -|x|x|-|-
- Pixel Tap Mapping: -|-|x|x|-
-                    -|A|B|C|x
-                    -|D|E|F|x
-                    -|-|H|I|-
-                    -|-|-|-|-
- Pixel Tap Mapping: -|x|x|-|-
-                    x|A|B|C|-
-                    x|D|E|F|-
-                    -|G|H|-|-
-                    -|-|-|-|-
+// This shader also uses code and/or concepts from xBRZ as it appears
+// in the Desmume source code. The license for which is as follows:
+// ****************************************************************************
+// * This file is part of the HqMAME project. It is distributed under         *
+// * GNU General Public License: http://www.gnu.org/licenses/gpl-3.0          *
+// * Copyright (C) Zenju (zenju AT gmx DOT de) - All Rights Reserved          *
+// *                                                                          *
+// * Additionally and as a special exception, the author gives permission     *
+// * to link the code of this program with the MAME library (or with modified *
+// * versions of MAME that use the same license as MAME), and distribute      *
+// * linked combinations including the two. You must obey the GNU General     *
+// * Public License in all respects for all of the code used other than MAME. *
+// * If you modify this file, you may extend this exception to your version   *
+// * of the file, but you are not obligated to do so. If you do not wish to   *
+// * do so, delete this exception statement from your version.                *
+// ****************************************************************************
+//  return step(0, v);
+//---------------------------------------
+// Input Pixel Mapping:  -|x|x|x|-
+//                       x|A|B|C|x
+//                       x|D|E|F|x
+//                       x|G|H|I|x
+//                       -|x|x|x|-
+// blendResult Mapping: x|y|
+//                      w|z|
+// Preprocess corners
+// Pixel Tap Mapping: -|-|-|-|-
+//                    -|-|B|C|-
+//                    -|D|E|F|x
+//                    -|G|H|I|x
+//                    -|-|x|x|-
+// Pixel Tap Mapping: -|-|-|-|-
+//                    -|A|B|-|-
+//                    x|D|E|F|-
+//                    x|G|H|I|-
+//                    -|x|x|-|-
+// Pixel Tap Mapping: -|-|x|x|-
+//                    -|A|B|C|x
+//                    -|D|E|F|x
+//                    -|-|H|I|-
+//                    -|-|-|-|-
+// Pixel Tap Mapping: -|x|x|-|-
+//                    x|A|B|C|-
+//                    x|D|E|F|-
+//                    -|G|H|-|-
+//                    -|-|-|-|-
+// Pixel Tap Mapping: -|-|-|-|-
+//                    -|-|B|C|-
+//                    -|D|E|F|x
+//                    -|G|H|I|x
+//                    -|-|x|x|-
+// Pixel Tap Mapping: -|-|-|-|-
+//                    -|A|B|-|-
+//                    x|D|E|F|-
+//                    x|G|H|I|-
+//                    -|x|x|-|-
+// Pixel Tap Mapping: -|-|x|x|-
+//                    -|A|B|C|x
+//                    -|D|E|F|x
+//                    -|-|H|I|-
+//                    -|-|-|-|-
+// Pixel Tap Mapping: -|x|x|-|-
+//                    x|A|B|C|-
+//                    x|D|E|F|-
+//                    -|G|H|-|-
+//                    -|-|-|-|-
 
 */
 

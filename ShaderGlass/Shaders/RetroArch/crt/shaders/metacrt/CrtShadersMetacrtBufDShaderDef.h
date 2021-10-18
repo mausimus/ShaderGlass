@@ -4,39 +4,39 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/metacrt/bufD.s
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- Meta CRT - @P_Malin
- https://www.shadertoy.com/view/4dlyWX#
- In which I add and remove aliasing
- Temporal Anti-aliasing Pass
-/////////////////////////
- Hash Functions
-/////////////////////////
- From: Hash without Sine by Dave Hoskins
- https://www.shadertoy.com/view/4djSRW
- *** Use this for integer stepped ranges, ie Value-Noise/Perlin noise functions.
-#define HASHSCALE1 .1031
-#define HASHSCALE3 vec3(.1031, .1030, .0973)
-#define HASHSCALE4 vec4(1031, .1030, .0973, .1099)
- For smaller input rangers like audio tick or 0-1 UVs use these...
-----------------------------------------------------------------------------------------
-  2 out, 1 in...
-/  2 out, 3 in...
-  1 out, 3 in...
-/////////////////////////
- Data Storage
-/////////////////////////
-/////////////////////////
- Camera
-/////////////////////////
-depth = max( 0.0, depth );
-objectId = max( 0, objectId + 1 );
-return exp2(-depth) + float(objectId);
-objectId = int( floor( value ) ) - 1;
-return abs( -log2(fract(value)) );
-/////////////////////////////
-ivec2 vPrevXY = ivec2(floor(vPrevUV.xy * iResolution.xy));
-vFragColor.r *= 0.0;
-vFragColor.gb *= 0.0;
+// Meta CRT - @P_Malin
+// https://www.shadertoy.com/view/4dlyWX#
+// In which I add and remove aliasing
+// Temporal Anti-aliasing Pass
+///////////////////////////
+// Hash Functions
+///////////////////////////
+// From: Hash without Sine by Dave Hoskins
+// https://www.shadertoy.com/view/4djSRW
+// *** Use this for integer stepped ranges, ie Value-Noise/Perlin noise functions.
+//#define HASHSCALE1 .1031
+//#define HASHSCALE3 vec3(.1031, .1030, .0973)
+//#define HASHSCALE4 vec4(1031, .1030, .0973, .1099)
+// For smaller input rangers like audio tick or 0-1 UVs use these...
+//----------------------------------------------------------------------------------------
+//  2 out, 1 in...
+///  2 out, 3 in...
+//  1 out, 3 in...
+///////////////////////////
+// Data Storage
+///////////////////////////
+///////////////////////////
+// Camera
+///////////////////////////
+//depth = max( 0.0, depth );
+//objectId = max( 0, objectId + 1 );
+//return exp2(-depth) + float(objectId);
+//objectId = int( floor( value ) ) - 1;
+//return abs( -log2(fract(value)) );
+///////////////////////////////
+//ivec2 vPrevXY = ivec2(floor(vPrevUV.xy * iResolution.xy));
+//vFragColor.r *= 0.0;
+//vFragColor.gb *= 0.0;
 
 */
 

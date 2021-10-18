@@ -41,15 +41,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- core function of rAA - tilt of a pixel
- read texels
- prepare variables for candidate search
- smoothness weight, protects smooth gradients
- look for proper candidates
- rAA core with the candidates found above
- distance weight
- result
- prevent ringing
+// core function of rAA - tilt of a pixel
+// read texels
+// prepare variables for candidate search
+// smoothness weight, protects smooth gradients
+// look for proper candidates
+// rAA core with the candidates found above
+// distance weight
+// result
+// prevent ringing
 
 */
 

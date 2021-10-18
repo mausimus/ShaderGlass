@@ -7,22 +7,22 @@ This file is auto-generated, do not modify directly.
 
 NEDI Shader  -  pass2
 
- This file is a part of MPDN Extensions.
- https://github.com/zachsaw/MPDN_Extensions
-
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 3.0 of the License, or (at your option) any later version.
-
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public
- License along with this library.
-
+// This file is a part of MPDN Extensions.
+// https://github.com/zachsaw/MPDN_Extensions
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 3.0 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library.
+//
 
 Sources ported from this discussion thread:
 
@@ -30,7 +30,7 @@ http://forum.doom9.org/showthread.php?t=170727
 
 Ported by Hyllian - 2015.
 
-Cramer's method
+//Cramer's method
 
 wind[1]              wind[2]
 -3
@@ -51,14 +51,14 @@ wind[1]              wind[2]
 2
 3                                        2                        4
 
-Define window and directions
-Initialization
-Calculate (local) autocorrelation coefficients
-Normalize
-Calculate a =  R^-1 . r
-Nomalize 'a' (prevents overshoot)
-Calculate result
-    float3 c = Value(dir[0]);
+//Define window and directions
+//Initialization
+//Calculate (local) autocorrelation coefficients
+//Normalize
+//Calculate a =  R^-1 . r
+//Nomalize 'a' (prevents overshoot)
+//Calculate result
+//    float3 c = Value(dir[0]);
 
 */
 

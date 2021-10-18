@@ -43,21 +43,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- corner dominance at junctions
- necessary but not sufficient junction condition for orthogonal edges
+// corner dominance at junctions
+// necessary but not sufficient junction condition for orthogonal edges
 	grid		metric		pattern
 
 A B C		x y z		x y
 D E F		  o w		w z
 G H I
 
- metric data
- strength data
- strength & dominance junctions
- majority vote for ambiguous dominance junctions
- inject strength without creating new contradictions
- single pixel & end of line detection
- output
+// metric data
+// strength data
+// strength & dominance junctions
+// majority vote for ambiguous dominance junctions
+// inject strength without creating new contradictions
+// single pixel & end of line detection
+// output
 
 */
 

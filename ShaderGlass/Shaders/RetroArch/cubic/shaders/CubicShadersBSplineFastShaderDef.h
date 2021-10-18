@@ -15,18 +15,18 @@ See http://vec3.ca/bicubic-filtering-in-fewer-taps/ for more details
 ATENTION: This code only work using LINEAR filter sampling set on Retroarch!
 
 
- We're going to sample a a 4x4 grid of texels surrounding the target UV coordinate. We'll do this by rounding
- down the sample location to get the exact center of our "starting" texel. The starting texel will be at
- location [1, 1] in the grid, where [0, 0] is the top left corner.
- Compute the fractional offset from our starting texel to our original sample location, which we'll
- feed into the B-Spline function to get our filter weights.
- Compute the B-Spline weights using the fractional offset that we calculated earlier.
- These equations are pre-expanded based on our knowledge of where the texels will be located,
- which lets us avoid having to evaluate a piece-wise function.
-   vec2 w3 = 0.5 * (f3 - f2);
- Work out weighting factors and sampling offsets that will let us use bilinear filtering to
- simultaneously evaluate the 2 samples each from the 4x4 grid.
- Compute the final UV coordinates we'll use for sampling the texture
+// We're going to sample a a 4x4 grid of texels surrounding the target UV coordinate. We'll do this by rounding
+// down the sample location to get the exact center of our "starting" texel. The starting texel will be at
+// location [1, 1] in the grid, where [0, 0] is the top left corner.
+// Compute the fractional offset from our starting texel to our original sample location, which we'll
+// feed into the B-Spline function to get our filter weights.
+// Compute the B-Spline weights using the fractional offset that we calculated earlier.
+// These equations are pre-expanded based on our knowledge of where the texels will be located,
+// which lets us avoid having to evaluate a piece-wise function.
+//   vec2 w3 = 0.5 * (f3 - f2);
+// Work out weighting factors and sampling offsets that will let us use bilinear filtering to
+// simultaneously evaluate the 2 samples each from the 4x4 grid.
+// Compute the final UV coordinates we'll use for sampling the texture
 
 */
 

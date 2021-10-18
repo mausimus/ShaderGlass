@@ -11,16 +11,16 @@ by Sp00kyFox, 2014
 Blends pixels based on detected dithering patterns.
 
 
-#define TEX(dx,dy)   texture(Source, vTexCoord+vec2((dx),(dy))*params.SourceSize.zw)
-#define TEXt0(dx,dy) texture(Original, vTexCoord+vec2((dx),(dy))*params.SourceSize.zw)
+//#define TEX(dx,dy)   texture(Source, vTexCoord+vec2((dx),(dy))*params.SourceSize.zw)
+//#define TEXt0(dx,dy) texture(Original, vTexCoord+vec2((dx),(dy))*params.SourceSize.zw)
 
 UL U UR
 L  C R
 DL D DR
 
- Backpropagation
-standard formula: C/2 + (L + R + D + U)/8
- Checkerboard Smoothing
+// Backpropagation
+//standard formula: C/2 + (L + R + D + U)/8
+// Checkerboard Smoothing
 
 */
 

@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/denoisers/shaders/slow-bil
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-declare stuff
-create the 1-D kernel
-read out the texels
+//declare stuff
+//create the 1-D kernel
+//read out the texels
 
 */
 

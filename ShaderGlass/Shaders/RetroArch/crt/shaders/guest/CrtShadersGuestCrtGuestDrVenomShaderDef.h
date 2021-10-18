@@ -26,22 +26,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
- Shadow mask (1-4 from PD CRT Lottes shader).
- No mask
- Phosphor.
- Very compressed TV style shadow mask.
- Aperture-grille.
- Stretched VGA style shadow mask (same as prior shaders).
- VGA style shadow mask.
- Alternate mask 5
- Alternate mask 6
- Alternate mask 7
- Distortion of scanlines, and end of screen alpha (PD Lottes Curvature)
- Borrowed from cgwg's crt-geom, under GPL
- Calculating texel coordinates
- Reading the texels
- calculating scanlines
- Apply Mask
+// Shadow mask (1-4 from PD CRT Lottes shader).
+// No mask
+// Phosphor.
+// Very compressed TV style shadow mask.
+// Aperture-grille.
+// Stretched VGA style shadow mask (same as prior shaders).
+// VGA style shadow mask.
+// Alternate mask 5
+// Alternate mask 6
+// Alternate mask 7
+// Distortion of scanlines, and end of screen alpha (PD Lottes Curvature)
+// Borrowed from cgwg's crt-geom, under GPL
+// Calculating texel coordinates
+// Reading the texels
+// calculating scanlines
+// Apply Mask
 
 */
 

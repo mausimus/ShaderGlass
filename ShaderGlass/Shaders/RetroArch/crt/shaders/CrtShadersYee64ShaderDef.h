@@ -4,15 +4,15 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/yee64.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- ported from ReShade
-Declare parameters
-pixelSize
-textureSize
-viewSize
-texDiffuse
-Declare registers
-Code starts here
-dcl_2d s0
+// ported from ReShade
+//Declare parameters
+//pixelSize
+//textureSize
+//viewSize
+//texDiffuse
+//Declare registers
+//Code starts here
+//dcl_2d s0
 
 */
 

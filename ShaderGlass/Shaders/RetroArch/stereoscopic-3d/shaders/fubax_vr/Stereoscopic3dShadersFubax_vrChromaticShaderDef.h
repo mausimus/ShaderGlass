@@ -5,7 +5,7 @@ See original file for full credits and usage license with excerpts below.
 This file is auto-generated, do not modify directly.
 
 
-/ VR shader ///
+/// VR shader ///
 
 Make any game VR and any screen with lenses a VR headset.
 Thanks to this shader you'll be able to correct distortions of any lens types
@@ -32,91 +32,91 @@ Version 0.4.2 alpha
 
 ParallaxOffset, ParallaxCenter, ParallaxSteps, ParallaxMaskScalar,
 ParallaxSwitch 
- Grid settings
-#pragma parameter ParallaxSwitch "Toggle Parallax Effect" 1.0 0.0 1.0 1.0
-#pragma parameter ParallaxOffset "Parallax Horizontal Offset" 0.355 0.0 1.0 0.001
-#pragma parameter ParallaxCenter "Parallax Rotation Center (ZPD)" 1.0 0.0 1.0 0.001
-#pragma parameter ParallaxSteps "Parallax Sampling Steps" 16.0 1.0 128.0 0.2
-#pragma parameter ParallaxMaskScalar "Parallax Gap Compensation" 10.0 0.0 32.0 0.2
-float ParallaxOffset = global.ParallaxOffset;
-float ParallaxCenter = global.ParallaxCenter;
-int ParallaxSteps = int(global.ParallaxSteps);
-int ParallaxMaskScalar = int(global.ParallaxMaskScalar);
-bool ParallaxSwitch = bool(global.ParallaxSwitch);
- Adjust to limited RGB
- Generate test grid
- Grid settings
- Generate grid pattern
- Anti-aliased grid
- Combine/solo vertical and horizontal lines
- Generate center cross
- Anti-aliased cross
- Combine vertical and horizontal line
- Blend grid and center cross
- Solo colors
- Reduce grid brightness
- Divide screen into two halfs
- Mirror left half
- Convert stereo coordinates to mono
- Generate border mask with anti-aliasing from UV coordinates
- Get pixel size in transformed coordinates (for anti-aliasing)
- Create borders mask (with anti-aliasing)
- Combine side and top borders
+// Grid settings
+//#pragma parameter ParallaxSwitch "Toggle Parallax Effect" 1.0 0.0 1.0 1.0
+//#pragma parameter ParallaxOffset "Parallax Horizontal Offset" 0.355 0.0 1.0 0.001
+//#pragma parameter ParallaxCenter "Parallax Rotation Center (ZPD)" 1.0 0.0 1.0 0.001
+//#pragma parameter ParallaxSteps "Parallax Sampling Steps" 16.0 1.0 128.0 0.2
+//#pragma parameter ParallaxMaskScalar "Parallax Gap Compensation" 10.0 0.0 32.0 0.2
+//float ParallaxOffset = global.ParallaxOffset;
+//float ParallaxCenter = global.ParallaxCenter;
+//int ParallaxSteps = int(global.ParallaxSteps);
+//int ParallaxMaskScalar = int(global.ParallaxMaskScalar);
+//bool ParallaxSwitch = bool(global.ParallaxSwitch);
+// Adjust to limited RGB
+// Generate test grid
+// Grid settings
+// Generate grid pattern
+// Anti-aliased grid
+// Combine/solo vertical and horizontal lines
+// Generate center cross
+// Anti-aliased cross
+// Combine vertical and horizontal line
+// Blend grid and center cross
+// Solo colors
+// Reduce grid brightness
+// Divide screen into two halfs
+// Mirror left half
+// Convert stereo coordinates to mono
+// Generate border mask with anti-aliasing from UV coordinates
+// Get pixel size in transformed coordinates (for anti-aliasing)
+// Create borders mask (with anti-aliasing)
+// Combine side and top borders
 
- Can't really use this one as RetroArch can't access the depth buffer
+// Can't really use this one as RetroArch can't access the depth buffer
 float GetDepth(vec2 texcoord)
 {
 return ReShade::GetLinearizedDepth(texcoord);
 }
 
 
- Horizontal parallax offset effect
+// Horizontal parallax offset effect
 vec2 Parallax(vec2 Coordinates, float Offset, float Center, int GapOffset, int Steps)
 {
- Limit amount of loop steps to make it finite
+// Limit amount of loop steps to make it finite
 #ifndef MaximumParallaxSteps
 #def MaximumParallaxSteps 64
 #endif
 
- Offset per step progress
+// Offset per step progress
 float LayerDepth = 1.0 / min(MaximumParallaxSteps, Steps);
 
- Netto layer offset change
+// Netto layer offset change
 float deltaCoordinates = Offset * LayerDepth;
 
 vec2 ParallaxCoord = Coordinates;
- Offset image horizontally so that parallax is in the depth appointed center
+// Offset image horizontally so that parallax is in the depth appointed center
 ParallaxCoord.x += Offset * Center;
 float CurrentDepthMapValue = GetDepth(ParallaxCoord); // Replace function
 
- Steep parallax mapping
+// Steep parallax mapping
 float CurrentLayerDepth = 0.0;
 [loop]
 while(CurrentLayerDepth < CurrentDepthMapValue)
 {
- Shift coordinates horizontally in linear fasion
+// Shift coordinates horizontally in linear fasion
 ParallaxCoord.x -= deltaCoordinates;
- Get depth value at current coordinates
+// Get depth value at current coordinates
 CurrentDepthMapValue = GetDepth(ParallaxCoord); // Replace function
- Get depth of next layer
+// Get depth of next layer
 CurrentLayerDepth += LayerDepth;
 continue;
 }
 
- Parallax Occlusion Mapping
+// Parallax Occlusion Mapping
 vec2 PrevParallaxCoord = ParallaxCoord;
 PrevParallaxCoord.x += deltaCoordinates;
 float afterDepthValue = CurrentDepthMapValue - CurrentLayerDepth;
 float beforeDepthValue = GetDepth(PrevParallaxCoord); // Replace function
- Store depth read difference for masking
+// Store depth read difference for masking
 float DepthDifference = beforeDepthValue - CurrentDepthMapValue;
 
 beforeDepthValue += LayerDepth - CurrentLayerDepth;
- Interpolate coordinates
+// Interpolate coordinates
 float weight = afterDepthValue / (afterDepthValue - beforeDepthValue);
 ParallaxCoord = PrevParallaxCoord * weight + ParallaxCoord * (1.0 - weight);
 
- Apply gap masking (by JMF)
+// Apply gap masking (by JMF)
 DepthDifference *= GapOffset * Offset * 100.0;
 DepthDifference *= ReShade::PixelSize.x; // Replace function
 ParallaxCoord.x += DepthDifference;
@@ -124,32 +124,32 @@ ParallaxCoord.x += DepthDifference;
 return ParallaxCoord;
 };
 
- Lens projection model (algorithm by JMF)
- Brown-Conrady radial distortion model (multiply by coordinates)
- Brown-Conrady tangental distortion model (add to coordinates)
- RGB to YUV709.luma
- Overlay blending mode
- Bypass chromatic aberration switch
- Get display aspect ratio (horizontal/vertical resolution)
- Generate negative-positive stereo mask
- Divide screen in two if stereo vision mode enabled
- Left/right eye mask
- Offset center green
- Offset center blue
-	float RadiusGreen = dot(CoordGreen, CoordGreen); // Radius squared (techically accurate)
-	float RadiusBlue = dot(CoordBlue, CoordBlue); // Radius squared (techically accurate)
- Calculate radial distortion K
- Apply chromatic aberration correction
- Move origin to left top corner
- Generate border mask for green and blue channel
- Mask compensation for center cut
- Mask sides and center cut for blue channel
- Mask sides and center cut for green channel
- Reverse stereo coordinates to single view
- Sample image red
- Sample image green
- Sample image blue
- Display chromatic aberration
+// Lens projection model (algorithm by JMF)
+// Brown-Conrady radial distortion model (multiply by coordinates)
+// Brown-Conrady tangental distortion model (add to coordinates)
+// RGB to YUV709.luma
+// Overlay blending mode
+// Bypass chromatic aberration switch
+// Get display aspect ratio (horizontal/vertical resolution)
+// Generate negative-positive stereo mask
+// Divide screen in two if stereo vision mode enabled
+// Left/right eye mask
+// Offset center green
+// Offset center blue
+//	float RadiusGreen = dot(CoordGreen, CoordGreen); // Radius squared (techically accurate)
+//	float RadiusBlue = dot(CoordBlue, CoordBlue); // Radius squared (techically accurate)
+// Calculate radial distortion K
+// Apply chromatic aberration correction
+// Move origin to left top corner
+// Generate border mask for green and blue channel
+// Mask compensation for center cut
+// Mask sides and center cut for blue channel
+// Mask sides and center cut for green channel
+// Reverse stereo coordinates to single view
+// Sample image red
+// Sample image green
+// Sample image blue
+// Display chromatic aberration
 
 */
 

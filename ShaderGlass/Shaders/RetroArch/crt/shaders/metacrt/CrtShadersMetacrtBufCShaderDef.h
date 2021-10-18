@@ -4,89 +4,89 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/metacrt/bufC.s
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- Meta CRT - @P_Malin
- https://www.shadertoy.com/view/4dlyWX#
- In which I add and remove aliasing
- Scene Rendering
-#define ENABLE_TAA_JITTER
+// Meta CRT - @P_Malin
+// https://www.shadertoy.com/view/4dlyWX#
+// In which I add and remove aliasing
+// Scene Rendering
+//#define ENABLE_TAA_JITTER
+///////////////////////////
+// Hash Functions
+///////////////////////////
+// From: Hash without Sine by Dave Hoskins
+// https://www.shadertoy.com/view/4djSRW
+// *** Use this for integer stepped ranges, ie Value-Noise/Perlin noise functions.
+//#define HASHSCALE1 .1031
+//#define HASHSCALE3 vec3(.1031, .1030, .0973)
+//#define HASHSCALE4 vec4(1031, .1030, .0973, .1099)
+// For smaller input rangers like audio tick or 0-1 UVs use these...
+//----------------------------------------------------------------------------------------
+//  1 out, 1 in...
+//  2 out, 1 in...
+///  2 out, 3 in...
+//  1 out, 3 in...
+///////////////////////////
+// Data Storage
+///////////////////////////
+///////////////////////////
+// Camera
+///////////////////////////
+//depth = max( 0.0, depth );
+//objectId = max( 0, objectId + 1 );
+//return exp2(-depth) + float(objectId);
+//objectId = int( floor( value ) ) - 1;
+//return abs( -log2(fract(value)) );
+///////////////////////////////
+///////////////////////////
+// Scene
+///////////////////////////
+//return 1.0;
+//return ( Scene_Trace( vRayOrigin, vRayDir, 0.1, fLightDist ).fDist < fLightDist ? 0.0 : 1.0;
+///////////////////////////
+// Lighting
+///////////////////////////
+// D
+///////////////////////////
+// Rendering
+///////////////////////////
+// calculate reflectance (Fresnel)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////
- Hash Functions
+// Scene Description
 /////////////////////////
- From: Hash without Sine by Dave Hoskins
- https://www.shadertoy.com/view/4djSRW
- *** Use this for integer stepped ranges, ie Value-Noise/Perlin noise functions.
-#define HASHSCALE1 .1031
-#define HASHSCALE3 vec3(.1031, .1030, .0973)
-#define HASHSCALE4 vec4(1031, .1030, .0973, .1099)
- For smaller input rangers like audio tick or 0-1 UVs use these...
-----------------------------------------------------------------------------------------
-  1 out, 1 in...
-  2 out, 1 in...
-/  2 out, 3 in...
-  1 out, 3 in...
-/////////////////////////
- Data Storage
-/////////////////////////
-/////////////////////////
- Camera
-/////////////////////////
-depth = max( 0.0, depth );
-objectId = max( 0, objectId + 1 );
-return exp2(-depth) + float(objectId);
-objectId = int( floor( value ) ) - 1;
-return abs( -log2(fract(value)) );
-/////////////////////////////
-/////////////////////////
- Scene
-/////////////////////////
-return 1.0;
-return ( Scene_Trace( vRayOrigin, vRayDir, 0.1, fLightDist ).fDist < fLightDist ? 0.0 : 1.0;
-/////////////////////////
- Lighting
-/////////////////////////
- D
-/////////////////////////
- Rendering
-/////////////////////////
- calculate reflectance (Fresnel)
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////
- Scene Description
-///////////////////////
- Materials
- Integral of function where result is 1.0 between s1 and s2 and 0 otherwise
- V1
-if ( x > s2 ) return s2 - s1;
-else if ( x > s1 ) return x - s1;
-return 0.0f;
- V2
-return clamp( (x - s1), 0.0f, s2 - s1);
-return t;
- Integral of function where result is 1.0 between s1 and s2 and 0 otherwise
- V1
-if ( x > s2 ) return s2 - s1;
-else if ( x > s1 ) return x - s1;
-return 0.0f;
- V2
-return clamp( (x - s1), 0.0f, s2 - s1);
-return t;
-x -= 0.5f;
-y -= 0.5f;
- cell centered at 0.5
-vResult = vec3(1.0);
-vec2 vTextureUV = vPixelCoord;
-vTextureUV.x += (interference.scanLineRandom * 2.0f - 1.0f) * 0.025f * noiseIntensity;
- TODO: feather edge?
-return surfaceInfo;
- Scene Description
-return min(a,b);
-float k = 0.06;
-vec3 vToFace = abs(p) - b;
-vec3 vConstrained = max( vToFace, 0.0 );
-return length( vConstrained ) - r;
-resultScreen.fDist = (length( vScreenDomain - vec3(0,0,fScreenCurveRadius)) - fScreenCurveRadius - fBevel);
-float fXSectionDist = length( vXSectionClosest ) - fXSectionR;
-resultComputer.fDist = x;
+// Materials
+// Integral of function where result is 1.0 between s1 and s2 and 0 otherwise
+// V1
+//if ( x > s2 ) return s2 - s1;
+//else if ( x > s1 ) return x - s1;
+//return 0.0f;
+// V2
+//return clamp( (x - s1), 0.0f, s2 - s1);
+//return t;
+// Integral of function where result is 1.0 between s1 and s2 and 0 otherwise
+// V1
+//if ( x > s2 ) return s2 - s1;
+//else if ( x > s1 ) return x - s1;
+//return 0.0f;
+// V2
+//return clamp( (x - s1), 0.0f, s2 - s1);
+//return t;
+//x -= 0.5f;
+//y -= 0.5f;
+// cell centered at 0.5
+//vResult = vec3(1.0);
+//vec2 vTextureUV = vPixelCoord;
+//vTextureUV.x += (interference.scanLineRandom * 2.0f - 1.0f) * 0.025f * noiseIntensity;
+// TODO: feather edge?
+//return surfaceInfo;
+// Scene Description
+//return min(a,b);
+//float k = 0.06;
+//vec3 vToFace = abs(p) - b;
+//vec3 vConstrained = max( vToFace, 0.0 );
+//return length( vConstrained ) - r;
+//resultScreen.fDist = (length( vScreenDomain - vec3(0,0,fScreenCurveRadius)) - fScreenCurveRadius - fBevel);
+//float fXSectionDist = length( vXSectionClosest ) - fXSectionR;
+//resultComputer.fDist = x;
 
 vec3 vKeyPos = vPos.xyz - vec3(0,0.125,0);
 vKeyPos.y -= vKeyPos.z * (fXSectionR2 - fXSectionR1) * 2.0 / fXSectionLength;
@@ -95,7 +95,7 @@ if ( fract(vKeyPos.z * 0.5 / fDomainRepeatScale + 0.25) > 0.5) vKeyPos.x += fDom
 vec2 vKeyIndex = round(vKeyPos.xz / fDomainRepeatScale);
 vKeyIndex.x = clamp( vKeyIndex.x, -8.0, 8.0 );
 vKeyIndex.y = clamp( vKeyIndex.y, -10.0, -5.0 );
-vKeyPos.xz = (fract( vKeyPos.xz / fDomainRepeatScale ) - 0.5) * fDomainRepeatScale;
+//vKeyPos.xz = (fract( vKeyPos.xz / fDomainRepeatScale ) - 0.5) * fDomainRepeatScale;
 vKeyPos.xz = (vKeyPos.xz - (vKeyIndex) * fDomainRepeatScale);
 vKeyPos.xz /= 0.7 + vKeyPos.y;
 SceneResult resultKey;
@@ -104,28 +104,28 @@ resultKey.fDist = UdRoundBox( vKeyPos, vec3(0.01), 0.001 );
 resultKey.iObjectId = MAT_TV_TRIM;
 Scene_Union( resultComputer, resultKey );
 
-result.fDist = vPos.y;
-vPos.x = fract( vPos.x - 0.5) - 0.5;
-SceneResult resultComputer = Scene_GetComputer( vPos - vec3(0.0, 0.0, -0.1) );
-Scene_Union( result, resultComputer );
- Scene Lighting
- AO
- Environment
-#if 1
-#endif
-#if 0
-    vec3 vEnvMap = textureLod( iChannel1, vViewDir.zyx, 0.0 ).rgb;
-    vEnvMap = vEnvMap * vEnvMap;
-    float kEnvmapExposure = 0.999;
-    vResult.rgb = -log2(1.0 - vEnvMap * kEnvmapExposure);
-#endif
- Sun
-float NdotV = dot( g_vSunDir, vViewDir );
-vResult.rgb += smoothstep( cos(radians(.7)), cos(radians(.5)), NdotV ) * g_vSunColor * 5000.0;
-return vColor;
-Env_AddDirectionalLightFlareToFog( vFogColor, vRayDir, g_vSunDir, g_vSunColor * 3.0);
-index=2;
-float fElevation = (iMouse.y / iResolution.y) * radians(90.0);
+//result.fDist = vPos.y;
+//vPos.x = fract( vPos.x - 0.5) - 0.5;
+//SceneResult resultComputer = Scene_GetComputer( vPos - vec3(0.0, 0.0, -0.1) );
+//Scene_Union( result, resultComputer );
+// Scene Lighting
+// AO
+// Environment
+//#if 1
+//#endif
+//#if 0
+//    vec3 vEnvMap = textureLod( iChannel1, vViewDir.zyx, 0.0 ).rgb;
+//    vEnvMap = vEnvMap * vEnvMap;
+//    float kEnvmapExposure = 0.999;
+//    vResult.rgb = -log2(1.0 - vEnvMap * kEnvmapExposure);
+//#endif
+// Sun
+//float NdotV = dot( g_vSunDir, vViewDir );
+//vResult.rgb += smoothstep( cos(radians(.7)), cos(radians(.5)), NdotV ) * g_vSunColor * 5000.0;
+//return vColor;
+//Env_AddDirectionalLightFlareToFog( vFogColor, vRayDir, g_vSunDir, g_vSunColor * 3.0);
+//index=2;
+//float fElevation = (iMouse.y / iResolution.y) * radians(90.0);
 
 */
 

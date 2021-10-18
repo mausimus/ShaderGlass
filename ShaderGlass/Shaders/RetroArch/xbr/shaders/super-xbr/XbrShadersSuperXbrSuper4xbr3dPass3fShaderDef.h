@@ -51,7 +51,7 @@ P2
  Calc edgeness in horizontal/vertical directions. 
  Filter weights. Two taps only. 
  Filtering and normalization in four direction generating four colors. 
-bool ir_lv1 = (((e!=f) && (e!=h))  && ( !eq(f,b) && !eq(f,c) || !eq(h,d) && !eq(h,g) || eq(e,i) && (!eq(f,f4) && !eq(f,i4) || !eq(h,h5) && !eq(h,i5)) || eq(e,g) || eq(e,c)) );
+//bool ir_lv1 = (((e!=f) && (e!=h))  && ( !eq(f,b) && !eq(f,c) || !eq(h,d) && !eq(h,g) || eq(e,i) && (!eq(f,f4) && !eq(f,i4) || !eq(h,h5) && !eq(h,i5)) || eq(e,g) || eq(e,c)) );
  Smoothly blends the two strongest directions (one in diagonal and the other in vert/horiz direction). 
  Anti-ringing code. 
 

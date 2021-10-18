@@ -4,11 +4,11 @@ https://github.com/libretro/slang-shaders/blob/master/dithering/shaders/bayer-ma
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- 8x8 Bayer matrix dithering
- by Martins Upitis
- license: "All the content here is and will be free to use for everyone, but a donation is always nice.
- url: http://devlog-martinsh.blogspot.com/2011/03/glsl-8x8-bayer-matrix-dithering.html
- adapted for RetroArch by hunterk
+// 8x8 Bayer matrix dithering
+// by Martins Upitis
+// license: "All the content here is and will be free to use for everyone, but a donation is always nice.
+// url: http://devlog-martinsh.blogspot.com/2011/03/glsl-8x8-bayer-matrix-dithering.html
+// adapted for RetroArch by hunterk
 { 0, 32, 8, 40, 2, 34, 10, 42}, /* 8x8 Bayer ordered dithering 
 {48, 16, 56, 24, 50, 18, 58, 26}, /* pattern. Each input pixel 
 {12, 44, 4, 36, 14, 46, 6, 38}, /* is scaled to the 0..63 range 

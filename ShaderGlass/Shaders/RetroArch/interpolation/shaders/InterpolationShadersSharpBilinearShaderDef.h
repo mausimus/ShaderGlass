@@ -12,8 +12,8 @@ This file is auto-generated, do not modify directly.
 * Does a bilinear stretch, with a preapplied Nx nearest-neighbor scale, giving a
 * sharper image than plain bilinear.
 
- Figure out where in the texel to sample to get correct pre-scaled bilinear.
- Uses the hardware bilinear interpolator to avoid having to sample 4 times manually.
+// Figure out where in the texel to sample to get correct pre-scaled bilinear.
+// Uses the hardware bilinear interpolator to avoid having to sample 4 times manually.
 
 */
 

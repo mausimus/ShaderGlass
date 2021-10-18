@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/blurs/kawase/kawase7.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- Kuwase Blur
- based on a shadertoy by Kubuxu
- https://www.shadertoy.com/view/Xl3XW7
+// Kuwase Blur
+// based on a shadertoy by Kubuxu
+// https://www.shadertoy.com/view/Xl3XW7
 
 */
 

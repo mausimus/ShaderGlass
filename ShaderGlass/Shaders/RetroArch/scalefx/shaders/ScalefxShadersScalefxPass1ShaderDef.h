@@ -43,15 +43,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- corner strength
+// corner strength
 	grid		metric		pattern
 
 A B		x y z		x y
 D E F		  o w		w z
 G H I
 
- metric data
- corner strength
+// metric data
+// corner strength
 
 */
 

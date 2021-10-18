@@ -25,11 +25,11 @@ along with XBMC; see the file COPYING.  If not, write to
 the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 http://www.gnu.org/copyleft/gpl.html
 
- Default to Mitchel-Netravali coefficients for best psychovisual result
- bicubic-sharp is B = 0.1 and C = 0.5
- bicubic-sharper is B = 0.0 and C = 0.75
-make sure all taps added together is exactly 1.0, otherwise some (very small) distortion can occur
- final sum and weight normalization
+// Default to Mitchel-Netravali coefficients for best psychovisual result
+// bicubic-sharp is B = 0.1 and C = 0.5
+// bicubic-sharper is B = 0.0 and C = 0.75
+//make sure all taps added together is exactly 1.0, otherwise some (very small) distortion can occur
+// final sum and weight normalization
 
 */
 

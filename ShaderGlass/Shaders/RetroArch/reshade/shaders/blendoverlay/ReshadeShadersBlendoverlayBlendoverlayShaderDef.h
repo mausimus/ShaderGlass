@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/reshade/shaders/blendoverl
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- blendoverlay
- based on:
- https://github.com/jamieowen/glsl-blend for blendOverlay
+// blendoverlay
+// based on:
+// https://github.com/jamieowen/glsl-blend for blendOverlay
 
 */
 

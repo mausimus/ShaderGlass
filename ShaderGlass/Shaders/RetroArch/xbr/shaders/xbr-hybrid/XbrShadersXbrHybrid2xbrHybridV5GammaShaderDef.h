@@ -53,14 +53,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *  POSSIBILITY OF SUCH DAMAGE.
 *
 
- Constants used with gamma correction.
-    A1 B1 C1
- A0  A  B  C C4
- D0  D  E  F F4
- G0  G  H  I I4
-    G5 H5 I5
- These inequations define the line below which interpolation occurs.
-this is the only way I can keep these comparisons straight '-_-
+// Constants used with gamma correction.
+//    A1 B1 C1
+// A0  A  B  C C4
+// D0  D  E  F F4
+// G0  G  H  I I4
+//    G5 H5 I5
+// These inequations define the line below which interpolation occurs.
+//this is the only way I can keep these comparisons straight '-_-
 
 */
 

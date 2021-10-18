@@ -19,7 +19,7 @@ sstp(x) := smoothstep(0, 1, x) = -2x^3 + 3x^2
 sat(x)  := saturate(x) = max(0, min(1, x))
 
 
- STRMIN = CUTLO = 1.0 behaves equivalent to Hyllian's shaders.
+// STRMIN = CUTLO = 1.0 behaves equivalent to Hyllian's shaders.
 
 */
 

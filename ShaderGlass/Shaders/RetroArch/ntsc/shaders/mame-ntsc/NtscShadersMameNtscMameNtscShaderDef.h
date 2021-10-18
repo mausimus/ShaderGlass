@@ -4,43 +4,43 @@ https://github.com/libretro/slang-shaders/blob/master/ntsc/shaders/mame-ntsc/mam
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- This is a port of the NTSC encode/decode shader pair in MAME and MESS, modified to use only
- one pass rather than an encode pass and a decode pass. It accurately emulates the sort of
- signal decimation one would see when viewing a composite signal, though it could benefit from a
- pre-pass to re-size the input content to more accurately reflect the actual size that would
- be incoming from a composite signal source.
-
- To encode the composite signal, I convert the RGB value to YIQ, then subsequently evaluate
- the standard NTSC composite equation. Four composite samples per RGB pixel are generated from
- the incoming linearly-interpolated texels.
-
- The decode pass implements a Fixed Impulse Response (FIR) filter designed by MAME/MESS contributor
- "austere" in matlab (if memory serves correctly) to mimic the behavior of a standard television set
- as closely as possible. The filter window is 83 composite samples wide, and there is an additional
- notch filter pass on the luminance (Y) values in order to strip the color signal from the luminance
- signal prior to processing.
-
- Yes, this code could greatly use some cleaning up.
- ported from UltraMoogleMan's "Full MAME/MESS Shader Pipe" shadertoy: https://www.shadertoy.com/view/ldf3Rf
- license: presumably MAME's license at the time, which was noncommercial
- Useful Constants
- NTSC Constants
- Color Convolution Constants
- Deconverge Constants
- Scanline/Pincushion Constants
-const float ScanlineAmount = 0.175; <- move to parameter
- 60Hz Bar Constants
- UVs for four linearly-interpolated samples spaced 0.25 texels apart
-Frequency = Frequency;// Uncomment for bad color sync + (sin(UV.y * 2.0 - 1.0) / CCFrequency) * 0.001;
- Calculated the expected time of the sample.
- Frequency cutoffs for the individual portions of the signal that we extract.
- Y1 and Y2 are the positive and negative frequency limits of the notch filter on Y.
- Y3 is the center of the frequency response of the Y filter.
- I is the center of the frequency response of the I filter.
- Q is the center of the frequency response of the Q filter.
- 83 composite samples wide, 4 composite pixels per texel
- These zero-checks could be made more efficient if WebGL supported mix(vec4, vec4, bvec4)
- Unfortunately, the universe hates us
+// This is a port of the NTSC encode/decode shader pair in MAME and MESS, modified to use only
+// one pass rather than an encode pass and a decode pass. It accurately emulates the sort of
+// signal decimation one would see when viewing a composite signal, though it could benefit from a
+// pre-pass to re-size the input content to more accurately reflect the actual size that would
+// be incoming from a composite signal source.
+//
+// To encode the composite signal, I convert the RGB value to YIQ, then subsequently evaluate
+// the standard NTSC composite equation. Four composite samples per RGB pixel are generated from
+// the incoming linearly-interpolated texels.
+//
+// The decode pass implements a Fixed Impulse Response (FIR) filter designed by MAME/MESS contributor
+// "austere" in matlab (if memory serves correctly) to mimic the behavior of a standard television set
+// as closely as possible. The filter window is 83 composite samples wide, and there is an additional
+// notch filter pass on the luminance (Y) values in order to strip the color signal from the luminance
+// signal prior to processing.
+//
+// Yes, this code could greatly use some cleaning up.
+// ported from UltraMoogleMan's "Full MAME/MESS Shader Pipe" shadertoy: https://www.shadertoy.com/view/ldf3Rf
+// license: presumably MAME's license at the time, which was noncommercial
+// Useful Constants
+// NTSC Constants
+// Color Convolution Constants
+// Deconverge Constants
+// Scanline/Pincushion Constants
+//const float ScanlineAmount = 0.175; <- move to parameter
+// 60Hz Bar Constants
+// UVs for four linearly-interpolated samples spaced 0.25 texels apart
+//Frequency = Frequency;// Uncomment for bad color sync + (sin(UV.y * 2.0 - 1.0) / CCFrequency) * 0.001;
+// Calculated the expected time of the sample.
+// Frequency cutoffs for the individual portions of the signal that we extract.
+// Y1 and Y2 are the positive and negative frequency limits of the notch filter on Y.
+// Y3 is the center of the frequency response of the Y filter.
+// I is the center of the frequency response of the I filter.
+// Q is the center of the frequency response of the Q filter.
+// 83 composite samples wide, 4 composite pixels per texel
+// These zero-checks could be made more efficient if WebGL supported mix(vec4, vec4, bvec4)
+// Unfortunately, the universe hates us
 
 */
 

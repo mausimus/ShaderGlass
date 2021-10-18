@@ -43,14 +43,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- Reference: http://www.compuphase.com/cmetric.htm
+// Reference: http://www.compuphase.com/cmetric.htm
 	grid		metric
 
 A B C		x y z
 E F		  o w
 
- read texels
- output
+// read texels
+// output
 
 */
 

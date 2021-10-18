@@ -10,9 +10,9 @@ https://www.shadertoy.com/view/llyGzR
 
 Colors created through NTSC artifacting on 4-bit patterns, similar to the Apple II's lo-res mode.
 
-Modulator
-#define F_COL (1.0 / 4.0) // moved to parameter
-Complex oscillator, Fo = Oscillator freq., Fs = Sample freq., n = Sample index
+//Modulator
+//#define F_COL (1.0 / 4.0) // moved to parameter
+//Complex oscillator, Fo = Oscillator freq., Fs = Sample freq., n = Sample index
 
 */
 

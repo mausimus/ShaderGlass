@@ -17,9 +17,9 @@ Color Levels = Determines number of color "bands".
 Color Weight = Changes the strength of the color adjustments.
 ----------------------------------------------------------------
 
- gray, no chroma
- chromatic data
- brightness modifier
+// gray, no chroma
+// chromatic data
+// brightness modifier
 
 */
 

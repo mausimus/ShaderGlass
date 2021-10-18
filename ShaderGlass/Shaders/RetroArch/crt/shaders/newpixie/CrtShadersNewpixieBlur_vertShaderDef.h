@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/newpixie/blur_
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- newpixie CRT
- by Mattias Gustavsson
- adapted for slang by hunterk
+// newpixie CRT
+// by Mattias Gustavsson
+// adapted for slang by hunterk
 
 ------------------------------------------------------------------------------
 This software is available under 2 licenses - you may choose the one you like.

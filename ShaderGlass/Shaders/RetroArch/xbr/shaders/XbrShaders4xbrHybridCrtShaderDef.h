@@ -53,24 +53,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *  POSSIBILITY OF SUCH DAMAGE.
 *
 
- Constants used with gamma correction.
- 0.5 = the spot stays inside the original pixel
- 1.0 = the spot bleeds up to the center of next pixel
- Used to counteract the desaturation effect of weighting.
- Macro for weights computing
-    A1 B1 C1
- A0  A  B  C C4
- D0  D  E  F F4
- G0  G  H  I I4
-    G5 H5 I5
- This line fix a bug in ATI cards.
- These inequations define the line below which interpolation occurs.
- unroll this whole crazy thing
- xBR corner mode B
- xBR corner mode C
- CRT-caligari - only vertical blend
- get closest vertical neighbour to blend
-   FragColor = vec4(res.x, res.y, res.z, 1.0);
+// Constants used with gamma correction.
+// 0.5 = the spot stays inside the original pixel
+// 1.0 = the spot bleeds up to the center of next pixel
+// Used to counteract the desaturation effect of weighting.
+// Macro for weights computing
+//    A1 B1 C1
+// A0  A  B  C C4
+// D0  D  E  F F4
+// G0  G  H  I I4
+//    G5 H5 I5
+// This line fix a bug in ATI cards.
+// These inequations define the line below which interpolation occurs.
+// unroll this whole crazy thing
+// xBR corner mode B
+// xBR corner mode C
+// CRT-caligari - only vertical blend
+// get closest vertical neighbour to blend
+//   FragColor = vec4(res.x, res.y, res.z, 1.0);
 
 */
 

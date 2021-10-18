@@ -5,9 +5,9 @@ See original file for full credits and usage license with excerpts below.
 This file is auto-generated, do not modify directly.
 
  MASK_TYPE: 0 = none, 1 = green/magenta, 2 = trinitron(ish) 
-#define FAKE_GAMMA
-#define GAMMA
-#define SHARPER
+//#define FAKE_GAMMA
+//#define GAMMA
+//#define SHARPER
 
 crt-pi - A Raspberry Pi friendly CRT shader.
 Copyright (C) 2015-2016 davej
@@ -47,9 +47,9 @@ BLOOM_FACTOR controls the increase in width for bright scanlines.
 MASK_TYPE defines what, if any, shadow mask to use. MASK_BRIGHTNESS defines how
 much the mask type darkens the screen.
 
- Barrel distortion shrinks the display area a bit, this will allow us to counteract that.
-  coord *= screenScale; // not necessary in slang
-      coord /= screenScale; // not necessary in slang
+// Barrel distortion shrinks the display area a bit, this will allow us to counteract that.
+//  coord *= screenScale; // not necessary in slang
+//      coord /= screenScale; // not necessary in slang
  Apply scanlines 
 #endif /* SCANLINES 
 

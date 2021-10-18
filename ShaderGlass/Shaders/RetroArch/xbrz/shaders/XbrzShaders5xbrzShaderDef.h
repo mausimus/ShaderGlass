@@ -28,72 +28,72 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- This shader also uses code and/or concepts from xBRZ as it appears
- in the Desmume source code. The license for which is as follows:
- ****************************************************************************
- * This file is part of the HqMAME project. It is distributed under         *
- * GNU General Public License: http://www.gnu.org/licenses/gpl-3.0          *
- * Copyright (C) Zenju (zenju AT gmx DOT de) - All Rights Reserved          *
- *                                                                          *
- * Additionally and as a special exception, the author gives permission     *
- * to link the code of this program with the MAME library (or with modified *
- * versions of MAME that use the same license as MAME), and distribute      *
- * linked combinations including the two. You must obey the GNU General     *
- * Public License in all respects for all of the code used other than MAME. *
- * If you modify this file, you may extend this exception to your version   *
- * of the file, but you are not obligated to do so. If you do not wish to   *
- * do so, delete this exception statement from your version.                *
- ****************************************************************************
----------------------------------------
- Input Pixel Mapping:    --|21|22|23|--
-                         19|06|07|08|09
-                         18|05|00|01|10
-                         17|04|03|02|11
-                         --|15|14|13|--
-
- Output Pixel Mapping: 20|21|22|23|24|25
-                       19|06|07|08|09|26
-                       18|05|00|01|10|27
-                       17|04|03|02|11|28
-                       16|15|14|13|12|29
-                       35|34|33|32|31|30
-  A1 B1 C1
- A0 A  B  C C4
- D0 D  E  F F4
- G0 G  H  I I4
-  G5 H5 I5
----------------------------------------
- Input Pixel Mapping:  20|21|22|23|24
-                       19|06|07|08|09
-                       18|05|00|01|10
-                       17|04|03|02|11
-                       16|15|14|13|12
- Preprocess corners
- Pixel Tap Mapping: --|--|--|--|--
-                    --|--|07|08|--
-                    --|05|00|01|10
-                    --|04|03|02|11
-                    --|--|14|13|--
- Corner (1, 1)
- Pixel Tap Mapping: --|--|--|--|--
-                    --|06|07|--|--
-                    18|05|00|01|--
-                    17|04|03|02|--
-                    --|15|14|--|--
- Corner (0, 1)
- Pixel Tap Mapping: --|--|22|23|--
-                    --|06|07|08|09
-                    --|05|00|01|10
-                    --|--|03|02|--
-                    --|--|--|--|--
- Corner (1, 0)
- Pixel Tap Mapping: --|21|22|--|--
-                    19|06|07|08|--
-                    18|05|00|01|--
-                    --|04|03|--|--
-                    --|--|--|--|--
- Corner (0, 0)
- Scale pixel
+// This shader also uses code and/or concepts from xBRZ as it appears
+// in the Desmume source code. The license for which is as follows:
+// ****************************************************************************
+// * This file is part of the HqMAME project. It is distributed under         *
+// * GNU General Public License: http://www.gnu.org/licenses/gpl-3.0          *
+// * Copyright (C) Zenju (zenju AT gmx DOT de) - All Rights Reserved          *
+// *                                                                          *
+// * Additionally and as a special exception, the author gives permission     *
+// * to link the code of this program with the MAME library (or with modified *
+// * versions of MAME that use the same license as MAME), and distribute      *
+// * linked combinations including the two. You must obey the GNU General     *
+// * Public License in all respects for all of the code used other than MAME. *
+// * If you modify this file, you may extend this exception to your version   *
+// * of the file, but you are not obligated to do so. If you do not wish to   *
+// * do so, delete this exception statement from your version.                *
+// ****************************************************************************
+//---------------------------------------
+// Input Pixel Mapping:    --|21|22|23|--
+//                         19|06|07|08|09
+//                         18|05|00|01|10
+//                         17|04|03|02|11
+//                         --|15|14|13|--
+//
+// Output Pixel Mapping: 20|21|22|23|24|25
+//                       19|06|07|08|09|26
+//                       18|05|00|01|10|27
+//                       17|04|03|02|11|28
+//                       16|15|14|13|12|29
+//                       35|34|33|32|31|30
+//  A1 B1 C1
+// A0 A  B  C C4
+// D0 D  E  F F4
+// G0 G  H  I I4
+//  G5 H5 I5
+//---------------------------------------
+// Input Pixel Mapping:  20|21|22|23|24
+//                       19|06|07|08|09
+//                       18|05|00|01|10
+//                       17|04|03|02|11
+//                       16|15|14|13|12
+// Preprocess corners
+// Pixel Tap Mapping: --|--|--|--|--
+//                    --|--|07|08|--
+//                    --|05|00|01|10
+//                    --|04|03|02|11
+//                    --|--|14|13|--
+// Corner (1, 1)
+// Pixel Tap Mapping: --|--|--|--|--
+//                    --|06|07|--|--
+//                    18|05|00|01|--
+//                    17|04|03|02|--
+//                    --|15|14|--|--
+// Corner (0, 1)
+// Pixel Tap Mapping: --|--|22|23|--
+//                    --|06|07|08|09
+//                    --|05|00|01|10
+//                    --|--|03|02|--
+//                    --|--|--|--|--
+// Corner (1, 0)
+// Pixel Tap Mapping: --|21|22|--|--
+//                    19|06|07|08|--
+//                    18|05|00|01|--
+//                    --|04|03|--|--
+//                    --|--|--|--|--
+// Corner (0, 0)
+// Scale pixel
 
 */
 

@@ -9,7 +9,7 @@ Fragment shader based on "Improved texture interpolation" by Iñigo Quílez
 Original description: http://www.iquilezles.org/www/articles/texture/texture.htm
 
 
- final sum and weight normalization
+// final sum and weight normalization
 
 */
 

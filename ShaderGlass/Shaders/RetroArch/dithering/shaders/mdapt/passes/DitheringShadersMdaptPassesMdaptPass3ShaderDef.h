@@ -16,8 +16,8 @@ UL U UR
 L  C R
 DL D DR
 
- Backpropagation
- Checkerboard Smoothing
+// Backpropagation
+// Checkerboard Smoothing
 
 */
 

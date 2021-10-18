@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/guest/blur_ver
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- Higher value, more centered glow.
- Lower values might need more taps.
- Parameter lines go here:
+// Higher value, more centered glow.
+// Lower values might need more taps.
+// Parameter lines go here:
 
 */
 

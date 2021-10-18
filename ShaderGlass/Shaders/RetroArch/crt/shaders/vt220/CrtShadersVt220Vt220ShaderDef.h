@@ -4,12 +4,12 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/vt220/vt220.sl
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- vt220
- by sprash3
- https://www.shadertoy.com/view/XdtfzX
-#define LIGHTS_ON true
-#define LIGHTS_ON false
-#define LIGHTS_ON sin(fract(iTime/23.)+2.74) + 0.1*abs(sin(iTime*1000.)) <.0
+// vt220
+// by sprash3
+// https://www.shadertoy.com/view/XdtfzX
+//#define LIGHTS_ON true
+//#define LIGHTS_ON false
+//#define LIGHTS_ON sin(fract(iTime/23.)+2.74) + 0.1*abs(sin(iTime*1000.)) <.0
 
 A collection of CRT mask effects that work with LCD subpixel structures for
 small details
@@ -39,92 +39,92 @@ layout to apply. 0 is no mask/passthru.
 Many of these mask arrays are adapted from cgwg's crt-geom-deluxe LUTs, and
 those have their filenames included for easy identification
 
- This pattern is used by a few layouts, so we'll define it here
- classic aperture for RGB panels; good for 1080p, too small for 4K+
- aka aperture_1_2_bgr
- 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
- aka delta_1_2x1_bgr
- slot mask for RGB panels; looks okay at 1080p, looks better at 4K
- find the vertical index
- find the horizontal index
- use the indexes to find which color to apply to the current pixel
- classic aperture for RBG panels; good for 1080p, too small for 4K+
- 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
- aperture_1_4_rgb; good for simulating lower
- aperture_2_5_bgr
- aperture_3_6_rgb
- reduced TVL aperture for RGB panels
- aperture_2_4_rgb
- reduced TVL aperture for RBG panels
- delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
- delta_2_4x1_rgb
- delta_2_4x2_rgb
- slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
- slot_2_4x4_rgb
- slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
- slot_2_5x4_bgr
- same as above but for RBG panels
- slot_3_7x6_rgb
- TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
- This pattern is used by a few layouts, so we'll define it here
- classic aperture for RGB panels; good for 1080p, too small for 4K+
- aka aperture_1_2_bgr
- 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
- aka delta_1_2x1_bgr
- slot mask for RGB panels; looks okay at 1080p, looks better at 4K
- find the vertical index
- find the horizontal index
- use the indexes to find which color to apply to the current pixel
- classic aperture for RBG panels; good for 1080p, too small for 4K+
- 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
- aperture_1_4_rgb; good for simulating lower
- aperture_2_5_bgr
- aperture_3_6_rgb
- reduced TVL aperture for RGB panels
- aperture_2_4_rgb
- reduced TVL aperture for RBG panels
- delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
- delta_2_4x1_rgb
- delta_2_4x2_rgb
- slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
- slot_2_4x4_rgb
- slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
- slot_2_5x4_bgr
- same as above but for RBG panels
- slot_3_7x6_rgb
- TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
- Coordinates for content
- Coordinates for the rest
- Coordinates for the shine
- standard roundSquare
- Calculate normal to distance function and move along
- normal with distance to get point of reflection
- curvature needs to be applied to host shader
- end curvature
-    if (LIGHTS_ON) {
- From my shader https://www.shadertoy.com/view/MtBXW3
- Glass Shine
- Ambient
- Enclosure Layer
- Inner Border
- Inner Border Shine
- Outer Border
- Outer Border Shine
- Table and room
-    } else {
- From my shader https://www.shadertoy.com/view/lt2SDK
- Ambient
- Inner Border
- Corner
- Outer Border
- Inner Border Reflection
- commenting because mipmaps are a crapshoot with slang; TODO: try again with GLSL
-	    // Bloom using composed MipMaps
-	    c2 += textureLod(iChannel0, vec2(uvC.x, 1.0-uvC.y), 3.) * smoothstep(0., -SMOOTH*20., stdRS(uvS, -0.02)) * 0.5;
-	   	c2 += textureLod(iChannel0, vec2(uvC.x, 1.0-uvC.y), 4.) * smoothstep(0., -SMOOTH*20., stdRS(uvS, -0.02)) * 0.5;
-	    c2 += textureLod(iChannel0, vec2(uvC.x, 1.0-uvC.y), 5.) * smoothstep(0., -SMOOTH*20., stdRS(uvS, -0.02)) * 0.5;
-    }
- mix light and dark for variable brightness
+// This pattern is used by a few layouts, so we'll define it here
+// classic aperture for RGB panels; good for 1080p, too small for 4K+
+// aka aperture_1_2_bgr
+// 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
+// aka delta_1_2x1_bgr
+// slot mask for RGB panels; looks okay at 1080p, looks better at 4K
+// find the vertical index
+// find the horizontal index
+// use the indexes to find which color to apply to the current pixel
+// classic aperture for RBG panels; good for 1080p, too small for 4K+
+// 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
+// aperture_1_4_rgb; good for simulating lower
+// aperture_2_5_bgr
+// aperture_3_6_rgb
+// reduced TVL aperture for RGB panels
+// aperture_2_4_rgb
+// reduced TVL aperture for RBG panels
+// delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
+// delta_2_4x1_rgb
+// delta_2_4x2_rgb
+// slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+// slot_2_4x4_rgb
+// slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+// slot_2_5x4_bgr
+// same as above but for RBG panels
+// slot_3_7x6_rgb
+// TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
+// This pattern is used by a few layouts, so we'll define it here
+// classic aperture for RGB panels; good for 1080p, too small for 4K+
+// aka aperture_1_2_bgr
+// 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
+// aka delta_1_2x1_bgr
+// slot mask for RGB panels; looks okay at 1080p, looks better at 4K
+// find the vertical index
+// find the horizontal index
+// use the indexes to find which color to apply to the current pixel
+// classic aperture for RBG panels; good for 1080p, too small for 4K+
+// 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
+// aperture_1_4_rgb; good for simulating lower
+// aperture_2_5_bgr
+// aperture_3_6_rgb
+// reduced TVL aperture for RGB panels
+// aperture_2_4_rgb
+// reduced TVL aperture for RBG panels
+// delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
+// delta_2_4x1_rgb
+// delta_2_4x2_rgb
+// slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+// slot_2_4x4_rgb
+// slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+// slot_2_5x4_bgr
+// same as above but for RBG panels
+// slot_3_7x6_rgb
+// TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
+// Coordinates for content
+// Coordinates for the rest
+// Coordinates for the shine
+// standard roundSquare
+// Calculate normal to distance function and move along
+// normal with distance to get point of reflection
+// curvature needs to be applied to host shader
+// end curvature
+//    if (LIGHTS_ON) {
+// From my shader https://www.shadertoy.com/view/MtBXW3
+// Glass Shine
+// Ambient
+// Enclosure Layer
+// Inner Border
+// Inner Border Shine
+// Outer Border
+// Outer Border Shine
+// Table and room
+//    } else {
+// From my shader https://www.shadertoy.com/view/lt2SDK
+// Ambient
+// Inner Border
+// Corner
+// Outer Border
+// Inner Border Reflection
+// commenting because mipmaps are a crapshoot with slang; TODO: try again with GLSL
+//	    // Bloom using composed MipMaps
+//	    c2 += textureLod(iChannel0, vec2(uvC.x, 1.0-uvC.y), 3.) * smoothstep(0., -SMOOTH*20., stdRS(uvS, -0.02)) * 0.5;
+//	   	c2 += textureLod(iChannel0, vec2(uvC.x, 1.0-uvC.y), 4.) * smoothstep(0., -SMOOTH*20., stdRS(uvS, -0.02)) * 0.5;
+//	    c2 += textureLod(iChannel0, vec2(uvC.x, 1.0-uvC.y), 5.) * smoothstep(0., -SMOOTH*20., stdRS(uvS, -0.02)) * 0.5;
+//    }
+// mix light and dark for variable brightness
 
 */
 

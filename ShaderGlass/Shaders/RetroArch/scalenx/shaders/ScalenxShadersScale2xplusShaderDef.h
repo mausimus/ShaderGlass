@@ -21,8 +21,8 @@ The Scale2x algorithm:
 - License: GNU-GPL
 
 
- Reading the texels
- Product interpolation
+// Reading the texels
+// Product interpolation
 
 */
 

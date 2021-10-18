@@ -4,10 +4,10 @@ https://github.com/libretro/slang-shaders/blob/master/scanlines/shaders/scanline
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- Super-basic scanline shader
- (looks bad at non-integer scales)
- by hunterk
- license: public domain
+// Super-basic scanline shader
+// (looks bad at non-integer scales)
+// by hunterk
+// license: public domain
 
 */
 

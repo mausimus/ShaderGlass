@@ -4,7 +4,7 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/glow-trails/gl
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-	vec4 current = pow(texture(Source, vTexCoord), vec4(2.2));
+//	vec4 current = pow(texture(Source, vTexCoord), vec4(2.2));
 
 */
 

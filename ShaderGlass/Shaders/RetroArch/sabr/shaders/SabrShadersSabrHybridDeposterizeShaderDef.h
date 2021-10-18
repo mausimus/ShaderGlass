@@ -34,24 +34,24 @@ Inequation coefficients for interpolation
 Equations are in the form: Ay + Bx = C
 45, 30, and 60 denote the angle from x each line the cooeficient variable set builds
 
- Coefficient for weighted edge detection
- Threshold for if luminance values are "equal
- Conversion from RGB to Luminance (from GIMP)
- Performs same logic operation as && for vectors
- Performs same logic operation as || for vectors
- Converts 4 3-color vectors into 1 4-value luminance vector
- Gets the difference between 2 4-value luminance vectors
- Determines if 2 4-value luminance vectors are "equal" based on threshold
- Gets the difference between 2 3-value rgb colors
- luma-based edge detection
- averaged pixel intensity from 3 color channels
- returns pixel color
- read neighboring pixel intensities
- average color differences around neighboring pixels
+// Coefficient for weighted edge detection
+// Threshold for if luminance values are "equal
+// Conversion from RGB to Luminance (from GIMP)
+// Performs same logic operation as && for vectors
+// Performs same logic operation as || for vectors
+// Converts 4 3-color vectors into 1 4-value luminance vector
+// Gets the difference between 2 4-value luminance vectors
+// Determines if 2 4-value luminance vectors are "equal" based on threshold
+// Gets the difference between 2 3-value rgb colors
+// luma-based edge detection
+// averaged pixel intensity from 3 color channels
+// returns pixel color
+// read neighboring pixel intensities
+// average color differences around neighboring pixels
 
- RGB edge detection << more expensive
+// RGB edge detection << more expensive
 vec4 rgb_pix[9];
- read neighboring pixel intensities
+// read neighboring pixel intensities
 for (int i=-1; i<2; i++) {
 for(int j=-1; j<2; j++) {
 k++;
@@ -60,7 +60,7 @@ float(j) * dytex));
 }
 }
 
- average color differences around neighboring pixels
+// average color differences around neighboring pixels
 float delta_r = (abs(rgb_pix[1].r-rgb_pix[7].r)+
 abs(rgb_pix[5].r-rgb_pix[3].r) +
 abs(rgb_pix[0].r-rgb_pix[8].r)+
@@ -95,18 +95,18 @@ Mask for algorhithm
 |     | 21  | 22  | 23  |     |
 +-----+-----+-----+-----+-----+
 
- Get mask values by performing texture lookup with the uniform sampler
- Store luminance values of each point in groups of 4
- so that we may operate on all four corners at once
- Scale current texel coordinate to [0..1]
- Determine amount of "smoothing" or mixing that could be done on texel corners
- Perform edge weight calculations
- Calculate rule results for interpolation
- Combine rules with edge weights
- Finalize interpolation rules and cast to float (0.0 for false, 1.0 for true)
- Determine the color to mix with for each corner
- Determine the mix amounts by combining the final rule result and corresponding
- mix amount for the rule in each corner
+// Get mask values by performing texture lookup with the uniform sampler
+// Store luminance values of each point in groups of 4
+// so that we may operate on all four corners at once
+// Scale current texel coordinate to [0..1]
+// Determine amount of "smoothing" or mixing that could be done on texel corners
+// Perform edge weight calculations
+// Calculate rule results for interpolation
+// Combine rules with edge weights
+// Finalize interpolation rules and cast to float (0.0 for false, 1.0 for true)
+// Determine the color to mix with for each corner
+// Determine the mix amounts by combining the final rule result and corresponding
+// mix amount for the rule in each corner
 
 Calculate the resulting color by traversing clockwise and counter-clockwise around
 the corners of the texel
@@ -114,12 +114,12 @@ the corners of the texel
 Finally choose the result that has the largest difference from the texel's original
 color
 
- single-pass gaussian blur from mrharicot https://www.shadertoy.com/view/XdfGDH
-declare stuff
-create the 1-D kernel
-get the normalization factor (as the gaussian has been clamped)
-read out the texels
-	vec4 hybrid = mix(Smooth, Sharp, test);
+// single-pass gaussian blur from mrharicot https://www.shadertoy.com/view/XdfGDH
+//declare stuff
+//create the 1-D kernel
+//get the normalization factor (as the gaussian has been clamped)
+//read out the texels
+//	vec4 hybrid = mix(Smooth, Sharp, test);
 
 */
 

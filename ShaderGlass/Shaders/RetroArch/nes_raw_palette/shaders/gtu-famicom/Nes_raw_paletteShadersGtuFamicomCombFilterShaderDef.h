@@ -4,11 +4,11 @@ https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/gt
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-//////////////////////////////////////////////////////
-  GTU version 0.50
-  Author: aliaspider - aliaspider@gmail.com
-  License: GPLv3
-//////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+//  GTU version 0.50
+//  Author: aliaspider - aliaspider@gmail.com
+//  License: GPLv3
+////////////////////////////////////////////////////////
 
 */
 

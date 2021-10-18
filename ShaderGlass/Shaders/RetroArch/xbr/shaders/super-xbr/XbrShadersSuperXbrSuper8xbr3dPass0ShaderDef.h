@@ -38,7 +38,7 @@ P1
 G     H5
 P2
 
-Skip pixels on wrong grid
+//Skip pixels on wrong grid
 
 P1
 |P0|B |C |P1|         C     F4          |a0|b1|c2|d3|

@@ -16,28 +16,28 @@ This file is auto-generated, do not modify directly.
  Controls the variance of the Gaussian noise. Lower values look smoother. 
  Affects the brightness of the noise. 
  Higher Signal-to-Noise Ratio values give less grain to brighter pixels. 0 disables this feature. 
-float inv_luma = dot(color, vec3(-0.2126, -0.7152, -0.0722)) + 1.0;
+//float inv_luma = dot(color, vec3(-0.2126, -0.7152, -0.0722)) + 1.0;
 ---------------------.
 | :: Generate Grain :: |
 '---------------------
  We use slang's FrameCount uniform variable instead of ReShade's Timer 
  We assume frame rate is 60 
-PRNG 2D - create two uniform noise values and save one DP2ADD
-Get settings
-Box-Muller transform
-float gauss_noise2 = variance * r * sin(theta) + mean; //we can get two gaussians out of it :)
-gauss_noise1 = (ddx(gauss_noise1) - ddy(gauss_noise1)) * 0.50  + gauss_noise2;
-Calculate how big the shift should be
-float grain = mix(1.0 - params.Intensity,  1.0 + params.Intensity, gauss_noise1);
-float grain2 = (2.0 * params.Intensity) * gauss_noise1 + (1.0 - params.Intensity);
-Apply grain
-color = (grain-1.0) *2.0 + 0.5;
-color = mix(color,colorInput.rgb,sqrt(luma));
+//PRNG 2D - create two uniform noise values and save one DP2ADD
+//Get settings
+//Box-Muller transform
+//float gauss_noise2 = variance * r * sin(theta) + mean; //we can get two gaussians out of it :)
+//gauss_noise1 = (ddx(gauss_noise1) - ddy(gauss_noise1)) * 0.50  + gauss_noise2;
+//Calculate how big the shift should be
+//float grain = mix(1.0 - params.Intensity,  1.0 + params.Intensity, gauss_noise1);
+//float grain2 = (2.0 * params.Intensity) * gauss_noise1 + (1.0 - params.Intensity);
+//Apply grain
+//color = (grain-1.0) *2.0 + 0.5;
+//color = mix(color,colorInput.rgb,sqrt(luma));
 -------------------------.
 | :: Debugging features :: |
 '-------------------------
-color.rgb = fract(gauss_noise1).xxx; //show the noise
-color.rgb = (gauss_noise1 > 0.999) ? vec3(1.0,1.0,0.0) : 0.0 ; //does it reach 1.0?
+//color.rgb = fract(gauss_noise1).xxx; //show the noise
+//color.rgb = (gauss_noise1 > 0.999) ? vec3(1.0,1.0,0.0) : 0.0 ; //does it reach 1.0?
 
 */
 

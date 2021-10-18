@@ -29,11 +29,11 @@ This is an approximation of Jinc(x)*Jinc(x*r1/r2) for x < 2.5,
 where r1 and r2 are the first two zeros of jinc function.
 For a jinc 2-lobe best approximation, use A=0.5 and B=0.825.
 
- A=0.5, B=0.825 is the best jinc approximation for x<2.5. if B=1.0, it's a lanczos filter.
- Increase A to get more blur. Decrease it to get a sharper picture.
- B = 0.825 to get rid of dithering. Increase B to get a fine sharpness, though dithering returns.
- Calculates the distance between two points
-  Get min/max samples
+// A=0.5, B=0.825 is the best jinc approximation for x<2.5. if B=1.0, it's a lanczos filter.
+// Increase A to get more blur. Decrease it to get a sharper picture.
+// B = 0.825 to get rid of dithering. Increase B to get a fine sharpness, though dithering returns.
+// Calculates the distance between two points
+//  Get min/max samples
 
 color = mat4x3(c00, c10, c20, c30) * weights[0];
 color+= mat4x3(c01, c11, c21, c31) * weights[1];
@@ -43,8 +43,8 @@ mat4 wgts = mat4(weights[0], weights[1], weights[2], weights[3]);
 vec4 wsum = wgts * vec4(1.0,1.0,1.0,1.0);
 color = color/(dot(wsum, vec4(1.0,1.0,1.0,1.0)));
 
- Anti-ringing
- final sum and weight normalization
+// Anti-ringing
+// final sum and weight normalization
 
 */
 

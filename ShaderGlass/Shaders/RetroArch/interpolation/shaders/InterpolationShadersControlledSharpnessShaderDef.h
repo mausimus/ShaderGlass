@@ -4,7 +4,7 @@ https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/Cont
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-https://www.desmos.com/calculator/3zhzwbfrxd
+//https://www.desmos.com/calculator/3zhzwbfrxd
 
 */
 

@@ -53,13 +53,13 @@ like fences and wires.
 7.0/8.0 - high amount of filtering
 1.0 - no capping of sub-pixel aliasing removal
 
- Return the luma, the estimation of luminance from rgb inputs.
- This approximates luma using one FMA instruction,
- skipping normalization and tossing out blue.
- FxaaLuma() will range 0.0 to 2.963210702.
- pos is the output of FxaaVertexShader interpolated across screen.
- xy -> actual texture position {0.0 to 1.0}
- rcpFrame should be a uniform equal to  {1.0/frameWidth, 1.0/frameHeight}
+// Return the luma, the estimation of luminance from rgb inputs.
+// This approximates luma using one FMA instruction,
+// skipping normalization and tossing out blue.
+// FxaaLuma() will range 0.0 to 2.963210702.
+// pos is the output of FxaaVertexShader interpolated across screen.
+// xy -> actual texture position {0.0 to 1.0}
+// rcpFrame should be a uniform equal to  {1.0/frameWidth, 1.0/frameHeight}
 
 */
 

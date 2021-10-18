@@ -4,13 +4,13 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/gtu-v050/pass2
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-//////////////////////////////////////////////////////
- GTU version 0.50
- Author: aliaspider - aliaspider@gmail.com
- License: GPLv3
-//////////////////////////////////////////////////////
-#define X(i) (offset-(i))
- tempColor=clamp(tempColor,0.0,1.0);
+////////////////////////////////////////////////////////
+// GTU version 0.50
+// Author: aliaspider - aliaspider@gmail.com
+// License: GPLv3
+////////////////////////////////////////////////////////
+//#define X(i) (offset-(i))
+// tempColor=clamp(tempColor,0.0,1.0);
 
 */
 

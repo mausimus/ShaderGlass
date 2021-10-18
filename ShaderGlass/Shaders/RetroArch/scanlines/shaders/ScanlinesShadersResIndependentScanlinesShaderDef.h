@@ -41,60 +41,60 @@ layout to apply. 0 is no mask/passthru.
 Many of these mask arrays are adapted from cgwg's crt-geom-deluxe LUTs, and
 those have their filenames included for easy identification
 
- This pattern is used by a few layouts, so we'll define it here
- classic aperture for RGB panels; good for 1080p, too small for 4K+
- aka aperture_1_2_bgr
- 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
- aka delta_1_2x1_bgr
- slot mask for RGB panels; looks okay at 1080p, looks better at 4K
- find the vertical index
- find the horizontal index
- use the indexes to find which color to apply to the current pixel
- classic aperture for RBG panels; good for 1080p, too small for 4K+
- 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
- aperture_1_4_rgb; good for simulating lower
- aperture_2_5_bgr
- aperture_3_6_rgb
- reduced TVL aperture for RGB panels
- aperture_2_4_rgb
- reduced TVL aperture for RBG panels
- delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
- delta_2_4x1_rgb
- delta_2_4x2_rgb
- slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
- slot_2_4x4_rgb
- slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
- slot_2_5x4_bgr
- same as above but for RBG panels
- slot_3_7x6_rgb
- TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
- This pattern is used by a few layouts, so we'll define it here
- classic aperture for RGB panels; good for 1080p, too small for 4K+
- aka aperture_1_2_bgr
- 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
- aka delta_1_2x1_bgr
- slot mask for RGB panels; looks okay at 1080p, looks better at 4K
- find the vertical index
- find the horizontal index
- use the indexes to find which color to apply to the current pixel
- classic aperture for RBG panels; good for 1080p, too small for 4K+
- 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
- aperture_1_4_rgb; good for simulating lower
- aperture_2_5_bgr
- aperture_3_6_rgb
- reduced TVL aperture for RGB panels
- aperture_2_4_rgb
- reduced TVL aperture for RBG panels
- delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
- delta_2_4x1_rgb
- delta_2_4x2_rgb
- slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
- slot_2_4x4_rgb
- slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
- slot_2_5x4_bgr
- same as above but for RBG panels
- slot_3_7x6_rgb
- TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
+// This pattern is used by a few layouts, so we'll define it here
+// classic aperture for RGB panels; good for 1080p, too small for 4K+
+// aka aperture_1_2_bgr
+// 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
+// aka delta_1_2x1_bgr
+// slot mask for RGB panels; looks okay at 1080p, looks better at 4K
+// find the vertical index
+// find the horizontal index
+// use the indexes to find which color to apply to the current pixel
+// classic aperture for RBG panels; good for 1080p, too small for 4K+
+// 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
+// aperture_1_4_rgb; good for simulating lower
+// aperture_2_5_bgr
+// aperture_3_6_rgb
+// reduced TVL aperture for RGB panels
+// aperture_2_4_rgb
+// reduced TVL aperture for RBG panels
+// delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
+// delta_2_4x1_rgb
+// delta_2_4x2_rgb
+// slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+// slot_2_4x4_rgb
+// slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+// slot_2_5x4_bgr
+// same as above but for RBG panels
+// slot_3_7x6_rgb
+// TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
+// This pattern is used by a few layouts, so we'll define it here
+// classic aperture for RGB panels; good for 1080p, too small for 4K+
+// aka aperture_1_2_bgr
+// 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
+// aka delta_1_2x1_bgr
+// slot mask for RGB panels; looks okay at 1080p, looks better at 4K
+// find the vertical index
+// find the horizontal index
+// use the indexes to find which color to apply to the current pixel
+// classic aperture for RBG panels; good for 1080p, too small for 4K+
+// 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
+// aperture_1_4_rgb; good for simulating lower
+// aperture_2_5_bgr
+// aperture_3_6_rgb
+// reduced TVL aperture for RGB panels
+// aperture_2_4_rgb
+// reduced TVL aperture for RBG panels
+// delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
+// delta_2_4x1_rgb
+// delta_2_4x2_rgb
+// slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+// slot_2_4x4_rgb
+// slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+// slot_2_5x4_bgr
+// same as above but for RBG panels
+// slot_3_7x6_rgb
+// TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
 
 */
 

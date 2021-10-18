@@ -29,30 +29,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- compatibility macros
-      A3 B3 C3
-      A1 B1 C1
-A2 A0  A  B  C C4 C6
-D2 D0  D  E  F F4 F6
-G2 G0  G  H  I I4 I6
-      G5 H5 I5
-      G7 H7 I7
-	interp_restriction_lv1        = (e  !=f    &&  e  !=h  );
-	interp_restriction_lv2_left   = (e  !=g    &&  d  !=g    && (eq(e, d)   || eq(h, g)  ));
-	interp_restriction_lv2_up     = (e  !=c    &&  b  !=c    && (eq(e, b)   || eq(f, c)  ));
-	interp_restriction_lv3_left   = (e  !=g0   && d0  !=g0   && (eq(d,d0)   || eq(g,g0)  ));
-	interp_restriction_lv3_up     = (e  !=c1   && b1  !=c1   && (eq(b,b1)   || eq(c,c1)  ));
-	interp_restriction_lv4_left   = (e  !=g2   && d2  !=g2   && (eq(d0,d2)   || eq(g0,g2)  ));
-	interp_restriction_lv4_up     = (e  !=c3   && b3  !=c3   && (eq(b1,b3)   || eq(c1,c3)  ));
-	edr0        = (wd1   <= wd2  ) && interp_restriction_lv1;
-	edr         = (wd1   <  wd2  ) && interp_restriction_lv1   && ( !eq(f,b)   && !id(f,c,f,b)   || !eq(h,d)   && !id(h,g,h,d)   || eq(e,g)   || eq(e,c)   );
-	edr_left    = ((cf2*df(f,g)  )  <= df(h,c)  )  && interp_restriction_lv2_left   && edr;
-	edr_up      = (df(f,g)    >= (cf2*df(h,c)  ))  && interp_restriction_lv2_up     && edr;
-	edr3_left   = ((cf3*df(f,g0)  ) <= df(h,c1)  ) && interp_restriction_lv3_left   && edr_left;
-	edr3_up     = (df(f,g0)   >= (cf3*df(h,c1)  )) && interp_restriction_lv3_up     && edr_up;
-	edr4_left   = ((cf4*df(f,g2)  ) <= df(h,c3)  ) && interp_restriction_lv4_left   && edr3_left;
-	edr4_up     = (df(f,g2)   >= (cf4*df(h,c3)  )) && interp_restriction_lv4_up     && edr3_up;
-	info   = (edr4_left   && !edr4_up  ) ? float4(8.0) : ((edr4_up   && !edr4_left  ) ? float4(7.0) : ((edr3_left   && !edr3_up  ) ? float4(6.0) : ((edr3_up   && !edr3_left  ) ? float4(5.0) : ((edr_left   && !edr_up  ) ? float4(4.0) : ((edr_up   && !edr_left  ) ? float4(3.0) : (edr   ? float4(2.0) : (edr0   ? float4(1.0) : float4(0.0))))))));
+// compatibility macros
+//      A3 B3 C3
+//      A1 B1 C1
+//A2 A0  A  B  C C4 C6
+//D2 D0  D  E  F F4 F6
+//G2 G0  G  H  I I4 I6
+//      G5 H5 I5
+//      G7 H7 I7
+//	interp_restriction_lv1        = (e  !=f    &&  e  !=h  );
+//	interp_restriction_lv2_left   = (e  !=g    &&  d  !=g    && (eq(e, d)   || eq(h, g)  ));
+//	interp_restriction_lv2_up     = (e  !=c    &&  b  !=c    && (eq(e, b)   || eq(f, c)  ));
+//	interp_restriction_lv3_left   = (e  !=g0   && d0  !=g0   && (eq(d,d0)   || eq(g,g0)  ));
+//	interp_restriction_lv3_up     = (e  !=c1   && b1  !=c1   && (eq(b,b1)   || eq(c,c1)  ));
+//	interp_restriction_lv4_left   = (e  !=g2   && d2  !=g2   && (eq(d0,d2)   || eq(g0,g2)  ));
+//	interp_restriction_lv4_up     = (e  !=c3   && b3  !=c3   && (eq(b1,b3)   || eq(c1,c3)  ));
+//	edr0        = (wd1   <= wd2  ) && interp_restriction_lv1;
+//	edr         = (wd1   <  wd2  ) && interp_restriction_lv1   && ( !eq(f,b)   && !id(f,c,f,b)   || !eq(h,d)   && !id(h,g,h,d)   || eq(e,g)   || eq(e,c)   );
+//	edr_left    = ((cf2*df(f,g)  )  <= df(h,c)  )  && interp_restriction_lv2_left   && edr;
+//	edr_up      = (df(f,g)    >= (cf2*df(h,c)  ))  && interp_restriction_lv2_up     && edr;
+//	edr3_left   = ((cf3*df(f,g0)  ) <= df(h,c1)  ) && interp_restriction_lv3_left   && edr_left;
+//	edr3_up     = (df(f,g0)   >= (cf3*df(h,c1)  )) && interp_restriction_lv3_up     && edr_up;
+//	edr4_left   = ((cf4*df(f,g2)  ) <= df(h,c3)  ) && interp_restriction_lv4_left   && edr3_left;
+//	edr4_up     = (df(f,g2)   >= (cf4*df(h,c3)  )) && interp_restriction_lv4_up     && edr3_up;
+//	info   = (edr4_left   && !edr4_up  ) ? float4(8.0) : ((edr4_up   && !edr4_left  ) ? float4(7.0) : ((edr3_left   && !edr3_up  ) ? float4(6.0) : ((edr3_up   && !edr3_left  ) ? float4(5.0) : ((edr_left   && !edr_up  ) ? float4(4.0) : ((edr_up   && !edr_left  ) ? float4(3.0) : (edr   ? float4(2.0) : (edr0   ? float4(1.0) : float4(0.0))))))));
 
 */
 

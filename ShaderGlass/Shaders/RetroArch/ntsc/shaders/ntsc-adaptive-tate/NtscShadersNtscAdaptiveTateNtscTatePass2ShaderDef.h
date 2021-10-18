@@ -4,8 +4,8 @@ https://github.com/libretro/slang-shaders/blob/master/ntsc/shaders/ntsc-adaptive
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- NTSC-Adaptive
- based on Themaister's NTSC shader
+// NTSC-Adaptive
+// based on Themaister's NTSC shader
 
 */
 

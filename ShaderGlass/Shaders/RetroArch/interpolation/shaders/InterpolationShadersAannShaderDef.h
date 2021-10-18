@@ -4,27 +4,27 @@ https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/aann
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- AntiAliased Nearest Neighbor
- by jimbo1qaz and wareya
- Licensed MIT
- set to true to interpolate in sRGB instead of a pseudo-perceptual colorspace
- set to true to compensate for 8px overscan masking
- Note: overscan compensation slightly alters (extremifies) the pixel aspect ratio of the game if said pixel aspect ratio is not exactly 1:1
- Do bilinear filtering instead of anti-aliased nearest neighbor filtering (used for debugging color)
- http://i.imgur.com/kzwZkVf.png
- http://entropymine.com/imageworsener/srgbformula/
- https://www.w3.org/Graphics/Color/srgb22
- https://en.wikipedia.org/wiki/Opponent_process
- https://en.wikipedia.org/wiki/Lightness#Relationship_between_lightness.2C_value.2C_and_relative_luminance
- "scientists eventually converged on a roughly cube-root curve
- CIE does the same thing.
- Magic.
- Because the chroma values were generated on linear light, but the luma must be interpolated in perceptual gamma (3)
- it can cause out-of-gamut oversaturated values, since the chroma field is not a fixed size as luma values change.
- To compensate, we can "pull" the chroma interpolation path in the opposite way the luma path is curved.
- get points to interpoflate across in pseudo-perceptual colorspace
- interpolate
- convert back to sRGB and return
+// AntiAliased Nearest Neighbor
+// by jimbo1qaz and wareya
+// Licensed MIT
+// set to true to interpolate in sRGB instead of a pseudo-perceptual colorspace
+// set to true to compensate for 8px overscan masking
+// Note: overscan compensation slightly alters (extremifies) the pixel aspect ratio of the game if said pixel aspect ratio is not exactly 1:1
+// Do bilinear filtering instead of anti-aliased nearest neighbor filtering (used for debugging color)
+// http://i.imgur.com/kzwZkVf.png
+// http://entropymine.com/imageworsener/srgbformula/
+// https://www.w3.org/Graphics/Color/srgb22
+// https://en.wikipedia.org/wiki/Opponent_process
+// https://en.wikipedia.org/wiki/Lightness#Relationship_between_lightness.2C_value.2C_and_relative_luminance
+// "scientists eventually converged on a roughly cube-root curve
+// CIE does the same thing.
+// Magic.
+// Because the chroma values were generated on linear light, but the luma must be interpolated in perceptual gamma (3)
+// it can cause out-of-gamut oversaturated values, since the chroma field is not a fixed size as luma values change.
+// To compensate, we can "pull" the chroma interpolation path in the opposite way the luma path is curved.
+// get points to interpoflate across in pseudo-perceptual colorspace
+// interpolate
+// convert back to sRGB and return
 
 */
 

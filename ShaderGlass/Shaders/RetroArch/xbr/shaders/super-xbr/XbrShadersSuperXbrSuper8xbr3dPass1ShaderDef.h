@@ -38,7 +38,7 @@ P1
 G     H5
 P2
 
-Skip pixels on wrong grid
+//Skip pixels on wrong grid
  Calc edgeness in diagonal directions. 
  Calc edgeness in horizontal/vertical directions. 
  Filter weights. Two taps only. 
