@@ -24,15 +24,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
- This value must be between 0.0 (totally black) and 1.0 (nearest neighbor)
+// This value must be between 0.0 (totally black) and 1.0 (nearest neighbor)
 
 VERTEX_SHADER
 
 
 FRAGMENT SHADER
 
- Reading the texel
- Product interpolation
+// Reading the texel
+// Product interpolation
 
 */
 

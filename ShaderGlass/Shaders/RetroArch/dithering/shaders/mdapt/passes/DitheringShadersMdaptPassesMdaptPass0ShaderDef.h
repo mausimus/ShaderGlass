@@ -11,7 +11,7 @@ by Sp00kyFox, 2014
 Neighbor analysis via color metric and dot product of the difference vectors.
 
 
- Reference: http://www.compuphase.com/cmetric.htm
+// Reference: http://www.compuphase.com/cmetric.htm
 
 U
 L C R

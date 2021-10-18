@@ -16,14 +16,14 @@ OPTIONS:
 INT_OPS (default: Disabled)
 It's supposed to be more "accurate" but it's a waste. Not recommended
 
-#define INT_OPS
+//#define INT_OPS
 
 SIMULATE_INT (default: Disabled)
 Only meaningful if INT_OPS is disabled. It truncates floats. Then
 again, it's supposed to be more "accurate" but it looks just
 too similar. It's still a waste. Not recommended.
 
-#define SIMULATE_INT
+//#define SIMULATE_INT
 
 */
 

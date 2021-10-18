@@ -4,15 +4,15 @@ https://github.com/libretro/slang-shaders/blob/master/dithering/shaders/ps1dithe
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-Blend 4 pixels together by sampling between them with linear interpolation
-Blend 2 horizontal pixels together the same way as before
-Edge Detection for SquareBlend
-Try to adjust white / black range so that edges are black and non-edges are white
-Edge Detection for HorizoBlend
-Try to adjust white / black range so that edges are black and non-edges are white
-If SquarePass has a detected edge, use HorizoPass
-If HorizoPass has a detected edge, use OriginPass
-It's complete
+//Blend 4 pixels together by sampling between them with linear interpolation
+//Blend 2 horizontal pixels together the same way as before
+//Edge Detection for SquareBlend
+//Try to adjust white / black range so that edges are black and non-edges are white
+//Edge Detection for HorizoBlend
+//Try to adjust white / black range so that edges are black and non-edges are white
+//If SquarePass has a detected edge, use HorizoPass
+//If HorizoPass has a detected edge, use OriginPass
+//It's complete
 
 */
 

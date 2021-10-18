@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/anti-aliasing/shaders/aa-s
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- Calculating texel coordinates
-	vec2 size     = X * (params.OutputSize.xy * params.SourceSize.zw) * params.SourceSize.xy;
- Reading the texels
+// Calculating texel coordinates
+//	vec2 size     = X * (params.OutputSize.xy * params.SourceSize.zw) * params.SourceSize.xy;
+// Reading the texels
 
 */
 

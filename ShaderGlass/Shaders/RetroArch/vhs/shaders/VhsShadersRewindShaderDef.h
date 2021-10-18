@@ -4,16 +4,16 @@ https://github.com/libretro/slang-shaders/blob/master/vhs/shaders/rewind.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- VHS Rewind Effect
- adapter from VHS Pause Effect shadertoy by caaaaaaarter
- https://www.shadertoy.com/view/4lB3Dc
- get position to sample
- Jitter each line left and right
- Jitter the whole picture up and down
- Slightly add color noise to each line
- Either sample the texture, or just make the pixel white (to get the staticy-bit at the bottom)
- Sample the texture.
- Use white. (I'm adding here so the color noise still applies)
+// VHS Rewind Effect
+// adapter from VHS Pause Effect shadertoy by caaaaaaarter
+// https://www.shadertoy.com/view/4lB3Dc
+// get position to sample
+// Jitter each line left and right
+// Jitter the whole picture up and down
+// Slightly add color noise to each line
+// Either sample the texture, or just make the pixel white (to get the staticy-bit at the bottom)
+// Sample the texture.
+// Use white. (I'm adding here so the color noise still applies)
 
 */
 

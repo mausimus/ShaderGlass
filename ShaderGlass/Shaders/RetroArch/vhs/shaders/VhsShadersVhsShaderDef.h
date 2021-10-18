@@ -4,12 +4,12 @@ https://github.com/libretro/slang-shaders/blob/master/vhs/shaders/vhs.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- VHS shader
- by hunterk
- adapted from ompuco's more AVdistortion shadertoy:
- https://www.shadertoy.com/view/XlsczN
-YIQ/RGB shit
-return vec2(sin(Rad), cos(Rad));
+// VHS shader
+// by hunterk
+// adapted from ompuco's more AVdistortion shadertoy:
+// https://www.shadertoy.com/view/XlsczN
+//YIQ/RGB shit
+//return vec2(sin(Rad), cos(Rad));
 
 */
 

@@ -44,91 +44,88 @@ License: Public domain
 ##########################################################################################
 ##########################################################################################
 
-/////////////////////// Color Space Transformations //////////////////////////
- to sRGB
- to DCI-P3 -D65-
- to Rec.2020
- to AdobeRGB
- from sRGB
- from DCI-P3 -D65-
- from Rec.2020
- from AdobeRGB
-/////////////////////// White Point Mapping /////////////////////////
-
-
- PAL: D65       NTSC-U: D65     NTSC-J: CCT NTSC-J NTSC-FCC: C
- PAL: 6504K     NTSC-U: 6504K   NTSC-J: 8942K      NTSC-FCC: 6780K
- 0.3127 0.3290  0.3127 0.3290   0.281 0.311        0.310 0.316
-//////////////////////////////////////////////////////////////////////////////
- Monitor Curve Functions: https://github.com/ampas/aces-dev
-----------------------------------------------------------------------
- Forward monitor curve
- Reverse monitor curve
--------------------------- Luma Functions ----------------------------
-  Performs better in gamma encoded space
-  Performs better in gamma encoded space
-  This shouldn't be necessary but it seems some undefined values can
-  creep in and each GPU vendor handles that differently. This keeps
-  all values within a safe range
----------------------- Range Expansion/Compression -------------------
-  to Studio Swing/Broadcast Safe/SMPTE legal/Limited Range
-  to Full Swing/Full Range
-
---------------------- ITU-R BT.470/601 (M) (1953) --------------------
-  FCC (Sanctioned) YIQ matrix
-  FCC (Sanctioned) YIQ matrix (inverse)
---------------------- SMPTE RP 145 (C), 170M (1987) ------------------
------------------------ ITU-R BT.470/601 (B/G) -----------------------
-  Custom - not Standard
-  Custom - not Standard
-------------------------- SMPTE-240M Y’PbPr --------------------------
-  Umax 0.886
-  Vmax 0.700
-  RGB to YPbPr -full to limited range- with Rec.601 primaries
-  YPbPr to RGB  -limited to full range- with Rec.601 primaries
-  Umax 0.53890924768269023496443198965294
-  Vmax 0.63500127000254000508001016002032
-  RGB to YPbPr -full range in-gamut- with Rec.709 primaries
-  YPbPr to RGB -full range in-gamut- with Rec.709 primaries
-------------------------- IPT --------------------------
-
- ITU-R BT.470/601 (M) (proof of concept, actually never used)
- SMPTE 170M-1999
- NTSC-FCC 1953 Standard Phosphor (use with temperature C: 6780K)
- ITU-R BT.470/601 (M)
- Conrac 7211N19 CRT Phosphor
- NTSC-J (use with D93 white point)
- Sony Trinitron KV-20M20
- SMPTE-C - Measured Average Phosphor (1979-1994)
- SMPTE RP 145-1994 (SMPTE-C), 170M-1999
- SMPTE-C - Standard Phosphor (Rec.601 NTSC)
- SMPTE RP 145-1994 (SMPTE-C), 170M-1999
- NTSC-J - Standard Phosphor (https://web.archive.org/web/20130413104152/http://arib.or.jp/english/html/overview/doc/4-TR-B09v1_0.pdf)
- ITU-R BT.470/601 (B/G)
- EBU Tech.3213-E PAL - Standard Phosphor for Studio Monitors
-
- Retro Sega Systems: Genesis, 32x, CD and Saturn 2D had color palettes designed in TV levels to save on transformations.
- Assumes framebuffer in Rec.601 with baked gamma
- make a YUV * NTSC Phosphor option too and a FCC * NTSC phosphor
- Clipping Logic / Gamut Limiting
- YIQ/YUV Analogue Color Controls (HUE + Color Shift + Color Burst)
- Back to RGB
- Gamut Limiting
-_   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _
- \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \
- Developer baked CRT gamma (2.20 - 2.25)
- CRT Phosphor Gamut
- White Point Mapping
- Guest Emulated CRT Electron Gun gamma (2.35 - 2.50) (phosphor gamma brings it up back to ~2.222)
- Look LUT - (in SPC space)
- OETF - Opto-Electronic Transfer Function (Rec.709 does a Dim to Dark Surround adaptation)
- Sigmoidal Contrast
- Vignetting & Black Level
- RGB Related Transforms
-  r    g    b  alpha ; alpha does nothing for our purposes
-  HUE vs SAT
- EOTF - Electro-Optical Transfer Function (Rec.709 does a Dim to Dark Surround adaptation)
- Technical LUT - (in SPC space)
+///////////////////////// Color Space Transformations //////////////////////////
+// to sRGB
+// to DCI-P3 -D65-
+// to Rec.2020
+// to AdobeRGB
+// from sRGB
+// from DCI-P3 -D65-
+// from Rec.2020
+// from AdobeRGB
+///////////////////////// White Point Mapping /////////////////////////
+//
+//
+// PAL: D65       NTSC-U: D65     NTSC-J: CCT NTSC-J NTSC-FCC: C
+// PAL: 6504K     NTSC-U: 6504K   NTSC-J: 8942K      NTSC-FCC: 6780K
+// 0.3127 0.3290  0.3127 0.3290   0.281 0.311        0.310 0.316
+////////////////////////////////////////////////////////////////////////////////
+// Monitor Curve Functions: https://github.com/ampas/aces-dev
+//----------------------------------------------------------------------
+// Forward monitor curve
+// Reverse monitor curve
+//-------------------------- Luma Functions ----------------------------
+//  Performs better in gamma encoded space
+//  Performs better in gamma encoded space
+//  This shouldn't be necessary but it seems some undefined values can
+//  creep in and each GPU vendor handles that differently. This keeps
+//  all values within a safe range
+//---------------------- Range Expansion/Compression -------------------
+//  to Studio Swing/Broadcast Safe/SMPTE legal/Limited Range
+//  to Full Swing/Full Range
+//--------------------- ITU-R BT.470/601 (M) (1953) --------------------
+//  FCC (Sanctioned) YIQ matrix
+//  FCC (Sanctioned) YIQ matrix (inverse)
+//--------------------- SMPTE RP 145 (C), 170M (1987) ------------------
+//----------------------- ITU-R BT.470/601 (B/G) -----------------------
+//  Custom - not Standard
+//  Custom - not Standard
+//------------------------- SMPTE-240M Y’PbPr --------------------------
+//  Umax 0.886
+//  Vmax 0.700
+//  RGB to YPbPr -full to limited range- with Rec.601 primaries
+//  YPbPr to RGB  -limited to full range- with Rec.601 primaries
+//  Umax 0.53890924768269023496443198965294
+//  Vmax 0.63500127000254000508001016002032
+//  RGB to YPbPr -full range in-gamut- with Rec.709 primaries
+//  YPbPr to RGB -full range in-gamut- with Rec.709 primaries
+//------------------------- IPT --------------------------
+// ITU-R BT.470/601 (M) (proof of concept, actually never used)
+// SMPTE 170M-1999
+// NTSC-FCC 1953 Standard Phosphor (use with temperature C: 6780K)
+// ITU-R BT.470/601 (M)
+// Conrac 7211N19 CRT Phosphor
+// NTSC-J (use with D93 white point)
+// Sony Trinitron KV-20M20
+// SMPTE-C - Measured Average Phosphor (1979-1994)
+// SMPTE RP 145-1994 (SMPTE-C), 170M-1999
+// SMPTE-C - Standard Phosphor (Rec.601 NTSC)
+// SMPTE RP 145-1994 (SMPTE-C), 170M-1999
+// NTSC-J - Standard Phosphor (https://web.archive.org/web/20130413104152/http://arib.or.jp/english/html/overview/doc/4-TR-B09v1_0.pdf)
+// ITU-R BT.470/601 (B/G)
+// EBU Tech.3213-E PAL - Standard Phosphor for Studio Monitors
+// Retro Sega Systems: Genesis, 32x, CD and Saturn 2D had color palettes designed in TV levels to save on transformations.
+// Assumes framebuffer in Rec.601 with baked gamma
+// make a YUV * NTSC Phosphor option too and a FCC * NTSC phosphor
+// Clipping Logic / Gamut Limiting
+// YIQ/YUV Analogue Color Controls (HUE + Color Shift + Color Burst)
+// Back to RGB
+// Gamut Limiting
+//_   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _
+// \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \
+// Developer baked CRT gamma (2.20 - 2.25)
+// CRT Phosphor Gamut
+// White Point Mapping
+// Guest Emulated CRT Electron Gun gamma (2.35 - 2.50) (phosphor gamma brings it up back to ~2.222)
+// Look LUT - (in SPC space)
+// OETF - Opto-Electronic Transfer Function (Rec.709 does a Dim to Dark Surround adaptation)
+// Sigmoidal Contrast
+// Vignetting & Black Level
+// RGB Related Transforms
+//  r    g    b  alpha ; alpha does nothing for our purposes
+//  HUE vs SAT
+// EOTF - Electro-Optical Transfer Function (Rec.709 does a Dim to Dark Surround adaptation)
+// Technical LUT - (in SPC space)
 
 */
 

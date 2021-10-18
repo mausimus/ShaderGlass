@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- Reading the texels.
-  Get min/max samples
+// Reading the texels.
+//  Get min/max samples
 
 */
 

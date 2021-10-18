@@ -43,11 +43,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- corner strength
-return (crn > THR) ? max(2.0*crn - (ort + ort.wxyz), 0.0) : 0.0;
- corner dominance at junctions
- necessary but not sufficient junction condition for orthogonal edges
-return all(crn.xyxy <= THR || crn.xyxy <= ort || crn.xyxy <= ort.wxyz);
+// corner strength
+//return (crn > THR) ? max(2.0*crn - (ort + ort.wxyz), 0.0) : 0.0;
+// corner dominance at junctions
+// necessary but not sufficient junction condition for orthogonal edges
+//return all(crn.xyxy <= THR || crn.xyxy <= ort || crn.xyxy <= ort.wxyz);
 	grid		metric		pattern
 
 M A B C P	x y z		x y
@@ -55,23 +55,23 @@ N D E F Q	  o w		w z
 O G H I R
 J K L
 
- metric data
- corner strength
- strength & dominance junctions
- majority vote for ambiguous dominance junctions
-bvec4 jx = jDx != 0.0 && jDx + jDx.zwxy > jDx.yzwx + jDx.wxyz;
-bvec4 jy = jDy != 0.0 && jDy + jDy.zwxy > jDy.yzwx + jDy.wxyz;
-bvec4 jz = jDz != 0.0 && jDz + jDz.zwxy > jDz.yzwx + jDz.wxyz;
-bvec4 jw = jDw != 0.0 && jDw + jDw.zwxy > jDw.yzwx + jDw.wxyz;
- inject strength without creating new contradictions
-bvec4 res;
-res.x = jx.z || !(jx.y || jx.w) && (jSx.z != 0.0 && (jx.x || jSx.x + jSx.z > jSx.y + jSx.w));
-res.y = jy.w || !(jy.z || jy.x) && (jSy.w != 0.0 && (jy.y || jSy.y + jSy.w > jSy.x + jSy.z));
-res.z = jz.x || !(jz.w || jz.y) && (jSz.x != 0.0 && (jz.z || jSz.x + jSz.z > jSz.y + jSz.w));
-res.w = jw.y || !(jw.x || jw.z) && (jSw.y != 0.0 && (jw.w || jSw.y + jSw.w > jSw.x + jSw.z));
- single pixel & end of line detection
-res = res && (bvec4(jx.z, jy.w, jz.x, jw.y) || !(res.wxyz && res.yzwx));
- output
+// metric data
+// corner strength
+// strength & dominance junctions
+// majority vote for ambiguous dominance junctions
+//bvec4 jx = jDx != 0.0 && jDx + jDx.zwxy > jDx.yzwx + jDx.wxyz;
+//bvec4 jy = jDy != 0.0 && jDy + jDy.zwxy > jDy.yzwx + jDy.wxyz;
+//bvec4 jz = jDz != 0.0 && jDz + jDz.zwxy > jDz.yzwx + jDz.wxyz;
+//bvec4 jw = jDw != 0.0 && jDw + jDw.zwxy > jDw.yzwx + jDw.wxyz;
+// inject strength without creating new contradictions
+//bvec4 res;
+//res.x = jx.z || !(jx.y || jx.w) && (jSx.z != 0.0 && (jx.x || jSx.x + jSx.z > jSx.y + jSx.w));
+//res.y = jy.w || !(jy.z || jy.x) && (jSy.w != 0.0 && (jy.y || jSy.y + jSy.w > jSy.x + jSy.z));
+//res.z = jz.x || !(jz.w || jz.y) && (jSz.x != 0.0 && (jz.z || jSz.x + jSz.z > jSz.y + jSz.w));
+//res.w = jw.y || !(jw.x || jw.z) && (jSw.y != 0.0 && (jw.w || jSw.y + jSw.w > jSw.x + jSw.z));
+// single pixel & end of line detection
+//res = res && (bvec4(jx.z, jy.w, jz.x, jw.y) || !(res.wxyz && res.yzwx));
+// output
 
 */
 

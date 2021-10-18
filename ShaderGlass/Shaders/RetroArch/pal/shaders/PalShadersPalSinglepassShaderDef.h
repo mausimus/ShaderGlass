@@ -52,7 +52,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  We save the reciprocal of this only to optimize it 
  http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/ 
  .yy is horizontal noise, .xx looks bad, .xy is classic noise 
- lowpass U/V at baseband
+// lowpass U/V at baseband
 
 */
 

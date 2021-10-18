@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/newpixie/newpi
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- newpixie CRT
- by Mattias Gustavsson
- adapted for slang by hunterk
+// newpixie CRT
+// by Mattias Gustavsson
+// adapted for slang by hunterk
 
 ------------------------------------------------------------------------------
 This software is available under 2 licenses - you may choose the one you like.
@@ -48,11 +48,11 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ------------------------------------------------------------------------------
 
-    uv.x *= 0.75;
- stop time variable so the screen doesn't wiggle
+//    uv.x *= 0.75;
+// stop time variable so the screen doesn't wiggle
  Curve 
  Main color, Bleed 
- make time do something again
+// make time do something again
  Ghosting 
  Level adjustment (curves) 
  Vignette 
@@ -64,10 +64,10 @@ vec2 seed = floor(curved_uv*resolution.xy*vec2(0.5))/resolution.xy;
  seed = curved_uv; 
  Flicker 
  Clamp 
-    if (curved_uv.x < 0.0 || curved_uv.x > 1.0)
-        col *= 0.0;
-    if (curved_uv.y < 0.0 || curved_uv.y > 1.0)
-        col *= 0.0;
+//    if (curved_uv.x < 0.0 || curved_uv.x > 1.0)
+//        col *= 0.0;
+//    if (curved_uv.y < 0.0 || curved_uv.y > 1.0)
+//        col *= 0.0;
  Frame 
 
 */

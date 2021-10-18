@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
  messy I know but we need to make it possible to have it default to input resolution x/y in case RESOLUTION_X is 0.0 
-	float filterparam = 2.0;
+//	float filterparam = 2.0;
 
 */
 

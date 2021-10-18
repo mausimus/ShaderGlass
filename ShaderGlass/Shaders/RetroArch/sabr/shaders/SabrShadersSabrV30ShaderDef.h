@@ -34,15 +34,15 @@ Inequation coefficients for interpolation
 Equations are in the form: Ay + Bx = C
 45, 30, and 60 denote the angle from x each line the cooeficient variable set builds
 
- Coefficient for weighted edge detection
- Threshold for if luminance values are "equal
- Conversion from RGB to Luminance (from GIMP)
- Performs same logic operation as && for vectors
- Performs same logic operation as || for vectors
- Converts 4 3-color vectors into 1 4-value luminance vector
- Gets the difference between 2 4-value luminance vectors
- Determines if 2 4-value luminance vectors are "equal" based on threshold
- Gets the difference between 2 3-value rgb colors
+// Coefficient for weighted edge detection
+// Threshold for if luminance values are "equal
+// Conversion from RGB to Luminance (from GIMP)
+// Performs same logic operation as && for vectors
+// Performs same logic operation as || for vectors
+// Converts 4 3-color vectors into 1 4-value luminance vector
+// Gets the difference between 2 4-value luminance vectors
+// Determines if 2 4-value luminance vectors are "equal" based on threshold
+// Gets the difference between 2 3-value rgb colors
 
 Mask for algorhithm
 +-----+-----+-----+-----+-----+
@@ -57,18 +57,18 @@ Mask for algorhithm
 |     | 21  | 22  | 23  |     |
 +-----+-----+-----+-----+-----+
 
- Get mask values by performing texture lookup with the uniform sampler
- Store luminance values of each point in groups of 4
- so that we may operate on all four corners at once
- Scale current texel coordinate to [0..1]
- Determine amount of "smoothing" or mixing that could be done on texel corners
- Perform edge weight calculations
- Calculate rule results for interpolation
- Combine rules with edge weights
- Finalize interpolation rules and cast to float (0.0 for false, 1.0 for true)
- Determine the color to mix with for each corner
- Determine the mix amounts by combining the final rule result and corresponding
- mix amount for the rule in each corner
+// Get mask values by performing texture lookup with the uniform sampler
+// Store luminance values of each point in groups of 4
+// so that we may operate on all four corners at once
+// Scale current texel coordinate to [0..1]
+// Determine amount of "smoothing" or mixing that could be done on texel corners
+// Perform edge weight calculations
+// Calculate rule results for interpolation
+// Combine rules with edge weights
+// Finalize interpolation rules and cast to float (0.0 for false, 1.0 for true)
+// Determine the color to mix with for each corner
+// Determine the mix amounts by combining the final rule result and corresponding
+// mix amount for the rule in each corner
 
 Calculate the resulting color by traversing clockwise and counter-clockwise around
 the corners of the texel

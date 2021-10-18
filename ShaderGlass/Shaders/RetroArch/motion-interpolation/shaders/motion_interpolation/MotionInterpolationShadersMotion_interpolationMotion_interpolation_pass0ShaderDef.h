@@ -4,12 +4,12 @@ https://github.com/libretro/slang-shaders/blob/master/motion-interpolation/shade
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- Video Motion Interpolation
- based on Drudgerist's shadertoy:
- https://www.shadertoy.com/view/MtVfRz
- which is, in turn, based on bodhid's V+
- https://github.com/bodhid/Vplus
- This pass generates motion vectors based on the current and previous frames
+// Video Motion Interpolation
+// based on Drudgerist's shadertoy:
+// https://www.shadertoy.com/view/MtVfRz
+// which is, in turn, based on bodhid's V+
+// https://github.com/bodhid/Vplus
+// This pass generates motion vectors based on the current and previous frames
 
 */
 

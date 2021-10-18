@@ -8,20 +8,20 @@ This file is auto-generated, do not modify directly.
 Adapted for RetroArch from frutbunn's "Another CRT shader" from shadertoy:
 https://www.shadertoy.com/view/XdyGzR
 
-#define CURVATURE 1. //moved to parameter
-#define SCANLINES 1. //moved to parameter
-#define CURVED_SCANLINES 1. //moved to parameter
-#define LIGHT 1. //moved to parameter
-const float light = 9.; //moved to parameter
-const float blur = 1.0; //moved to parameter
- Sigma 1. Size 3
- Curvature/light
- CRT color blur
- Light
- Scanlines
-    if (params.SourceSize.y<360.) showScanlines = 0.;
-    color *= 1. - ( .01 + ceil(mod( (st.x+.5)*params.SourceSize.x, 3.) ) * (.995-1.01) )*showScanlines;
- Border mask
+//#define CURVATURE 1. //moved to parameter
+//#define SCANLINES 1. //moved to parameter
+//#define CURVED_SCANLINES 1. //moved to parameter
+//#define LIGHT 1. //moved to parameter
+//const float light = 9.; //moved to parameter
+//const float blur = 1.0; //moved to parameter
+// Sigma 1. Size 3
+// Curvature/light
+// CRT color blur
+// Light
+// Scanlines
+//    if (params.SourceSize.y<360.) showScanlines = 0.;
+//    color *= 1. - ( .01 + ceil(mod( (st.x+.5)*params.SourceSize.x, 3.) ) * (.995-1.01) )*showScanlines;
+// Border mask
 
 */
 

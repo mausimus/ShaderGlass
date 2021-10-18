@@ -30,11 +30,11 @@ THE SOFTWARE.
 
 Incorporates some of the ideas from SABR shader. Thanks to Joshua Street.
 
-    A1 B1 C1
- A0  A  B  C C4
- D0  D  E  F F4
- G0  G  H  I I4
-    G5 H5 I5
+//    A1 B1 C1
+// A0  A  B  C C4
+// D0  D  E  F F4
+// G0  G  H  I I4
+//    G5 H5 I5
 
 */
 

@@ -25,16 +25,16 @@ This file is auto-generated, do not modify directly.
 * License along with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-   +----+----+----+
-   |    |    |    |
-   | w1 | w2 | w3 |
-   +----+----+----+
-   |    |    |    |
-   | w4 | w5 | w6 |
-   +----+----+----+
-   |    |    |    |
-   | w7 | w8 | w9 |
-   +----+----+----+
+//   +----+----+----+
+//   |    |    |    |
+//   | w1 | w2 | w3 |
+//   +----+----+----+
+//   |    |    |    |
+//   | w4 | w5 | w6 |
+//   +----+----+----+
+//   |    |    |    |
+//   | w7 | w8 | w9 |
+//   +----+----+----+
 
 */
 

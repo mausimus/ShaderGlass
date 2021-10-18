@@ -38,7 +38,7 @@ P1
 G     H5
 P2
 
-Skip pixels on wrong grid
+//Skip pixels on wrong grid
 
 P1
 |P0|B |C |P1|         C     F4          |a0|b1|c2|d3|
@@ -52,8 +52,8 @@ P2
  Calc edgeness in horizontal/vertical directions. 
  Filter weights. Two taps only. 
  Filtering and normalization in four direction generating four colors. 
- doesn't seem to be used anywhere, so commenting for performance
-			bool ir_lv1 = (((e!=f) && (e!=h))  && ( !eq(f,b) && !eq(f,c) || !eq(h,d) && !eq(h,g) || eq(e,i) && (!eq(f,f4) && !eq(f,i4) || !eq(h,h5) && !eq(h,i5)) || eq(e,g) || eq(e,c)) );
+// doesn't seem to be used anywhere, so commenting for performance
+//			bool ir_lv1 = (((e!=f) && (e!=h))  && ( !eq(f,b) && !eq(f,c) || !eq(h,d) && !eq(h,g) || eq(e,i) && (!eq(f,f4) && !eq(f,i4) || !eq(h,h5) && !eq(h,i5)) || eq(e,g) || eq(e,c)) );
  Smoothly blends the two strongest directions (one in diagonal and the other in vert/horiz direction). 
 
 P1

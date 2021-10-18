@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/torridgristle/
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- Sunset Gaussian - Vertical Pass
- by torridgristle
- license: public domain
+// Sunset Gaussian - Vertical Pass
+// by torridgristle
+// license: public domain
 
 */
 

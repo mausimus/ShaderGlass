@@ -11,9 +11,9 @@ Filter:    Nearest
 Scale:    1x
 The original shader has the problem that it blends every horizontal pair of adjacent pixels where it should only blend pairwise disjointed pixel pairs instead.
 
- pixel location
- reading the texels
- output
+// pixel location
+// reading the texels
+// output
 
 */
 

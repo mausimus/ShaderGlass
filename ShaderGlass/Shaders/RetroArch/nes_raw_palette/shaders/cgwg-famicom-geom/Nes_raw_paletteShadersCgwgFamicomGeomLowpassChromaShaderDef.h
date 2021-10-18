@@ -4,8 +4,8 @@ https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/cg
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- after mixing with the adaptive comb filter
- Hamming window
+// after mixing with the adaptive comb filter
+// Hamming window
 
 */
 

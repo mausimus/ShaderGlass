@@ -18,15 +18,15 @@ Copyright (C) 2001, 2002, 2003, 2004 Andrea Mazzoleni
 License: GNU-GPL
 
 
- subpixel determination
+// subpixel determination
 
 B		E0 E1
 D E F		E2 E3
 H
 
- reading the texels
- rules
- general condition & subpixel output
+// reading the texels
+// rules
+// general condition & subpixel output
 
 */
 

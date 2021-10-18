@@ -4,19 +4,19 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/GritsScanlines
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- GritsScanlines by torridgristle
- license: public domain (https://forums.libretro.com/t/lightweight-lut-based-scanline-glow-concept-prototype-glsl/18336/7)
-#define LuminanceDawnbringer
-#define TrinitronColors
- Code taken from RetroArch's LUT shader
-Source Image
- Use a 3DLUT instead of an equation so that it can use any arbitrary mess you can come up with.
- Dawnbringer's brightness equation from Dawnbringer's Toolbox scripts for Grafx2
- Plain, standard, fine; slightly faster
- Don't let it exceed 1.0
- Scanline Mapping, based on the Phosphor LUT shader's method of tiling a texture over the screen
- Scanline Layer
- Output multiplying the scanlines into the original image, with control over opacity
+// GritsScanlines by torridgristle
+// license: public domain (https://forums.libretro.com/t/lightweight-lut-based-scanline-glow-concept-prototype-glsl/18336/7)
+//#define LuminanceDawnbringer
+//#define TrinitronColors
+// Code taken from RetroArch's LUT shader
+//Source Image
+// Use a 3DLUT instead of an equation so that it can use any arbitrary mess you can come up with.
+// Dawnbringer's brightness equation from Dawnbringer's Toolbox scripts for Grafx2
+// Plain, standard, fine; slightly faster
+// Don't let it exceed 1.0
+// Scanline Mapping, based on the Phosphor LUT shader's method of tiling a texture over the screen
+// Scanline Layer
+// Output multiplying the scanlines into the original image, with control over opacity
 
 */
 

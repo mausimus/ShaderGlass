@@ -38,8 +38,8 @@ P1
 G     H5
 P2
 
- settings //
- end settings //
+// settings //
+// end settings //
 
 P1
 |P0|B |C |P1|         C     F4          |a0|b1|c2|d3|

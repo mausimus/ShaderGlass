@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/omniscale/shaders/omniscal
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- OmniScale-Legacy
- by Lior Halphon
- ported to slang format by hunterk
+// OmniScale-Legacy
+// by Lior Halphon
+// ported to slang format by hunterk
 
 MIT License
 
@@ -31,7 +31,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
  Special handling for diaonals 
- 4-pixel super sampling
+// 4-pixel super sampling
 
 */
 

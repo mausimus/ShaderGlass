@@ -25,15 +25,15 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library.
 
- -- Edge detection options --
- -- Input processing --
-Current high res value
-Downsampled result
- Calculate position
- Calculate faithfulness force
- Loop unrolled for better compatibility.
- Calculate edge statistics
- Apply force
+// -- Edge detection options --
+// -- Input processing --
+//Current high res value
+//Downsampled result
+// Calculate position
+// Calculate faithfulness force
+// Loop unrolled for better compatibility.
+// Calculate edge statistics
+// Apply force
 
 */
 

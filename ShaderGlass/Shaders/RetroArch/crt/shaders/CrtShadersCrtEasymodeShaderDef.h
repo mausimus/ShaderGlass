@@ -32,7 +32,7 @@ Lottes' Shadow Mask
 - Dot Height: 1
 - Stagger:    3
 
- Set to 0 to use linear filter and gain speed
+// Set to 0 to use linear filter and gain speed
 
 apply half-circle s-curve to distance for sharper (more pixelated) interpolation
 single line formula for Graph Toy:

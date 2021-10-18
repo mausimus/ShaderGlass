@@ -4,10 +4,10 @@ https://github.com/libretro/slang-shaders/blob/master/stereoscopic-3d/shaders/si
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- simple shader to view content on side-by-side 3D displays
- by hunterk
- license: public domain
-distortion
+// simple shader to view content on side-by-side 3D displays
+// by hunterk
+// license: public domain
+//distortion
 
 */
 

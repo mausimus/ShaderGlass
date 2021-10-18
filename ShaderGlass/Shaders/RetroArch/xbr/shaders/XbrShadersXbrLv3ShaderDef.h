@@ -4,13 +4,13 @@ https://github.com/libretro/slang-shaders/blob/master/xbr/shaders/xbr-lv3.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-    A1 B1 C1
- A0  A  B  C C4
- D0  D  E  F F4
- G0  G  H  I I4
-    G5 H5 I5
- It uses CORNER_C if none of the others are defined.
-commenting this one out because something got broken
+//    A1 B1 C1
+// A0  A  B  C C4
+// D0  D  E  F F4
+// G0  G  H  I I4
+//    G5 H5 I5
+// It uses CORNER_C if none of the others are defined.
+//commenting this one out because something got broken
 else if(params.corner_type == 6.0)
 {interp_restriction_lv1      = and(and(and(notEqual(e,f) , notEqual(e,h))  ,
 ( or(or(and(and(or(and(not(eq(f,b)) , not(eq(h,d))) ,

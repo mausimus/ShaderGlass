@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/anti-aliasing/shaders/smaa
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- SPDX-License-Identifier: Unlicense
------------------------------------------------------------------------------
- Neighborhood Blending Shader (Third Pass)
+// SPDX-License-Identifier: Unlicense
+//-----------------------------------------------------------------------------
+// Neighborhood Blending Shader (Third Pass)
 *
 * Copyright (C) 2013 Jorge Jimenez (jorge@iryoku.com)
 * Copyright (C) 2013 Jose I. Echevarria (joseignacioechevarria@gmail.com)
@@ -299,14 +299,14 @@ This file is auto-generated, do not modify directly.
 *
 * That's it!
 
------------------------------------------------------------------------------
- SMAA Presets
+//-----------------------------------------------------------------------------
+// SMAA Presets
 *
 * Note that if you use one of these presets, the following configuration
 * macros will be ignored if set in the "Configurable Defines" section.
 
------------------------------------------------------------------------------
- Configurable Defines
+//-----------------------------------------------------------------------------
+// Configurable Defines
 *
 * SMAA_THRESHOLD specifies the threshold or sensitivity to edges.
 * Lowering this value you will be able to detect more edges at the expense of
@@ -418,14 +418,14 @@ This file is auto-generated, do not modify directly.
 * On some compilers, discard cannot be used in vertex shaders. Thus, they need
 * to be compiled separately.
 
------------------------------------------------------------------------------
- Texture Access Defines
------------------------------------------------------------------------------
- Non-Configurable Defines
------------------------------------------------------------------------------
- Porting Functions
------------------------------------------------------------------------------
- Misc functions
+//-----------------------------------------------------------------------------
+// Texture Access Defines
+//-----------------------------------------------------------------------------
+// Non-Configurable Defines
+//-----------------------------------------------------------------------------
+// Porting Functions
+//-----------------------------------------------------------------------------
+// Misc functions
 *
 * Gathers current pixel, and the top-left neighbors.
 
@@ -435,121 +435,121 @@ This file is auto-generated, do not modify directly.
 *
 * Conditional move:
 
------------------------------------------------------------------------------
- Vertex Shaders
+//-----------------------------------------------------------------------------
+// Vertex Shaders
 *
 * Edge Detection Vertex Shader
 
 *
 * Blend Weight Calculation Vertex Shader
 
- We will use these offsets for the searches later on (see @PSEUDO_GATHER4):
- And these for the searches, they indicate the ends of the loops:
+// We will use these offsets for the searches later on (see @PSEUDO_GATHER4):
+// And these for the searches, they indicate the ends of the loops:
 *
 * Neighborhood Blending Vertex Shader
 
------------------------------------------------------------------------------
- Edge Detection Pixel Shaders (First Pass)
+//-----------------------------------------------------------------------------
+// Edge Detection Pixel Shaders (First Pass)
 *
 * Luma Edge Detection
 *
 * IMPORTANT NOTICE: luma edge detection requires gamma-corrected colors, and
 * thus 'colorTex' should be a non-sRGB texture.
 
- Calculate the threshold:
- Calculate lumas:
- We do the usual threshold:
- Then discard if there is no edge:
- Calculate right and bottom deltas:
- Calculate the maximum delta in the direct neighborhood:
- Calculate left-left and top-top deltas:
- Calculate the final maximum delta:
- Local contrast adaptation:
+// Calculate the threshold:
+// Calculate lumas:
+// We do the usual threshold:
+// Then discard if there is no edge:
+// Calculate right and bottom deltas:
+// Calculate the maximum delta in the direct neighborhood:
+// Calculate left-left and top-top deltas:
+// Calculate the final maximum delta:
+// Local contrast adaptation:
 *
 * Color Edge Detection
 *
 * IMPORTANT NOTICE: color edge detection requires gamma-corrected colors, and
 * thus 'colorTex' should be a non-sRGB texture.
 
- Calculate the threshold:
- Calculate color deltas:
- We do the usual threshold:
- Then discard if there is no edge:
- Calculate right and bottom deltas:
- Calculate the maximum delta in the direct neighborhood:
- Calculate left-left and top-top deltas:
- Calculate the final maximum delta:
- Local contrast adaptation:
+// Calculate the threshold:
+// Calculate color deltas:
+// We do the usual threshold:
+// Then discard if there is no edge:
+// Calculate right and bottom deltas:
+// Calculate the maximum delta in the direct neighborhood:
+// Calculate left-left and top-top deltas:
+// Calculate the final maximum delta:
+// Local contrast adaptation:
 *
 * Depth Edge Detection
 
------------------------------------------------------------------------------
- Diagonal Search Functions
+//-----------------------------------------------------------------------------
+// Diagonal Search Functions
 *
 * Allows to decode two binary values from a bilinear-filtered access.
 
- Bilinear access for fetching 'e' have a 0.25 offset, and we are
- interested in the R and G edges:
-
- +---G---+-------+
- |   x o R   x   |
- +-------+-------+
-
- Then, if one of these edge is enabled:
-   Red:   (0.75 * X + 0.25 * 1) => 0.25 or 1.0
-   Green: (0.75 * 1 + 0.25 * X) => 0.75 or 1.0
-
- This function will unpack the values (mad + mul + round):
- wolframalpha.com: round(x * abs(5 * x - 5 * 0.75)) plot 0 to 1
+// Bilinear access for fetching 'e' have a 0.25 offset, and we are
+// interested in the R and G edges:
+//
+// +---G---+-------+
+// |   x o R   x   |
+// +-------+-------+
+//
+// Then, if one of these edge is enabled:
+//   Red:   (0.75 * X + 0.25 * 1) => 0.25 or 1.0
+//   Green: (0.75 * 1 + 0.25 * X) => 0.75 or 1.0
+//
+// This function will unpack the values (mad + mul + round):
+// wolframalpha.com: round(x * abs(5 * x - 5 * 0.75)) plot 0 to 1
 *
 * These functions allows to perform diagonal pattern searches.
 
- @SearchDiag2Optimization
- Fetch both edges at once using bilinear filtering:
- Non-optimized version:
- e.g = SMAASampleLevelZero(edgesTex, coord.xy).g;
- e.r = SMAASampleLevelZeroOffset(edgesTex, coord.xy, int2(1, 0)).r;
+// @SearchDiag2Optimization
+// Fetch both edges at once using bilinear filtering:
+// Non-optimized version:
+// e.g = SMAASampleLevelZero(edgesTex, coord.xy).g;
+// e.r = SMAASampleLevelZeroOffset(edgesTex, coord.xy, int2(1, 0)).r;
 *
 * Similar to SMAAArea, this calculates the area corresponding to a certain
 * diagonal distance and crossing edges 'e'.
 
- We do a scale and bias for mapping to texel space:
- Diagonal areas are on the second half of the texture:
- Move to proper place, according to the subpixel offset:
- Do it!
+// We do a scale and bias for mapping to texel space:
+// Diagonal areas are on the second half of the texture:
+// Move to proper place, according to the subpixel offset:
+// Do it!
 *
 * This searches for diagonal patterns and returns the corresponding weights.
 
- Search for the line ends:
- Fetch the crossing edges:
- Non-optimized version:
- float4 coords = mad(float4(-d.x, d.x, d.y, -d.y), SMAA_RT_METRICS.xyxy, texcoord.xyxy);
- float4 c;
- c.x = SMAASampleLevelZeroOffset(edgesTex, coords.xy, int2(-1,  0)).g;
- c.y = SMAASampleLevelZeroOffset(edgesTex, coords.xy, int2( 0,  0)).r;
- c.z = SMAASampleLevelZeroOffset(edgesTex, coords.zw, int2( 1,  0)).g;
- c.w = SMAASampleLevelZeroOffset(edgesTex, coords.zw, int2( 1, -1)).r;
- Merge crossing edges at each side into a single value:
- Remove the crossing edge if we didn't found the end of the line:
- Fetch the areas for this line:
- Search for the line ends:
- Fetch the crossing edges:
- Remove the crossing edge if we didn't found the end of the line:
- Fetch the areas for this line:
------------------------------------------------------------------------------
- Horizontal/Vertical Search Functions
+// Search for the line ends:
+// Fetch the crossing edges:
+// Non-optimized version:
+// float4 coords = mad(float4(-d.x, d.x, d.y, -d.y), SMAA_RT_METRICS.xyxy, texcoord.xyxy);
+// float4 c;
+// c.x = SMAASampleLevelZeroOffset(edgesTex, coords.xy, int2(-1,  0)).g;
+// c.y = SMAASampleLevelZeroOffset(edgesTex, coords.xy, int2( 0,  0)).r;
+// c.z = SMAASampleLevelZeroOffset(edgesTex, coords.zw, int2( 1,  0)).g;
+// c.w = SMAASampleLevelZeroOffset(edgesTex, coords.zw, int2( 1, -1)).r;
+// Merge crossing edges at each side into a single value:
+// Remove the crossing edge if we didn't found the end of the line:
+// Fetch the areas for this line:
+// Search for the line ends:
+// Fetch the crossing edges:
+// Remove the crossing edge if we didn't found the end of the line:
+// Fetch the areas for this line:
+//-----------------------------------------------------------------------------
+// Horizontal/Vertical Search Functions
 *
 * This allows to determine how much length should we add in the last step
 * of the searches. It takes the bilinearly interpolated edge (see
 * @PSEUDO_GATHER4), and adds 0, 1 or 2, depending on which edges and
 * crossing edges are active.
 
- The texture is flipped vertically, with left and right cases taking half
- of the space horizontally:
- Scale and bias to access texel centers:
- Convert from pixel coordinates to texcoords:
- (We use SMAA_SEARCHTEX_PACKED_SIZE because the texture is cropped)
- Lookup the search texture:
+// The texture is flipped vertically, with left and right cases taking half
+// of the space horizontally:
+// Scale and bias to access texel centers:
+// Convert from pixel coordinates to texcoords:
+// (We use SMAA_SEARCHTEX_PACKED_SIZE because the texture is cropped)
+// Lookup the search texture:
 *
 * Horizontal/vertical search functions for the 2nd pass.
 
@@ -560,76 +560,76 @@ This file is auto-generated, do not modify directly.
 * Sampling with different offsets in each direction allows to disambiguate
 * which edges are active from the four fetched ones.
 
- Non-optimized version:
- We correct the previous (-0.25, -0.125) offset we applied:
- texcoord.x += 0.25 * SMAA_RT_METRICS.x;
- The searches are bias by 1, so adjust the coords accordingly:
- texcoord.x += SMAA_RT_METRICS.x;
- Disambiguate the length added by the last step:
- texcoord.x += 2.0 * SMAA_RT_METRICS.x; // Undo last step
- texcoord.x -= SMAA_RT_METRICS.x * (255.0 / 127.0) * SMAASearchLength(SMAATexturePass2D(searchTex), e, 0.0);
- return mad(SMAA_RT_METRICS.x, offset, texcoord.x);
+// Non-optimized version:
+// We correct the previous (-0.25, -0.125) offset we applied:
+// texcoord.x += 0.25 * SMAA_RT_METRICS.x;
+// The searches are bias by 1, so adjust the coords accordingly:
+// texcoord.x += SMAA_RT_METRICS.x;
+// Disambiguate the length added by the last step:
+// texcoord.x += 2.0 * SMAA_RT_METRICS.x; // Undo last step
+// texcoord.x -= SMAA_RT_METRICS.x * (255.0 / 127.0) * SMAASearchLength(SMAATexturePass2D(searchTex), e, 0.0);
+// return mad(SMAA_RT_METRICS.x, offset, texcoord.x);
 *
 * Ok, we have the distance and both crossing edges. So, what are the areas
 * at each side of current edge?
 
- Rounding prevents precision errors of bilinear filtering:
- We do a scale and bias for mapping to texel space:
- Move to proper place, according to the subpixel offset:
- Do it!
------------------------------------------------------------------------------
- Corner Detection Functions
------------------------------------------------------------------------------
- Blending Weight Calculation Pixel Shader (Second Pass)
- Diagonals have both north and west edges, so searching for them in
- one of the boundaries is enough.
- We give priority to diagonals, so if we find a diagonal we skip
- horizontal/vertical processing.
- Find the distance to the left:
- Now fetch the left crossing edges, two at a time using bilinear
- filtering. Sampling at -0.25 (see @CROSSING_OFFSET) enables to
- discern what value each edge has:
- Find the distance to the right:
- We want the distances to be in pixel units (doing this here allow to
- better interleave arithmetic and memory accesses):
- SMAAArea below needs a sqrt, as the areas texture is compressed
- quadratically:
- Fetch the right crossing edges:
- Ok, we know how this pattern looks like, now it is time for getting
- the actual area:
- Fix corners:
- Find the distance to the top:
- Fetch the top crossing edges:
- Find the distance to the bottom:
- We want the distances to be in pixel units:
- SMAAArea below needs a sqrt, as the areas texture is compressed
- quadratically:
- Fetch the bottom crossing edges:
- Get the area for this direction:
- Fix corners:
------------------------------------------------------------------------------
- Neighborhood Blending Pixel Shader (Third Pass)
- Fetch the blending weights for current pixel:
- Is there any blending weight with a value greater than 0.0?
- Pack velocity into the alpha channel:
- Calculate the blending offsets:
- Calculate the texture coordinates:
- We exploit bilinear filtering to mix current pixel with the chosen
- neighbor:
- Antialias velocity for proper reprojection in a later stage:
- Pack velocity into the alpha channel:
------------------------------------------------------------------------------
- Temporal Resolve Pixel Shader (Optional Pass)
- Velocity is assumed to be calculated for motion blur, so we need to
- inverse it for reprojection:
- Fetch current pixel:
- Reproject current coordinates and fetch previous pixel:
- Attenuate the previous pixel if the velocity is different:
- Blend the pixels according to the calculated weight:
- Just blend the pixels:
------------------------------------------------------------------------------
- Separate Multisamples Pixel Shader (Optional Pass)
------------------------------------------------------------------------------
+// Rounding prevents precision errors of bilinear filtering:
+// We do a scale and bias for mapping to texel space:
+// Move to proper place, according to the subpixel offset:
+// Do it!
+//-----------------------------------------------------------------------------
+// Corner Detection Functions
+//-----------------------------------------------------------------------------
+// Blending Weight Calculation Pixel Shader (Second Pass)
+// Diagonals have both north and west edges, so searching for them in
+// one of the boundaries is enough.
+// We give priority to diagonals, so if we find a diagonal we skip
+// horizontal/vertical processing.
+// Find the distance to the left:
+// Now fetch the left crossing edges, two at a time using bilinear
+// filtering. Sampling at -0.25 (see @CROSSING_OFFSET) enables to
+// discern what value each edge has:
+// Find the distance to the right:
+// We want the distances to be in pixel units (doing this here allow to
+// better interleave arithmetic and memory accesses):
+// SMAAArea below needs a sqrt, as the areas texture is compressed
+// quadratically:
+// Fetch the right crossing edges:
+// Ok, we know how this pattern looks like, now it is time for getting
+// the actual area:
+// Fix corners:
+// Find the distance to the top:
+// Fetch the top crossing edges:
+// Find the distance to the bottom:
+// We want the distances to be in pixel units:
+// SMAAArea below needs a sqrt, as the areas texture is compressed
+// quadratically:
+// Fetch the bottom crossing edges:
+// Get the area for this direction:
+// Fix corners:
+//-----------------------------------------------------------------------------
+// Neighborhood Blending Pixel Shader (Third Pass)
+// Fetch the blending weights for current pixel:
+// Is there any blending weight with a value greater than 0.0?
+// Pack velocity into the alpha channel:
+// Calculate the blending offsets:
+// Calculate the texture coordinates:
+// We exploit bilinear filtering to mix current pixel with the chosen
+// neighbor:
+// Antialias velocity for proper reprojection in a later stage:
+// Pack velocity into the alpha channel:
+//-----------------------------------------------------------------------------
+// Temporal Resolve Pixel Shader (Optional Pass)
+// Velocity is assumed to be calculated for motion blur, so we need to
+// inverse it for reprojection:
+// Fetch current pixel:
+// Reproject current coordinates and fetch previous pixel:
+// Attenuate the previous pixel if the velocity is different:
+// Blend the pixels according to the calculated weight:
+// Just blend the pixels:
+//-----------------------------------------------------------------------------
+// Separate Multisamples Pixel Shader (Optional Pass)
+//-----------------------------------------------------------------------------
 *
 * Copyright (C) 2013 Jorge Jimenez (jorge@iryoku.com)
 * Copyright (C) 2013 Jose I. Echevarria (joseignacioechevarria@gmail.com)
@@ -922,14 +922,14 @@ This file is auto-generated, do not modify directly.
 *
 * That's it!
 
------------------------------------------------------------------------------
- SMAA Presets
+//-----------------------------------------------------------------------------
+// SMAA Presets
 *
 * Note that if you use one of these presets, the following configuration
 * macros will be ignored if set in the "Configurable Defines" section.
 
------------------------------------------------------------------------------
- Configurable Defines
+//-----------------------------------------------------------------------------
+// Configurable Defines
 *
 * SMAA_THRESHOLD specifies the threshold or sensitivity to edges.
 * Lowering this value you will be able to detect more edges at the expense of
@@ -1041,14 +1041,14 @@ This file is auto-generated, do not modify directly.
 * On some compilers, discard cannot be used in vertex shaders. Thus, they need
 * to be compiled separately.
 
------------------------------------------------------------------------------
- Texture Access Defines
------------------------------------------------------------------------------
- Non-Configurable Defines
------------------------------------------------------------------------------
- Porting Functions
------------------------------------------------------------------------------
- Misc functions
+//-----------------------------------------------------------------------------
+// Texture Access Defines
+//-----------------------------------------------------------------------------
+// Non-Configurable Defines
+//-----------------------------------------------------------------------------
+// Porting Functions
+//-----------------------------------------------------------------------------
+// Misc functions
 *
 * Gathers current pixel, and the top-left neighbors.
 
@@ -1058,121 +1058,121 @@ This file is auto-generated, do not modify directly.
 *
 * Conditional move:
 
------------------------------------------------------------------------------
- Vertex Shaders
+//-----------------------------------------------------------------------------
+// Vertex Shaders
 *
 * Edge Detection Vertex Shader
 
 *
 * Blend Weight Calculation Vertex Shader
 
- We will use these offsets for the searches later on (see @PSEUDO_GATHER4):
- And these for the searches, they indicate the ends of the loops:
+// We will use these offsets for the searches later on (see @PSEUDO_GATHER4):
+// And these for the searches, they indicate the ends of the loops:
 *
 * Neighborhood Blending Vertex Shader
 
------------------------------------------------------------------------------
- Edge Detection Pixel Shaders (First Pass)
+//-----------------------------------------------------------------------------
+// Edge Detection Pixel Shaders (First Pass)
 *
 * Luma Edge Detection
 *
 * IMPORTANT NOTICE: luma edge detection requires gamma-corrected colors, and
 * thus 'colorTex' should be a non-sRGB texture.
 
- Calculate the threshold:
- Calculate lumas:
- We do the usual threshold:
- Then discard if there is no edge:
- Calculate right and bottom deltas:
- Calculate the maximum delta in the direct neighborhood:
- Calculate left-left and top-top deltas:
- Calculate the final maximum delta:
- Local contrast adaptation:
+// Calculate the threshold:
+// Calculate lumas:
+// We do the usual threshold:
+// Then discard if there is no edge:
+// Calculate right and bottom deltas:
+// Calculate the maximum delta in the direct neighborhood:
+// Calculate left-left and top-top deltas:
+// Calculate the final maximum delta:
+// Local contrast adaptation:
 *
 * Color Edge Detection
 *
 * IMPORTANT NOTICE: color edge detection requires gamma-corrected colors, and
 * thus 'colorTex' should be a non-sRGB texture.
 
- Calculate the threshold:
- Calculate color deltas:
- We do the usual threshold:
- Then discard if there is no edge:
- Calculate right and bottom deltas:
- Calculate the maximum delta in the direct neighborhood:
- Calculate left-left and top-top deltas:
- Calculate the final maximum delta:
- Local contrast adaptation:
+// Calculate the threshold:
+// Calculate color deltas:
+// We do the usual threshold:
+// Then discard if there is no edge:
+// Calculate right and bottom deltas:
+// Calculate the maximum delta in the direct neighborhood:
+// Calculate left-left and top-top deltas:
+// Calculate the final maximum delta:
+// Local contrast adaptation:
 *
 * Depth Edge Detection
 
------------------------------------------------------------------------------
- Diagonal Search Functions
+//-----------------------------------------------------------------------------
+// Diagonal Search Functions
 *
 * Allows to decode two binary values from a bilinear-filtered access.
 
- Bilinear access for fetching 'e' have a 0.25 offset, and we are
- interested in the R and G edges:
-
- +---G---+-------+
- |   x o R   x   |
- +-------+-------+
-
- Then, if one of these edge is enabled:
-   Red:   (0.75 * X + 0.25 * 1) => 0.25 or 1.0
-   Green: (0.75 * 1 + 0.25 * X) => 0.75 or 1.0
-
- This function will unpack the values (mad + mul + round):
- wolframalpha.com: round(x * abs(5 * x - 5 * 0.75)) plot 0 to 1
+// Bilinear access for fetching 'e' have a 0.25 offset, and we are
+// interested in the R and G edges:
+//
+// +---G---+-------+
+// |   x o R   x   |
+// +-------+-------+
+//
+// Then, if one of these edge is enabled:
+//   Red:   (0.75 * X + 0.25 * 1) => 0.25 or 1.0
+//   Green: (0.75 * 1 + 0.25 * X) => 0.75 or 1.0
+//
+// This function will unpack the values (mad + mul + round):
+// wolframalpha.com: round(x * abs(5 * x - 5 * 0.75)) plot 0 to 1
 *
 * These functions allows to perform diagonal pattern searches.
 
- @SearchDiag2Optimization
- Fetch both edges at once using bilinear filtering:
- Non-optimized version:
- e.g = SMAASampleLevelZero(edgesTex, coord.xy).g;
- e.r = SMAASampleLevelZeroOffset(edgesTex, coord.xy, int2(1, 0)).r;
+// @SearchDiag2Optimization
+// Fetch both edges at once using bilinear filtering:
+// Non-optimized version:
+// e.g = SMAASampleLevelZero(edgesTex, coord.xy).g;
+// e.r = SMAASampleLevelZeroOffset(edgesTex, coord.xy, int2(1, 0)).r;
 *
 * Similar to SMAAArea, this calculates the area corresponding to a certain
 * diagonal distance and crossing edges 'e'.
 
- We do a scale and bias for mapping to texel space:
- Diagonal areas are on the second half of the texture:
- Move to proper place, according to the subpixel offset:
- Do it!
+// We do a scale and bias for mapping to texel space:
+// Diagonal areas are on the second half of the texture:
+// Move to proper place, according to the subpixel offset:
+// Do it!
 *
 * This searches for diagonal patterns and returns the corresponding weights.
 
- Search for the line ends:
- Fetch the crossing edges:
- Non-optimized version:
- float4 coords = mad(float4(-d.x, d.x, d.y, -d.y), SMAA_RT_METRICS.xyxy, texcoord.xyxy);
- float4 c;
- c.x = SMAASampleLevelZeroOffset(edgesTex, coords.xy, int2(-1,  0)).g;
- c.y = SMAASampleLevelZeroOffset(edgesTex, coords.xy, int2( 0,  0)).r;
- c.z = SMAASampleLevelZeroOffset(edgesTex, coords.zw, int2( 1,  0)).g;
- c.w = SMAASampleLevelZeroOffset(edgesTex, coords.zw, int2( 1, -1)).r;
- Merge crossing edges at each side into a single value:
- Remove the crossing edge if we didn't found the end of the line:
- Fetch the areas for this line:
- Search for the line ends:
- Fetch the crossing edges:
- Remove the crossing edge if we didn't found the end of the line:
- Fetch the areas for this line:
------------------------------------------------------------------------------
- Horizontal/Vertical Search Functions
+// Search for the line ends:
+// Fetch the crossing edges:
+// Non-optimized version:
+// float4 coords = mad(float4(-d.x, d.x, d.y, -d.y), SMAA_RT_METRICS.xyxy, texcoord.xyxy);
+// float4 c;
+// c.x = SMAASampleLevelZeroOffset(edgesTex, coords.xy, int2(-1,  0)).g;
+// c.y = SMAASampleLevelZeroOffset(edgesTex, coords.xy, int2( 0,  0)).r;
+// c.z = SMAASampleLevelZeroOffset(edgesTex, coords.zw, int2( 1,  0)).g;
+// c.w = SMAASampleLevelZeroOffset(edgesTex, coords.zw, int2( 1, -1)).r;
+// Merge crossing edges at each side into a single value:
+// Remove the crossing edge if we didn't found the end of the line:
+// Fetch the areas for this line:
+// Search for the line ends:
+// Fetch the crossing edges:
+// Remove the crossing edge if we didn't found the end of the line:
+// Fetch the areas for this line:
+//-----------------------------------------------------------------------------
+// Horizontal/Vertical Search Functions
 *
 * This allows to determine how much length should we add in the last step
 * of the searches. It takes the bilinearly interpolated edge (see
 * @PSEUDO_GATHER4), and adds 0, 1 or 2, depending on which edges and
 * crossing edges are active.
 
- The texture is flipped vertically, with left and right cases taking half
- of the space horizontally:
- Scale and bias to access texel centers:
- Convert from pixel coordinates to texcoords:
- (We use SMAA_SEARCHTEX_PACKED_SIZE because the texture is cropped)
- Lookup the search texture:
+// The texture is flipped vertically, with left and right cases taking half
+// of the space horizontally:
+// Scale and bias to access texel centers:
+// Convert from pixel coordinates to texcoords:
+// (We use SMAA_SEARCHTEX_PACKED_SIZE because the texture is cropped)
+// Lookup the search texture:
 *
 * Horizontal/vertical search functions for the 2nd pass.
 
@@ -1183,76 +1183,76 @@ This file is auto-generated, do not modify directly.
 * Sampling with different offsets in each direction allows to disambiguate
 * which edges are active from the four fetched ones.
 
- Non-optimized version:
- We correct the previous (-0.25, -0.125) offset we applied:
- texcoord.x += 0.25 * SMAA_RT_METRICS.x;
- The searches are bias by 1, so adjust the coords accordingly:
- texcoord.x += SMAA_RT_METRICS.x;
- Disambiguate the length added by the last step:
- texcoord.x += 2.0 * SMAA_RT_METRICS.x; // Undo last step
- texcoord.x -= SMAA_RT_METRICS.x * (255.0 / 127.0) * SMAASearchLength(SMAATexturePass2D(searchTex), e, 0.0);
- return mad(SMAA_RT_METRICS.x, offset, texcoord.x);
+// Non-optimized version:
+// We correct the previous (-0.25, -0.125) offset we applied:
+// texcoord.x += 0.25 * SMAA_RT_METRICS.x;
+// The searches are bias by 1, so adjust the coords accordingly:
+// texcoord.x += SMAA_RT_METRICS.x;
+// Disambiguate the length added by the last step:
+// texcoord.x += 2.0 * SMAA_RT_METRICS.x; // Undo last step
+// texcoord.x -= SMAA_RT_METRICS.x * (255.0 / 127.0) * SMAASearchLength(SMAATexturePass2D(searchTex), e, 0.0);
+// return mad(SMAA_RT_METRICS.x, offset, texcoord.x);
 *
 * Ok, we have the distance and both crossing edges. So, what are the areas
 * at each side of current edge?
 
- Rounding prevents precision errors of bilinear filtering:
- We do a scale and bias for mapping to texel space:
- Move to proper place, according to the subpixel offset:
- Do it!
------------------------------------------------------------------------------
- Corner Detection Functions
------------------------------------------------------------------------------
- Blending Weight Calculation Pixel Shader (Second Pass)
- Diagonals have both north and west edges, so searching for them in
- one of the boundaries is enough.
- We give priority to diagonals, so if we find a diagonal we skip
- horizontal/vertical processing.
- Find the distance to the left:
- Now fetch the left crossing edges, two at a time using bilinear
- filtering. Sampling at -0.25 (see @CROSSING_OFFSET) enables to
- discern what value each edge has:
- Find the distance to the right:
- We want the distances to be in pixel units (doing this here allow to
- better interleave arithmetic and memory accesses):
- SMAAArea below needs a sqrt, as the areas texture is compressed
- quadratically:
- Fetch the right crossing edges:
- Ok, we know how this pattern looks like, now it is time for getting
- the actual area:
- Fix corners:
- Find the distance to the top:
- Fetch the top crossing edges:
- Find the distance to the bottom:
- We want the distances to be in pixel units:
- SMAAArea below needs a sqrt, as the areas texture is compressed
- quadratically:
- Fetch the bottom crossing edges:
- Get the area for this direction:
- Fix corners:
------------------------------------------------------------------------------
- Neighborhood Blending Pixel Shader (Third Pass)
- Fetch the blending weights for current pixel:
- Is there any blending weight with a value greater than 0.0?
- Pack velocity into the alpha channel:
- Calculate the blending offsets:
- Calculate the texture coordinates:
- We exploit bilinear filtering to mix current pixel with the chosen
- neighbor:
- Antialias velocity for proper reprojection in a later stage:
- Pack velocity into the alpha channel:
------------------------------------------------------------------------------
- Temporal Resolve Pixel Shader (Optional Pass)
- Velocity is assumed to be calculated for motion blur, so we need to
- inverse it for reprojection:
- Fetch current pixel:
- Reproject current coordinates and fetch previous pixel:
- Attenuate the previous pixel if the velocity is different:
- Blend the pixels according to the calculated weight:
- Just blend the pixels:
------------------------------------------------------------------------------
- Separate Multisamples Pixel Shader (Optional Pass)
------------------------------------------------------------------------------
+// Rounding prevents precision errors of bilinear filtering:
+// We do a scale and bias for mapping to texel space:
+// Move to proper place, according to the subpixel offset:
+// Do it!
+//-----------------------------------------------------------------------------
+// Corner Detection Functions
+//-----------------------------------------------------------------------------
+// Blending Weight Calculation Pixel Shader (Second Pass)
+// Diagonals have both north and west edges, so searching for them in
+// one of the boundaries is enough.
+// We give priority to diagonals, so if we find a diagonal we skip
+// horizontal/vertical processing.
+// Find the distance to the left:
+// Now fetch the left crossing edges, two at a time using bilinear
+// filtering. Sampling at -0.25 (see @CROSSING_OFFSET) enables to
+// discern what value each edge has:
+// Find the distance to the right:
+// We want the distances to be in pixel units (doing this here allow to
+// better interleave arithmetic and memory accesses):
+// SMAAArea below needs a sqrt, as the areas texture is compressed
+// quadratically:
+// Fetch the right crossing edges:
+// Ok, we know how this pattern looks like, now it is time for getting
+// the actual area:
+// Fix corners:
+// Find the distance to the top:
+// Fetch the top crossing edges:
+// Find the distance to the bottom:
+// We want the distances to be in pixel units:
+// SMAAArea below needs a sqrt, as the areas texture is compressed
+// quadratically:
+// Fetch the bottom crossing edges:
+// Get the area for this direction:
+// Fix corners:
+//-----------------------------------------------------------------------------
+// Neighborhood Blending Pixel Shader (Third Pass)
+// Fetch the blending weights for current pixel:
+// Is there any blending weight with a value greater than 0.0?
+// Pack velocity into the alpha channel:
+// Calculate the blending offsets:
+// Calculate the texture coordinates:
+// We exploit bilinear filtering to mix current pixel with the chosen
+// neighbor:
+// Antialias velocity for proper reprojection in a later stage:
+// Pack velocity into the alpha channel:
+//-----------------------------------------------------------------------------
+// Temporal Resolve Pixel Shader (Optional Pass)
+// Velocity is assumed to be calculated for motion blur, so we need to
+// inverse it for reprojection:
+// Fetch current pixel:
+// Reproject current coordinates and fetch previous pixel:
+// Attenuate the previous pixel if the velocity is different:
+// Blend the pixels according to the calculated weight:
+// Just blend the pixels:
+//-----------------------------------------------------------------------------
+// Separate Multisamples Pixel Shader (Optional Pass)
+//-----------------------------------------------------------------------------
 
 */
 

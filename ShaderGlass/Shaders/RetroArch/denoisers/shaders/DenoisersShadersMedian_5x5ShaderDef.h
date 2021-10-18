@@ -39,14 +39,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
- Add the pixels which make up our window to the pixel array.
+// Add the pixels which make up our window to the pixel array.
 for(int dX = -2; dX <= 2; ++dX) {
 for(int dY = -2; dY <= 2; ++dY) {
 vec2 offset = vec2(float(dX), float(dY));
 
- If a pixel in the window is located at (x+dX, y+dY), put it at index (dX + R)(2R + 1) + (dY + R) of the
- pixel array. This will fill the pixel array, with the top left pixel of the window at pixel[0] and the
- bottom right pixel of the window at pixel[N-1].
+// If a pixel in the window is located at (x+dX, y+dY), put it at index (dX + R)(2R + 1) + (dY + R) of the
+// pixel array. This will fill the pixel array, with the top left pixel of the window at pixel[0] and the
+// bottom right pixel of the window at pixel[N-1].
 v[(dX + 2) * 5 + (dY + 2)] = texture(Source, vTexCoord.xy + offset * params.SourceSize.zw).rgb;
 }
 }

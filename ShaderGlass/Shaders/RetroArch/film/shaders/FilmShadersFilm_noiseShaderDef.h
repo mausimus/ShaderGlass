@@ -4,24 +4,24 @@ https://github.com/libretro/slang-shaders/blob/master/film/shaders/film_noise.sl
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- film noise
- by hunterk
- license: public domain
- global timer
- move the image to center-origin for consistent deconvergence effects
- jitter on the y-axis
- calculate some magic pseudo-random numbers in the vertex for performance reasons
- flip the x/y axes pseudo-randomly to give the noise texture some variety
-https://www.shadertoy.com/view/4sXSWs strength= 16.0
- a simple calculation for the vignette/hotspot effects
- create the noise/scratching effects from a LUT of actual film noise
- set up color channel offsets / deconvergence
- composite the color channels
- technicolor effect from aybe:
- https://github.com/aybe/RetroArch-shaders/blob/master/shaders/technicolor1.cg
- apply film grain
- apply vignetting and hotspot and vary the size a bit pseudo-randomly
- Apply noise/scratching effects (or not) pseudo-randomly
+// film noise
+// by hunterk
+// license: public domain
+// global timer
+// move the image to center-origin for consistent deconvergence effects
+// jitter on the y-axis
+// calculate some magic pseudo-random numbers in the vertex for performance reasons
+// flip the x/y axes pseudo-randomly to give the noise texture some variety
+//https://www.shadertoy.com/view/4sXSWs strength= 16.0
+// a simple calculation for the vignette/hotspot effects
+// create the noise/scratching effects from a LUT of actual film noise
+// set up color channel offsets / deconvergence
+// composite the color channels
+// technicolor effect from aybe:
+// https://github.com/aybe/RetroArch-shaders/blob/master/shaders/technicolor1.cg
+// apply film grain
+// apply vignetting and hotspot and vary the size a bit pseudo-randomly
+// Apply noise/scratching effects (or not) pseudo-randomly
 
 */
 

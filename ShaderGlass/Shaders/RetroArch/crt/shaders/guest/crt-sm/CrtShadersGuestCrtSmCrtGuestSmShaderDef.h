@@ -48,10 +48,10 @@ This is useful for 4K displays, where masks 0 and 1 can look too fine.
 Uses a red/magenta/cyan/green pattern for even spacing of the LCD subpixels.
 
 
- vec4 OriginalSize;
- Distortion of scanlines, and end of screen alpha (PD CRT Lottes Curvature)
- Reading the texels
- calculating scanlines
+// vec4 OriginalSize;
+// Distortion of scanlines, and end of screen alpha (PD CRT Lottes Curvature)
+// Reading the texels
+// calculating scanlines
 
 */
 

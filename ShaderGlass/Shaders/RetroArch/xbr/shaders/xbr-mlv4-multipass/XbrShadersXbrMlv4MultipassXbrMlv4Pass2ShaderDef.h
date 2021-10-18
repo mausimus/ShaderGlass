@@ -29,22 +29,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- compatibility macros
-    A1 B1 C1
- A0  A  B  C C4
- D0  D  E  F F4
- G0  G  H  I I4
-    G5 H5 I5
-	bool4 nbrs = ((pe.yzwx > 1.0) || (pe.wxyz > 1.0)) ? bool4(true) : bool4(false);
-	bool4 jag1 = ((f2   > 1.0) || (h2   > 1.0)) ? bool4(true) : bool4(false);
-	bool4 jag2 = ((f2   > 2.0) || (h2   > 2.0)) ? bool4(true) : bool4(false);
-	bool4 jag3 = ((f2   > 4.0) || (h2   > 4.0)) ? bool4(true) : bool4(false);
-	pe =   (pe   == 7.0 || pe   == 8.0) ? ((jag3  ) ? pe   : (pe   - float(2.0))) : pe;
-	pe =   (pe   == 5.0 || pe   == 6.0) ? ((jag2  ) ? pe   : (pe   - float(2.0))) : pe;
-	bool4 jag91 = ((id(h,i,e,h)   || id(i4,i,f4,i4)  ) && (f2   > 1.0) && (f1   > 1.0));
-	bool4 jag92 = ((id(f,i,e,f)   || id(i5,i,h5,i5)  ) && (h2   > 1.0) && (h3   > 1.0));
-	bool4 jag9  = (!(jag91   && jag93   || jag92   && jag94  ));
-	pe   = ((pe   == 0.0) || (!nbrs   || jag1  ) && jag9  ) ? pe   : float4(1.0);
+// compatibility macros
+//    A1 B1 C1
+// A0  A  B  C C4
+// D0  D  E  F F4
+// G0  G  H  I I4
+//    G5 H5 I5
+//	bool4 nbrs = ((pe.yzwx > 1.0) || (pe.wxyz > 1.0)) ? bool4(true) : bool4(false);
+//	bool4 jag1 = ((f2   > 1.0) || (h2   > 1.0)) ? bool4(true) : bool4(false);
+//	bool4 jag2 = ((f2   > 2.0) || (h2   > 2.0)) ? bool4(true) : bool4(false);
+//	bool4 jag3 = ((f2   > 4.0) || (h2   > 4.0)) ? bool4(true) : bool4(false);
+//	pe =   (pe   == 7.0 || pe   == 8.0) ? ((jag3  ) ? pe   : (pe   - float(2.0))) : pe;
+//	pe =   (pe   == 5.0 || pe   == 6.0) ? ((jag2  ) ? pe   : (pe   - float(2.0))) : pe;
+//	bool4 jag91 = ((id(h,i,e,h)   || id(i4,i,f4,i4)  ) && (f2   > 1.0) && (f1   > 1.0));
+//	bool4 jag92 = ((id(f,i,e,f)   || id(i5,i,h5,i5)  ) && (h2   > 1.0) && (h3   > 1.0));
+//	bool4 jag9  = (!(jag91   && jag93   || jag92   && jag94  ));
+//	pe   = ((pe   == 0.0) || (!nbrs   || jag1  ) && jag9  ) ? pe   : float4(1.0);
 
 */
 

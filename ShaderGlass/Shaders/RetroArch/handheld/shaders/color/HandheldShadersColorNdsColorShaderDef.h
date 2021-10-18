@@ -10,7 +10,7 @@ Color Mangler
 Author: hunterk
 License: Public domain
 
- Shader that replicates the LCD dynamics from a Nintendo DS Phat --
+// Shader that replicates the LCD dynamics from a Nintendo DS Phat --
 
 We'll define our color weights in this pattern:
 r,   rg,  rb,  0.0,  //red channel
@@ -18,8 +18,8 @@ gr,  g,   gb,  0.0,  //green channel
 br,  bg,  b,   0.0,  //blue channel
 blr, blg, blb, lum   //alpha channel; we'll hide luma at the end, too
 
- bring out our stored luminance value
- our adjustments need to happen in linear gamma
+// bring out our stored luminance value
+// our adjustments need to happen in linear gamma
 
 */
 
