@@ -18,16 +18,16 @@ Copyright (C) 2001, 2002, 2003, 2004 Andrea Mazzoleni
 License: GNU-GPL
 
 
- subpixel determination
+// subpixel determination
 
 A B C		E0 E1 E2
 D E F		E3 E4 E5
 G H I		E6 E7 E8
 
- reading the texels
- equality checks
- rules
- general condition & subpixel output
+// reading the texels
+// equality checks
+// rules
+// general condition & subpixel output
 
 */
 

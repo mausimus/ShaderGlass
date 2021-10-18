@@ -14,7 +14,7 @@ Scale:	2x
 Scale2SFX improves upon the original Scale2x (aka EPX) by avoiding the occurence of artifacts.
 
 
- subpixel determination
+// subpixel determination
 
 J
 A B C		E0 E1
@@ -22,12 +22,12 @@ K D E F L	E2 E3
 G H I
 M
 
- reading the texels & colorspace conversion
- parent condition
- equality checks
- artifact prevention
- rules
- subpixel output
+// reading the texels & colorspace conversion
+// parent condition
+// equality checks
+// artifact prevention
+// rules
+// subpixel output
 
 */
 

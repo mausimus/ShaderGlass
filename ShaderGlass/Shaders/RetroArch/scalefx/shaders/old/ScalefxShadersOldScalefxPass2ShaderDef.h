@@ -44,25 +44,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- extract first bool4 from float4 - corners
- extract second bool4 from float4 - horizontal edges
- extract third bool4 from float4 - vertical edges
- extract fourth bool4 from float4 - orientation
+// extract first bool4 from float4 - corners
+// extract second bool4 from float4 - horizontal edges
+// extract third bool4 from float4 - vertical edges
+// extract fourth bool4 from float4 - orientation
 	grid		corners		mids
 
 B		x   y	  	  x
 D E F				w   y
 H		w   z	  	  z
 
- read data
- extract data
- lvl2 mid (left, right / up, down)
- lvl3 corners (hori, vert)
- lvl4 corners (hori, vert)
- lvl5 mid (left, right / up, down)
- lvl6 corners (hori, vert)
- subpixels - 0 = E, 1 = D, 2 = D0, 3 = F, 4 = F0, 5 = B, 6 = B0, 7 = H, 8 = H0
- ouput
+// read data
+// extract data
+// lvl2 mid (left, right / up, down)
+// lvl3 corners (hori, vert)
+// lvl4 corners (hori, vert)
+// lvl5 mid (left, right / up, down)
+// lvl6 corners (hori, vert)
+// subpixels - 0 = E, 1 = D, 2 = D0, 3 = F, 4 = F0, 5 = B, 6 = B0, 7 = H, 8 = H0
+// ouput
 
 */
 

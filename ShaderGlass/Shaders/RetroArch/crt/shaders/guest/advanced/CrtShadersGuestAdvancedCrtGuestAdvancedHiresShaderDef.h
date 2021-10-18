@@ -27,29 +27,29 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
- Scanline darken 'edges' effect - need to uncomment it.
- #pragma parameter scansub "          Scanline darken 'edges'" 0.0 0.0 0.30 0.005
- #define scansub      global.scansub   // scanline substraction
- Shadow mask (1-4 from PD CRT Lottes shader).
- No mask
- Phosphor.
- Very compressed TV style shadow mask.
- Aperture-grille.
- Stretched VGA style shadow mask (same as prior shaders).
- VGA style shadow mask.
- Trinitron mask 5
- Trinitron mask 6
- BW Trinitron mask 7
- 4k mask
- Borrowed from maskstr's crt-geom, under GPL
- Calculating texel coordinates
- Reading the texels
- calculating scanlines
- Scanline darken 'edges' effect - need to uncomment it.
- float ws1 = max(wf1 - scansub, 0.2*wf1*wf2); wf1 = ws1/(1.0 - wf1 + ws1);
- float ws2 = max(wf2 - scansub, 0.2*wf2*wf1); wf2 = ws2/(1.0 - wf2 + ws2);
- Scanline saturation application
- Apply Mask
+// Scanline darken 'edges' effect - need to uncomment it.
+// #pragma parameter scansub "          Scanline darken 'edges'" 0.0 0.0 0.30 0.005
+// #define scansub      global.scansub   // scanline substraction
+// Shadow mask (1-4 from PD CRT Lottes shader).
+// No mask
+// Phosphor.
+// Very compressed TV style shadow mask.
+// Aperture-grille.
+// Stretched VGA style shadow mask (same as prior shaders).
+// VGA style shadow mask.
+// Trinitron mask 5
+// Trinitron mask 6
+// BW Trinitron mask 7
+// 4k mask
+// Borrowed from maskstr's crt-geom, under GPL
+// Calculating texel coordinates
+// Reading the texels
+// calculating scanlines
+// Scanline darken 'edges' effect - need to uncomment it.
+// float ws1 = max(wf1 - scansub, 0.2*wf1*wf2); wf1 = ws1/(1.0 - wf1 + ws1);
+// float ws2 = max(wf2 - scansub, 0.2*wf2*wf1); wf2 = ws2/(1.0 - wf2 + ws2);
+// Scanline saturation application
+// Apply Mask
 
 */
 

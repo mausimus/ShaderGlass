@@ -4,12 +4,12 @@ https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/cg
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- quarter-pixel shift between scanlines needed for comb filter
- this formula can be tweaked
-FragColor = vec4(dot(yiq, vec3(1.0, 0.946882, 0.623557)),
-		   dot(yiq, vec3(1.0,-0.274788,-0.635691)),
-		   dot(yiq, vec3(1.0,-1.108545, 1.709007)),
-		   0.0);
+// quarter-pixel shift between scanlines needed for comb filter
+// this formula can be tweaked
+//FragColor = vec4(dot(yiq, vec3(1.0, 0.946882, 0.623557)),
+//		   dot(yiq, vec3(1.0,-0.274788,-0.635691)),
+//		   dot(yiq, vec3(1.0,-1.108545, 1.709007)),
+//		   0.0);
 
 */
 

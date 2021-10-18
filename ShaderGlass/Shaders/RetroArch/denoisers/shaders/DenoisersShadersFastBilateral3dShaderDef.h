@@ -4,8 +4,8 @@ https://github.com/libretro/slang-shaders/blob/master/denoisers/shaders/fast-bil
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- center = sqrt(center);
- Weight normalization
+// center = sqrt(center);
+// Weight normalization
 
 */
 

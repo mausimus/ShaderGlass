@@ -4,184 +4,184 @@ https://github.com/libretro/slang-shaders/blob/master/vhs/shaders/VHSPro/VHSPro_
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- "Screen Resolution (in lines).\nChange screenLinesRes in Preprocessor Definitions to have the same value as this.
- "Enables beam screen bleeding (makes the image blurry).
- "Toggles between different bleeding modes.
- "Length of the bleeding." // default value of 1.0 was too much
- "Enables a CRT Curvature." // defaulting to off
- "Changes the curvature to look like some sort of hyperspace warping.
- "Curvature of the CRT." // default value of 2.0 was way too high
- "Cutoff of the Horizontal Borders.
- "Cutoff of the Vertical Borders.
- "Size of the Horizontal gradient cutoff.
- "Size of the Vertical gradient cutoff.
- "Enables screen vignetting" // default to 'on' to make up for lost fisheye
- "Strength of the vignette." // default value of 1.0 was way too much
- "Speed of the vignette pulsing. (Setting it to 0 makes it stop pulsing)
- "Noise Resolution (in lines).\nChange noiseLinesRes in Preprocessor Definitions to have the same value as this.
- "Makes the noise longer or shorter.
- "Enables a Film Grain on the screen.
- "Intensity of the Film Grain." // default was too low
- "Adds noise to the YIQ Signal, causing a Pink (or green) noise.
- "Signal Noise Type [VHS Pro]
- "Amount of the signal noise.
- "Power of the signal noise. Higher values will make it green, lower values will make it more pink.
- "Enables blinking line noise in the image.
- "Intensity of the line noise.
- "Speed of the line noise blinking delay.
- "Adds scrolling noise like in old VHS Tapes.
- "Intensity of Tape Noise in the image.
- "Amount of Tape Noise in the image.
- "Scrolling speed of the Tape Noise.
- "Enables TV/CRT Scanlines.
- "Width of the Scanlines.
- "Makes the lines of the screen floats up or down. Works best with low Screen Lines resolutions.
- "Speed (and direction) of the floating lines.
- "Enables a stretching noise that scrolls up and down on the Image, simulating magnetic interference of VHS tapes.
- "Enables interlacing.
- "Strength of the Interlacing." //default 0.50 was too much
- "Adds vertical jittering noise.
- "Amount of the vertical jittering noise." //default 1.0 was invisible
- "Speed of the vertical jittering noise.
- "Makes the image twitches horizontally in certain timed intervals.
- "Frequency of time in which the image twitches horizontally.
- "Makes the image twitches vertically in certain timed intervals.
- "Frequency of time in which the image twitches vertically.
- "Tweak the values of the YIQ signal.
- "Shifts/Tweaks the Luma part of the signal.
- "Shifts/Tweaks the Chroma part of the signal.
- "Shifts/Tweaks the Chroma part of the signal.
- "Adjusts the Luma part of the signal.
- "Adjusts the Chroma part of the signal.
- "Adjusts the Chroma part of the signal.
- "Gamma corrects the image.
- "Enables phosphor-trails from old CRT monitors.
- "Amount of Phosphor Trails.
- "Fade-time of the phosphor-trails.
- "Cutoff of the trail.
- "Color of the trail.
- "Enables the visualization of the phosphor-trails only.
-textures and samplers
-functions
-turns sth on and off //a - how often
-random hash
-cheap noise - is ok atm
-cheap (maybe make an option later)
- float scanLineWidth = 0.26;
- float scans = 0.5*(cos((p.y*screenLinesNum+t+.5)*2.0*PI) + 1.0);
- if(scans>scanLineWidth) scans = 1.; else scans = 0.;
-if lines aren't floating -> scanlines also shudn't
-expensive but better
-mw - maximum width
-wcs = widthChangeSpeed
-lfs = line float speed = .5
-lf phase = line float phase = .0
-width change
-float dw  = hash42( vec2(0.01, t2) ).x ; //on t and not on y
-w = clamp(w,0.,1.);
-get descreete line number
- float ln = (1.-fmod(t*lfs + lfp, 1.))*SLN;
- ln = ln - fmod(ln, 1.); //descreete line number
-ln = 10.;
-w = 4.;
-////stretching part///////
- #if VHS_LINESFLOAT_ON
-     float sh = fmod(t, 1.);
-      uv.y = floor( uv.y *SLN  +sh )/SLN - sh/SLN;
- #else
-      uv.y = floor( uv.y *SLN  )/SLN;
-  #endif
- uv.y = floor( uv.y  *SLN  )/SLN ;
-TODO finish
- #if VHS_LINESFLOAT_ON
-  if(uv.y<oy*ln && uv.y>oy*(ln-w)) ////if(uv.y>oy*ln && uv.y<oy*(ln+w))
-     uv.y = floor( uv.y*slb +sh2 +sh )/slb - (sh2-1.)/slb - sh/slb;
-   #else
- #endif
-DANG WINDOWS
-rgb distortion
- offsetX.b = uv.y + rnd_rd(vec2(cos(t*0.01),sin(uv.y)))*magnitude;
- offsetX.b = uv.y + rand_rd(vec2(cos(t*0.01),sin(uv.y)))*magnitude;
-it cud be optimized / but hm
- 3d noise function (iq's)
-so atm line noise is depending on hash for int values
-i gotta rewrite to for hash for 0..1 values
-then i can use normilized p for generating lines
-TODO custom adjustable density (Probability distribution)
- but will be expensive (atm its ok)
-atm its just contrast noise
-this generates noise mask
- *hash12( fract(p+t*vec2(0.123,0.867)) )
- *hash12( fract(p+t*vec2(0.441,0.23)) );
-nm += 0.3 ; //just bit brighter or just more to threshold?
- nl += 0.3; //Value add .3//
-all that shit is for postVHS"Pro"_First - end
-all that shit is for postVHS"Pro"_Second
-size 1.2, bend 2.
-http://paulbourke.net/miscellaneous/lenscorrection/
-adjust size
- uv -= vec2(0.5,0.5);
- uv *= size;
- uv += vec2(0.5,0.5);
-pulse vignette
- offsetX.b = uv.y + rnd_rd(vec2(cos(t*0.01),sin(uv.y)))*m;
- offsetX.b = uv.y + rand_rd(vec2(cos(t*0.01),sin(uv.y)))*m;
-it cud be optimized / but hm
- signal = yiq2rgb(col);
-basically if its 0 -> set it to fullscreen
-TODO calc it before shader / already float done
-make discrete lines /w or wo float
- if(p.x>0.5)
- p.y = floor( p.y * SLN + sh )/SLN - sh/SLN; //v1.2
- if(p.x>0.5)
- p.y = floor( p.y * SLN )/SLN; //v1.2
-just init
-gotta initiate all these things here coz of tape noise distortion
-[NOISE uv init]
-if SLN_Noise different from SLN->recalc linefloat
-SLN_X is quantization of X. goest from _ScreenParams.x to SLN_X
-TODO probably it shud be 1.0/SLN_Noise
-[//noise uv init]
-uv distortion part of tapenoise
-this is t.n. line value at pn.y and down each pixel
-TODO i guess ONEXN shud be 1.0/sln noise
- float tnl = texture(SamplerTape, vec2(0.0,pn.y-ONEXN*ii)).y;
- float tnl = tapeNoiseLines(vec2(0.0,pn.y-ONEXN*i), t*tapeNoiseSpeed)*tapeNoiseAmount;
- float fadediff = hash12(vec2(pn.x-ONEXN*i,pn.y));
-TODO get integer part other way
- p.x +=  ONEXN * float(int(((tnl-thth)/thth)*4.0));
- col.x = sh;
-uv transforms over
-picture proccess start
- col = vec3(p.xy, 0.0);//debug
-iq noise from yiq
-TODO make cheaper noise
-type 1 (best) w Y mask
-type 2
-type 3
-2nd part with noise, tail and yiq col shift
-here is normilized p (0..1)
- float tn = tapeNoise(pn, t*tapeNoiseSpeed)*tapeNoiseAmount;
-tape noise tail
- tn = texture(SamplerTape, d).x;
- tn = tapeNoise(vec2(pn.x-ONEXN*i,pn.y), t*tapeNoiseSpeed)*tapeNoiseAmount;
-for tails length difference
-        if(__RENDERER__ == 0x0A100 || __RENDERER__ == 0x0B000) {
-            fadediff = textureLod(SamplerTape, vec2(d), 0.).a; //hash12(d);
-        }
-        if(__RENDERER__ == 0x09300 || __RENDERER__ >= 0x10000) {
-        }
-tape noise color shift
- float tnl = tapeNoiseLines(vec2(0.0,pn.y), t*tapeNoiseSpeed)*tapeNoiseAmount;
-back to rgb color space
-signal has negative values
-TODO put it into 2nd pass
-fisheye cutoff / outside fisheye
-helps to remove noise outside the fisheye
-hard cutoff
-fades
- col = texture(SamplerTape, txcoord.xy).x;
-    FragColor = (VHS_TapeNoise && params.FrameDirection < 0) ? FragColor + (vec4(texture(tape, txcoord).g)) * 2. : FragColor;
+// "Screen Resolution (in lines).\nChange screenLinesRes in Preprocessor Definitions to have the same value as this.
+// "Enables beam screen bleeding (makes the image blurry).
+// "Toggles between different bleeding modes.
+// "Length of the bleeding." // default value of 1.0 was too much
+// "Enables a CRT Curvature." // defaulting to off
+// "Changes the curvature to look like some sort of hyperspace warping.
+// "Curvature of the CRT." // default value of 2.0 was way too high
+// "Cutoff of the Horizontal Borders.
+// "Cutoff of the Vertical Borders.
+// "Size of the Horizontal gradient cutoff.
+// "Size of the Vertical gradient cutoff.
+// "Enables screen vignetting" // default to 'on' to make up for lost fisheye
+// "Strength of the vignette." // default value of 1.0 was way too much
+// "Speed of the vignette pulsing. (Setting it to 0 makes it stop pulsing)
+// "Noise Resolution (in lines).\nChange noiseLinesRes in Preprocessor Definitions to have the same value as this.
+// "Makes the noise longer or shorter.
+// "Enables a Film Grain on the screen.
+// "Intensity of the Film Grain." // default was too low
+// "Adds noise to the YIQ Signal, causing a Pink (or green) noise.
+// "Signal Noise Type [VHS Pro]
+// "Amount of the signal noise.
+// "Power of the signal noise. Higher values will make it green, lower values will make it more pink.
+// "Enables blinking line noise in the image.
+// "Intensity of the line noise.
+// "Speed of the line noise blinking delay.
+// "Adds scrolling noise like in old VHS Tapes.
+// "Intensity of Tape Noise in the image.
+// "Amount of Tape Noise in the image.
+// "Scrolling speed of the Tape Noise.
+// "Enables TV/CRT Scanlines.
+// "Width of the Scanlines.
+// "Makes the lines of the screen floats up or down. Works best with low Screen Lines resolutions.
+// "Speed (and direction) of the floating lines.
+// "Enables a stretching noise that scrolls up and down on the Image, simulating magnetic interference of VHS tapes.
+// "Enables interlacing.
+// "Strength of the Interlacing." //default 0.50 was too much
+// "Adds vertical jittering noise.
+// "Amount of the vertical jittering noise." //default 1.0 was invisible
+// "Speed of the vertical jittering noise.
+// "Makes the image twitches horizontally in certain timed intervals.
+// "Frequency of time in which the image twitches horizontally.
+// "Makes the image twitches vertically in certain timed intervals.
+// "Frequency of time in which the image twitches vertically.
+// "Tweak the values of the YIQ signal.
+// "Shifts/Tweaks the Luma part of the signal.
+// "Shifts/Tweaks the Chroma part of the signal.
+// "Shifts/Tweaks the Chroma part of the signal.
+// "Adjusts the Luma part of the signal.
+// "Adjusts the Chroma part of the signal.
+// "Adjusts the Chroma part of the signal.
+// "Gamma corrects the image.
+// "Enables phosphor-trails from old CRT monitors.
+// "Amount of Phosphor Trails.
+// "Fade-time of the phosphor-trails.
+// "Cutoff of the trail.
+// "Color of the trail.
+// "Enables the visualization of the phosphor-trails only.
+//textures and samplers
+//functions
+//turns sth on and off //a - how often
+//random hash
+//cheap noise - is ok atm
+//cheap (maybe make an option later)
+// float scanLineWidth = 0.26;
+// float scans = 0.5*(cos((p.y*screenLinesNum+t+.5)*2.0*PI) + 1.0);
+// if(scans>scanLineWidth) scans = 1.; else scans = 0.;
+//if lines aren't floating -> scanlines also shudn't
+//expensive but better
+//mw - maximum width
+//wcs = widthChangeSpeed
+//lfs = line float speed = .5
+//lf phase = line float phase = .0
+//width change
+//float dw  = hash42( vec2(0.01, t2) ).x ; //on t and not on y
+//w = clamp(w,0.,1.);
+//get descreete line number
+// float ln = (1.-fmod(t*lfs + lfp, 1.))*SLN;
+// ln = ln - fmod(ln, 1.); //descreete line number
+//ln = 10.;
+//w = 4.;
+//////stretching part///////
+// #if VHS_LINESFLOAT_ON
+//     float sh = fmod(t, 1.);
+//      uv.y = floor( uv.y *SLN  +sh )/SLN - sh/SLN;
+// #else
+//      uv.y = floor( uv.y *SLN  )/SLN;
+//  #endif
+// uv.y = floor( uv.y  *SLN  )/SLN ;
+//TODO finish
+// #if VHS_LINESFLOAT_ON
+//  if(uv.y<oy*ln && uv.y>oy*(ln-w)) ////if(uv.y>oy*ln && uv.y<oy*(ln+w))
+//     uv.y = floor( uv.y*slb +sh2 +sh )/slb - (sh2-1.)/slb - sh/slb;
+//   #else
+// #endif
+//DANG WINDOWS
+//rgb distortion
+// offsetX.b = uv.y + rnd_rd(vec2(cos(t*0.01),sin(uv.y)))*magnitude;
+// offsetX.b = uv.y + rand_rd(vec2(cos(t*0.01),sin(uv.y)))*magnitude;
+//it cud be optimized / but hm
+// 3d noise function (iq's)
+//so atm line noise is depending on hash for int values
+//i gotta rewrite to for hash for 0..1 values
+//then i can use normilized p for generating lines
+//TODO custom adjustable density (Probability distribution)
+// but will be expensive (atm its ok)
+//atm its just contrast noise
+//this generates noise mask
+// *hash12( fract(p+t*vec2(0.123,0.867)) )
+// *hash12( fract(p+t*vec2(0.441,0.23)) );
+//nm += 0.3 ; //just bit brighter or just more to threshold?
+// nl += 0.3; //Value add .3//
+//all that shit is for postVHS"Pro"_First - end
+//all that shit is for postVHS"Pro"_Second
+//size 1.2, bend 2.
+//http://paulbourke.net/miscellaneous/lenscorrection/
+//adjust size
+// uv -= vec2(0.5,0.5);
+// uv *= size;
+// uv += vec2(0.5,0.5);
+//pulse vignette
+// offsetX.b = uv.y + rnd_rd(vec2(cos(t*0.01),sin(uv.y)))*m;
+// offsetX.b = uv.y + rand_rd(vec2(cos(t*0.01),sin(uv.y)))*m;
+//it cud be optimized / but hm
+// signal = yiq2rgb(col);
+//basically if its 0 -> set it to fullscreen
+//TODO calc it before shader / already float done
+//make discrete lines /w or wo float
+// if(p.x>0.5)
+// p.y = floor( p.y * SLN + sh )/SLN - sh/SLN; //v1.2
+// if(p.x>0.5)
+// p.y = floor( p.y * SLN )/SLN; //v1.2
+//just init
+//gotta initiate all these things here coz of tape noise distortion
+//[NOISE uv init]
+//if SLN_Noise different from SLN->recalc linefloat
+//SLN_X is quantization of X. goest from _ScreenParams.x to SLN_X
+//TODO probably it shud be 1.0/SLN_Noise
+//[//noise uv init]
+//uv distortion part of tapenoise
+//this is t.n. line value at pn.y and down each pixel
+//TODO i guess ONEXN shud be 1.0/sln noise
+// float tnl = texture(SamplerTape, vec2(0.0,pn.y-ONEXN*ii)).y;
+// float tnl = tapeNoiseLines(vec2(0.0,pn.y-ONEXN*i), t*tapeNoiseSpeed)*tapeNoiseAmount;
+// float fadediff = hash12(vec2(pn.x-ONEXN*i,pn.y));
+//TODO get integer part other way
+// p.x +=  ONEXN * float(int(((tnl-thth)/thth)*4.0));
+// col.x = sh;
+//uv transforms over
+//picture proccess start
+// col = vec3(p.xy, 0.0);//debug
+//iq noise from yiq
+//TODO make cheaper noise
+//type 1 (best) w Y mask
+//type 2
+//type 3
+//2nd part with noise, tail and yiq col shift
+//here is normilized p (0..1)
+// float tn = tapeNoise(pn, t*tapeNoiseSpeed)*tapeNoiseAmount;
+//tape noise tail
+// tn = texture(SamplerTape, d).x;
+// tn = tapeNoise(vec2(pn.x-ONEXN*i,pn.y), t*tapeNoiseSpeed)*tapeNoiseAmount;
+//for tails length difference
+//        if(__RENDERER__ == 0x0A100 || __RENDERER__ == 0x0B000) {
+//            fadediff = textureLod(SamplerTape, vec2(d), 0.).a; //hash12(d);
+//        }
+//        if(__RENDERER__ == 0x09300 || __RENDERER__ >= 0x10000) {
+//        }
+//tape noise color shift
+// float tnl = tapeNoiseLines(vec2(0.0,pn.y), t*tapeNoiseSpeed)*tapeNoiseAmount;
+//back to rgb color space
+//signal has negative values
+//TODO put it into 2nd pass
+//fisheye cutoff / outside fisheye
+//helps to remove noise outside the fisheye
+//hard cutoff
+//fades
+// col = texture(SamplerTape, txcoord.xy).x;
+//    FragColor = (VHS_TapeNoise && params.FrameDirection < 0) ? FragColor + (vec4(texture(tape, txcoord).g)) * 2. : FragColor;
 
 */
 

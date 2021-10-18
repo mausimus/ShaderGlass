@@ -43,19 +43,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- extract corners
- extract mids
+// extract corners
+// extract mids
 	grid		corners		mids
 
 B		x   y	  	  x
 D E F				w   y
 H		w   z	  	  z
 
- read data
- extract data
- determine subpixel
- output coordinate - 0 = E, 1 = D, 2 = D0, 3 = F, 4 = F0, 5 = B, 6 = B0, 7 = H, 8 = H0
- ouput
+// read data
+// extract data
+// determine subpixel
+// output coordinate - 0 = E, 1 = D, 2 = D0, 3 = F, 4 = F0, 5 = B, 6 = B0, 7 = H, 8 = H0
+// ouput
 
 */
 

@@ -21,9 +21,9 @@ VERTEX_SHADER
 
 FRAGMENT SHADER
 
- Get colour of current pixel
- Get colour of previous pixel
- Mix colours
+// Get colour of current pixel
+// Get colour of previous pixel
+// Mix colours
 
 */
 

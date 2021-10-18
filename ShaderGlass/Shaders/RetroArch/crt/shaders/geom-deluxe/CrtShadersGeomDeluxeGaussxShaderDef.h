@@ -4,8 +4,8 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/geom-deluxe/ga
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-#pragma parameter rasterbloom_smooth "Raster bloom temporal smoothing" 0.5 0.0 0.99 0.01
-#define rasterbloom_smooth params.rasterbloom_smooth
+//#pragma parameter rasterbloom_smooth "Raster bloom temporal smoothing" 0.5 0.0 0.99 0.01
+//#define rasterbloom_smooth params.rasterbloom_smooth
 
 */
 

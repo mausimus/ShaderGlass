@@ -31,10 +31,10 @@ This file is auto-generated, do not modify directly.
 /   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 /   POSSIBILITY OF SUCH DAMAGE.
 
- Searching for the Vertical Dithering Zones
- Searching for High Contrast "Safe" Zones
- Horizontal Bluring by 1 pixel
- Final Blend between Source and Blur using Dithering Zone and Safe Zone
+// Searching for the Vertical Dithering Zones
+// Searching for High Contrast "Safe" Zones
+// Horizontal Bluring by 1 pixel
+// Final Blend between Source and Blur using Dithering Zone and Safe Zone
 
 */
 

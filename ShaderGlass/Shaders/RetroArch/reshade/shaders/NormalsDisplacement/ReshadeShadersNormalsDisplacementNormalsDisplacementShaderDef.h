@@ -4,10 +4,10 @@ https://github.com/libretro/slang-shaders/blob/master/reshade/shaders/NormalsDis
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-This reads the displacement texture and sets 0.5 to be 0, 1 to be 1, and 0 to be -1,
-and then it scales it to the displacement level previously defined.
-The multiplication and subtraction at the end is to scale it down so it doesn't exceed the window.
-I think it's slightly faster if I do it here and not at the end in the fragColor = line in void main().
+//This reads the displacement texture and sets 0.5 to be 0, 1 to be 1, and 0 to be -1,
+//and then it scales it to the displacement level previously defined.
+//The multiplication and subtraction at the end is to scale it down so it doesn't exceed the window.
+//I think it's slightly faster if I do it here and not at the end in the fragColor = line in void main().
 
 */
 

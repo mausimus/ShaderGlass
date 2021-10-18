@@ -13,11 +13,11 @@ under the terms of the GNU General Public License as published by the Free
 Software Foundation; either version 2 of the License, or (at your option)
 any later version.
 
- Simulate response time
- Higher values result in longer color transition periods - [0, 1]
- Frame sampling definitions
- Sample color from the current and previous frames, apply response time modifier
- Response time effect implmented through an exponential dropoff algorithm
+// Simulate response time
+// Higher values result in longer color transition periods - [0, 1]
+// Frame sampling definitions
+// Sample color from the current and previous frames, apply response time modifier
+// Response time effect implmented through an exponential dropoff algorithm
 
 */
 

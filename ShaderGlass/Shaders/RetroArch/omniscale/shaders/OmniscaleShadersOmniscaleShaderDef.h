@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/omniscale/shaders/omniscal
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- OmniScale
- by Lior Halphon
- ported to slang by hunterk
+// OmniScale
+// by Lior Halphon
+// ported to slang by hunterk
 
 MIT License
 
@@ -31,9 +31,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
  We use the same colorspace as the HQ algorithms. 
- o = offset, the width of a pixel
+// o = offset, the width of a pixel
  We always calculate the top left quarter.  If we need a different quarter, we flip our co-ordinates 
- p = the position within a pixel [0...1]
+// p = the position within a pixel [0...1]
  We need more samples to "solve" this diagonal 
 
 */

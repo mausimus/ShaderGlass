@@ -25,8 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Thanks to HunterK for the mipmap hint. :D
 
- Reference: http://www.compuphase.com/cmetric.htm
- Reference: ScaleFX, author Sp00kyFox
+// Reference: http://www.compuphase.com/cmetric.htm
+// Reference: ScaleFX, author Sp00kyFox
 
 */
 

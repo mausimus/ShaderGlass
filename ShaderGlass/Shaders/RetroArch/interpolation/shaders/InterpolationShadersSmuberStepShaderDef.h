@@ -4,8 +4,8 @@ https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/Smub
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-SmuberStep - Like SmoothestStep but even Smoothester
-by torridgristle
+//SmuberStep - Like SmoothestStep but even Smoothester
+//by torridgristle
 
 */
 

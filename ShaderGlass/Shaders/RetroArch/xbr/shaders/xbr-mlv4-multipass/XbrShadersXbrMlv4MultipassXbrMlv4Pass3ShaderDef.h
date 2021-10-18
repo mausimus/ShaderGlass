@@ -29,17 +29,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- compatibility macros
- Bx, Ay, C
-      A3 B3 C3
-      A1 B1 C1
-A2 A0  A  B  C C4 C6
-D2 D0  D  E  F F4 F6
-G2 G0  G  H  I I4 I6
-      G5 H5 I5
-      G7 H7 I7
- Rotate address from relative to absolute.
- Rotate straight line equation from relative to absolute.
+// compatibility macros
+// Bx, Ay, C
+//      A3 B3 C3
+//      A1 B1 C1
+//A2 A0  A  B  C C4 C6
+//D2 D0  D  E  F F4 F6
+//G2 G0  G  H  I I4 I6
+//      G5 H5 I5
+//      G7 H7 I7
+// Rotate address from relative to absolute.
+// Rotate straight line equation from relative to absolute.
 
 19 1
 9  1

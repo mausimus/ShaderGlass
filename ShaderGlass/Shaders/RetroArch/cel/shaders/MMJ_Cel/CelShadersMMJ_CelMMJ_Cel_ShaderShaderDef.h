@@ -64,9 +64,9 @@ altogether, but still keep outlines enabled.
 -----------
 MMJuno
 
- gray, no chroma
- chromatic data
- brightness modifier
+// gray, no chroma
+// chromatic data
+// brightness modifier
 
 */
 

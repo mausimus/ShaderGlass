@@ -4,10 +4,10 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/torridgristle/
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- CRT-torridgristle - ScanlineSimple pass
- license: public domain
-FragColor = vec4(Picture,1.0);
-FragColor = vec4(Scanline);
+// CRT-torridgristle - ScanlineSimple pass
+// license: public domain
+//FragColor = vec4(Picture,1.0);
+//FragColor = vec4(Scanline);
 
 */
 

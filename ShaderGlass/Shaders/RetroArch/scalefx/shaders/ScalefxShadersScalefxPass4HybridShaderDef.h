@@ -43,23 +43,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
- extract corners
- extract mids
+// extract corners
+// extract mids
 	grid		corners		mids
 
 B		x   y	  	  x
 D E F				w   y
 H		w   z	  	  z
 
- read data
- determine subpixel
- check adjacent pixels to prevent artifacts
- extract data
- reverseAA
- output coordinate - 0 = E0, 1 = D0, 2 = D1, 3 = F0, 4 = F1, 5 = B0, 6 = B1, 7 = H0, 8 = H1
- rAA weight
- rAA filter
- hybrid output
+// read data
+// determine subpixel
+// check adjacent pixels to prevent artifacts
+// extract data
+// reverseAA
+// output coordinate - 0 = E0, 1 = D0, 2 = D1, 3 = F0, 4 = F1, 5 = B0, 6 = B1, 7 = H0, 8 = H1
+// rAA weight
+// rAA filter
+// hybrid output
 
 */
 

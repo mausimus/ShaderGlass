@@ -18,10 +18,10 @@ L2  L1  C  R1  R2
 DLL DL  D1 DR  DRR
 SW  DDL D2 DDR SE
 
-phase 1
-phase 2
-phase 3
-phase 4
+//phase 1
+//phase 2
+//phase 3
+//phase 4
 
 */
 

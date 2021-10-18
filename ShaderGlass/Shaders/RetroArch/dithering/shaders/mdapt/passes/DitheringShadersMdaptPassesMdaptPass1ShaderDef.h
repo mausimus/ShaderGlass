@@ -16,7 +16,7 @@ UL U UR
 L  C R
 DL D DR
 
- Checkerboard Pattern Completion
+// Checkerboard Pattern Completion
 
 */
 

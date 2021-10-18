@@ -24,19 +24,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
- Horizontal cubic filter.
- Some known filters use these values:
-   B = 0.0, C = 0.0  =>  Hermite cubic filter.
-   B = 1.0, C = 0.0  =>  Cubic B-Spline filter.
-   B = 0.0, C = 0.5  =>  Catmull-Rom Spline filter. This is the default used in this shader.
-   B = C = 1.0/3.0   =>  Mitchell-Netravali cubic filter.
-   B = 0.3782, C = 0.3109  =>  Robidoux filter.
-   B = 0.2620, C = 0.3690  =>  Robidoux Sharp filter.
-   B = 0.36, C = 0.28  =>  My best config for ringing elimination in pixel art (Hyllian).
- For more info, see: http://www.imagemagick.org/Usage/img_diagrams/cubic_survey.gif
- Change these params to configure the horizontal filter.
-  Get min/max samples
- Anti-ringing
+// Horizontal cubic filter.
+// Some known filters use these values:
+//   B = 0.0, C = 0.0  =>  Hermite cubic filter.
+//   B = 1.0, C = 0.0  =>  Cubic B-Spline filter.
+//   B = 0.0, C = 0.5  =>  Catmull-Rom Spline filter. This is the default used in this shader.
+//   B = C = 1.0/3.0   =>  Mitchell-Netravali cubic filter.
+//   B = 0.3782, C = 0.3109  =>  Robidoux filter.
+//   B = 0.2620, C = 0.3690  =>  Robidoux Sharp filter.
+//   B = 0.36, C = 0.28  =>  My best config for ringing elimination in pixel art (Hyllian).
+// For more info, see: http://www.imagemagick.org/Usage/img_diagrams/cubic_survey.gif
+// Change these params to configure the horizontal filter.
+//  Get min/max samples
+// Anti-ringing
 
 */
 

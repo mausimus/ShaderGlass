@@ -12,7 +12,7 @@ License: Public domain
 Note: This shader is designed to work with the typical interlaced output from an emulator, which displays both even and odd fields twice.
 This shader will un-weave the image, resulting in a standard, alternating-field interlacing.
 
- assume anything with a vertical resolution greater than 400 lines is interlaced
+// assume anything with a vertical resolution greater than 400 lines is interlaced
 
 */
 

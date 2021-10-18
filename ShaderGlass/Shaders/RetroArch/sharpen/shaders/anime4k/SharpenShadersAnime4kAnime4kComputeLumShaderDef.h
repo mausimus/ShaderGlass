@@ -7,8 +7,8 @@ This file is auto-generated, do not modify directly.
 
 Anime4k - Luma shader - ported by Hyllian - 2020
 
-Quick luminance approximation
-Computes the luminance and saves it in the unused alpha channel
+//Quick luminance approximation
+//Computes the luminance and saves it in the unused alpha channel
 
 */
 

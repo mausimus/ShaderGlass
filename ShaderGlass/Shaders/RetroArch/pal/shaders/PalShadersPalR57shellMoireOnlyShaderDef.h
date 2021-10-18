@@ -4,27 +4,27 @@ https://github.com/libretro/slang-shaders/blob/master/pal/shaders/pal-r57shell-m
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- NES CRT simulation (PAL)
- by r57shell
- https://www.shadertoy.com/view/MlsXWM
- WARNING: NOOB HERE :)
- Stream RU
- http://sc2tv.ru/channel/r57shell
- http://cybergame.tv/r57shell
- http://twitch.tv/elektropage
- some details
- http://forums.nesdev.com/viewtopic.php?f=3&t=12788&start=15
+// NES CRT simulation (PAL)
+// by r57shell
+// https://www.shadertoy.com/view/MlsXWM
+// WARNING: NOOB HERE :)
+// Stream RU
+// http://sc2tv.ru/channel/r57shell
+// http://cybergame.tv/r57shell
+// http://twitch.tv/elektropage
+// some details
+// http://forums.nesdev.com/viewtopic.php?f=3&t=12788&start=15
 vec3 rgb = vec3(
 yuv.x + 1.28033 * yuv.z,
 yuv.x - 0.21482 * yuv.y - 0.38059 * yuv.z,
 yuv.x + 2.12798 * yuv.y);
- pos (left corner, sample size)
- linear interpolation was...
- now other thing.
- http://imgur.com/m8Z8trV
- AT LAST IT WORKS!!!!
-difference should be only on border of pixels
-return vec4((mix(top,bottom,r.y/(l.y+r.y)) - monitor(p))*2.+0.5,1.0);
+// pos (left corner, sample size)
+// linear interpolation was...
+// now other thing.
+// http://imgur.com/m8Z8trV
+// AT LAST IT WORKS!!!!
+//difference should be only on border of pixels
+//return vec4((mix(top,bottom,r.y/(l.y+r.y)) - monitor(p))*2.+0.5,1.0);
 
 */
 

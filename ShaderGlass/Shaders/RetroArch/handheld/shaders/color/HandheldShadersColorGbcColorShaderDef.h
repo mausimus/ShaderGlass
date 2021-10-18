@@ -10,8 +10,8 @@ Color Mangler
 Author: hunterk
 License: Public domain
 
- Shader that replicates the LCD dynamics from a GameBoy Color
-				r   g    b   black
+// Shader that replicates the LCD dynamics from a GameBoy Color
+//				r   g    b   black
 
 */
 

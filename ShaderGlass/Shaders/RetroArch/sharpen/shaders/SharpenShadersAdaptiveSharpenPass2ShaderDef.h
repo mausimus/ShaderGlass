@@ -5,76 +5,76 @@ See original file for full credits and usage license with excerpts below.
 This file is auto-generated, do not modify directly.
 
  Ported by Hyllian and hunterk - 2015 / 2017 
- Copyright (c) 2015-2017, bacondither
- All rights reserved.
-
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions
- are met:
- 1. Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer
-    in this position and unchanged.
- 2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-
- THIS SOFTWARE IS PROVIDED BY THE AUTHORS ``AS IS'' AND ANY EXPRESS OR
- IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- Second pass, MUST BE PLACED IMMEDIATELY AFTER THE FIRST PASS IN THE CHAIN
- Adaptive sharpen - version 2017-04-11 - (requires ps >= 3.0)
- Tuned for use post-resize, EXPECTS FULL RANGE GAMMA LIGHT
---------------------------------------- Settings ------------------------------------------------
- 0.3 <-> 2.0 is a reasonable range of values
- Normally it should be set to false
--------------------------------------------------------------------------------------------------
- Defined values under this row are "optimal" DO NOT CHANGE IF YOU DO NOT KNOW WHAT YOU ARE DOING!
--------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------
- Soft if, fast approx
- Soft limit, modified tanh
- Weighted power mean
- Get destination pixel values
- Maximum of four values
- Colour to luma, fast approx gamma, avg of rec. 709 & 601 luma coeffs
- Center pixel diff
- Get points, clip out of range colour data in c[0]
- [                c22               ]
- [           c24, c9,  c23          ]
- [      c21, c1,  c2,  c3, c18      ]
- [ c19, c10, c4,  c0,  c5, c11, c16 ]
- [      c20, c6,  c7,  c8, c17      ]
- [           c15, c12, c14          ]
- [                c13               ]
- Allow for higher overshoot if the current edge pixel is surrounded by similar edge pixels
- [          x          ]
- [       z, x, w       ]
- [    z, z, x, w, w    ]
- [ y, y, y, 0, y, y, y ]
- [    w, w, x, z, z    ]
- [       w, x, z       ]
- [          x          ]
- RGB to luma
- Pre-calculated default squared kernel weights
- Transition to a concave kernel if the center edge val is above thr
- Use lower weights for pixels in a more active area relative to center pixel area
- This results in narrower and less visible overshoots around sharp edges
- Calculate the negative part of the laplace kernel and the low threshold weight
-[unroll]
- Compute sharpening magnitude function
- Calculate sharpening diff and scale
- Calculate local near min & max, partial sort
-[unroll]
- Calculate tanh scale factor, pos/neg
- Soft limited anti-ringing with tanh, wpmean to control compression slope
- Compensate for saturation loss/gain while making pixels brighter/darker
+// Copyright (c) 2015-2017, bacondither
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer
+//    in this position and unchanged.
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHORS ``AS IS'' AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// Second pass, MUST BE PLACED IMMEDIATELY AFTER THE FIRST PASS IN THE CHAIN
+// Adaptive sharpen - version 2017-04-11 - (requires ps >= 3.0)
+// Tuned for use post-resize, EXPECTS FULL RANGE GAMMA LIGHT
+//--------------------------------------- Settings ------------------------------------------------
+// 0.3 <-> 2.0 is a reasonable range of values
+// Normally it should be set to false
+//-------------------------------------------------------------------------------------------------
+// Defined values under this row are "optimal" DO NOT CHANGE IF YOU DO NOT KNOW WHAT YOU ARE DOING!
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+// Soft if, fast approx
+// Soft limit, modified tanh
+// Weighted power mean
+// Get destination pixel values
+// Maximum of four values
+// Colour to luma, fast approx gamma, avg of rec. 709 & 601 luma coeffs
+// Center pixel diff
+// Get points, clip out of range colour data in c[0]
+// [                c22               ]
+// [           c24, c9,  c23          ]
+// [      c21, c1,  c2,  c3, c18      ]
+// [ c19, c10, c4,  c0,  c5, c11, c16 ]
+// [      c20, c6,  c7,  c8, c17      ]
+// [           c15, c12, c14          ]
+// [                c13               ]
+// Allow for higher overshoot if the current edge pixel is surrounded by similar edge pixels
+// [          x          ]
+// [       z, x, w       ]
+// [    z, z, x, w, w    ]
+// [ y, y, y, 0, y, y, y ]
+// [    w, w, x, z, z    ]
+// [       w, x, z       ]
+// [          x          ]
+// RGB to luma
+// Pre-calculated default squared kernel weights
+// Transition to a concave kernel if the center edge val is above thr
+// Use lower weights for pixels in a more active area relative to center pixel area
+// This results in narrower and less visible overshoots around sharp edges
+// Calculate the negative part of the laplace kernel and the low threshold weight
+//[unroll]
+// Compute sharpening magnitude function
+// Calculate sharpening diff and scale
+// Calculate local near min & max, partial sort
+//[unroll]
+// Calculate tanh scale factor, pos/neg
+// Soft limited anti-ringing with tanh, wpmean to control compression slope
+// Compensate for saturation loss/gain while making pixels brighter/darker
 
 */
 

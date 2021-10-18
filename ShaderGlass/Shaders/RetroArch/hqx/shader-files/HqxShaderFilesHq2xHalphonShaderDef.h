@@ -4,9 +4,9 @@ https://github.com/libretro/slang-shaders/blob/master/hqx/shader-files/hq2x-halp
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- HQ2x
- by Lior Halphon
- ported to slang by hunterk
+// HQ2x
+// by Lior Halphon
+// ported to slang by hunterk
  Based on this (really good) article: http://blog.pkh.me/p/19-butchering-hqx-scaling-filters.html 
 
 MIT License
@@ -33,9 +33,9 @@ SOFTWARE.
 
  The colorspace used by the HQnx filters is not really YUV, despite the algorithm description claims it is. It is
 also not normalized. Therefore, we shall call the colorspace used by HQnx "HQ Colorspace" to avoid confusion. 
- o = offset, the width of a pixel
+// o = offset, the width of a pixel
  We always calculate the top left pixel.  If we need a different pixel, we flip the image 
- p = the position within a pixel [0...1]
+// p = the position within a pixel [0...1]
 
 */
 

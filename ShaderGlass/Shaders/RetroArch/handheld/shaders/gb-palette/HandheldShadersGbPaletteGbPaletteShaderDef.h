@@ -4,10 +4,10 @@ https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/gb-palett
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-sample the input textures
-input grayscale values:
-0.000 black - 0.333 medium gray - 0.667 light gray - 1.000 white
-multiply grayscale value by 3 to obtain int value in range [0, 3], acts as index for arrays storing custom palette UV coordinates and alpha value
+//sample the input textures
+//input grayscale values:
+//0.000 black - 0.333 medium gray - 0.667 light gray - 1.000 white
+//multiply grayscale value by 3 to obtain int value in range [0, 3], acts as index for arrays storing custom palette UV coordinates and alpha value
 
 */
 

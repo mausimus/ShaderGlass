@@ -4,8 +4,8 @@ https://github.com/libretro/slang-shaders/blob/master/reshade/shaders/bloom-pass
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
- Implementation based on the article "Efficient Gaussian blur with linear sampling
- http://rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/
+// Implementation based on the article "Efficient Gaussian blur with linear sampling
+// http://rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/
  A version for MasterEffect Reborn, a standalone version, and a custom shader version for SweetFX can be
 found at http://reshade.me/forum/shader-presentation/27-gaussian-blur-bloom-unsharpmask 
 

@@ -10,8 +10,8 @@ Color Mangler
 Author: hunterk
 License: Public domain
 
- Shader that replicates the LCD dynamics from PSP 1000 and PSP 2000
-				r   g    b   black
+// Shader that replicates the LCD dynamics from PSP 1000 and PSP 2000
+//				r   g    b   black
 
 */
 

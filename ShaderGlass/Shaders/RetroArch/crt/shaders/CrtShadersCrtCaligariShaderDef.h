@@ -24,15 +24,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
- 0.5 = the spot stays inside the original pixel
- 1.0 = the spot bleeds up to the center of next pixel
- Used to counteract the desaturation effect of weighting.
- Constants used with gamma correction.
- Macro for weights computing
- get closest horizontal neighbour to blend
-////////////////////////////////////////////////////
- Vertical Blending
- get closest vertical neighbour to blend
+// 0.5 = the spot stays inside the original pixel
+// 1.0 = the spot bleeds up to the center of next pixel
+// Used to counteract the desaturation effect of weighting.
+// Constants used with gamma correction.
+// Macro for weights computing
+// get closest horizontal neighbour to blend
+//////////////////////////////////////////////////////
+// Vertical Blending
+// get closest vertical neighbour to blend
 
 */
 

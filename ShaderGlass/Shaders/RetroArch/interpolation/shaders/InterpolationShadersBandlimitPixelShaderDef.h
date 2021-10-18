@@ -10,23 +10,23 @@ This file is auto-generated, do not modify directly.
 * License: MIT
 * Adapted from: https://github.com/Themaister/Granite/blob/master/assets/shaders/inc/bandlimited_pixel_filter.h
 
- The cosine filter convolved with rect has a support of 0.5 + d pixels.
- We can sample 4x4 regions, so we can deal with 2.0 pixel range in our filter,
- and the maximum extent value we can have is 1.5.
- Our Taylor approximation is not exact, normalize so the peak is 1.
- No templates in GLSL. Stamp out macros.
- Given weights, compute a bilinear filter which implements the weight.
- All weights are known to be non-negative, and separable.
- The sum of a bilinear sample has combined weight of 1, we will need to adjust the resulting sample
- to match our actual weight sum.
- Get derivatives in texel space.
- Need a non-zero derivative.
- Get base pixel and phase, range [0, 1).
- We need to just do regular minimization filtering.
- We can resolve the filter by just sampling a single 2x2 block.
- Full 4x4 sampling.
- Fade between bandlimited and normal sampling.
- Fully use bandlimited filter at LOD 0, normal filtering at approx. LOD -0.5.
+// The cosine filter convolved with rect has a support of 0.5 + d pixels.
+// We can sample 4x4 regions, so we can deal with 2.0 pixel range in our filter,
+// and the maximum extent value we can have is 1.5.
+// Our Taylor approximation is not exact, normalize so the peak is 1.
+// No templates in GLSL. Stamp out macros.
+// Given weights, compute a bilinear filter which implements the weight.
+// All weights are known to be non-negative, and separable.
+// The sum of a bilinear sample has combined weight of 1, we will need to adjust the resulting sample
+// to match our actual weight sum.
+// Get derivatives in texel space.
+// Need a non-zero derivative.
+// Get base pixel and phase, range [0, 1).
+// We need to just do regular minimization filtering.
+// We can resolve the filter by just sampling a single 2x2 block.
+// Full 4x4 sampling.
+// Fade between bandlimited and normal sampling.
+// Fully use bandlimited filter at LOD 0, normal filtering at approx. LOD -0.5.
 
 */
 

@@ -30,13 +30,13 @@ DEALINGS IN THE SOFTWARE.
 
 Incorporates some of the ideas from SABR shader. Thanks to Joshua Street.
 
- Uncomment just one of the three params below to choose the corner detection
-#define CORNER_A
-#define CORNER_B
-#define CORNER_D
- Difference between vector components.
- Determine if two vector components are equal based on a threshold.
- These inequations define the line below which interpolation occurs.
+// Uncomment just one of the three params below to choose the corner detection
+//#define CORNER_A
+//#define CORNER_B
+//#define CORNER_D
+// Difference between vector components.
+// Determine if two vector components are equal based on a threshold.
+// These inequations define the line below which interpolation occurs.
 
 */
 

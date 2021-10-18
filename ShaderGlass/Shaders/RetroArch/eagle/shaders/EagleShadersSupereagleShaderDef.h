@@ -7,14 +7,14 @@ This file is auto-generated, do not modify directly.
   GET_RESULT function                            
   Copyright (c) 1999-2001 by Derek Liauw Kie Fa  
   License: GNU-GPL                               
- Reading the texels
- reducing vec3 to float
+// Reading the texels
+// reducing vec3 to float
               SuperEagle code               
   Copied from the Dosbox source code        
   Copyright (C) 2002-2007  The DOSBox Team  
   License: GNU-GPL                          
   Adapted by guest(r) on 16.4.2007          
- Distributing the four products
+// Distributing the four products
 
 */
 

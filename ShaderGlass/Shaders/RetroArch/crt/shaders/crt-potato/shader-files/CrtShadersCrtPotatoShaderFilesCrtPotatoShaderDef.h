@@ -4,28 +4,28 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/crt-potato/sha
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-/////////////////////////////////////////////////////////////////////////
-                                                                       //
- Copyright (C) 2017 - Brad Parker                                      //
-                                                                       //
- This program is free software: you can redistribute it and/or modify  //
- it under the terms of the GNU General Public License as published by  //
- the Free Software Foundation, either version 3 of the License, or     //
- (at your option) any later version.                                   //
-                                                                       //
- This program is distributed in the hope that it will be useful,       //
- but WITHOUT ANY WARRANTY; without even the implied warranty of        //
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         //
- GNU General Public License for more details.                          //
-                                                                       //
- You should have received a copy of the GNU General Public License     //
- along with this program.  If not, see <http://www.gnu.org/licenses/>. //
-                                                                       //
-/////////////////////////////////////////////////////////////////////////
- Largest integer scale of input video that will fit in the current output (y axis would typically be limiting on widescreens)
- Size of the scaled video
-#define scaled_video_out    (params.SourceSize.xy * vec2(video_scale))
-it's... half a pixel
+///////////////////////////////////////////////////////////////////////////
+//                                                                       //
+// Copyright (C) 2017 - Brad Parker                                      //
+//                                                                       //
+// This program is free software: you can redistribute it and/or modify  //
+// it under the terms of the GNU General Public License as published by  //
+// the Free Software Foundation, either version 3 of the License, or     //
+// (at your option) any later version.                                   //
+//                                                                       //
+// This program is distributed in the hope that it will be useful,       //
+// but WITHOUT ANY WARRANTY; without even the implied warranty of        //
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         //
+// GNU General Public License for more details.                          //
+//                                                                       //
+// You should have received a copy of the GNU General Public License     //
+// along with this program.  If not, see <http://www.gnu.org/licenses/>. //
+//                                                                       //
+///////////////////////////////////////////////////////////////////////////
+// Largest integer scale of input video that will fit in the current output (y axis would typically be limiting on widescreens)
+// Size of the scaled video
+//#define scaled_video_out    (params.SourceSize.xy * vec2(video_scale))
+//it's... half a pixel
 
 */
 

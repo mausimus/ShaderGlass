@@ -23,17 +23,17 @@ based on pixel brighness is applied along with a monochrome aperture mask.
 This shader runs at 60fps on the Raspberry Pi 3 hardware at 2mpix/s
 resolutions (1920x1080 or 1600x1200).
 
-For testing compilation
-#define FRAGMENT
-#define VERTEX
-This can't be an option without slowing the shader down
-Comment this out for a coarser 3 pixel mask...which is currently broken
-on SNES Classic Edition due to Mali 400 gpu precision
-Some drivers don't return black with texture coordinates out of bounds
-SNES Classic is too slow to black these areas out when using fullscreen
-overlays.  But you can uncomment the below to black them out if necessary
-#define BLACK_OUT_BORDER
-This is just like "Quilez Scaling" but sharper
+//For testing compilation
+//#define FRAGMENT
+//#define VERTEX
+//This can't be an option without slowing the shader down
+//Comment this out for a coarser 3 pixel mask...which is currently broken
+//on SNES Classic Edition due to Mali 400 gpu precision
+//Some drivers don't return black with texture coordinates out of bounds
+//SNES Classic is too slow to black these areas out when using fullscreen
+//overlays.  But you can uncomment the below to black them out if necessary
+//#define BLACK_OUT_BORDER
+//This is just like "Quilez Scaling" but sharper
 
 */
 

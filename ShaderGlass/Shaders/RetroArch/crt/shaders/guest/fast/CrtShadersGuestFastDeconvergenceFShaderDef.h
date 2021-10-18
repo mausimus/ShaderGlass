@@ -24,13 +24,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
- noise function:
- Dedicated to the public domain.
- If you want a real license, you may consider this MIT/BSD/CC0/WTFPL-licensed (take your pick).
- Adapted from ChuckNorris - shadertoy: https://www.shadertoy.com/view/XtK3Dz
- ensure reasonable range
- seed
- more iterations => more random
+// noise function:
+// Dedicated to the public domain.
+// If you want a real license, you may consider this MIT/BSD/CC0/WTFPL-licensed (take your pick).
+// Adapted from ChuckNorris - shadertoy: https://www.shadertoy.com/view/XtK3Dz
+// ensure reasonable range
+// seed
+// more iterations => more random
 
 */
 

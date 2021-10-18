@@ -569,7 +569,19 @@ void processShader(ShaderDef def)
             isVertex   = false;
             inComment  = false;
         }
-        else if (trimLine.starts_with("/*"))
+        else if(trimLine.starts_with("//"))
+        {
+            if (trimLine.ends_with("*/"))
+            {
+                //def.comments.push_back(trimLine.substr(0, trimLine.length() - 2));
+                inComment = false;
+            }
+            else
+            {
+                def.comments.push_back(trimLine);
+            }
+        }
+        else if(trimLine.starts_with("/*"))
         {
             if (trimLine.ends_with("*/"))
             {
@@ -586,9 +598,9 @@ void processShader(ShaderDef def)
             def.comments.push_back(trimLine.substr(0, trimLine.length() - 2));
             inComment = false;
         }
-        else if(trimLine.starts_with("//"))
+        else if(trimLine.starts_with("*/"))
         {
-            def.comments.push_back(trimLine.substr(2));
+            inComment = false;
         }
         else if(inComment)
         {

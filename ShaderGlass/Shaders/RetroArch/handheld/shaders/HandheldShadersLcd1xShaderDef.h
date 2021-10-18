@@ -24,15 +24,15 @@ any later version.
 
 VERTEX_SHADER
 
- Magic Numbers
+// Magic Numbers
 
 FRAGMENT SHADER
 
- Generate LCD grid effect
- > Note the 0.25 pixel offset -> required to ensure that
-   scanlines occur *between* pixels
- Get colour sample
- Apply LCD grid effect
+// Generate LCD grid effect
+// > Note the 0.25 pixel offset -> required to ensure that
+//   scanlines occur *between* pixels
+// Get colour sample
+// Apply LCD grid effect
 
 */
 

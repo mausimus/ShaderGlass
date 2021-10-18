@@ -16,8 +16,8 @@ that are scaled by non-integer factors.
 The prescale factor and texel coordinates are precalculated
 in the vertex shader for speed.
 
- Figure out where in the texel to sample to get correct pre-scaled bilinear.
- Uses the hardware bilinear interpolator to avoid having to sample 4 times manually.
+// Figure out where in the texel to sample to get correct pre-scaled bilinear.
+// Uses the hardware bilinear interpolator to avoid having to sample 4 times manually.
 
 */
 

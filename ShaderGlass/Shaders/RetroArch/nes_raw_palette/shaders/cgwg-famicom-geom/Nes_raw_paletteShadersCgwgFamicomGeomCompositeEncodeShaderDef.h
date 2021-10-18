@@ -10,7 +10,7 @@ uint color = n & 0xfu;
 uint level = color < 0xeu ? (n>>4u)&3u : 1u;
 uint emphasis = n >> 6u;
 
- Extract the chroma, level, and emphasis from the normalized RGB triplet
+// Extract the chroma, level, and emphasis from the normalized RGB triplet
 
 */
 

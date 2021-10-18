@@ -33,15 +33,15 @@ This is an approximation of Jinc(x)*Jinc(x*r1/r2) for x < 2.5,
 where r1 and r2 are the first two zeros of jinc function.
 For a jinc 2-lobe best approximation, use A=0.5 and B=0.825.
 
- A=0.5, B=0.825 is the best jinc approximation for x<2.5. if B=1.0, it's a lanczos filter.
- Increase A to get more blur. Decrease it to get a sharper picture.
- B = 0.825 to get rid of dithering. Increase B to get a fine sharpness, though dithering returns.
- Calculates the distance between two points
-weights[0][0] = weights[0][3] = weights[3][0] = weights[3][3] = 0.0;
- reading the texels
- Anti-ringing
-  Get min/max samples
- final sum and weight normalization
+// A=0.5, B=0.825 is the best jinc approximation for x<2.5. if B=1.0, it's a lanczos filter.
+// Increase A to get more blur. Decrease it to get a sharper picture.
+// B = 0.825 to get rid of dithering. Increase B to get a fine sharpness, though dithering returns.
+// Calculates the distance between two points
+//weights[0][0] = weights[0][3] = weights[3][0] = weights[3][3] = 0.0;
+// reading the texels
+// Anti-ringing
+//  Get min/max samples
+// final sum and weight normalization
 
 */
 
