@@ -1,8 +1,26 @@
 /*
 ShaderGlass shader cel-shaders-MMJ_Cel\MMJ_Cel_Shader_MP_Color imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/cel/shaders/MMJ_Cel/MMJ_Cel_Shader_MP_Color.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+----------------------------------------------------------------
+MMJ's Cel Shader v2.0 - Multi-Pass
+----------------------------------------------------------------
+Parameters:
+-----------
+Color Saturation = Increase or decrease color saturation.
+
+Color Levels = Determines number of color "bands".
+
+Color Weight = Changes the strength of the color adjustments.
+----------------------------------------------------------------
+
+ gray, no chroma
+ chromatic data
+ brightness modifier
+
 */
 
 #pragma once

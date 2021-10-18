@@ -1,8 +1,46 @@
 /*
 ShaderGlass shader handheld-shaders-lcd-shader\lcd-pass-2 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/lcd-shader/lcd-pass-2.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+/////////////////////////////////////////////////////////////////////////
+                                                                       //
+ LCD Shader v0.0.1                                                     //
+                                                                       //
+ Copyright (C) 2013 Harlequin : unknown92835@gmail.com                 //
+                                                                       //
+ This program is free software: you can redistribute it and/or modify  //
+ it under the terms of the GNU General Public License as published by  //
+ the Free Software Foundation, either version 3 of the License, or     //
+ (at your option) any later version.                                   //
+                                                                       //
+ This program is distributed in the hope that it will be useful,       //
+ but WITHOUT ANY WARRANTY; without even the implied warranty of        //
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         //
+ GNU General Public License for more details.                          //
+                                                                       //
+ You should have received a copy of the GNU General Public License     //
+ along with this program.  If not, see <http://www.gnu.org/licenses/>. //
+                                                                       //
+/////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+config                                                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+the ratio of blending between the LCD pixels and the input image, higher values result in stronger LCD magenta/yellow/cyan bands - [0, 1]
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+vertex shader                                                                                                                           //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+fragment definitions                                                                                                                    //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+fragment shader                                                                                                                         //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+sample all relevant textures
+overlay the LCD image onto the input image to brighten the output and dampen the LCD cell colors
+tint the background image and apply it to the output color if the current fragment is located in the border region
+
 */
 
 #pragma once

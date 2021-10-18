@@ -1,8 +1,54 @@
 /*
 ShaderGlass shader crt-shaders-crt-lottes-multipass\scanpass-glow imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/crt-lottes-multipass/scanpass-glow.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ PUBLIC DOMAIN CRT STYLED SCAN-LINE SHADER
+
+   by Timothy Lottes
+
+ This is more along the style of a really good CGA arcade monitor.
+ With RGB inputs instead of NTSC.
+ The shadow mask example has the mask rotated 90 degrees for less chromatic aberration.
+
+ Left it unoptimized to show the theory behind the algorithm.
+
+ It is an example what I personally would want as a display option for pixel art games.
+ Please take and use, change, or whatever.
+Uncomment to reduce instructions with simpler linearization
+(fixes HD3000 Sandy Bridge IGP)
+ ------------- //
+ sRGB to Linear.
+ Assuming using sRGB typed textures this should not be needed.
+ Linear to sRGB.
+ Assuming using sRGB typed textures this should not be needed.
+ Nearest emulated sample given floating point position and texel offset.
+ Also zero's off screen.
+ Distance in emulated pixels to nearest texel.
+ 1D Gaussian.
+ 3-tap Gaussian filter along horz line.
+ Convert distance to weight.
+ Return filtered sample.
+ 5-tap Gaussian filter along horz line.
+ Convert distance to weight.
+ Return filtered sample.
+ 7-tap Gaussian filter along horz line.
+ Convert distance to weight.
+ Return filtered sample.
+ Return scanline weight.
+ Return scanline weight for bloom.
+ Allow nearest three lines to effect pixel.
+ Small bloom.
+ Distortion of scanlines, and end of screen alpha.
+ Shadow mask.
+ Very compressed TV style shadow mask.
+ Aperture-grille.
+ Stretched VGA style shadow mask (same as prior shaders).
+ VGA style shadow mask.
+Add Bloom
+#ifdef GL_ES    /* TODO/FIXME - hacky clamp fix 
+
 */
 
 #pragma once

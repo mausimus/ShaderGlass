@@ -1,8 +1,27 @@
 /*
 ShaderGlass shader crt-shaders\crt-blurPi imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/crt-blurPi.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+
+- crt-blurPi slang shader -
+
+Looks good on low res screens (640 x 480 or less), providing screen space scanlines.
+Developed on and for the Raspberry Pi.
+
+Made by Oriol Ferrer Mesià (armadillu)
+http://uri.cat
+
+MIT license
+
+params....
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
 */
 
 #pragma once

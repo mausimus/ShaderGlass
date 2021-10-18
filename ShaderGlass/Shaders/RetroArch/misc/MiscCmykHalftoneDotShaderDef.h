@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader misc\cmyk-halftone-dot imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/misc/cmyk-halftone-dot.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Distance to nearest point in a grid of
+ (frequency x frequency) points over the unit square
+ Perform a rough RGB-to-CMYK conversion
+
 */
 
 #pragma once

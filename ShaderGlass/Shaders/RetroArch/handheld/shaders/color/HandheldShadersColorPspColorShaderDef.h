@@ -1,8 +1,18 @@
 /*
 ShaderGlass shader handheld-shaders-color\psp-color imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/color/psp-color.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Shader Modified: Pokefan531
+Color Mangler
+Author: hunterk
+License: Public domain
+
+ Shader that replicates the LCD dynamics from PSP 1000 and PSP 2000
+				r   g    b   black
+
 */
 
 #pragma once

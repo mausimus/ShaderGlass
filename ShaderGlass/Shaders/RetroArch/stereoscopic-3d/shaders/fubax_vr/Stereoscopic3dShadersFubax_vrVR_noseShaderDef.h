@@ -1,8 +1,43 @@
 /*
 ShaderGlass shader stereoscopic-3d-shaders-fubax_vr\VR_nose imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/stereoscopic-3d/shaders/fubax_vr/VR_nose.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Nose PS (c) 2019 Jacob Maximilian Fober
+
+Anti-nausea shader for VR
+
+This work is licensed under the Creative Commons
+Attribution-ShareAlike 4.0 International License.
+To view a copy of this license, visit
+http://creativecommons.org/licenses/by-sa/4.0/.
+
+ParallaxOffset, ParallaxCenter, ParallaxSteps, ParallaxMaskScalar,
+ParallaxSwitch 
+ Grid settings
+#pragma parameter ParallaxSwitch "Toggle Parallax Effect" 1.0 0.0 1.0 1.0
+#pragma parameter ParallaxOffset "Parallax Horizontal Offset" 0.355 0.0 1.0 0.001
+#pragma parameter ParallaxCenter "Parallax Rotation Center (ZPD)" 1.0 0.0 1.0 0.001
+#pragma parameter ParallaxSteps "Parallax Sampling Steps" 16.0 1.0 128.0 0.2
+#pragma parameter ParallaxMaskScalar "Parallax Gap Compensation" 10.0 0.0 32.0 0.2
+float ParallaxOffset = global.ParallaxOffset;
+float ParallaxCenter = global.ParallaxCenter;
+int ParallaxSteps = int(global.ParallaxSteps);
+int ParallaxMaskScalar = int(global.ParallaxMaskScalar);
+bool ParallaxSwitch = bool(global.ParallaxSwitch);
+#include "fubax_vr_shared_funcs.inc
+ Convert RGB to YUV
+ RGB to YUV709 matrix
+ Overlay blending mode
+ Bypass sharpening
+ Divide screen in two (mirrored)
+ Sample display image
+ Sample nose texture
+ Change skintone
+ Blend nose with display image
+
 */
 
 #pragma once

@@ -1,8 +1,17 @@
 /*
 ShaderGlass shader nes_raw_palette-shaders-cgwg-famicom-geom\composite-encode imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/cgwg-famicom-geom/composite-encode.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ original palette decode for historical purposes:
+uint n = uint(texture(Source, vTexCoord).r);
+uint color = n & 0xfu;
+uint level = color < 0xeu ? (n>>4u)&3u : 1u;
+uint emphasis = n >> 6u;
+
+ Extract the chroma, level, and emphasis from the normalized RGB triplet
+
 */
 
 #pragma once

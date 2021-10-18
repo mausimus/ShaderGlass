@@ -1,8 +1,18 @@
 /*
 ShaderGlass shader dithering-shaders-gdapt\gdapt-pass0 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/dithering/shaders/gdapt/gdapt-pass0.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Genesis Dithering and Pseudo Transparency Shader v1.3 - Pass 0
+by Sp00kyFox, 2014
+
+Neighbor anaylsis via dot product of the difference vectors.
+
+
+ Reference: http://www.compuphase.com/cmetric.htm
+
 */
 
 #pragma once

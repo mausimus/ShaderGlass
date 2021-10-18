@@ -1,8 +1,52 @@
 /*
 ShaderGlass shader handheld-shaders\lcd1x_nds imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/lcd1x_nds.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+lcd1x_nds shader
+
+A slightly tweaked version of lcd3x:
+
+- Original lcd3x code written by Gigaherz and released into the public domain
+
+- Original 'nds_color' code written by hunterk, modified by Pokefan531 and
+released into the public domain
+
+Notes:
+
+> Omits LCD 'colour seperation' effect
+
+> Has 'properly' aligned scanlines
+
+> Includes NDS colour correction
+
+> Supports any NDS internal resolution setting
+
+Edited by jdgleaver
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+
+VERTEX_SHADER
+
+ Magic Numbers
+
+FRAGMENT SHADER
+
+ Generate LCD grid effect
+ > Note the 0.25 pixel offset -> required to ensure that
+   scanlines occur *between* pixels
+ > Divide pixel coordinate by current scale factor
+   (input_video_height / nds_screen_height)
+ Get colour sample
+ Apply colour correction
+ Apply LCD grid effect
+
 */
 
 #pragma once

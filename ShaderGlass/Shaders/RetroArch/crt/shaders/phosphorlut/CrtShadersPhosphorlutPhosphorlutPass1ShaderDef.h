@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader crt-shaders-phosphorlut\phosphorlut-pass1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/phosphorlut/phosphorlut-pass1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+layout(set = 0, binding = 5) uniform sampler2D blurPassV;
+	vec3 blurV = texture(blurPassV, vTexCoord).rgb;
+vec3 halation = 1.0 - (1.0 - phosphors) * (1.0 - blurLines);
+
 */
 
 #pragma once

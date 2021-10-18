@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader stereoscopic-3d-shaders\shutter-to-side-by-side imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/stereoscopic-3d/shaders/shutter-to-side-by-side.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Shutter 3D to side-by-side
+ by hunterk
+ license: public domain
+
 */
 
 #pragma once

@@ -1,8 +1,40 @@
 /*
 ShaderGlass shader crt-shaders\zfast_crt imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/zfast_crt.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+zfast_crt_standard - A simple, fast CRT shader.
+
+Copyright (C) 2017 Greg Hogan (SoltanGris42)
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+
+Notes:  This shader does scaling with a weighted linear filter for adjustable
+sharpness on the x and y axes based on the algorithm by Inigo Quilez here:
+http://http://www.iquilezles.org/www/articles/texture/texture.htm
+but modified to be somewhat sharper.  Then a scanline effect that varies
+based on pixel brighness is applied along with a monochrome aperture mask.
+This shader runs at 60fps on the Raspberry Pi 3 hardware at 2mpix/s
+resolutions (1920x1080 or 1600x1200).
+
+For testing compilation
+#define FRAGMENT
+#define VERTEX
+This can't be an option without slowing the shader down
+Comment this out for a coarser 3 pixel mask...which is currently broken
+on SNES Classic Edition due to Mali 400 gpu precision
+Some drivers don't return black with texture coordinates out of bounds
+SNES Classic is too slow to black these areas out when using fullscreen
+overlays.  But you can uncomment the below to black them out if necessary
+#define BLACK_OUT_BORDER
+This is just like "Quilez Scaling" but sharper
+
 */
 
 #pragma once

@@ -1,8 +1,95 @@
 /*
 ShaderGlass shader crt-shaders-mame_hlsl-shaders\mame_chroma imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/mame_hlsl/shaders/mame_chroma.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ license:BSD-3-Clause
+ copyright-holders:W. M. Martinez
+-----------------------------------------------------------------------------
+ Phosphor Chromaticity to sRGB Transform Effect
+-----------------------------------------------------------------------------
+ effect toggles and multi
+   float bloomtoggle;
+ bloom params
+	float vectorscreen;
+	float bloomscale;
+	float bloomoverdrive_r;
+	float bloomoverdrive_g;
+	float bloomoverdrive_b;
+	float level0weight;
+	float level1weight;
+	float level2weight;
+	float level3weight;
+	float level4weight;
+	float level5weight;
+	float level6weight;
+	float level7weight;
+	float level8weight;
+ post params
+ ntsc params
+ color params
+ deconverge params
+ scanline params
+ defocus params
+ phosphor params
+ chroma params
+ distortion params
+	float reflection_col_r;
+	float reflection_col_g;
+	float reflection_col_b;
+ vector params
+ float timeratio;
+ float timescale;
+ float lengthratio;
+ float lengthscale;
+ float beamsmooth;
+ Effect Toggles and Settings Used In Multiple Passes
+#pragma parameter bloomtoggle "Bloom Enable" 0.0 0.0 1.0 1.0
+bool BloomToggle = bool(global.bloomtoggle);
+#pragma parameter vectorscreen "Vector Screen Mode" 0.0 0.0 1.0 1.0 // TODO/FIXME
+ Bloom Pass
+#pragma parameter bloomblendmode "Bloom Blend Mode" 0.0 0.0 1.0 1.0
+#pragma parameter bloomscale "Bloom Scale" 0.33 0.0 1.0 0.01
+#pragma parameter bloomoverdrive_r "Bloom Overdrive R" 1.0 0.0 2.0 0.01
+#pragma parameter bloomoverdrive_g "Bloom Overdrive G" 1.0 0.0 2.0 0.01
+#pragma parameter bloomoverdrive_b "Bloom Overdrive B" 1.0 0.0 2.0 0.01
+#pragma parameter level0weight "Bloom Level 0 Weight" 0.64 0.0 1.0 0.01
+#pragma parameter level1weight "Bloom Level 1 Weight" 0.64 0.0 1.0 0.01
+#pragma parameter level2weight "Bloom Level 2 Weight" 0.32 0.0 1.0 0.01
+#pragma parameter level3weight "Bloom Level 3 Weight" 0.16 0.0 1.0 0.01
+#pragma parameter level4weight "Bloom Level 4 Weight" 0.08 0.0 1.0 0.01
+#pragma parameter level5weight "Bloom Level 5 Weight" 0.06 0.0 1.0 0.01
+#pragma parameter level6weight "Bloom Level 6 Weight" 0.04 0.0 1.0 0.01
+#pragma parameter level7weight "Bloom Level 7 Weight" 0.02 0.0 1.0 0.01
+#pragma parameter level8weight "Bloom Level 8 Weight" 0.01 0.0 1.0 0.01
+ Post Pass
+#pragma parameter backcolor_r "Back Color R" 0.0 0.0 1.0 0.01
+#pragma parameter backcolor_g "Back Color G" 0.0 0.0 1.0 0.01
+#pragma parameter backcolor_b "Back Color B" 0.0 0.0 1.0 0.01
+#pragma parameter mask_width "Mask Texture Width" 32.0 0.0 256.0 16.0
+#pragma parameter mask_height "Mask Texture Height" 32.0 0.0 256.0 16.0
+#pragma parameter preparebloom "Prepare Bloom" 0.0 0.0 1.0 1.0
+ NTSC Pass
+ Color Pass
+ Deconverge Pass
+ Scanline Pass
+#pragma parameter scanlineoffset "Scanline Offset" 1.0 -1.5 3.0 0.01
+ Defocus Pass
+ Phosphor Pass
+ Chroma Pass
+ Distortion Pass
+#pragma parameter reflection_col_r "Reflection Color R" 1.0 0.0 1.0 0.01
+#pragma parameter reflection_col_g "Reflection Color G" 1.0 0.0 1.0 0.01
+#pragma parameter reflection_col_b "Reflection Color B" 1.0 0.0 1.0 0.01
+ Vector Pass
+#pragma parameter timeratio "Time Ratio" 1.0 0.0 2.0 0.01
+#pragma parameter timescale "Time Scale" 1.0 1.0 10.0 1.0
+#pragma parameter lengthratio "Length Ratio" 1.0 1.0 10.0 1.0
+#pragma parameter lengthscale "Length Scale" 1.0 1.0 10.0 1.0
+#pragma parameter beamsmooth "Beam Smooth Amt" 0.5 0.1 1.0 0.1
+ Prescale Pass
+
 */
 
 #pragma once

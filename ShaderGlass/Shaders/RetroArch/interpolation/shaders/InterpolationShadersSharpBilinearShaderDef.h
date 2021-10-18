@@ -1,8 +1,20 @@
 /*
 ShaderGlass shader interpolation-shaders\sharp-bilinear imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/sharp-bilinear.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+* sharp-bilinear.slang
+* Author: Themaister
+* License: Public domain
+*
+* Does a bilinear stretch, with a preapplied Nx nearest-neighbor scale, giving a
+* sharper image than plain bilinear.
+
+ Figure out where in the texel to sample to get correct pre-scaled bilinear.
+ Uses the hardware bilinear interpolator to avoid having to sample 4 times manually.
+
 */
 
 #pragma once

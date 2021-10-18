@@ -1,8 +1,21 @@
 /*
 ShaderGlass shader vhs-shaders\static imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/vhs/shaders/static.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Loose Connection shader
+ by hunterk
+ adapted from drmelon's VHS Distortion shadertoy:
+ https://www.shadertoy.com/view/4dBGzK
+ ryk's VCR Distortion shadertoy:
+ https://www.shadertoy.com/view/ldjGzV
+ and Vladmir Storm's VHS Tape Noise shadertoy:
+ https://www.shadertoy.com/view/MlfSWr
+random hash
+ 3d noise function (iq's)
+tape noise
+
 */
 
 #pragma once

@@ -1,8 +1,27 @@
 /*
 ShaderGlass shader crt-shaders\dotmask imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/dotmask.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Dot Mask
+Authors: cgwg, Timothy Lottes, torridgristle
+License: GPL
+
+Note: This shader is just the dotmask functions from cgwg's CRT shader and crt-lottes plus torridgristle's mask.
+
+ Lottes' public domain mask code
+ Shadow mask.
+ Very compressed TV style shadow mask.
+ Aperture-grille.
+ Stretched VGA style shadow mask (same as prior shaders).
+ VGA style shadow mask.
+ torridgristle's shadowmask code
+ cgwg's aperture grille
+Output pixels are alternately tinted green and magenta
+ Lottes mask needs linear gamma
+
 */
 
 #pragma once

@@ -1,8 +1,17 @@
 /*
 ShaderGlass shader nes_raw_palette-shaders-gtu-famicom\scaleY imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/gtu-famicom/scaleY.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+//////////////////////////////////////////////////////
+  GTU-famicom version 0.50
+  Author: aliaspider - aliaspider@gmail.com
+  License: GPLv3
+//////////////////////////////////////////////////////
+#include "config.h
+  for (i=-range;i<range+2.0;i++){
+
 */
 
 #pragma once

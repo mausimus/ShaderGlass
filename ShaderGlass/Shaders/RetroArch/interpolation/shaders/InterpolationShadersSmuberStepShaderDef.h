@@ -1,8 +1,12 @@
 /*
 ShaderGlass shader interpolation-shaders\SmuberStep imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/SmuberStep.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+SmuberStep - Like SmoothestStep but even Smoothester
+by torridgristle
+
 */
 
 #pragma once

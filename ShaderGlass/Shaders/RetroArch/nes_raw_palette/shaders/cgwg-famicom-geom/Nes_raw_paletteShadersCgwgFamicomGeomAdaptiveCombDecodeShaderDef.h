@@ -1,8 +1,16 @@
 /*
 ShaderGlass shader nes_raw_palette-shaders-cgwg-famicom-geom\adaptive-comb-decode imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/cgwg-famicom-geom/adaptive-comb-decode.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ quarter-pixel shift between scanlines needed for comb filter
+ this formula can be tweaked
+FragColor = vec4(dot(yiq, vec3(1.0, 0.946882, 0.623557)),
+		   dot(yiq, vec3(1.0,-0.274788,-0.635691)),
+		   dot(yiq, vec3(1.0,-1.108545, 1.709007)),
+		   0.0);
+
 */
 
 #pragma once

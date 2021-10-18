@@ -1,8 +1,21 @@
 /*
 ShaderGlass shader dithering-shaders-ps1dither\PS1-Undither-AntiBayer imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/dithering/shaders/ps1dither/PS1-Undither-AntiBayer.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ PS1 Undither AntiBayer
+ by torridgristle
+ PlayStation dithering pattern. The offset is selected based on the
+ pixel position in VRAM, by blocks of 4x4 pixels. The value is added
+ to the 8bit color components before they're truncated to 5 bits.
+"const int dither_pattern[16] =
+"  int[16](-4,  0, -3,  1,
+"           2, -2,  3, -1,
+"          -3,  1, -4,  0,
+"           3, -1,  2, -2);" "\n
+Result = vec3(Pattern)/8.0 + 0.5;
+
 */
 
 #pragma once

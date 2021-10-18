@@ -1,8 +1,30 @@
 /*
 ShaderGlass shader handheld-shaders-color\gbc-gambatte-color imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/color/gbc-gambatte-color.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Gambatte Color
+A Slang/GLSL port of the color correction option on Gambatte emulator
+Ported by: RiskyJumps
+License: Public domain
+
+
+OPTIONS:
+
+INT_OPS (default: Disabled)
+It's supposed to be more "accurate" but it's a waste. Not recommended
+
+#define INT_OPS
+
+SIMULATE_INT (default: Disabled)
+Only meaningful if INT_OPS is disabled. It truncates floats. Then
+again, it's supposed to be more "accurate" but it looks just
+too similar. It's still a waste. Not recommended.
+
+#define SIMULATE_INT
+
 */
 
 #pragma once

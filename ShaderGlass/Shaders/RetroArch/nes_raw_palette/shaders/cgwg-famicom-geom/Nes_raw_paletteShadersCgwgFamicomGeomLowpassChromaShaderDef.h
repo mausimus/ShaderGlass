@@ -1,8 +1,12 @@
 /*
 ShaderGlass shader nes_raw_palette-shaders-cgwg-famicom-geom\lowpass-chroma imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/cgwg-famicom-geom/lowpass-chroma.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ after mixing with the adaptive comb filter
+ Hamming window
+
 */
 
 #pragma once

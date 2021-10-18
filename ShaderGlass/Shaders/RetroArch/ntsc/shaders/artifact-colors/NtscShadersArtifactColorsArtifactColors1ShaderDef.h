@@ -1,8 +1,31 @@
 /*
 ShaderGlass shader ntsc-shaders-artifact-colors\artifact-colors1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/ntsc/shaders/artifact-colors/artifact-colors1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Adapted for RetroArch from Flyguy's "Apple II-Like Artifact Colors" from shadertoy:
+https://www.shadertoy.com/view/llyGzR
+
+Colors created through NTSC artifacting on 4-bit patterns, similar to the Apple II's lo-res mode.
+
+Demodulator
+#define F_COL (1.0 / 4.0) // moved to parameter
+#define F_LUMA_LP (1.0 / 6.0) // moved to parameter
+#define F_COL_BW (1.0 / 50.0) // moved to parameter
+#define FIR_SIZE 29 // moved to parameter
+Non-normalized texture sampling.
+Complex multiply
+https://en.wikipedia.org/wiki/Window_function
+FIR lowpass filter
+Fc = Cutoff freq., Fs = Sample freq., N = # of taps, i = Tap index
+FIR bandpass filter
+Fa/Fb = Low/High cutoff freq., Fs = Sample freq., N = # of taps, i = Tap index
+Complex oscillator, Fo = Oscillator freq., Fs = Sample freq., n = Sample index
+Separate luma(Y) & chroma(IQ) signals
+Shift IQ signal down from Fcol to DC
+
 */
 
 #pragma once

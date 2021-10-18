@@ -1,8 +1,36 @@
 /*
 ShaderGlass shader cubic-shaders\bicubic imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/cubic/shaders/bicubic.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Copyright (C) 2010 Team XBMC
+http://www.xbmc.org
+Copyright (C) 2011 Stefanos A.
+http://www.opentk.com
+
+This Program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This Program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with XBMC; see the file COPYING.  If not, write to
+the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+http://www.gnu.org/copyleft/gpl.html
+
+ Default to Mitchel-Netravali coefficients for best psychovisual result
+ bicubic-sharp is B = 0.1 and C = 0.5
+ bicubic-sharper is B = 0.0 and C = 0.75
+make sure all taps added together is exactly 1.0, otherwise some (very small) distortion can occur
+ final sum and weight normalization
+
 */
 
 #pragma once

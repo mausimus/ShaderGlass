@@ -1,8 +1,14 @@
 /*
 ShaderGlass shader crt-shaders-torridgristle\ScanlineSimple imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/torridgristle/ScanlineSimple.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ CRT-torridgristle - ScanlineSimple pass
+ license: public domain
+FragColor = vec4(Picture,1.0);
+FragColor = vec4(Scanline);
+
 */
 
 #pragma once

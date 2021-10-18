@@ -10,6 +10,23 @@ filesystem::path startupPath;
 filesystem::path listPath(_outputPath);
 vector<string>   shaderList;
 
+static inline void ltrim(std::string& s)
+{
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch) && ch != '\"'; }));
+}
+
+static inline void rtrim(std::string& s)
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch) && ch != '\"'; }).base(), s.end());
+}
+
+static inline string trim(std::string s)
+{
+    ltrim(s);
+    rtrim(s);
+    return s;
+}
+
 std::string exec(const char* cmd)
 {
     std::array<char, 128> buffer;
@@ -367,8 +384,15 @@ void populateShaderTemplate(ShaderDef def)
         {
             outfile << "ShaderGlass shader " << info.category << "\\" << info.shaderName << " imported from " << _libName << ":" << endl;
             outfile << "https://github.com/libretro/slang-shaders/blob/master/" << def.input.generic_string() << endl;
-            outfile << "See original file for credits and usage license. " << endl;
+            outfile << "See original file for full credits and usage license with excerpts below. " << endl;
             outfile << "This file is auto-generated, do not modify directly." << endl;
+            if (def.comments.size())
+            {
+                outfile << endl;
+                for(const auto& c: def.comments)
+                    outfile << c << endl;
+            }
+            outfile << endl;
         }
         else
             outfile << line << endl;
@@ -525,8 +549,10 @@ void processShader(ShaderDef def)
 
     bool        isVertex = true, isFragment = true;
     const auto& source = loadSource(def.input, true);
+    bool inComment = false;
     for(const auto& line : source)
     {
+        auto trimLine = trim(line);
         if(line.starts_with("#pragma parameter"))
         {
             def.params.push_back(ShaderParam(line, 1));
@@ -535,11 +561,38 @@ void processShader(ShaderDef def)
         {
             isFragment = false;
             isVertex   = true;
+            inComment  = false;
         }
         else if(line.starts_with("#pragma stage fragment"))
         {
             isFragment = true;
             isVertex   = false;
+            inComment  = false;
+        }
+        else if (trimLine.starts_with("/*"))
+        {
+            if (trimLine.ends_with("*/"))
+            {
+                def.comments.push_back(trimLine.substr(2, trimLine.length() - 4));
+            }
+            else
+            {
+                def.comments.push_back(trimLine.substr(2));
+                inComment = true;
+            }
+        }
+        else if (trimLine.ends_with("*/"))
+        {
+            def.comments.push_back(trimLine.substr(0, trimLine.length() - 2));
+            inComment = false;
+        }
+        else if(trimLine.starts_with("//"))
+        {
+            def.comments.push_back(trimLine.substr(2));
+        }
+        else if(inComment)
+        {
+            def.comments.push_back(trimLine);
         }
         else
         {
@@ -607,23 +660,6 @@ void processTexture(TextureDef def)
 {
     def.data = bin2string(def.input);
     populateTextureTemplate(def);
-}
-
-static inline void ltrim(std::string& s)
-{
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch) && ch != '\"'; }));
-}
-
-static inline void rtrim(std::string& s)
-{
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch) && ch != '\"'; }).base(), s.end());
-}
-
-static inline string trim(std::string s)
-{
-    ltrim(s);
-    rtrim(s);
-    return s;
 }
 
 pair<string, string> getKeyValue(string input)

@@ -1,8 +1,43 @@
 /*
 ShaderGlass shader crt-shaders-hyllian\crt-hyllian-3d imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/hyllian/crt-hyllian-3d.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Hyllian's CRT Shader
+
+Copyright (C) 2011-2016 Hyllian - sergiogdb@gmail.com
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+ Horizontal cubic filter.
+ Some known filters use these values:
+    B = 0.0, C = 0.0  =>  Hermite cubic filter.
+    B = 1.0, C = 0.0  =>  Cubic B-Spline filter.
+    B = 0.0, C = 0.5  =>  Catmull-Rom Spline filter. This is the default used in this shader.
+    B = C = 1.0/3.0   =>  Mitchell-Netravali cubic filter.
+    B = 0.3782, C = 0.3109  =>  Robidoux filter.
+    B = 0.2620, C = 0.3690  =>  Robidoux Sharp filter.
+    B = 0.36, C = 0.28  =>  My best config for ringing elimination in pixel art (Hyllian).
+ For more info, see: http://www.imagemagick.org/Usage/img_diagrams/cubic_survey.gif
+ Change these params to configure the horizontal filter.
+  Get min/max samples
+ Anti-ringing
+
 */
 
 #pragma once

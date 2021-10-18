@@ -1,8 +1,83 @@
 /*
 ShaderGlass shader nes_raw_palette-shaders-cgwg-famicom-geom\crt-geom-famicom imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/shaders/cgwg-famicom-geom/crt-geom-famicom.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ gamma of simulated CRT
+ overscan (e.g. 1.02 for 2% overscan)
+ radius of curvature
+ tilt angle in radians
+ (behavior might be a bit wrong if both components are nonzero)
+ size of curved corners
+ border smoothness parameter
+ decrease if borders are too aliased
+ Comment the next line to disable interpolation in linear gamma (and gain speed).
+#define LINEAR_PROCESSING
+ Enable 3x oversampling of the beam profile
+ Use the older, purely gaussian beam profile
+#define USEGAUSSIAN
+ gamma of display monitor (typically 2.2 is correct)
+ aspect ratio
+ lengths are measured in units of (approximately) the width of the monitor
+ simulated distance from viewer to monitor
+ Macros.
+ Calculate the influence of a scanline on the current pixel.
+
+ 'dist' is the distance in texture coordinates from the current
+ pixel to the scanline in question.
+ 'color' is the colour of the scanline at the horizontal location of
+ the current pixel.
+ "wid" controls the width of the scanline beam, for each RGB channel
+ The "weights" lines basically specify the formula that gives
+ you the profile of the beam, i.e. the intensity as
+ a function of distance from the vertical center of the
+ scanline. In this case, it is gaussian if width=2, and
+ becomes nongaussian for larger widths. Ideally this should
+ be normalized so that the integral across the beam is
+ independent of its width. That is, for a narrower beam
+ "weights" should have a higher peak at the center of the
+ scanline than for a wider beam.
+ Here's a helpful diagram to keep in mind while trying to
+ understand the code:
+
+  |      |      |      |      |
+ -------------------------------
+  |      |      |      |      |
+  |  01  |  11  |  21  |  31  | <-- current scanline
+  |      | @    |      |      |
+ -------------------------------
+  |      |      |      |      |
+  |  02  |  12  |  22  |  32  | <-- next scanline
+  |      |      |      |      |
+ -------------------------------
+  |      |      |      |      |
+
+ Each character-cell represents a pixel on the output
+ surface, "@" represents the current pixel (always somewhere
+ in the bottom half of the current scan-line, or the top-half
+ of the next scanline). The grid of lines represents the
+ edges of the texels of the underlying texture.
+ Texture coordinates of the texel containing the active pixel.
+ Of all the pixels that are mapped onto the texel we are
+ currently rendering, which pixel are we currently rendering?
+ Snap to the center of the underlying texel.
+ Calculate Lanczos scaling coefficients describing the effect
+ of various neighbour texels in a scanline on the current
+ pixel.
+ Prevent division by zero.
+ Lanczos2 kernel.
+ Normalize.
+ Calculate the effective colour of the current and next
+ scanlines at the horizontal location of the current pixel,
+ using the Lanczos coefficients above.
+ Calculate the influence of the current and next scanlines on
+ the current pixel.
+ dot-mask emulation:
+ Output pixels are alternately tinted green and magenta.
+ Convert the image gamma for display on our output device.
+ Color the texel.
+
 */
 
 #pragma once

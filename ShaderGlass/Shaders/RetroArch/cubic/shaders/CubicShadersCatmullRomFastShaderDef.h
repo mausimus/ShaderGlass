@@ -1,8 +1,35 @@
 /*
 ShaderGlass shader cubic-shaders\catmull-rom-fast imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/cubic/shaders/catmull-rom-fast.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Bicubic Catmull-Rom 9 taps (Fast) - ported by Hyllian - 2020
+
+The following code is licensed under the MIT license: https://gist.github.com/TheRealMJP/bc503b0b87b643d3505d41eab8b332ae
+
+Ported from code: https://gist.github.com/TheRealMJP/c83b8c0f46b63f3a88a5986f4fa982b1
+
+Samples a texture with Catmull-Rom filtering, using 9 texture fetches instead of 16.
+See http://vec3.ca/bicubic-filtering-in-fewer-taps/ for more details
+
+ATENTION: This code only work using LINEAR filter sampling set on Retroarch!
+
+
+ We're going to sample a a 4x4 grid of texels surrounding the target UV coordinate. We'll do this by rounding
+ down the sample location to get the exact center of our "starting" texel. The starting texel will be at
+ location [1, 1] in the grid, where [0, 0] is the top left corner.
+ Compute the fractional offset from our starting texel to our original sample location, which we'll
+ feed into the Catmull-Rom spline function to get our filter weights.
+ Compute the Catmull-Rom weights using the fractional offset that we calculated earlier.
+ These equations are pre-expanded based on our knowledge of where the texels will be located,
+ which lets us avoid having to evaluate a piece-wise function.
+   vec2 w3 = 1.0 - w0 - w1 - w2;
+ Work out weighting factors and sampling offsets that will let us use bilinear filtering to
+ simultaneously evaluate the middle 2 samples from the 4x4 grid.
+ Compute the final UV coordinates we'll use for sampling the texture
+
 */
 
 #pragma once

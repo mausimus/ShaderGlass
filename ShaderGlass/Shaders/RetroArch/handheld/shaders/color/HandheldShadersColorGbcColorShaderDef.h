@@ -1,8 +1,18 @@
 /*
 ShaderGlass shader handheld-shaders-color\gbc-color imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/color/gbc-color.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Shader Modified: Pokefan531
+Color Mangler
+Author: hunterk
+License: Public domain
+
+ Shader that replicates the LCD dynamics from a GameBoy Color
+				r   g    b   black
+
 */
 
 #pragma once

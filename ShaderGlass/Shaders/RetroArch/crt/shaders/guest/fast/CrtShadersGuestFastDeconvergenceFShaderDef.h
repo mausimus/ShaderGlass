@@ -1,8 +1,37 @@
 /*
 ShaderGlass shader crt-shaders-guest-fast\deconvergence-f imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/guest/fast/deconvergence-f.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+CRT - Guest - Advanced - Deconvergence pass (NTSC) + noise
+
+Copyright (C) 2021 guest(r) - guest.r@gmail.com
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+ noise function:
+ Dedicated to the public domain.
+ If you want a real license, you may consider this MIT/BSD/CC0/WTFPL-licensed (take your pick).
+ Adapted from ChuckNorris - shadertoy: https://www.shadertoy.com/view/XtK3Dz
+ ensure reasonable range
+ seed
+ more iterations => more random
+
 */
 
 #pragma once

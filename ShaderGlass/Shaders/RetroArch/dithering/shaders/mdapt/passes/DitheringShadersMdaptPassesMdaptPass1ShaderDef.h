@@ -1,8 +1,23 @@
 /*
 ShaderGlass shader dithering-shaders-mdapt-passes\mdapt-pass1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/dithering/shaders/mdapt/passes/mdapt-pass1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Merge Dithering and Pseudo Transparency Shader v2.8 - Pass 1
+by Sp00kyFox, 2014
+
+Preparing checkerboard patterns.
+
+
+
+UL U UR
+L  C R
+DL D DR
+
+ Checkerboard Pattern Completion
+
 */
 
 #pragma once

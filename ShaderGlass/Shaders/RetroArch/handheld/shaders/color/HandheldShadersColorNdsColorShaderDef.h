@@ -1,8 +1,26 @@
 /*
 ShaderGlass shader handheld-shaders-color\nds-color imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/color/nds-color.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Shader Modified: Pokefan531
+Color Mangler
+Author: hunterk
+License: Public domain
+
+ Shader that replicates the LCD dynamics from a Nintendo DS Phat --
+
+We'll define our color weights in this pattern:
+r,   rg,  rb,  0.0,  //red channel
+gr,  g,   gb,  0.0,  //green channel
+br,  bg,  b,   0.0,  //blue channel
+blr, blg, blb, lum   //alpha channel; we'll hide luma at the end, too
+
+ bring out our stored luminance value
+ our adjustments need to happen in linear gamma
+
 */
 
 #pragma once

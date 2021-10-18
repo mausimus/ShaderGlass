@@ -1,8 +1,11 @@
 /*
 ShaderGlass shader interpolation-shaders\ControlledSharpness imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/ControlledSharpness.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+https://www.desmos.com/calculator/3zhzwbfrxd
+
 */
 
 #pragma once

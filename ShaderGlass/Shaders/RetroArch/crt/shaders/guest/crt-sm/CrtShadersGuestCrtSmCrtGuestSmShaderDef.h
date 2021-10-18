@@ -1,8 +1,58 @@
 /*
 ShaderGlass shader crt-shaders-guest-crt-sm\crt-guest-sm imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/guest/crt-sm/crt-guest-sm.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+CRT - Guest - SM (Scanline Mask) Shader
+
+Copyright (C) 2019-2020 guest(r) - guest.r@gmail.com
+
+Big thanks to Nesguy from the Libretro forums for the masks and other ideas.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+   README - MASKS GUIDE
+
+To obtain the best results with masks 0, 1, 3, 4:
+must leave “mask size” at 1 and the display must be set to its native resolution to result in evenly spaced “active” LCD subpixels.
+
+Mask 0: Uses a magenta and green pattern for even spacing of the LCD subpixels.
+
+Mask 1: Similar to Mask 0, but with "ZigZag
+
+Mask 2: Intended for displays that have RBG subpixels (as opposed to the more common RGB).
+Uses a yellow/blue pattern for even spacing of the LCD subpixels.
+
+Mask 3: Common red/green/blue pattern.
+
+Mask 4: This is useful for 4K displays, where masks 0 and 1 can look too fine.
+Uses a red/yellow/cyan/blue pattern to result in even spacing of the LCD subpixels.
+
+Mask 5: Intended for displays that have the less common RBG subpixel pattern.
+This is useful for 4K displays, where masks 0 and 1 can look too fine.
+Uses a red/magenta/cyan/green pattern for even spacing of the LCD subpixels.
+
+
+ vec4 OriginalSize;
+ Distortion of scanlines, and end of screen alpha (PD CRT Lottes Curvature)
+ Reading the texels
+ calculating scanlines
+
 */
 
 #pragma once

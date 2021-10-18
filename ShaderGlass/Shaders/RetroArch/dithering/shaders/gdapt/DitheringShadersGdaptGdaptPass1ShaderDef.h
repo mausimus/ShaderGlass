@@ -1,8 +1,17 @@
 /*
 ShaderGlass shader dithering-shaders-gdapt\gdapt-pass1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/dithering/shaders/gdapt/gdapt-pass1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Genesis Dithering and Pseudo Transparency Shader v1.3 - Pass 1
+by Sp00kyFox, 2014
+
+Blends pixels based on detected dithering patterns.
+
+
+
 */
 
 #pragma once

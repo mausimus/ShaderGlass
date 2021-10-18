@@ -1,8 +1,321 @@
 /*
 ShaderGlass shader misc\img_mod imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/misc/img_mod.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+   Modular Image Adjustment
+   Author: hunterk
+   License: Public domain
+ The parameters that go into your struct
+ Collected here for tidiness
+ All of the parameter macros in one place
+ replace 'global' with whichever struct you use for parameters
+///////////////////////////// INCLUDES ////////////////////////////////
+ comment the #include and corresponding line to remove functionality //
+///////////////////////////////////////////////////////////////////////
+ Flip image vertically or horizontally
+ wraps the Position in gl_Position calculation
+ Stretching, Zooming, Panning
+ wraps the standard TexCoord
+ Film grain effect
+ Colorspace Tools
+ ported from Asmodean's PsxFX Shader Suite v2.00
+ NTSC color code from SimoneT
+ Jzazbz code from torridgristle
+ License: GPL v2+
+------------------------------------------------------------------------------
+[GAMMA CORRECTION CODE SECTION]
+------------------------------------------------------------------------------
+ more gamma linearization algos
+ use slower, more accurate calculation
+ use faster, less accurate calculation
+Conversion matrices
+ RGB <-> CMYK conversions require 4 channels
+ Converting pure hue to RGB
+ Converting RGB to hue/chroma/value
+ conversion from NTSC RGB Reference White D65 ( color space used by NA/Japan TV's ) to XYZ
+ conversion from XYZ to sRGB Reference White D65 ( color space used by windows )
+ NTSC RGB to sRGB
+  ---  Reference White Values  ---  //{
+D9000 apparently isn't a real standard so here's the CCT daylight calculation result
+D9300 apparently isn't a real standard so here's the CCT daylight calculation result
+Various CRT monitors, Duv describes distance from the blackbody curve. The smaller it is, the closer to "white" it is. +/- 0.006 is recommended by ANSI and EnergyStar.
+NEC Multisync C400, claims 9300K but it isn't
+KDS VS19
+}
+  ---  sRGB  ---  //
+  ---  Jzazbz  ---  //{
+-2.6274509803921568627450980392157
+2.760784313725490196078431372549
+Assume 2.761 both ways so +2.761 then / 5.522
+https://www.shadertoy.com/view/4sXSWs strength= 16.0
+ Sharp, antialiased pixels; use with linear filtering
+ wrap texture coordinate when sampling
+ based on "Improved texture interpolation" by Iñigo Quílez
+ Original description: http://www.iquilezles.org/www/articles/texture/texture.htm
+ Saturation and Luminance
+#include "../include/img/sat_lum.h
+ Colorspace Tools
+ ported from Asmodean's PsxFX Shader Suite v2.00
+ NTSC color code from SimoneT
+ Jzazbz code from torridgristle
+ License: GPL v2+
+------------------------------------------------------------------------------
+[GAMMA CORRECTION CODE SECTION]
+------------------------------------------------------------------------------
+ more gamma linearization algos
+ use slower, more accurate calculation
+ use faster, less accurate calculation
+Conversion matrices
+ RGB <-> CMYK conversions require 4 channels
+ Converting pure hue to RGB
+ Converting RGB to hue/chroma/value
+ conversion from NTSC RGB Reference White D65 ( color space used by NA/Japan TV's ) to XYZ
+ conversion from XYZ to sRGB Reference White D65 ( color space used by windows )
+ NTSC RGB to sRGB
+  ---  Reference White Values  ---  //{
+D9000 apparently isn't a real standard so here's the CCT daylight calculation result
+D9300 apparently isn't a real standard so here's the CCT daylight calculation result
+Various CRT monitors, Duv describes distance from the blackbody curve. The smaller it is, the closer to "white" it is. +/- 0.006 is recommended by ANSI and EnergyStar.
+NEC Multisync C400, claims 9300K but it isn't
+KDS VS19
+}
+  ---  sRGB  ---  //
+  ---  Jzazbz  ---  //{
+-2.6274509803921568627450980392157
+2.760784313725490196078431372549
+Assume 2.761 both ways so +2.761 then / 5.522
+ Note: This saturation should be similar to broadcast television.
+       0% chrome == pure luma.
+ Gamma correction
+ exp_gamma is basic pow function
+#include "../include/img/exp_gamma.h
+ Forward monitor curve
+ Reverse monitor curve
+ Mask edges to hide unsightly garbage
+ Change the whitepoint to warmer/cooler
+ White Point Mapping
+          ported by Dogway
+
+ From the first comment post (sRGB primaries and linear light compensated)
+      http://www.zombieprototypes.com/?p=210#comment-4695029660
+ Based on the Neil Bartlett's blog update
+      http://www.zombieprototypes.com/?p=210
+ Inspired itself by Tanner Helland's work
+      http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code
+ Colorspace Tools
+ ported from Asmodean's PsxFX Shader Suite v2.00
+ NTSC color code from SimoneT
+ Jzazbz code from torridgristle
+ License: GPL v2+
+------------------------------------------------------------------------------
+[GAMMA CORRECTION CODE SECTION]
+------------------------------------------------------------------------------
+ more gamma linearization algos
+ use slower, more accurate calculation
+ use faster, less accurate calculation
+Conversion matrices
+ RGB <-> CMYK conversions require 4 channels
+ Converting pure hue to RGB
+ Converting RGB to hue/chroma/value
+ conversion from NTSC RGB Reference White D65 ( color space used by NA/Japan TV's ) to XYZ
+ conversion from XYZ to sRGB Reference White D65 ( color space used by windows )
+ NTSC RGB to sRGB
+  ---  Reference White Values  ---  //{
+D9000 apparently isn't a real standard so here's the CCT daylight calculation result
+D9300 apparently isn't a real standard so here's the CCT daylight calculation result
+Various CRT monitors, Duv describes distance from the blackbody curve. The smaller it is, the closer to "white" it is. +/- 0.006 is recommended by ANSI and EnergyStar.
+NEC Multisync C400, claims 9300K but it isn't
+KDS VS19
+}
+  ---  sRGB  ---  //
+  ---  Jzazbz  ---  //{
+-2.6274509803921568627450980392157
+2.760784313725490196078431372549
+Assume 2.761 both ways so +2.761 then / 5.522
+ calculate RED
+ calculate GREEN
+ calculate BLUE
+ clamp
+ R/G/B independent manual White Point adjustment
+ Linear color input
+ Add a phosphor mask effect onto the image
+
+A collection of CRT mask effects that work with LCD subpixel structures for
+small details
+
+author: hunterk
+license: public domain
+
+How to use it:
+
+Multiply your image by the vec3 output:
+FragColor.rgb *= mask_weights(gl_FragCoord.xy, 1.0, 1);
+
+In the vec3 version, the alpha channel stores the number of lit subpixels per pixel for use in brightness-loss compensation efforts.
+
+The function needs to be tiled across the screen using the physical pixels, e.g.
+gl_FragCoord (the "vec2 coord" input). In the case of slang shaders, we use
+(vTexCoord.st * OutputSize.xy).
+
+The "mask_intensity" (float value between 0.0 and 1.0) is how strong the mask
+effect should be. Full-strength red, green and blue subpixels on a white pixel
+are the ideal, and are achieved with an intensity of 1.0, though this darkens
+the image significantly and may not always be desirable.
+
+The "phosphor_layout" (int value between 0 and 19) determines which phophor
+layout to apply. 0 is no mask/passthru.
+
+Many of these mask arrays are adapted from cgwg's crt-geom-deluxe LUTs, and
+those have their filenames included for easy identification
+
+ This pattern is used by a few layouts, so we'll define it here
+ classic aperture for RGB panels; good for 1080p, too small for 4K+
+ aka aperture_1_2_bgr
+ 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
+ aka delta_1_2x1_bgr
+ slot mask for RGB panels; looks okay at 1080p, looks better at 4K
+ find the vertical index
+ find the horizontal index
+ use the indexes to find which color to apply to the current pixel
+ classic aperture for RBG panels; good for 1080p, too small for 4K+
+ 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
+ aperture_1_4_rgb; good for simulating lower
+ aperture_2_5_bgr
+ aperture_3_6_rgb
+ reduced TVL aperture for RGB panels
+ aperture_2_4_rgb
+ reduced TVL aperture for RBG panels
+ delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
+ delta_2_4x1_rgb
+ delta_2_4x2_rgb
+ slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+ slot_2_4x4_rgb
+ slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+ slot_2_5x4_bgr
+ same as above but for RBG panels
+ slot_3_7x6_rgb
+ TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
+ This pattern is used by a few layouts, so we'll define it here
+ classic aperture for RGB panels; good for 1080p, too small for 4K+
+ aka aperture_1_2_bgr
+ 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
+ aka delta_1_2x1_bgr
+ slot mask for RGB panels; looks okay at 1080p, looks better at 4K
+ find the vertical index
+ find the horizontal index
+ use the indexes to find which color to apply to the current pixel
+ classic aperture for RBG panels; good for 1080p, too small for 4K+
+ 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
+ aperture_1_4_rgb; good for simulating lower
+ aperture_2_5_bgr
+ aperture_3_6_rgb
+ reduced TVL aperture for RGB panels
+ aperture_2_4_rgb
+ reduced TVL aperture for RBG panels
+ delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
+ delta_2_4x1_rgb
+ delta_2_4x2_rgb
+ slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+ slot_2_4x4_rgb
+ slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+ slot_2_5x4_bgr
+ same as above but for RBG panels
+ slot_3_7x6_rgb
+ TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
+ Force integer scaling and custom aspect ratio
+#include "../include/img/int_ar.h
+ Vignette; Darkens image around edges
+#include "../include/img/vignette.h
+ Black level
+ uncomment only one of the next 2 lines to set black level method
+#include "../include/img/black_lvl.h
+ Brightness and Contrast control
+ uncomment only one of the next 2 lines to set contract complexity;
+ sigmoidal_con is advanced, bright_con is basic
+ borrowed from dogway's grade shader
+ Colorspace Tools
+ ported from Asmodean's PsxFX Shader Suite v2.00
+ NTSC color code from SimoneT
+ Jzazbz code from torridgristle
+ License: GPL v2+
+------------------------------------------------------------------------------
+[GAMMA CORRECTION CODE SECTION]
+------------------------------------------------------------------------------
+ more gamma linearization algos
+ use slower, more accurate calculation
+ use faster, less accurate calculation
+Conversion matrices
+ RGB <-> CMYK conversions require 4 channels
+ Converting pure hue to RGB
+ Converting RGB to hue/chroma/value
+ conversion from NTSC RGB Reference White D65 ( color space used by NA/Japan TV's ) to XYZ
+ conversion from XYZ to sRGB Reference White D65 ( color space used by windows )
+ NTSC RGB to sRGB
+  ---  Reference White Values  ---  //{
+D9000 apparently isn't a real standard so here's the CCT daylight calculation result
+D9300 apparently isn't a real standard so here's the CCT daylight calculation result
+Various CRT monitors, Duv describes distance from the blackbody curve. The smaller it is, the closer to "white" it is. +/- 0.006 is recommended by ANSI and EnergyStar.
+NEC Multisync C400, claims 9300K but it isn't
+KDS VS19
+}
+  ---  sRGB  ---  //
+  ---  Jzazbz  ---  //{
+-2.6274509803921568627450980392157
+2.760784313725490196078431372549
+Assume 2.761 both ways so +2.761 then / 5.522
+ Forward monitor curve
+ Reverse monitor curve
+  Performs better in gamma encoded space
+  Performs better in gamma encoded space
+  Saturation agnostic sigmoidal contrast
+#include "../include/img/bright_con.h
+ Adjust color balance and tint
+ uncomment only one of the next 2 lines to set color channel complexity;
+ color mangler is advanced, channel mixer is basic
+#include "../include/img/col_mangler.h
+ 2D screen curvature
+#include "../include/img/gristle_warp.h
+#include "../include/img/lottes_warp.h
+ cgwg's geom
+ license: GPLv2
+ Rounded corners
+//////////////////////////// END INCLUDES //////////////////////////////
+ apply axis flip
+ apply crop/zoom/pan
+ apply integer scaling and aspect ratio
+   coord = int_ar(coord, registers.SourceSize, registers.OutputSize);
+////////////////////////////// LUTS ///////////////////////////////////
+ Use either 1 or 2 color-grading LUTs
+ uncomment only one of the next 2 lines
+#include "../include/img/lut1.h
+#include "../include/img/lut2.h
+//////////////////////////// END LUTS /////////////////////////////////
+ declare texture coordinates
+ apply sharpening to coords
+ apply screen curvature
+ sample the texture
+ apply grain (expects to run in gamma space)
+ res = rgb_grain(res, vTexCoord.xy, ia_GRAIN_STR, registers.FrameCount);
+ saturation and luminance (expects to run in gamma space)
+ contrast
+ apply first gamma transform (linearize)
+ (whether LUT or gamma should come first depends on LUT)
+ apply LUT1
+   res = lut1(res);
+ apply white point adjustment
+ black level
+ channel mix
+ overscan mask
+ apply LUT2 (whether LUT or gamma should come first depends on LUT)
+   res = lut2(res);
+ apply gamma curve
+ apply mask effect
+ apply vignette effect
+   res = vignette(res, vTexCoord.xy);
+ apply rounded corners
+
 */
 
 #pragma once

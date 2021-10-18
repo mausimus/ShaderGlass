@@ -1,8 +1,14 @@
 /*
 ShaderGlass shader handheld-shaders-gb-palette\gb-palette imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/gb-palette/gb-palette.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+sample the input textures
+input grayscale values:
+0.000 black - 0.333 medium gray - 0.667 light gray - 1.000 white
+multiply grayscale value by 3 to obtain int value in range [0, 3], acts as index for arrays storing custom palette UV coordinates and alpha value
+
 */
 
 #pragma once

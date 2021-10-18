@@ -1,8 +1,27 @@
 /*
 ShaderGlass shader gpu-shaders-3dfx\3dfx_pass_0 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/gpu/shaders/3dfx/3dfx_pass_0.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ "LeiFX" shader - "dither" and reduction process
+
+ 	Copyright (C) 2013-2014 leilei
+
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License as published by the Free
+ Software Foundation; either version 2 of the License, or (at your option)
+ any later version.
+ This table came from the wikipedia article about Ordered Dithering. NOT MAME.  Just to clarify.
+ Dither. Total rewrite.
+ NOW, WHAT PIXEL AM I!??
+	for (yeh=ditdex; yeh<(ditdex+16); yeh++) ohyes = pow(erroredtable[yeh-15], 0.72f);
+ Adjust the dither thing
+
+ Reduce to 16-bit color
+
+ Add the purple line of lineness here, so the filter process catches it and gets gammaed.
+
 */
 
 #pragma once

@@ -1,8 +1,27 @@
 /*
 ShaderGlass shader gpu-shaders\powervr2 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/gpu/shaders/powervr2.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+PowerVR2 buffer shader
+
+Authors: leilei
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+ Blend vertically for composite mode
+ Dither. ALWAYS do this for 16bpp
+ There's a bit of a precision drop involved in the RGB565ening for VGA
+ I'm not sure why that is. it's exhibited on PVR1 and PVR3 hardware too
+ RGB565 clamp
+ VGA Signal Loss, which probably is very wrong but i tried my best
+color.rb += (4.0f/255.0f);
+
 */
 
 #pragma once
