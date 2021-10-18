@@ -29,7 +29,7 @@ public:
     CaptureOptions m_options;
 
     const std::vector<std::unique_ptr<PresetDef>>& Presets();
-    std::vector<ShaderParam *> Params();
+    std::vector<std::tuple<int, ShaderParam*>>     Params();
 
     bool Initialize();
     bool IsActive();
@@ -44,6 +44,8 @@ public:
     void UpdateInput();
     void UpdateCursor();
     void GrabOutput();
+    void UpdateParams();
+    void ResetParams();
     void SaveOutput(LPWSTR fileName);
     void Exit();
 

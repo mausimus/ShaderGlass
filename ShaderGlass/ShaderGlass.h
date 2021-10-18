@@ -11,16 +11,23 @@ class ShaderGlass
 {
 public:
     ShaderGlass();
-    void Initialize(HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context);
-    void                      Process(winrt::com_ptr<ID3D11Texture2D> texture);
-    void                      SetInputScale(float w, float h);
-    void                      SetOutputScale(float w, float h);
-    void                      SetOutputFlip(bool h, bool v);
-    void                      SetShaderPreset(PresetDef* p);
-    void                      SetFrameSkip(int s);
-    winrt::com_ptr<ID3D11Texture2D> GrabOutput();
-    std::vector<ShaderParam*> Params();
-    void                      Stop();
+    void                                       Initialize(HWND                                outputWindow,
+                                                          HWND                                captureWindow,
+                                                          HMONITOR                            captureMonitor,
+                                                          bool                                clone,
+                                                          winrt::com_ptr<ID3D11Device>        device,
+                                                          winrt::com_ptr<ID3D11DeviceContext> context);
+    void                                       Process(winrt::com_ptr<ID3D11Texture2D> texture);
+    void                                       SetInputScale(float w, float h);
+    void                                       SetOutputScale(float w, float h);
+    void                                       SetOutputFlip(bool h, bool v);
+    void                                       SetShaderPreset(PresetDef* p);
+    void                                       SetFrameSkip(int s);
+    winrt::com_ptr<ID3D11Texture2D>            GrabOutput();
+    std::vector<std::tuple<int, ShaderParam*>> Params();
+    void                                       UpdateParams();
+    void                                       ResetParams();
+    void                                       Stop();
     ~ShaderGlass();
 
 private:
@@ -67,14 +74,14 @@ private:
     std::unique_ptr<Preset> m_shaderPreset {nullptr};
     std::unique_ptr<Preset> m_newShaderPreset {nullptr};
 
-    volatile int                    m_frameSkip {0};
-    volatile bool                   m_running {false};
-    volatile float                  m_inputScaleW {3.0f};
-    volatile float                  m_inputScaleH {3.0f};
-    volatile bool                   m_inputRescaled {false};
-    volatile float                  m_outputScaleW {1.0f};
-    volatile float                  m_outputScaleH {1.0f};
-    volatile bool                   m_outputRescaled {false};
-    volatile bool                   m_flipHorizontal {false};
-    volatile bool                   m_flipVertical {false};
+    volatile int   m_frameSkip {0};
+    volatile bool  m_running {false};
+    volatile float m_inputScaleW {3.0f};
+    volatile float m_inputScaleH {3.0f};
+    volatile bool  m_inputRescaled {false};
+    volatile float m_outputScaleW {1.0f};
+    volatile float m_outputScaleH {1.0f};
+    volatile bool  m_outputRescaled {false};
+    volatile bool  m_flipHorizontal {false};
+    volatile bool  m_flipVertical {false};
 };
