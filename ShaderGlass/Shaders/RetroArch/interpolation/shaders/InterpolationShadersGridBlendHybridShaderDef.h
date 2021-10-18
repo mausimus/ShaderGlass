@@ -1,8 +1,20 @@
 /*
 ShaderGlass shader interpolation-shaders\grid-blend-hybrid imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/grid-blend-hybrid.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ based on Cole Cecil's
+ Scaling Pixel ARt Without Destroying It
+ https://colececil.io/blog/2017/scaling-pixel-art-without-destroying-it/
+ This shader needs bilinear filtering
+ For the current screen pixel, find its location in relation to the nearest texels).
+ How many texels are in each pixel
+ Determine how much (if at all) we need to interpolate between the colors of the nearest texels
+ No interpolation means it’s using nearest neighbor filtering.
+ Interpolation means it’s using bilinear filtering
+ Given the interpolation amount, calculate and return the color of the pixel.
+
 */
 
 #pragma once

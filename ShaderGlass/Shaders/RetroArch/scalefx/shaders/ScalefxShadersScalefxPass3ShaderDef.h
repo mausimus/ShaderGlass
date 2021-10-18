@@ -1,8 +1,70 @@
 /*
 ShaderGlass shader scalefx-shaders\scalefx-pass3 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scalefx/shaders/scalefx-pass3.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+ScaleFX - Pass 3
+by Sp00kyFox, 2017-03-01
+
+Filter:	Nearest
+Scale:	1x
+
+ScaleFX is an edge interpolation algorithm specialized in pixel art. It was
+originally intended as an improvement upon Scale3x but became a new filter in
+its own right.
+ScaleFX interpolates edges up to level 6 and makes smooth transitions between
+different slopes. The filtered picture will only consist of colours present
+in the original.
+
+Pass 3 determines which edge level is present and prepares tags for subpixel
+output in the final pass.
+
+
+
+Copyright (c) 2016 Sp00kyFox - ScaleFX@web.de
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+ extract first bool4 from float4 - corners
+ extract second bool4 from float4 - horizontal edges
+ extract third bool4 from float4 - vertical edges
+ extract fourth bool4 from float4 - orientation
+	grid		corners		mids
+
+B		x   y	  	  x
+D E F				w   y
+H		w   z	  	  z
+
+ read data
+ extract data
+ lvl1 corners (hori, vert)
+ lvl2 mid (left, right / up, down)
+ lvl3 corners (hori, vert)
+ lvl4 corners (hori, vert)
+ lvl5 mid (left, right / up, down)
+ lvl6 corners (hori, vert)
+ subpixels - 0 = E, 1 = D, 2 = D0, 3 = F, 4 = F0, 5 = B, 6 = B0, 7 = H, 8 = H0
+ ouput
+
 */
 
 #pragma once

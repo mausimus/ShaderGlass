@@ -1,8 +1,68 @@
 /*
 ShaderGlass shader crt-shaders-crtsim\present imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/crtsim/present.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+////////////////////////////////////////////////////////////////////////
+
+ CC0 1.0 Universal (CC0 1.0)
+ Public Domain Dedication
+
+ To the extent possible under law, J. Kyle Pittman has waived all
+ copyright and related or neighboring rights to this implementation
+ of CRT simulation. This work is published from the United States.
+
+ For more information, please visit
+ https://creativecommons.org/publicdomain/zero/1.0/
+
+////////////////////////////////////////////////////////////////////////
+ Blends the original full-resolution scene with the blurred output of post shaders to create bloom.
+#pragma parameter mixfactor "Bloom Mix" 0.5 0.0 1.0 0.05
+	float mixfactor;
+	float CRTMask_Offset_X;
+	float CRTMask_Offset_Y;
+	float Tuning_Overscan;
+	float Tuning_Dimming;
+	float Tuning_ReflScalar;
+	float Tuning_Barrel;
+	float Tuning_Diff_Brightness;
+	float Tuning_Spec_Brightness;
+	float Tuning_Spec_Power;
+	float Tuning_Fres_Brightness;
+	float Tuning_LightPos_R;
+	float Tuning_LightPos_G;
+	float Tuning_LightPos_B;
+#pragma parameter CRTMask_Offset_X "CRT Mask Offset X" 0.0 0.0 1.0 0.05
+#pragma parameter CRTMask_Offset_Y "CRT Mask Offset Y" 0.0 0.0 1.0 0.05
+#pragma parameter Tuning_Overscan "Overscan" 0.95 0.0 1.0 0.05
+#pragma parameter Tuning_Dimming "Dimming" 0.0 0.0 1.0 0.05
+#pragma parameter Tuning_ReflScalar "Reflection" 0.0 0.0 1.0 0.05
+#pragma parameter Tuning_Barrel "Barrel Distortion" 0.25 0.0 1.0 0.05
+#pragma parameter Tuning_Diff_Brightness "Diff Brightness" 0.5 0.0 1.0 0.05
+#pragma parameter Tuning_Spec_Brightness "Spec Brightness" 0.5 0.0 1.0 0.05
+#pragma parameter Tuning_Fres_Brightness "Fres Brightness" 0.5 0.0 1.0 0.05
+#pragma parameter Tuning_LightPos_R "Light Position R" 1.0 0.0 1.0 0.05
+#pragma parameter Tuning_LightPos_G "Light Position G" 1.0 0.0 1.0 0.05
+#pragma parameter Tuning_LightPos_B "Light Position B" 1.0 0.0 1.0 0.05
+	ScaledUV *= UVScalar;
+	ScaledUV += UVOffset;
+  // commenting this to move to present shader
+ Apply overscan after scanline sampling is done.
+half2 overscanuv = (ScaledUV * params.Tuning_Overscan) - ((params.Tuning_Overscan - 1.0) * 0.5);
+
+ Curve UVs for composite texture inwards to garble things a bit.
+overscanuv = overscanuv - half2(0.5,0.5);
+half rsq = (overscanuv.x*overscanuv.x) + (overscanuv.y*overscanuv.y);
+overscanuv = overscanuv + (overscanuv * (params.Tuning_Barrel * rsq)) + half2(0.5,0.5);
+
+ Apply power to brightness while preserving color
+ TODO: Clamp ActLuma to very small number to prevent (zero) division by zero when a component is zero?
+ This method preserves color better.
+ Apply overscan after scanline sampling is done.
+ Curve UVs for composite texture inwards to garble things a bit.
+ Mask effect cancels curvature due to righteous moire
+
 */
 
 #pragma once

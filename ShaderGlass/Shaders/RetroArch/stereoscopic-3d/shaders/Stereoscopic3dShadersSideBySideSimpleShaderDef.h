@@ -1,8 +1,14 @@
 /*
 ShaderGlass shader stereoscopic-3d-shaders\side-by-side-simple imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/stereoscopic-3d/shaders/side-by-side-simple.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ simple shader to view content on side-by-side 3D displays
+ by hunterk
+ license: public domain
+distortion
+
 */
 
 #pragma once

@@ -1,8 +1,19 @@
 /*
 ShaderGlass shader ntsc-shaders-artifact-colors\artifact-colors0 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/ntsc/shaders/artifact-colors/artifact-colors0.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Adapted for RetroArch from Flyguy's "Apple II-Like Artifact Colors" from shadertoy:
+https://www.shadertoy.com/view/llyGzR
+
+Colors created through NTSC artifacting on 4-bit patterns, similar to the Apple II's lo-res mode.
+
+Modulator
+#define F_COL (1.0 / 4.0) // moved to parameter
+Complex oscillator, Fo = Oscillator freq., Fs = Sample freq., n = Sample index
+
 */
 
 #pragma once

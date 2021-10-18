@@ -1,8 +1,14 @@
 /*
 ShaderGlass shader scanlines-shaders\scanline-fract imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scanlines/shaders/scanline-fract.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Super-basic scanline shader
+ (looks bad at non-integer scales)
+ by hunterk
+ license: public domain
+
 */
 
 #pragma once

@@ -1,8 +1,18 @@
 /*
 ShaderGlass shader misc\natural-vision imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/misc/natural-vision.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+ShadX's Natural Vision Shader
+
+Ported and tweaked by Hyllian - 2016
+parameterized by Sp00kyFox
+
+
+    VERTEX_SHADER    
+
 */
 
 #pragma once

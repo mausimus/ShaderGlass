@@ -1,8 +1,16 @@
 /*
 ShaderGlass shader motion-interpolation-shaders-motion_interpolation\motion_interpolation_pass0 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/motion-interpolation/shaders/motion_interpolation/motion_interpolation_pass0.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Video Motion Interpolation
+ based on Drudgerist's shadertoy:
+ https://www.shadertoy.com/view/MtVfRz
+ which is, in turn, based on bodhid's V+
+ https://github.com/bodhid/Vplus
+ This pass generates motion vectors based on the current and previous frames
+
 */
 
 #pragma once

@@ -1,8 +1,41 @@
 /*
 ShaderGlass shader reshade-shaders\blur-haze-sh1nra358 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/reshade/shaders/blur-haze-sh1nra358.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Implementation based on the article "Efficient Gaussian blur with linear sampling
+ http://rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/
+ A version for MasterEffect Reborn, a standalone version, and a custom shader version for SweetFX can be
+found at http://reshade.me/forum/shader-presentation/27-gaussian-blur-bloom-unsharpmask 
+-----------------------------------------------------------.
+/                  Gaussian Blur settings                     /
+'-----------------------------------------------------------
+GaussEffect
+0 = off, 1 = Blur, 2 = Unsharpmask (expensive), 3 = Bloom, 4 = Sketchy, 5 = effects image only.
+GaussStrength
+[0.00 to 1.00]   Amount of effect blended into the final image.
+#define GaussStrength 0.45
+addBloom
+Set to 1 to add bloom to Blur or Unsharpmask. 0 = off. Set GaussEffect to 0 for bloom only.
+Bloom Strength
+[0.00 to 1.00] Amount of addBloom added to the final image.
+#define BloomStrength 0.33
+Bloom Intensity *also affects blur and unsharpmask*
+Makes bright spots brighter. Only works when BrightPass is set to 1.
+#define BloomIntensity 3.00
+GaussBloomWarmth
+0 = neutral, 1 = warm, 2 = hazy/foggy
+SW is Slant. Higher numbers = wider bloom.
+#define SW 2.00
+ Blur...
+ Sharpening
+ Bloom
+ Neutral
+ Sketchy
+ orig = vec4(1.0, 1.0, 1.0, 0.0) - min(blur, orig);      // Negative
+orig = blur2;
+
 */
 
 #pragma once

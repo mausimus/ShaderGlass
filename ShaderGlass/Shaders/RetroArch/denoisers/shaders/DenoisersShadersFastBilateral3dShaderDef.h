@@ -1,8 +1,12 @@
 /*
 ShaderGlass shader denoisers-shaders\fast-bilateral-3d imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/denoisers/shaders/fast-bilateral-3d.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ center = sqrt(center);
+ Weight normalization
+
 */
 
 #pragma once

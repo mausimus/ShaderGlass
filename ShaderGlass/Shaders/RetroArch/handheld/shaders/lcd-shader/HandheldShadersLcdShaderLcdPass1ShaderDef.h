@@ -1,8 +1,50 @@
 /*
 ShaderGlass shader handheld-shaders-lcd-shader\lcd-pass-1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/lcd-shader/lcd-pass-1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+/////////////////////////////////////////////////////////////////////////
+                                                                       //
+ LCD Shader v0.0.1                                                     //
+                                                                       //
+ Copyright (C) 2013 Harlequin : unknown92835@gmail.com                 //
+                                                                       //
+ This program is free software: you can redistribute it and/or modify  //
+ it under the terms of the GNU General Public License as published by  //
+ the Free Software Foundation, either version 3 of the License, or     //
+ (at your option) any later version.                                   //
+                                                                       //
+ This program is distributed in the hope that it will be useful,       //
+ but WITHOUT ANY WARRANTY; without even the implied warranty of        //
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         //
+ GNU General Public License for more details.                          //
+                                                                       //
+ You should have received a copy of the GNU General Public License     //
+ along with this program.  If not, see <http://www.gnu.org/licenses/>. //
+                                                                       //
+/////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+config                                                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+vertex shader                                                                                                                           //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+fragment definitions                                                                                                                    //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#define triad_color_0 vec3(0.0, 0.0, 1.0)	//blue
+#define triad_color_1 vec3(1.0, 0.0, 0.0)	//red
+#define triad_color_2 vec3(0.0, 1.0, 0.0)	//green
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+fragment shader                                                                                                                         //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+use modulo to deterimine the current subcell location and apply proper color
+use color darkening with input texture to determine the final color of the subpixel
+color darkening: the minimum value for each color component between the LCD cell and the input image is selected
+ex. LCD cell subpixel is magenta (1.0, 1.0, 0.0) and the current video texel is red (1.0, 0.0, 0.0)...
+...the result will be the minimum of each component: result.rgb = min(1.0, 1.0), min(1.0, 0.0), min(0.0, 0.0) = (1.0, 0.0, 0.0) = red
+
 */
 
 #pragma once

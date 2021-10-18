@@ -1,8 +1,56 @@
 /*
 ShaderGlass shader crt-shaders-guest-advanced\crt-guest-advanced-hires imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/guest/advanced/crt-guest-advanced-hires.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+CRT - Guest - Advanced (Hi-Res version)
+
+Copyright (C) 2018-2021 guest(r) - guest.r@gmail.com
+
+Incorporates many good ideas and suggestions from Dr. Venom.
+I would also like give thanks to many Libretro forums members for continuous feedback, suggestions and caring about the shader.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+ Scanline darken 'edges' effect - need to uncomment it.
+ #pragma parameter scansub "          Scanline darken 'edges'" 0.0 0.0 0.30 0.005
+ #define scansub      global.scansub   // scanline substraction
+ Shadow mask (1-4 from PD CRT Lottes shader).
+ No mask
+ Phosphor.
+ Very compressed TV style shadow mask.
+ Aperture-grille.
+ Stretched VGA style shadow mask (same as prior shaders).
+ VGA style shadow mask.
+ Trinitron mask 5
+ Trinitron mask 6
+ BW Trinitron mask 7
+ 4k mask
+ Borrowed from maskstr's crt-geom, under GPL
+ Calculating texel coordinates
+ Reading the texels
+ calculating scanlines
+ Scanline darken 'edges' effect - need to uncomment it.
+ float ws1 = max(wf1 - scansub, 0.2*wf1*wf2); wf1 = ws1/(1.0 - wf1 + ws1);
+ float ws2 = max(wf2 - scansub, 0.2*wf2*wf1); wf2 = ws2/(1.0 - wf2 + ws2);
+ Scanline saturation application
+ Apply Mask
+
 */
 
 #pragma once

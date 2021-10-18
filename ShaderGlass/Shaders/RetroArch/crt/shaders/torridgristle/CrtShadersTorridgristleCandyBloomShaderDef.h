@@ -1,8 +1,12 @@
 /*
 ShaderGlass shader crt-shaders-torridgristle\Candy-Bloom imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/torridgristle/Candy-Bloom.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ CRT-torridgristle - Candy Bloom
+ license: public domain
+
 */
 
 #pragma once

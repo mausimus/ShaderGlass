@@ -1,8 +1,30 @@
 /*
 ShaderGlass shader motionblur-shaders\mix_frames imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/motionblur/shaders/mix_frames.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+mix_frames - performs 50:50 blending between the current and previous
+frames.
+
+Author: jdgleaver
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+
+VERTEX_SHADER
+
+
+FRAGMENT SHADER
+
+ Get colour of current pixel
+ Get colour of previous pixel
+ Mix colours
+
 */
 
 #pragma once

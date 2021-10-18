@@ -1,8 +1,44 @@
 /*
 ShaderGlass shader motionblur-shaders\mix_frames_smart imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/motionblur/shaders/mix_frames_smart.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+mix_frames_smart - performs 50:50 blending between the current and
+previous frames, but only if pixels repeatedly switch state on alternate
+frames (i.e. prevents flicker on games that use LCD ghosting for transparency,
+without blurring the entire screen). This is not 100% effective, but 'good
+enough' in many cases (e.g. it fixes map rendering issues in F-Zero GP on the GBA).
+Works best when flickering objects are in a fixed location.
+
+Author: jdgleaver
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+ User-specified fudge factor. Increasing this value loosens up the
+ detection of repeated 'flicker' frames. This is required for
+ games like Boktai on the GBA, where the character shadow flickers
+ on and off between frames, but is sometimes overlaid with a screen
+ shading effect (so checking for pixel RGB equality fails - need to
+ check whether pixels are 'almost' equal)
+
+VERTEX_SHADER
+
+
+FRAGMENT SHADER
+
+ Get pixel colours of current + last 5 frames
+ NB: Using fewer frames results in too many false positives
+ Determine whether mixing should occur
+ i.e. whether alternate frames have the same pixel colour, but
+ adjacent frames do not (don't need to check colour0 != colour1,
+ since if this is true the mixing will do nothing)
+ Mix colours
+
 */
 
 #pragma once

@@ -1,8 +1,196 @@
 /*
 ShaderGlass shader crt-shaders-geom-deluxe\crt-geom-deluxe imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/geom-deluxe/crt-geom-deluxe.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+  CRT shader
+*
+*  Copyright (C) 2010-2016 cgwg, Themaister and DOLLS
+*
+*  This program is free software; you can redistribute it and/or modify it
+*  under the terms of the GNU General Public License as published by the Free
+*  Software Foundation; either version 2 of the License, or (at your option)
+*  any later version.
+
+#pragma parameter rasterbloom_smooth "Raster bloom temporal smoothing" 0.5 0.0 0.99 0.01
+#define rasterbloom_smooth params.rasterbloom_smooth
+
+A collection of CRT mask effects that work with LCD subpixel structures for
+small details
+
+author: hunterk
+license: public domain
+
+How to use it:
+
+Multiply your image by the vec3 output:
+FragColor.rgb *= mask_weights(gl_FragCoord.xy, 1.0, 1);
+
+In the vec3 version, the alpha channel stores the number of lit subpixels per pixel for use in brightness-loss compensation efforts.
+
+The function needs to be tiled across the screen using the physical pixels, e.g.
+gl_FragCoord (the "vec2 coord" input). In the case of slang shaders, we use
+(vTexCoord.st * OutputSize.xy).
+
+The "mask_intensity" (float value between 0.0 and 1.0) is how strong the mask
+effect should be. Full-strength red, green and blue subpixels on a white pixel
+are the ideal, and are achieved with an intensity of 1.0, though this darkens
+the image significantly and may not always be desirable.
+
+The "phosphor_layout" (int value between 0 and 19) determines which phophor
+layout to apply. 0 is no mask/passthru.
+
+Many of these mask arrays are adapted from cgwg's crt-geom-deluxe LUTs, and
+those have their filenames included for easy identification
+
+ This pattern is used by a few layouts, so we'll define it here
+ classic aperture for RGB panels; good for 1080p, too small for 4K+
+ aka aperture_1_2_bgr
+ 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
+ aka delta_1_2x1_bgr
+ slot mask for RGB panels; looks okay at 1080p, looks better at 4K
+ find the vertical index
+ find the horizontal index
+ use the indexes to find which color to apply to the current pixel
+ classic aperture for RBG panels; good for 1080p, too small for 4K+
+ 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
+ aperture_1_4_rgb; good for simulating lower
+ aperture_2_5_bgr
+ aperture_3_6_rgb
+ reduced TVL aperture for RGB panels
+ aperture_2_4_rgb
+ reduced TVL aperture for RBG panels
+ delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
+ delta_2_4x1_rgb
+ delta_2_4x2_rgb
+ slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+ slot_2_4x4_rgb
+ slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+ slot_2_5x4_bgr
+ same as above but for RBG panels
+ slot_3_7x6_rgb
+ TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
+ This pattern is used by a few layouts, so we'll define it here
+ classic aperture for RGB panels; good for 1080p, too small for 4K+
+ aka aperture_1_2_bgr
+ 2x2 shadow mask for RGB panels; good for 1080p, too small for 4K+
+ aka delta_1_2x1_bgr
+ slot mask for RGB panels; looks okay at 1080p, looks better at 4K
+ find the vertical index
+ find the horizontal index
+ use the indexes to find which color to apply to the current pixel
+ classic aperture for RBG panels; good for 1080p, too small for 4K+
+ 2x2 shadow mask for RBG panels; good for 1080p, too small for 4K+
+ aperture_1_4_rgb; good for simulating lower
+ aperture_2_5_bgr
+ aperture_3_6_rgb
+ reduced TVL aperture for RGB panels
+ aperture_2_4_rgb
+ reduced TVL aperture for RBG panels
+ delta_1_4x1_rgb; dunno why this is called 4x1 when it's obviously 4x2 /shrug
+ delta_2_4x1_rgb
+ delta_2_4x2_rgb
+ slot mask for RGB panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+ slot_2_4x4_rgb
+ slot mask for RBG panels; too low-pitch for 1080p, looks okay at 4K, but wants 8K+
+ slot_2_5x4_bgr
+ same as above but for RBG panels
+ slot_3_7x6_rgb
+ TATE slot mask for RGB layouts; this is not realistic obviously, but it looks nice and avoids chromatic aberration
+#define u_tex_size1 global.internal1Size.xy
+ Comment the next line to disable interpolation in linear gamma (and gain speed).
+ Enable 3x oversampling of the beam profile
+ Use the older, purely gaussian beam profile
+#define USEGAUSSIAN
+ Macros.
+ Precalculate a bunch of useful values we'll need in the fragment
+ shader.
+ if (u_rotation_type.x < 0.5)
+   ang = vec2(0.0,angle.x);
+ else if (u_rotation_type.x < 1.5)
+   ang = vec2(angle.x,0.0);
+ else if (u_rotation_type.x < 2.5)
+   ang = vec2(0.0,-angle.x);
+ else
+   ang = vec2(-angle.x,0.0);
+ The size of one texel, in texture-coordinates.
+ comment these out, as we're using generated masks instead of LUTs
+ taper the blur texture outside its border with a gaussian
+ approximation of erf gives smooth step
+ (convolution of gaussian with step)
+ Calculate the influence of a scanline on the current pixel.
+
+ 'distance' is the distance in texture coordinates from the current
+ pixel to the scanline in question.
+ 'color' is the colour of the scanline at the horizontal location of
+ the current pixel.
+ "wid" controls the width of the scanline beam, for each RGB channel
+ The "weights" lines basically specify the formula that gives
+ you the profile of the beam, i.e. the intensity as
+ a function of distance from the vertical center of the
+ scanline. In this case, it is gaussian if width=2, and
+ becomes nongaussian for larger widths. Ideally this should
+ be normalized so that the integral across the beam is
+ independent of its width. That is, for a narrower beam
+ "weights" should have a higher peak at the center of the
+ scanline than for a wider beam.
+ Here's a helpful diagram to keep in mind while trying to
+ understand the code:
+
+  |      |      |      |      |
+ -------------------------------
+  |      |      |      |      |
+  |  01  |  11  |  21  |  31  | <-- current scanline
+  |      | @    |      |      |
+ -------------------------------
+  |      |      |      |      |
+  |  02  |  12  |  22  |  32  | <-- next scanline
+  |      |      |      |      |
+ -------------------------------
+  |      |      |      |      |
+
+ Each character-cell represents a pixel on the output
+ surface, "@" represents the current pixel (always somewhere
+ in the bottom half of the current scan-line, or the top-half
+ of the next scanline). The grid of lines represents the
+ edges of the texels of the underlying texture.
+ Texture coordinates of the texel containing the active pixel.
+ extract average brightness from the mipmap texture
+ expand the screen when average brightness is higher
+ Of all the pixels that are mapped onto the texel we are
+ currently rendering, which pixel are we currently rendering?
+ Snap to the center of the underlying texel.
+ Calculate Lanczos scaling coefficients describing the effect
+ of various neighbour texels in a scanline on the current
+ pixel.
+ Prevent division by zero.
+ Lanczos2 kernel.
+ Normalize.
+ Calculate the effective colour of the current and next
+ scanlines at the horizontal location of the current pixel,
+ using the Lanczos coefficients above.
+ Calculate the influence of the current and next scanlines on
+ the current pixel.
+ halation and corners
+ include factor of rbloom:
+ (probably imperceptible) brightness reduction when raster grows
+ Convert the image gamma for display on our output device.
+ Shadow mask
+ original code; just makes a giant phosphor here
+ gl_FragCoord; tied to physical pixel size
+xy = fract(v_texCoord*global.internal1Size.xy);
+  if (mask_picker == 1) mask = texture(aperture, xy);
+  else if (mask_picker == 2) mask = texture(slot, xy);
+  else if (mask_picker == 3) mask = texture(delta, xy);
+ use subpixel mask code instead of LUTs
+ count of total bright pixels is encoded in the mask's alpha channel
+ fraction of bright pixels in the mask
+ average darkening factor of the mask
+ colour of dark mask pixels
+ colour of bright mask pixels
+ Convert the image gamma for display on our output device.
+
 */
 
 #pragma once

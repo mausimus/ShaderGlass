@@ -1,8 +1,69 @@
 /*
 ShaderGlass shader xbrz-shaders\xbrz-freescale-pass1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/xbrz/shaders/xbrz-freescale-pass1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Hyllian's xBR-vertex code and texel mapping
+
+Copyright (C) 2011/2016 Hyllian - sergiogdb@gmail.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+ This shader also uses code and/or concepts from xBRZ as it appears
+ in the Desmume source code. The license for which is as follows:
+ ****************************************************************************
+ * This file is part of the HqMAME project. It is distributed under         *
+ * GNU General Public License: http://www.gnu.org/licenses/gpl-3.0          *
+ * Copyright (C) Zenju (zenju AT gmx DOT de) - All Rights Reserved          *
+ *                                                                          *
+ * Additionally and as a special exception, the author gives permission     *
+ * to link the code of this program with the MAME library (or with modified *
+ * versions of MAME that use the same license as MAME), and distribute      *
+ * linked combinations including the two. You must obey the GNU General     *
+ * Public License in all respects for all of the code used other than MAME. *
+ * If you modify this file, you may extend this exception to your version   *
+ * of the file, but you are not obligated to do so. If you do not wish to   *
+ * do so, delete this exception statement from your version.                *
+ ****************************************************************************
+  return step(0, v);
+---------------------------------------
+ Input Pixel Mapping: -|B|-
+                      D|E|F
+                      -|H|-
+ info Mapping: x|y|
+               w|z|
+ Pixel Tap Mapping: -|-|-
+                    -|E|F
+                    -|H|-
+ Pixel Tap Mapping: -|-|-
+                    D|E|-
+                    -|H|-
+ Pixel Tap Mapping: -|B|-
+                    -|E|F
+                    -|-|-
+ Pixel Tap Mapping: -|B|-
+                    D|E|-
+                    -|-|-
+
 */
 
 #pragma once

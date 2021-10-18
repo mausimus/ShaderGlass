@@ -1,8 +1,23 @@
 /*
 ShaderGlass shader crt-shaders-glow\resolve imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/glow/resolve.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Original bits by Themaister
+ Moire mitigation bits by Timothy Lottes, added by hunterk
+ For debugging
+ Convert from linear to sRGB.
+float Srgb(float c){return(c<0.0031308?c*12.92:1.055*pow(c,0.41666)-0.055);}
+ Convert from sRGB to linear.
+float Linear(float c){return(c<=0.04045)?c/12.92:pow((c+0.055)/1.055,2.4);}
+ Shadow mask.
+ Very compressed TV style shadow mask.
+ Aperture-grille.
+ Stretched VGA style shadow mask (same as prior shaders).
+ VGA style shadow mask.
+ TODO/FIXME - hacky clamp fix 
+
 */
 
 #pragma once

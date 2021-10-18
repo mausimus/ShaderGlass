@@ -1,8 +1,61 @@
 /*
 ShaderGlass shader reshade-shaders-bloom\LightingCombine imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/reshade/shaders/bloom/LightingCombine.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+Linear add\0Screen add\0Screen/Lighten/Opacity\0Lighten\0
+Every pixel brighter than this value triggers bloom.
+Intensity of bloom.
+Bloom saturation. 0.0 means white bloom, 2.0 means very, very colorful bloom.
+R, G and B components of bloom tint the bloom color gets shifted to.
+Linear add\0Screen add\0Screen/Lighten/Opacity\0Lighten\0
+Intensity of lensdirt.
+Color saturation of lensdirt.
+R, G and B components of lensdirt tint the lensdirt color gets shifted to.
+Every pixel brighter than this value gets a flare.
+Horizontal wideness of flare. Don't set too high, otherwise the single samples are visible.
+Intensity of anamorphic flare.
+Intensity curve of flare with distance from source.
+R, G and B components of anamorphic flare. Flare is always same color.
+Power of lens flare effect
+Minimum brightness an object must have to cast lensflare.
+Brightness threshold for lensflare generation. Everything brighter than this value gets a flare.
+Number of single halos to be generated. If set to 0, only the curved halo around is visible.
+Distance from screen center (and from themselves) the flares are generated.
+Distance (from screen center) the halo and flares are generated.
+Offset of RGB components of flares as modifier for Chromatic abberation. Same 3 values means no CA.
+Intensity of flares and halo, remember that higher threshold lowers intensity, you might play with both values to get desired result.
+How fast they decay. It's logarithmic, 1.0 means infinite long rays which will cover whole screen
+Upscales the godray's brightness
+weighting
+Density of rays, higher means more and brighter rays
+Minimum brightness an object must have to cast godrays
+2^x format values; How many samples the godrays get
+bright pass luminance value
+manages the size of the flare
+effect intensity
+effect tint RGB
+ If 1, only pixels with depth = 1 get lens flares
+ This prevents white objects from getting lens flares sources, which would normally happen in LDR
+ This isn't something RA has, so just comment it out
+#if CHAPMAN_DEPTH_CHECK
+if (textureLod(ReShade::DepthBuffer, vec4(coords.xy, 0, 3)).x < 0.99999)
+color = 0;
+#endif
+
+ This isn't something RA has, so just comment it out
+#if FLARE_DEPTH_CHECK
+float checkdepth = tex2D(ReShade::DepthBuffer, coords).x;
+if (checkdepth < 0.99999)
+result = 0;
+#endif
+
+ Bloom
+ Anamorphic flare
+ Lens dirt
+ Lens flares
+
 */
 
 #pragma once

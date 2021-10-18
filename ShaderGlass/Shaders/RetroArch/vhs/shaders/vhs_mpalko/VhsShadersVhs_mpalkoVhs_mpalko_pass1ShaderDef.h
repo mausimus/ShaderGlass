@@ -1,8 +1,19 @@
 /*
 ShaderGlass shader vhs-shaders-vhs_mpalko\vhs_mpalko_pass1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/vhs/shaders/vhs_mpalko/vhs_mpalko_pass1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ based on VHS Compression
+ shadertoy by mpalko https://www.shadertoy.com/view/tsfXWj
+ Effect params
+ End effect params
+ from http://www.java-gaming.org/index.php?topic=35123.0
+////////// -- SET UP PASSES AND LUTS HERE -- ////////////
+////////////// -- END PASSES AND LUTS -- ////////////////
+////////// -- PASTE SHADERTOY HERE -- ////////////
+////////// -- END SHADERTOY -- ////////////
+
 */
 
 #pragma once

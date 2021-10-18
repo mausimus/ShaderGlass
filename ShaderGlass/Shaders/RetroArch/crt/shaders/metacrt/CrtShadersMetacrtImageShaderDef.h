@@ -1,8 +1,48 @@
 /*
 ShaderGlass shader crt-shaders-metacrt\Image imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/metacrt/Image.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Meta CRT - @P_Malin
+ https://www.shadertoy.com/view/4dlyWX#
+ In which I add and remove aliasing
+ Uncomment different defines in Buf B to run different shaders on TV
+ Postprocessing Pass
+ Motion blur, Depth of Field, Vignetting & Tonemap
+/////////////////////////
+ Hash Functions
+/////////////////////////
+ From: Hash without Sine by Dave Hoskins
+ https://www.shadertoy.com/view/4djSRW
+ *** Use this for integer stepped ranges, ie Value-Noise/Perlin noise functions.
+#define HASHSCALE1 .1031
+#define HASHSCALE3 vec3(.1031, .1030, .0973)
+#define HASHSCALE4 vec4(1031, .1030, .0973, .1099)
+ For smaller input rangers like audio tick or 0-1 UVs use these...
+----------------------------------------------------------------------------------------
+  2 out, 1 in...
+/  2 out, 3 in...
+  1 out, 3 in...
+/////////////////////////
+ Data Storage
+/////////////////////////
+/////////////////////////
+ Camera
+/////////////////////////
+depth = max( 0.0, depth );
+objectId = max( 0, objectId + 1 );
+return exp2(-depth) + float(objectId);
+objectId = int( floor( value ) ) - 1;
+return abs( -log2(fract(value)) );
+/////////////////////////////
+ http://http.developer.nvidia.com/GPUGems/gpugems_ch23.html
+ Depth of field pass
+ https://www.shadertoy.com/view/4djSRW - Dave Hoskins
+vUV -= camCurr.vJitter / iResolution.xy;    // TAA has removed jitter
+ http://blog.marmakoide.org/?p=1
+vec4 vTapTexel = texelFetch( iChannel0, ivec2(vTapUV.xy * iResolution.xy), 0 ).rgba;
+
 */
 
 #pragma once

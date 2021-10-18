@@ -1,8 +1,98 @@
 /*
 ShaderGlass shader crt-shaders\crt-geom imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/crt-geom.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+CRT-interlaced
+
+Copyright (C) 2010-2012 cgwg, Themaister and DOLLS
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+(cgwg gave their consent to have the original version of this shader
+distributed under the GPL in this message:
+
+http://board.byuu.org/viewtopic.php?p=26075#p26075
+
+Feel free to distribute my shaders under the GPL. After all, the
+barrel distortion code was taken from the Curvature shader, which is
+under the GPL.
+)
+This shader variant is pre-configured with screen curvature
+
+ Comment the next line to disable interpolation in linear gamma (and
+ gain speed).
+ Enable 3x oversampling of the beam profile; improves moire effect caused by scanlines+curvature
+ Use the older, purely gaussian beam profile; uncomment for speed
+#define USEGAUSSIAN
+ Macros.
+ aspect ratio
+ Precalculate a bunch of useful values we'll need in the fragment
+ shader.
+ The size of one texel, in texture-coordinates.
+ Resulting X pixel-coordinate of the pixel we're drawing.
+ The size of one texel, in texture-coordinates.
+ Resulting X pixel-coordinate of the pixel we're drawing.
+ Calculate the influence of a scanline on the current pixel.
+
+ 'distance' is the distance in texture coordinates from the current
+ pixel to the scanline in question.
+ 'color' is the colour of the scanline at the horizontal location of
+ the current pixel.
+ "wid" controls the width of the scanline beam, for each RGB
+ channel The "weights" lines basically specify the formula
+ that gives you the profile of the beam, i.e. the intensity as
+ a function of distance from the vertical center of the
+ scanline. In this case, it is gaussian if width=2, and
+ becomes nongaussian for larger widths. Ideally this should
+ be normalized so that the integral across the beam is
+ independent of its width. That is, for a narrower beam
+ "weights" should have a higher peak at the center of the
+ scanline than for a wider beam.
+ Here's a helpful diagram to keep in mind while trying to
+ understand the code:
+
+  |      |      |      |      |
+ -------------------------------
+  |      |      |      |      |
+  |  01  |  11  |  21  |  31  | <-- current scanline
+  |      | @    |      |      |
+ -------------------------------
+  |      |      |      |      |
+  |  02  |  12  |  22  |  32  | <-- next scanline
+  |      |      |      |      |
+ -------------------------------
+  |      |      |      |      |
+
+ Each character-cell represents a pixel on the output
+ surface, "@" represents the current pixel (always somewhere
+ in the bottom half of the current scan-line, or the top-half
+ of the next scanline). The grid of lines represents the
+ edges of the texels of the underlying texture.
+ Texture coordinates of the texel containing the active pixel.
+ Of all the pixels that are mapped onto the texel we are
+ currently rendering, which pixel are we currently rendering?
+ Snap to the center of the underlying texel.
+ Calculate Lanczos scaling coefficients describing the effect
+ of various neighbour texels in a scanline on the current
+ pixel.
+ Prevent division by zero.
+ Lanczos2 kernel.
+ Normalize.
+ Calculate the effective colour of the current and next
+ scanlines at the horizontal location of the current pixel,
+ using the Lanczos coefficients above.
+ Calculate the influence of the current and next scanlines on
+ the current pixel.
+ dot-mask emulation:
+ Output pixels are alternately tinted green and magenta.
+ Convert the image gamma for display on our output device.
+
 */
 
 #pragma once

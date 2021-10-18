@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader crt-shaders-torridgristle\Brighten imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/torridgristle/Brighten.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ torridgristle CRT - Brighten pass
+ by torridgristle
+ license: public domain
+
 */
 
 #pragma once

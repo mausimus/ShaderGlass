@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader crt-shaders-guest-lut\lut imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/guest/lut/lut.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ This shouldn't be necessary but it seems some undefined values can
+ creep in and each GPU vendor handles that differently. This keeps
+ all values within a safe range
+
 */
 
 #pragma once

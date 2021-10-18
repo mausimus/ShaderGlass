@@ -1,8 +1,16 @@
 /*
 ShaderGlass shader interpolation-shaders\quilez imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/quilez.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Fragment shader based on "Improved texture interpolation" by Iñigo Quílez
+Original description: http://www.iquilezles.org/www/articles/texture/texture.htm
+
+
+ final sum and weight normalization
+
 */
 
 #pragma once

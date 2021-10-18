@@ -1,8 +1,33 @@
 /*
 ShaderGlass shader scalenx-shaders\scale2x imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scalenx/shaders/scale2x.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Scale2x
+
+Filter:	Nearest
+Scale:	2x
+
+Scale2x is real-time graphics effect able to increase the size of small bitmaps guessing the missing pixels without blurring the images.
+It was originally developed for the AdvanceMAME project in the year 2001 to improve the quality of old games with a low video resolution.
+
+Homepage: http://scale2x.sourceforge.net/
+Copyright (C) 2001, 2002, 2003, 2004 Andrea Mazzoleni
+License: GNU-GPL
+
+
+ subpixel determination
+
+B		E0 E1
+D E F		E2 E3
+H
+
+ reading the texels
+ rules
+ general condition & subpixel output
+
 */
 
 #pragma once

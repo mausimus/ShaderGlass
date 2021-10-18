@@ -1,8 +1,17 @@
 /*
 ShaderGlass shader crt-shaders\crt-mattias imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/crt/shaders/crt-mattias.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ CRT Emulation
+ by Mattias
+ https://www.shadertoy.com/view/lsB3DV
+Canonical noise function; replaced to prevent precision errors
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
 */
 
 #pragma once

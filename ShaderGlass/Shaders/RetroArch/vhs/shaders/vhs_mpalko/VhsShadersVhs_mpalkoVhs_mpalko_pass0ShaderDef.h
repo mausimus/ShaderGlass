@@ -1,8 +1,23 @@
 /*
 ShaderGlass shader vhs-shaders-vhs_mpalko\vhs_mpalko_pass0 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/vhs/shaders/vhs_mpalko/vhs_mpalko_pass0.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ based on VHS Compression
+ shadertoy by mpalko https://www.shadertoy.com/view/tsfXWj
+ Effect params
+ End effect params
+ from http://www.java-gaming.org/index.php?topic=35123.0
+////////// -- SET UP LUTS HERE -- ////////////
+////////////// -- END PASSES AND LUTS -- ////////////////
+////////// -- SET UP SHADERTOY VARIABLES -- ////////////
+////////// -- END SHADERTOY VARIABLES -- ////////////
+////////// -- PASTE SHADERTOY HERE -- ////////////
+ Downsample buffer A and convert to YIQ color space
+return texture(VIDEO_TEXTURE, uv).rgb * rgb2yiq;
+////////// -- END SHADERTOY -- ////////////
+
 */
 
 #pragma once

@@ -1,8 +1,29 @@
 /*
 ShaderGlass shader scalenx-shaders\scale2xplus imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scalenx/shaders/scale2xplus.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Scale2xPlus shader
+
+- Copyright (C) 2007 guest(r) - guest.r@gmail.com
+
+- License: GNU-GPL
+
+
+The Scale2x algorithm:
+
+- Scale2x Homepage: http://scale2x.sourceforge.net/
+
+- Copyright (C) 2001, 2002, 2003, 2004 Andrea Mazzoleni
+
+- License: GNU-GPL
+
+
+ Reading the texels
+ Product interpolation
+
 */
 
 #pragma once

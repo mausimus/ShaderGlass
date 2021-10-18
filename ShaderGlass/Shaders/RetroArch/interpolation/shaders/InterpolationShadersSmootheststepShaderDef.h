@@ -1,8 +1,21 @@
 /*
 ShaderGlass shader interpolation-shaders\smootheststep imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/smootheststep.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Fragment shader based on "Improved texture interpolation" by Iñigo Quílez
+Original description: http://www.iquilezles.org/www/articles/texture/texture.htm
+
+ Smoothstep - amazingly, smoothstep() is slower than calculating directly the expression!
+	f = smoothstep(0.0, 1.0, f);
+	f = f * f * ( -2.0 * f + 3.0);
+ Quilez - This is sharper than smoothstep.
+f = f * f * f * (f * (f * 6.0 - vec2(15.0, 15.0)) + vec2(10.0, 10.0));
+ smootheststep - This is even sharper than Quilez!
+ final sum and weight normalization
+
 */
 
 #pragma once

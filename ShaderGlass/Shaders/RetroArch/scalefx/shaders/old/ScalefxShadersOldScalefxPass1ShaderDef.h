@@ -1,8 +1,78 @@
 /*
 ShaderGlass shader scalefx-shaders-old\scalefx-pass1 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scalefx/shaders/old/scalefx-pass1.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+ScaleFX - Pass 1
+by Sp00kyFox, 2016-03-30
+
+Filter:	Nearest
+Scale:	1x
+
+ScaleFX is an edge interpolation algorithm specialized in pixel art. It was
+originally intended as an improvement upon Scale3x but became a new filter in
+its own right.
+ScaleFX interpolates edges up to level 6 and makes smooth transitions between
+different slopes. The filtered picture will only consist of colours present
+in the original.
+
+Pass 1 resolves ambiguous configurations of corner candidates at pixel junctions.
+
+
+
+Copyright (c) 2016 Sp00kyFox - ScaleFX@web.de
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+ corner strength
+return (crn > THR) ? max(2.0*crn - (ort + ort.wxyz), 0.0) : 0.0;
+ corner dominance at junctions
+ necessary but not sufficient junction condition for orthogonal edges
+return all(crn.xyxy <= THR || crn.xyxy <= ort || crn.xyxy <= ort.wxyz);
+	grid		metric		pattern
+
+M A B C P	x y z		x y
+N D E F Q	  o w		w z
+O G H I R
+J K L
+
+ metric data
+ corner strength
+ strength & dominance junctions
+ majority vote for ambiguous dominance junctions
+bvec4 jx = jDx != 0.0 && jDx + jDx.zwxy > jDx.yzwx + jDx.wxyz;
+bvec4 jy = jDy != 0.0 && jDy + jDy.zwxy > jDy.yzwx + jDy.wxyz;
+bvec4 jz = jDz != 0.0 && jDz + jDz.zwxy > jDz.yzwx + jDz.wxyz;
+bvec4 jw = jDw != 0.0 && jDw + jDw.zwxy > jDw.yzwx + jDw.wxyz;
+ inject strength without creating new contradictions
+bvec4 res;
+res.x = jx.z || !(jx.y || jx.w) && (jSx.z != 0.0 && (jx.x || jSx.x + jSx.z > jSx.y + jSx.w));
+res.y = jy.w || !(jy.z || jy.x) && (jSy.w != 0.0 && (jy.y || jSy.y + jSy.w > jSy.x + jSy.z));
+res.z = jz.x || !(jz.w || jz.y) && (jSz.x != 0.0 && (jz.z || jSz.x + jSz.z > jSz.y + jSz.w));
+res.w = jw.y || !(jw.x || jw.z) && (jSw.y != 0.0 && (jw.w || jSw.y + jSw.w > jSw.x + jSw.z));
+ single pixel & end of line detection
+res = res && (bvec4(jx.z, jy.w, jz.x, jw.y) || !(res.wxyz && res.yzwx));
+ output
+
 */
 
 #pragma once

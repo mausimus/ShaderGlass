@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader denoisers-shaders\slow-bilateral imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/denoisers/shaders/slow-bilateral.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+declare stuff
+create the 1-D kernel
+read out the texels
+
 */
 
 #pragma once

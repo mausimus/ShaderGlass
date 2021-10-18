@@ -1,8 +1,43 @@
 /*
 ShaderGlass shader nnedi3-shaders\jinc2-on-passoutput3 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/nnedi3/shaders/jinc2-on-passoutput3.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Hyllian's jinc windowed-jinc 2-lobe with anti-ringing Shader
+
+Copyright (C) 2011-2014 Hyllian/Jararaca - sergiogdb@gmail.com
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+
+This is an approximation of Jinc(x)*Jinc(x*r1/r2) for x < 2.5,
+where r1 and r2 are the first two zeros of jinc function.
+For a jinc 2-lobe best approximation, use A=0.5 and B=0.825.
+
+ A=0.5, B=0.825 is the best jinc approximation for x<2.5. if B=1.0, it's a lanczos filter.
+ Increase A to get more blur. Decrease it to get a sharper picture.
+ B = 0.825 to get rid of dithering. Increase B to get a fine sharpness, though dithering returns.
+ Calculates the distance between two points
+ reading the texels
+  Get min/max samples
+ Anti-ringing
+ final sum and weight normalization
+
 */
 
 #pragma once

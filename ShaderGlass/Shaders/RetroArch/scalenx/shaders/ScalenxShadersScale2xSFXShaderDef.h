@@ -1,8 +1,34 @@
 /*
 ShaderGlass shader scalenx-shaders\scale2xSFX imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scalenx/shaders/scale2xSFX.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Scale2xSFX
+by Sp00kyFox, 2015
+
+Filter:	Nearest
+Scale:	2x
+
+Scale2SFX improves upon the original Scale2x (aka EPX) by avoiding the occurence of artifacts.
+
+
+ subpixel determination
+
+J
+A B C		E0 E1
+K D E F L	E2 E3
+G H I
+M
+
+ reading the texels & colorspace conversion
+ parent condition
+ equality checks
+ artifact prevention
+ rules
+ subpixel output
+
 */
 
 #pragma once

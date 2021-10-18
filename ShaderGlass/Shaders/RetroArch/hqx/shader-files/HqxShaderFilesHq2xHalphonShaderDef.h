@@ -1,8 +1,42 @@
 /*
 ShaderGlass shader hqx-shader-files\hq2x-halphon imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/hqx/shader-files/hq2x-halphon.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ HQ2x
+ by Lior Halphon
+ ported to slang by hunterk
+ Based on this (really good) article: http://blog.pkh.me/p/19-butchering-hqx-scaling-filters.html 
+
+MIT License
+
+Copyright (c) 2015-2016 Lior Halphon
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+ The colorspace used by the HQnx filters is not really YUV, despite the algorithm description claims it is. It is
+also not normalized. Therefore, we shall call the colorspace used by HQnx "HQ Colorspace" to avoid confusion. 
+ o = offset, the width of a pixel
+ We always calculate the top left pixel.  If we need a different pixel, we flip the image 
+ p = the position within a pixel [0...1]
+
 */
 
 #pragma once

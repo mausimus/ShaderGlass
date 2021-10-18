@@ -1,8 +1,13 @@
 /*
 ShaderGlass shader reshade-shaders-blendoverlay\blendoverlay imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/reshade/shaders/blendoverlay/blendoverlay.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ blendoverlay
+ based on:
+ https://github.com/jamieowen/glsl-blend for blendOverlay
+
 */
 
 #pragma once

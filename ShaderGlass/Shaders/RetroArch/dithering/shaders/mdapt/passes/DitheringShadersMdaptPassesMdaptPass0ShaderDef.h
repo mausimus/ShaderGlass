@@ -1,8 +1,23 @@
 /*
 ShaderGlass shader dithering-shaders-mdapt-passes\mdapt-pass0 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/dithering/shaders/mdapt/passes/mdapt-pass0.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Merge Dithering and Pseudo Transparency Shader v2.8 - Pass 0
+by Sp00kyFox, 2014
+
+Neighbor analysis via color metric and dot product of the difference vectors.
+
+
+ Reference: http://www.compuphase.com/cmetric.htm
+
+U
+L C R
+D
+
+
 */
 
 #pragma once

@@ -1,8 +1,38 @@
 /*
 ShaderGlass shader misc\colorimetry imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/misc/colorimetry.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Colorimetry shader
+Ported from Drag's NES Palette Generator
+http://drag.wootest.net/misc/palgen.html
+
+http://www.brucelindbloom.com/Eqn_RGB_XYZ_Matrix.html
+http://www.dr-lex.be/random/matrix_inv.html
+ Convert the (x,y) values to X Y Z.
+ FCC 1953
+ Original FCC standard for the color of the phosphors
+ SMPTE C (1987)
+ A newer standard for the color of the phospors. (Not used in Japan)
+sRGB (PC Monitors)
+The colorimetry used in PC monitors, like the one you're (probably) looking at right now.
+ Get ready for a bunch of painful math. I need to invert a matrix, then multiply it by a vector.
+ Determinant for inverse matrix
+ This should be the completed RGB -> XYZ matrix.
+ Multiply each of the first three members by R, then add them together to get X
+ Convert RGB to XYZ using the matrix generated with the specified RGB and W points.
+ This is the conversion matrix for CIEXYZ -> sRGB. I nicked this from:
+ http://www.brucelindbloom.com/Eqn_RGB_XYZ_Matrix.html
+ and I know it's right because when you use the sRGB colorimetry, this matrix produces identical results to
+ just using the raw R, G, and B above.
+ Convert back to RGB using the XYZ->sRGB matrix.
+ Apply desired clipping method to out-of-gamut colors.
+If a channel is out of range (> 1.0), it's simply clamped to 1.0. This may change hue, saturation, and/or lightness.
+If any channels are out of range, the color is darkened until it is completely in range.
+If any channels are out of range, the color is desaturated towards the luminance it would've had.
+
 */
 
 #pragma once

@@ -1,8 +1,31 @@
 /*
 ShaderGlass shader sharpen-shaders\diff imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/sharpen/shaders/diff.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+Super-res shader - Shiandow
+
+Ported from Shiandow's code by Hyllian, 2016.
+
+This file is a part of MPDN Extensions.
+https://github.com/zachsaw/MPDN_Extensions
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3.0 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library.
+
+
 */
 
 #pragma once

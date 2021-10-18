@@ -1,8 +1,20 @@
 /*
 ShaderGlass shader handheld-shaders-mgba\ags001-light imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/mgba/ags001-light.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+AGS-001 shader
+A pristine recreation of the illuminated Game Boy Advance SP
+Author: endrift
+License: MPL 2.0
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
 */
 
 #pragma once

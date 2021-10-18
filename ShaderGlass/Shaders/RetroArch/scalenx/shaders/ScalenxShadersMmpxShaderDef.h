@@ -1,8 +1,161 @@
 /*
 ShaderGlass shader scalenx-shaders\mmpx imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/scalenx/shaders/mmpx.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ MMPX
+ by Morgan McGuire and Mara Gagiu
+ https://casual-effects.com/research/McGuire2021PixelArt/
+ License: MIT
+ adapted for slang by hunterk
+ I tried using a hash to speed these up but it didn't really help
+ these do nothing, but just for consistency with the original code...
+ Our current pixel
+ Input: A-I central 3x3 grid
+ Default to Nearest magnification
+ Go ahead and put this here so we can use an early return on the next
+ line to save some cycles
+ Skip constant 3x3 centers and just use nearest-neighbor
+ them.  This gives a good speedup on spritesheets with
+ lots of padding and full screen images with large
+ constant regions such as skies.
+ EDIT: this is a wash for me, but we'll keep it around
+ Read additional values at the tips of the diamond pattern
+ Precompute luminances
+ Round some corners and fill in 1:1 slopes, but preserve
+ sharp right angles.
+
+ In each expression, the left clause is from
+ EPX and the others are new. EPX
+ recognizes 1:1 single-pixel lines because it
+ applies the rounding only to the LINE, and not
+ to the background (it looks at the mirrored
+ side).  It thus fails on thick 1:1 edges
+ because it rounds *both* sides and produces an
+ aliased edge shifted by 1 dst pixel.  (This
+ also yields the mushroom-shaped arrow heads,
+ where that 1-pixel offset runs up against the
+ 2-pixel aligned end; this is an inherent
+ problem with 2X in-palette scaling.)
+
+ The 2nd clause clauses avoid *double* diagonal
+ filling on 1:1 slopes to prevent them becoming
+ aliased again. It does this by breaking
+ symmetry ties using luminance when working with
+ thick features (it allows thin and transparent
+ features to pass always).
+
+ The 3rd clause seeks to preserve square corners
+ by considering the center value before
+ rounding.
+
+ The 4th clause identifies 1-pixel bumps on
+ straight lines that are darker than their
+ background, such as the tail on a pixel art
+ "4", and prevents them from being rounded. This
+ corrects for asymmetry in this case that the
+ luminance tie breaker introduced.
+ .------------ 1st ------------.      .----- 2nd ---------.      .------ 3rd -----.      .--------------- 4th -----------------------.
+ Clean up disconnected line intersections.
+
+ The first clause recognizes being on the inside
+ of a diagonal corner and ensures that the "foreground
+ has been correctly identified to avoid
+ ambiguous cases such as this:
+
+  o#o#
+  oo##
+  o#o#
+
+ where trying to fix the center intersection of
+ either the "o" or the "#" will leave the other
+ one disconnected. This occurs, for example,
+ when a pixel-art letter "B" or "R" is next to
+ another letter on the right.
+
+ The second clause ensures that the pattern is
+ not a notch at the edge of a checkerboard
+ dithering pattern.
+
+ >
+  .--------------------- 1st ------------------------.      .--------- 2nd -----------.
+ Remove tips of bright triangles on dark
+ backgrounds. The luminance tie breaker for 1:1
+ pixel lines leaves these as sticking up squared
+ off, which makes bright triangles and diamonds
+ look bad.
+////////////////////////////////////////////////////////////////////////////////
+ Do further neighborhood peeking to identify
+ 2:1 and 1:2 slopes of constant color.
+ The first clause of each rule identifies a 2:1 slope line
+ of consistent color.
+
+ The second clause verifies that the line is separated from
+ every adjacent pixel on one side and not part of a more
+ complex pattern. Common subexpressions from the second clause
+ are lifted to an outer test on pairs of rules.
+
+ The actions taken by rules are unusual in that they extend
+ a color assigned by previous rules rather than drawing from
+ the original source image.
+
+ The comments show a diagram of the local
+ neighborhood in which letters shown with the
+ same shape and color must match each other and
+ everything else without annotation must be
+ different from the solid colored, square
+ letters.
+ Above a 2:1 slope or -2:1 slope   ◢ ◣
+ First:
+ Second:
+     P
+   Ⓐ B C .
+ Q D 🄴 🅵 🆁
+   🅶 🅷 I
+     S
+ Third:
+     P
+ . A B Ⓒ
+ 🆀 🅳 🄴 F R
+   G 🅷 🅸
+     S
+ Below a 2:1 (◤) or -2:1 (◥) slope (reflect the above 2:1 patterns vertically)
+     P
+   🅰 🅱 C
+ Q D 🄴 🅵 🆁
+   Ⓖ H I .
+     S
+     P
+   A 🅱 🅲
+ 🆀 🅳 🄴 F R
+ . G H Ⓘ
+     S
+ Right of a -1:2 (\) or -1:2 (/) slope (reflect the left 1:2 patterns horizontally)
+     P
+   🅰 B Ⓒ
+ Q 🅳 🄴 F R
+   G 🅷 I
+     🆂 .
+     🅿 .
+   A 🅱 C
+ Q 🅳 🄴 F R
+   🅶 H Ⓘ
+     S
+ Left of a 1:2 (/) slope or -1:2 (\) slope (transpose the above 2:1 patterns)
+ Pull common none_eq subexpressions out
+     P
+   Ⓐ B 🅲
+ Q D 🄴 🅵 R
+   G 🅷 I
+   . 🆂
+   . 🅿
+   A 🅱 C
+ Q D 🄴 🅵 R
+   Ⓖ H 🅸
+     S
+ Determine which of our 4 output pixels we need to use
+
 */
 
 #pragma once

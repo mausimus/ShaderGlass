@@ -1,8 +1,111 @@
 /*
 ShaderGlass shader handheld-shaders-simpletex_lcd\simpletex_lcd+gba-color-4k imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/handheld/shaders/simpletex_lcd/simpletex_lcd+gba-color-4k.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+
+simpletex_lcd+gba-color - a simple, textured LCD shader intended for non-backlit
+systems - includes GBA colour correction
+
+- Makes use of the 'line weighting' equation from zfast_lcd_standard
+[original zfast_lcd_standard code copyright (C) 2017 Greg Hogan (SoltanGris42)]
+
+- Colour correction code taken from 'gba-color', written by hunterk, modified by Pokefan531
+and realeased into the public domain
+
+Other code by jdgleaver
+
+Usage notes:
+
+- Background texture size is hard-coded (I can't find a way to get this
+automatically...). User must ensure that 'BG_TEXTURE_SIZE' define is
+set appropriately.
+
+- Adjustable parameters:
+
+> GRID_INTENSITY: Sets overall visibility of grid effect
+- 1.0: Grid is shown
+- 0.0: Grid is invisible (same colour as pixels)
+> GRID_WIDTH: Sets effective with of grid lines
+- 1.0: Normal full width
+- 0.0: Minimum width
+(Note - this does not mean zero width! Instead, this
+is the minimum 'sane' width, below which the grid
+becomes pointless...)
+> GRID_BIAS: Dynamically adjusts the grid intensity based on pixel luminosity
+- 0.0: Grid intensity is uniform
+- 1.0: Grid intensity scales linearly with pixel luminosity
+> i.e. the darker the pixel, the less the grid effect
+is apparent - black pixels exhibit no grid effect at all
+> DARKEN_GRID: Darkens grid (duh...)
+- 0.0: Grid is white
+- 1.0: Grid is black
+> DARKEN_COLOUR: Simply darkens pixel colours (effectively lowers gamma level of pixels)
+- 0.0: Colours are normal
+- 2.0: Colours are too dark...
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+ Background texture size
+ > 2048 x 2048 textures are suitable for screen resolutions up to
+   1200p (or 1440p if running 'square' aspect ratio systems)
+#define BG_TEXTURE_SIZE 2048.0
+ > 4096 x 4096 textures are suitable for screen resolutions up to 4k
+
+VERTEX_SHADER
+
+ ### Magic Numbers...
+ Grid pattern
+ > Line weighting equation:
+   y = a * (x^4 - b * x^6)
+ RGB -> Luminosity conversion
+ > Photometric/digital ITU BT.709
+ > Digital ITU BT.601
+#define LUMA_R 0.299
+#define LUMA_G 0.587
+#define LUMA_B 0.114
+ Background texture size
+ Colour correction
+
+FRAGMENT SHADER
+
+ Get current texture coordinate
+ Get colour of current pixel
+ Darken colours (if required...) and apply colour correction
+ Generate grid pattern...
+ > Line weighting equation:
+   y = 48 * (x^4 - (8/3) * x^6)
+ > Apply grid adjustments (phase 1)
+   - GRID_WIDTH:
+        1.0: Use raw lineWeight value
+        0.0: Use lineWeight ^ 2 (makes lines thinner - realistically, this is
+                                 the thinnest we can go before the grid effect
+                                 becomes pointless, particularly with 'high resolution'
+                                 systems like the GBA)
+   - GRID_INTENSITY:
+        1.0: Grid lines are white
+        0.0: Grid lines are invisible
+ > Apply grid adjustments (phase 2)
+   - GRID_BIAS:
+        0.0: Use 'unbiased' lineWeight value calculated above
+        1.0: Scale lineWeight by current pixel luminosity
+             > i.e. the darker the pixel, the lower the intensity of the grid
+ Apply grid pattern
+ (lineWeight == 1 -> set colour to value specified by DARKEN_GRID)
+ Get background sample point
+ > NB: external texture coordinates are referenced in a completely different fashion
+   here than they are in GLSL shaders...
+ Sample background texture and 'colourise' according to current pixel colour
+ (NB: the 'colourisation' here is lame, but the proper method is slow...)
+ Blend current pixel with background according to luminosity
+ (lighter colour == more transparent, more visible background)
+ Note: Have to calculate luminosity a second time... tiresome, but
+ it's not a particulary expensive operation...
+
 */
 
 #pragma once

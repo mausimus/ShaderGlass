@@ -1,8 +1,23 @@
 /*
 ShaderGlass shader ntsc-shaders-mame-ntsc\mame-postproc imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/ntsc/shaders/mame-ntsc/mame-postproc.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+ Useful Constants
+ NTSC Constants
+ Color Convolution Constants
+ Deconverge Constants
+ Scanline/Pincushion Constants
+const float ScanlineAmount = 0.175; <- move to parameter
+ 60Hz Bar Constants
+ Color Matrix
+ DC Offset & Scale
+ Saturation
+ -- Alpha Clipping --
+ -- Scanline Simulation --
+ -- Color Compression (increasing the floor of the signal without affecting the ceiling) --
+
 */
 
 #pragma once

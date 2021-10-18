@@ -1,8 +1,17 @@
 /*
 ShaderGlass shader reshade-shaders\vibrance-pass-sh1nra358 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/master/reshade/shaders/vibrance-pass-sh1nra358.slang
-See original file for credits and usage license. 
+See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
+
+*
+* Vibrance
+* by Christian Cann Schuldt Jensen ~ CeeJay.dk
+*
+* Vibrance intelligently boosts the saturation of pixels so pixels that had little color get a larger boost than pixels that had a lot.
+* This avoids oversaturation of pixels that were already very saturated.
+
+
 */
 
 #pragma once
