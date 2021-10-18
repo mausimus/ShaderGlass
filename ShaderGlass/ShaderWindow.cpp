@@ -709,6 +709,9 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case ID_PROCESSING_SCREENSHOT:
             SetTimer(m_mainWindow, ID_PROCESSING_SCREENSHOT, MENU_FADE_DELAY, NULL);
             break;
+        case IDM_SHADER_PARAMETERS:
+            ShowWindow(m_paramsWindow, SW_SHOW);
+            return 0;
         case IDM_TOGGLEMENU:
             if(GetMenu(hWnd))
                 SetMenu(hWnd, NULL);
@@ -1204,7 +1207,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     return TRUE;
 }
 
-void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
+void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow)
 {
     bool autoStart  = true;
     bool fullScreen = false;
@@ -1230,9 +1233,12 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
         }
     }
 
+    m_paramsWindow = paramsWindow;
+        
     if(autoStart)
     {
         SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
+        SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
     }
     if(fullScreen)
     {

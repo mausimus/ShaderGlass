@@ -27,6 +27,11 @@ const vector<unique_ptr<PresetDef>>& CaptureManager::Presets()
     return m_presetList;
 }
 
+vector<ShaderParam*> CaptureManager::Params()
+{
+    return m_shaderGlass->Params();
+}
+
 void CaptureManager::UpdateInput()
 {
     if(IsActive())

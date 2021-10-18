@@ -13,13 +13,14 @@ public:
     ShaderWindow(CaptureManager& manager);
 
     bool Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow);
-    void Start(_In_ LPWSTR lpCmdLine);
+    void Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow);
 
 private:
     WCHAR                        m_title[MAX_LOADSTRING];
     WCHAR                        m_windowClass[MAX_LOADSTRING];
     HINSTANCE                    m_instance {nullptr};
     HWND                         m_mainWindow {nullptr};
+    HWND                         m_paramsWindow {nullptr};
     HMENU                        m_mainMenu {nullptr};
     HMENU                        m_programMenu {nullptr};
     HMENU                        m_pixelSizeMenu {nullptr};
