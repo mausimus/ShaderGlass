@@ -12,14 +12,15 @@ class ShaderGlass
 public:
     ShaderGlass();
     void Initialize(HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context);
-    void Process(winrt::com_ptr<ID3D11Texture2D> texture);
-    void SetInputScale(float w, float h);
-    void SetOutputScale(float w, float h);
-    void SetOutputFlip(bool h, bool v);
-    void SetShaderPreset(PresetDef* p);
-    void SetFrameSkip(int s);
+    void                      Process(winrt::com_ptr<ID3D11Texture2D> texture);
+    void                      SetInputScale(float w, float h);
+    void                      SetOutputScale(float w, float h);
+    void                      SetOutputFlip(bool h, bool v);
+    void                      SetShaderPreset(PresetDef* p);
+    void                      SetFrameSkip(int s);
     winrt::com_ptr<ID3D11Texture2D> GrabOutput();
-    void Stop();
+    std::vector<ShaderParam*> Params();
+    void                      Stop();
     ~ShaderGlass();
 
 private:

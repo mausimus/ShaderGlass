@@ -29,6 +29,7 @@ public:
     CaptureOptions m_options;
 
     const std::vector<std::unique_ptr<PresetDef>>& Presets();
+    std::vector<ShaderParam *> Params();
 
     bool Initialize();
     bool IsActive();
