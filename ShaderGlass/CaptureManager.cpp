@@ -27,7 +27,7 @@ const vector<unique_ptr<PresetDef>>& CaptureManager::Presets()
     return m_presetList;
 }
 
-vector<ShaderParam*> CaptureManager::Params()
+vector<tuple<int, ShaderParam*>> CaptureManager::Params()
 {
     return m_shaderGlass->Params();
 }
@@ -168,5 +168,21 @@ void CaptureManager::SaveOutput(LPWSTR fileName)
     if(m_outputTexture)
     {
         DirectX::SaveWICTextureToFile(m_context.get(), m_outputTexture.get(), GUID_ContainerFormatPng, fileName, nullptr, nullptr, true);
+    }
+}
+
+void CaptureManager::UpdateParams()
+{
+    if (m_shaderGlass)
+    {
+        m_shaderGlass->UpdateParams();
+    }
+}
+
+void CaptureManager::ResetParams()
+{
+    if(m_shaderGlass)
+    {
+        m_shaderGlass->ResetParams();
     }
 }

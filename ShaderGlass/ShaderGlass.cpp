@@ -142,6 +142,8 @@ void ShaderGlass::RebuildShaders()
     {
         m_presetTextures.insert(make_pair(texture.second.m_name, texture.second.m_textureView));
     }
+
+    ResetParams();
 }
 
 void ShaderGlass::SetInputScale(float w, float h)
@@ -186,12 +188,37 @@ void ShaderGlass::DestroyTargets()
     }
 }
 
-std::vector<ShaderParam*> ShaderGlass::Params()
+void ShaderGlass::UpdateParams()
 {
-    std::vector<ShaderParam*> params;
     for(auto& s : m_shaderPreset->m_shaders)
         for(auto& p : s.Params())
-            params.push_back(p);
+        {
+            if(p->size == 4 && p->name != "FrameCount")
+                s.SetParam(p, &p->currentValue);
+        }
+}
+
+void ShaderGlass::ResetParams()
+{
+    for(auto& s : m_shaderPreset->m_shaders)
+        for(auto& p : s.Params())
+        {
+            if(p->size == 4 && p->name != "FrameCount")
+                s.SetParam(p, &p->defaultValue);
+        }
+}
+
+std::vector<std::tuple<int, ShaderParam*>> ShaderGlass::Params()
+{
+    std::vector<std::tuple<int, ShaderParam*>> params;
+    int                                        i = 0;
+    for(auto& s : m_shaderPreset->m_shaders)
+    {
+        for(auto& p : s.Params())
+            params.push_back(std::make_tuple(i, p));
+
+        i++;
+    }
     return params;
 }
 

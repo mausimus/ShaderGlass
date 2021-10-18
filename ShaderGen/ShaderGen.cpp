@@ -365,6 +365,7 @@ void populateShaderTemplate(ShaderDef def)
                     replace(paramLine, "%PARAM_MIN%", to_string(p.min));
                     replace(paramLine, "%PARAM_MAX%", to_string(p.max));
                     replace(paramLine, "%PARAM_DEF%", to_string(p.def));
+                    replace(paramLine, "%PARAM_STEP%", to_string(p.step));
                     outfile << paramLine << endl;
                 }
             }
