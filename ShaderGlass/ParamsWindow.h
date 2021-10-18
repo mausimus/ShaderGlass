@@ -13,11 +13,15 @@ struct ParamsTrackbar
     float       max;
     float       step;
     float       val;
+    UINT        def;
+    UINT        steps;
 
     UINT        controlId;
     HWND        trackBarWnd;
     HWND        paramNameWnd;
     HWND        paramValueWnd;
+
+    ShaderParam* param;
 };
 
 class ParamsWindow
@@ -35,12 +39,13 @@ private:
     HINSTANCE       m_instance {nullptr};
     HWND            m_resetButtonWnd;
     HWND            m_closeButtonWnd;
+    HFONT           m_font;
     CaptureManager& m_captureManager;
     CaptureOptions& m_captureOptions;
 
     std::vector<ParamsTrackbar> m_trackbars;
 
-    void AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iStep, const char* name);
+    void AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iStep, const char* name, ShaderParam* p);
     void RebuildControls();
 
     static LRESULT CALLBACK WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

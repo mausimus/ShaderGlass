@@ -633,10 +633,16 @@ void ShaderWindow::UpdateWindowState()
         SetWindowLong(m_mainWindow, GWL_EXSTYLE, cur_style & ~WS_EX_LAYERED);
 
     if(m_captureManager.IsActive() && !m_captureOptions.clone && !m_captureOptions.captureWindow)
-        // desktop glass - exclude from capture
+    // desktop glass - exclude from capture
+    {
         SetWindowDisplayAffinity(m_mainWindow, WDA_EXCLUDEFROMCAPTURE);
+        SetWindowDisplayAffinity(m_paramsWindow, WDA_EXCLUDEFROMCAPTURE);
+    }
     else
+    {
         SetWindowDisplayAffinity(m_mainWindow, WDA_NONE);
+        SetWindowDisplayAffinity(m_paramsWindow, WDA_NONE);
+    }
 
     // update title
     if(m_captureManager.IsActive())
@@ -711,6 +717,11 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             break;
         case IDM_SHADER_PARAMETERS:
             ShowWindow(m_paramsWindow, SW_SHOW);
+            if(m_captureManager.IsActive() && !m_captureOptions.clone && !m_captureOptions.captureWindow)
+                SetWindowDisplayAffinity(m_paramsWindow, WDA_EXCLUDEFROMCAPTURE);
+            else
+                SetWindowDisplayAffinity(m_paramsWindow, WDA_NONE);
+
             return 0;
         case IDM_TOGGLEMENU:
             if(GetMenu(hWnd))
