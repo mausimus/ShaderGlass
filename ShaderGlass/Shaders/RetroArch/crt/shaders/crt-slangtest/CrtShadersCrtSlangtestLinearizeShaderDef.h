@@ -367,8 +367,8 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtSlangtestLinearizeShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtSlangtestLinearizeShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtSlangtestLinearizeShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("GAMMA", 0, 64, 4, 2.000000f, 3.000000f, 2.500000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("GAMMA", 0, 64, 4, 2.000000f, 3.000000f, 2.500000f, 0.020000f, "CRT gamma"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

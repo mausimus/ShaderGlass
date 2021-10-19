@@ -1612,17 +1612,17 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersTvoutTweaksShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersTvoutTweaksShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersTvoutTweaksShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("TVOUT_RESOLUTION", -1, 52, 4, 0.000000f, 1024.000000f, 256.000000f));
-		Params.push_back(ShaderParam("TVOUT_COMPOSITE_CONNECTION", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("TVOUT_TV_COLOR_LEVELS", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("TVOUT_RESOLUTION_Y", -1, 64, 4, 0.000000f, 1024.000000f, 256.000000f));
-		Params.push_back(ShaderParam("TVOUT_RESOLUTION_I", -1, 68, 4, 0.000000f, 256.000000f, 83.199997f));
-		Params.push_back(ShaderParam("TVOUT_RESOLUTION_Q", -1, 72, 4, 0.000000f, 256.000000f, 25.600000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("TVOUT_RESOLUTION", -1, 52, 4, 0.000000f, 1024.000000f, 256.000000f, 32.000000f, "TVOut Signal Resolution"));
+		Params.push_back(ShaderParam("TVOUT_COMPOSITE_CONNECTION", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "TVOut Composite Enable"));
+		Params.push_back(ShaderParam("TVOUT_TV_COLOR_LEVELS", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "TVOut TV Color Levels Enable"));
+		Params.push_back(ShaderParam("TVOUT_RESOLUTION_Y", -1, 64, 4, 0.000000f, 1024.000000f, 256.000000f, 32.000000f, "TVOut Luma (Y) Resolution"));
+		Params.push_back(ShaderParam("TVOUT_RESOLUTION_I", -1, 68, 4, 0.000000f, 256.000000f, 83.199997f, 8.000000f, "TVOut Chroma (I) Resolution"));
+		Params.push_back(ShaderParam("TVOUT_RESOLUTION_Q", -1, 72, 4, 0.000000f, 256.000000f, 25.600000f, 8.000000f, "TVOut Chroma (Q) Resolution"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

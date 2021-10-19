@@ -704,11 +704,11 @@ public:
 		VertexLength = sizeof(RetroArchMotionblurShadersResponseTimeShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMotionblurShadersResponseTimeShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMotionblurShadersResponseTimeShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("response_time", -1, 0, 4, 0.000000f, 0.777000f, 0.333000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("response_time", -1, 0, 4, 0.000000f, 0.777000f, 0.333000f, 0.111000f, "LCD Response Time"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("OriginalHistory1", 3));
 		Samplers.push_back(ShaderSampler("OriginalHistory2", 4));

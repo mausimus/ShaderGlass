@@ -259,6 +259,15 @@ void ShaderWindow::SaveProfile(const std::string& fileName)
         std::wstring wname(info.szDevice);
         outfile << "CaptureDesktop " << std::quoted(std::string(wname.begin(), wname.end())) << std::endl;
     }
+    for (const auto& pt : m_captureManager.Params())
+    {
+        const auto& s = std::get<0>(pt);
+        const auto& p = std::get<1>(pt);
+        if (p->currentValue != p->defaultValue)
+        {
+            outfile << "Param_" << s << "_" << p->name << " " << std::quoted(std::to_string(p->currentValue)) << std::endl;
+        }
+    }
     outfile.close();
 }
 
@@ -636,12 +645,12 @@ void ShaderWindow::UpdateWindowState()
     // desktop glass - exclude from capture
     {
         SetWindowDisplayAffinity(m_mainWindow, WDA_EXCLUDEFROMCAPTURE);
-        SetWindowDisplayAffinity(m_paramsWindow, WDA_EXCLUDEFROMCAPTURE);
+        //SetWindowDisplayAffinity(m_paramsWindow, WDA_EXCLUDEFROMCAPTURE);
     }
     else
     {
         SetWindowDisplayAffinity(m_mainWindow, WDA_NONE);
-        SetWindowDisplayAffinity(m_paramsWindow, WDA_NONE);
+        //SetWindowDisplayAffinity(m_paramsWindow, WDA_NONE);
     }
 
     // update title

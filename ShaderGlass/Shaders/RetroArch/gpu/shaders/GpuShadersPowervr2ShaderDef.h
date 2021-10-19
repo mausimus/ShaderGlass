@@ -804,13 +804,13 @@ public:
 		VertexLength = sizeof(RetroArchGpuShadersPowervr2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchGpuShadersPowervr2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchGpuShadersPowervr2ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("INTERLACED", -1, 52, 4, 0.000000f, 1.000000f, 1.000000f));
-		Params.push_back(ShaderParam("VGASIGNAL", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("INTERLACED", -1, 52, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "PVR - Interlace smoothing"));
+		Params.push_back(ShaderParam("VGASIGNAL", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "PVR - VGA signal loss"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

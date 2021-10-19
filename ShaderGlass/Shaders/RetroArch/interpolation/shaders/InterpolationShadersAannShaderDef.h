@@ -1534,13 +1534,13 @@ public:
 		VertexLength = sizeof(RetroArchInterpolationShadersAannShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchInterpolationShadersAannShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchInterpolationShadersAannShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("NOGAMMA", -1, 0, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MASKING", -1, 4, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("BILINEAR", -1, 8, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("NOGAMMA", -1, 0, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Interpolate in sRGB"));
+		Params.push_back(ShaderParam("MASKING", -1, 4, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "8px Overscan Masking"));
+		Params.push_back(ShaderParam("BILINEAR", -1, 8, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Force Bilinear Filtering"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

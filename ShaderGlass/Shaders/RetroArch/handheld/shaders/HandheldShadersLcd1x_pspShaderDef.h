@@ -536,12 +536,12 @@ public:
 		VertexLength = sizeof(RetroArchHandheldShadersLcd1x_pspShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldShadersLcd1x_pspShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldShadersLcd1x_pspShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("BRIGHTEN_SCANLINES", -1, 0, 4, 1.000000f, 32.000000f, 16.000000f));
-		Params.push_back(ShaderParam("BRIGHTEN_LCD", -1, 4, 4, 1.000000f, 12.000000f, 4.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 48, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("BRIGHTEN_SCANLINES", -1, 0, 4, 1.000000f, 32.000000f, 16.000000f, 0.500000f, "Brighten Scanlines"));
+		Params.push_back(ShaderParam("BRIGHTEN_LCD", -1, 4, 4, 1.000000f, 12.000000f, 4.000000f, 0.100000f, "Brighten LCD"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 48, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

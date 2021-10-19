@@ -756,16 +756,16 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestCrtSmD65D50SmShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestCrtSmD65D50SmShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestCrtSmD65D50SmShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("tate", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("fliph", -1, 64, 4, -1.000000f, 1.000000f, -1.000000f));
-		Params.push_back(ShaderParam("flipv", -1, 68, 4, -1.000000f, 1.000000f, 1.000000f));
-		Params.push_back(ShaderParam("WP", -1, 52, 4, -100.000000f, 100.000000f, 0.000000f));
-		Params.push_back(ShaderParam("wp_saturation", -1, 56, 4, 0.000000f, 2.000000f, 1.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("tate", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "TATE Mode"));
+		Params.push_back(ShaderParam("fliph", -1, 64, 4, -1.000000f, 1.000000f, -1.000000f, 2.000000f, "Flip The Image Horizontally"));
+		Params.push_back(ShaderParam("flipv", -1, 68, 4, -1.000000f, 1.000000f, 1.000000f, 2.000000f, "Flip The Image Vertically"));
+		Params.push_back(ShaderParam("WP", -1, 52, 4, -100.000000f, 100.000000f, 0.000000f, 5.000000f, "Color Temperature %"));
+		Params.push_back(ShaderParam("wp_saturation", -1, 56, 4, 0.000000f, 2.000000f, 1.000000f, 0.050000f, "Saturation Adjustment"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

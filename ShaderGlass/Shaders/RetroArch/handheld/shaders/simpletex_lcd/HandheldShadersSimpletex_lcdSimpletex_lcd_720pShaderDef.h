@@ -696,15 +696,15 @@ public:
 		VertexLength = sizeof(RetroArchHandheldShadersSimpletex_lcdSimpletex_lcd_720pShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldShadersSimpletex_lcdSimpletex_lcd_720pShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldShadersSimpletex_lcdSimpletex_lcd_720pShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("GRID_INTENSITY", -1, 0, 4, 0.000000f, 1.000000f, 0.900000f));
-		Params.push_back(ShaderParam("GRID_WIDTH", -1, 4, 4, 0.000000f, 1.000000f, 0.900000f));
-		Params.push_back(ShaderParam("GRID_BIAS", -1, 8, 4, 0.000000f, 1.000000f, 0.500000f));
-		Params.push_back(ShaderParam("DARKEN_GRID", -1, 12, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("DARKEN_COLOUR", -1, 16, 4, 0.000000f, 2.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 64, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 48, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("GRID_INTENSITY", -1, 0, 4, 0.000000f, 1.000000f, 0.900000f, 0.010000f, "Grid Intensity"));
+		Params.push_back(ShaderParam("GRID_WIDTH", -1, 4, 4, 0.000000f, 1.000000f, 0.900000f, 0.010000f, "Grid Width"));
+		Params.push_back(ShaderParam("GRID_BIAS", -1, 8, 4, 0.000000f, 1.000000f, 0.500000f, 0.010000f, "Grid Bias"));
+		Params.push_back(ShaderParam("DARKEN_GRID", -1, 12, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "Darken Grid"));
+		Params.push_back(ShaderParam("DARKEN_COLOUR", -1, 16, 4, 0.000000f, 2.000000f, 0.000000f, 0.010000f, "Darken Colours"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 48, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("BACKGROUND", 3));
 /*

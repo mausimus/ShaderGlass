@@ -1560,14 +1560,14 @@ public:
 		VertexLength = sizeof(RetroArchWindowedShadersJinc2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchWindowedShadersJinc2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchWindowedShadersJinc2ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("JINC2_WINDOW_SINC", -1, 52, 4, 0.000000f, 1.000000f, 0.440000f));
-		Params.push_back(ShaderParam("JINC2_SINC", -1, 56, 4, 0.000000f, 1.000000f, 0.820000f));
-		Params.push_back(ShaderParam("JINC2_AR_STRENGTH", -1, 60, 4, 0.000000f, 1.000000f, 0.500000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("JINC2_WINDOW_SINC", -1, 52, 4, 0.000000f, 1.000000f, 0.440000f, 0.010000f, "Window Sinc Param"));
+		Params.push_back(ShaderParam("JINC2_SINC", -1, 56, 4, 0.000000f, 1.000000f, 0.820000f, 0.010000f, "Sinc Param"));
+		Params.push_back(ShaderParam("JINC2_AR_STRENGTH", -1, 60, 4, 0.000000f, 1.000000f, 0.500000f, 0.100000f, "Anti-ringing Strength"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;
