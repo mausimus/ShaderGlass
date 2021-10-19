@@ -852,15 +852,15 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGtuV050Pass3ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGtuV050Pass3ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGtuV050Pass3ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("noScanlines", -1, 48, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("tvVerticalResolution", -1, 52, 4, 20.000000f, 1000.000000f, 250.000000f));
-		Params.push_back(ShaderParam("blackLevel", -1, 56, 4, -0.300000f, 0.300000f, 0.070000f));
-		Params.push_back(ShaderParam("contrast", -1, 60, 4, 0.000000f, 2.000000f, 1.000000f));
-		Params.push_back(ShaderParam("compositeConnection", -1, 64, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("noScanlines", -1, 48, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "No Scanlines"));
+		Params.push_back(ShaderParam("tvVerticalResolution", -1, 52, 4, 20.000000f, 1000.000000f, 250.000000f, 10.000000f, "TV Vertical Resolution"));
+		Params.push_back(ShaderParam("blackLevel", -1, 56, 4, -0.300000f, 0.300000f, 0.070000f, 0.010000f, "Black Level"));
+		Params.push_back(ShaderParam("contrast", -1, 60, 4, 0.000000f, 2.000000f, 1.000000f, 0.100000f, "Contrast"));
+		Params.push_back(ShaderParam("compositeConnection", -1, 64, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Composite Connection Enable"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

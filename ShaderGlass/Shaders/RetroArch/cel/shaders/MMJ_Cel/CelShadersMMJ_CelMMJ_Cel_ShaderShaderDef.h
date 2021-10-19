@@ -1793,17 +1793,17 @@ public:
 		VertexLength = sizeof(RetroArchCelShadersMMJ_CelMMJ_Cel_ShaderShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCelShadersMMJ_CelMMJ_Cel_ShaderShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCelShadersMMJ_CelMMJ_Cel_ShaderShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("WhtCutoff", -1, 52, 4, 0.500000f, 1.000000f, 0.970000f));
-		Params.push_back(ShaderParam("BlkCutoff", -1, 56, 4, 0.000000f, 0.500000f, 0.030000f));
-		Params.push_back(ShaderParam("ShdLevels", -1, 60, 4, 1.000000f, 16.000000f, 9.000000f));
-		Params.push_back(ShaderParam("SatModify", -1, 64, 4, 0.000000f, 2.000000f, 1.150000f));
-		Params.push_back(ShaderParam("OtlModify", -1, 68, 4, 0.000000f, 1.000000f, 0.200000f));
-		Params.push_back(ShaderParam("ShdWeight", -1, 72, 4, 0.000000f, 1.000000f, 0.500000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("WhtCutoff", -1, 52, 4, 0.500000f, 1.000000f, 0.970000f, 0.010000f, "White Level Cutoff"));
+		Params.push_back(ShaderParam("BlkCutoff", -1, 56, 4, 0.000000f, 0.500000f, 0.030000f, 0.010000f, "Black Level Cutoff"));
+		Params.push_back(ShaderParam("ShdLevels", -1, 60, 4, 1.000000f, 16.000000f, 9.000000f, 1.000000f, "Shading Levels"));
+		Params.push_back(ShaderParam("SatModify", -1, 64, 4, 0.000000f, 2.000000f, 1.150000f, 0.010000f, "Saturation Modifier"));
+		Params.push_back(ShaderParam("OtlModify", -1, 68, 4, 0.000000f, 1.000000f, 0.200000f, 0.010000f, "Outline Brightness"));
+		Params.push_back(ShaderParam("ShdWeight", -1, 72, 4, 0.000000f, 1.000000f, 0.500000f, 0.010000f, "Shader Strength"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

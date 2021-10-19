@@ -459,10 +459,10 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestAdvancedAfterglow0ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestAdvancedAfterglow0ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestAdvancedAfterglow0ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("PR", -1, 0, 4, 0.000000f, 0.500000f, 0.250000f));
-		Params.push_back(ShaderParam("PG", -1, 4, 4, 0.000000f, 0.500000f, 0.250000f));
-		Params.push_back(ShaderParam("PB", -1, 8, 4, 0.000000f, 0.500000f, 0.250000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("PR", -1, 0, 4, 0.000000f, 0.500000f, 0.250000f, 0.010000f, "          Persistence Red"));
+		Params.push_back(ShaderParam("PG", -1, 4, 4, 0.000000f, 0.500000f, 0.250000f, 0.010000f, "          Persistence Green"));
+		Params.push_back(ShaderParam("PB", -1, 8, 4, 0.000000f, 0.500000f, 0.250000f, 0.010000f, "          Persistence Blue"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("OriginalHistory0", 2));
 		Samplers.push_back(ShaderSampler("AfterglowPassFeedback", 3));
 /*

@@ -435,11 +435,11 @@ public:
 		VertexLength = sizeof(RetroArchHandheldShadersColorVbaColorShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldShadersColorVbaColorShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldShadersColorVbaColorShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("darken_screen", -1, 0, 4, 0.000000f, 1.000000f, 1.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("darken_screen", -1, 0, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "Darken Screen"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

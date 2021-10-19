@@ -579,13 +579,13 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestAdvancedGaussian_horizontalShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestAdvancedGaussian_horizontalShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestAdvancedGaussian_horizontalShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SIZEH", -1, 52, 4, 1.000000f, 50.000000f, 6.000000f));
-		Params.push_back(ShaderParam("SIGMA_H", -1, 56, 4, 0.200000f, 15.000000f, 1.200000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("LinearizePassSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("SIZEH", -1, 52, 4, 1.000000f, 50.000000f, 6.000000f, 1.000000f, "          Horizontal Glow Radius"));
+		Params.push_back(ShaderParam("SIGMA_H", -1, 56, 4, 0.200000f, 15.000000f, 1.200000f, 0.100000f, "          Horizontal Glow Sigma"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("LinearizePassSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("LinearizePass", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

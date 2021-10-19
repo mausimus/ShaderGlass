@@ -487,14 +487,14 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtNesMiniShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtNesMiniShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtNesMiniShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SCANTHICK", -1, 60, 4, 2.000000f, 4.000000f, 2.000000f));
-		Params.push_back(ShaderParam("INTENSITY", -1, 56, 4, 0.000000f, 1.000000f, 0.150000f));
-		Params.push_back(ShaderParam("BRIGHTBOOST", -1, 52, 4, 0.000000f, 1.000000f, 0.150000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("SCANTHICK", -1, 60, 4, 2.000000f, 4.000000f, 2.000000f, 2.000000f, "Scanline Thickness"));
+		Params.push_back(ShaderParam("INTENSITY", -1, 56, 4, 0.000000f, 1.000000f, 0.150000f, 0.010000f, "Scanline Intensity"));
+		Params.push_back(ShaderParam("BRIGHTBOOST", -1, 52, 4, 0.000000f, 1.000000f, 0.150000f, 0.010000f, "Luminance Boost"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

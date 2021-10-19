@@ -3631,13 +3631,13 @@ public:
 		VertexLength = sizeof(RetroArchSharpenShadersAdaptiveSharpenPass2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchSharpenShadersAdaptiveSharpenPass2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchSharpenShadersAdaptiveSharpenPass2ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("CURVE_HEIGHT", -1, 52, 4, 0.300000f, 2.000000f, 1.000000f));
-		Params.push_back(ShaderParam("VIDEO_LEVEL_OUT", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("CURVE_HEIGHT", -1, 52, 4, 0.300000f, 2.000000f, 1.000000f, 0.100000f, "AS Curve Height"));
+		Params.push_back(ShaderParam("VIDEO_LEVEL_OUT", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "AS Video Lvl Out"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

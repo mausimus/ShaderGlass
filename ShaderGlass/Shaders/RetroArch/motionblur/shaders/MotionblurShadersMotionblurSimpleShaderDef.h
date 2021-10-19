@@ -606,10 +606,10 @@ public:
 		VertexLength = sizeof(RetroArchMotionblurShadersMotionblurSimpleShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMotionblurShadersMotionblurSimpleShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMotionblurShadersMotionblurSimpleShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("OriginalHistory7", 9));
 		Samplers.push_back(ShaderSampler("OriginalHistory6", 8));
 		Samplers.push_back(ShaderSampler("OriginalHistory5", 7));

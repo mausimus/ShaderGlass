@@ -827,16 +827,16 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestFastLinearizefShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestFastLinearizefShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestFastLinearizefShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("GAMMA_INPUT", -1, 52, 4, 1.000000f, 5.000000f, 2.400000f));
-		Params.push_back(ShaderParam("inter", -1, 56, 4, 0.000000f, 800.000000f, 400.000000f));
-		Params.push_back(ShaderParam("interm", -1, 60, 4, 0.000000f, 5.000000f, 1.000000f));
-		Params.push_back(ShaderParam("inters", -1, 64, 4, 0.000000f, 0.500000f, 0.000000f));
-		Params.push_back(ShaderParam("iscan", -1, 68, 4, 0.000000f, 1.000000f, 0.200000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("GAMMA_INPUT", -1, 52, 4, 1.000000f, 5.000000f, 2.400000f, 0.050000f, "Gamma Input"));
+		Params.push_back(ShaderParam("inter", -1, 56, 4, 0.000000f, 800.000000f, 400.000000f, 25.000000f, "          Interlace Trigger Resolution :"));
+		Params.push_back(ShaderParam("interm", -1, 60, 4, 0.000000f, 5.000000f, 1.000000f, 1.000000f, "          Interlace Mode: OFF, Normal 1-3, Interpolation 4-5"));
+		Params.push_back(ShaderParam("inters", -1, 64, 4, 0.000000f, 0.500000f, 0.000000f, 0.050000f, "          Interlacing Effect Smoothness"));
+		Params.push_back(ShaderParam("iscan", -1, 68, 4, 0.000000f, 1.000000f, 0.200000f, 0.050000f, "          Interlacing Scanline Effect"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;
