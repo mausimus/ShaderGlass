@@ -1779,14 +1779,14 @@ public:
 		VertexLength = sizeof(RetroArchAntiAliasingShadersReverseAaPost3xReverseAaPost3xPass1ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchAntiAliasingShadersReverseAaPost3xReverseAaPost3xPass1ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchAntiAliasingShadersReverseAaPost3xReverseAaPost3xPass1ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("RAA_SHR1", -1, 52, 4, 0.000000f, 10.000000f, 2.000000f));
-		Params.push_back(ShaderParam("RAA_SMT1", -1, 56, 4, 0.050000f, 10.000000f, 0.500000f));
-		Params.push_back(ShaderParam("RAA_DVT1", -1, 60, 4, 0.050000f, 10.000000f, 1.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("RAA_SHR1", -1, 52, 4, 0.000000f, 10.000000f, 2.000000f, 0.050000f, "rAA-3x 1 Sharpness"));
+		Params.push_back(ShaderParam("RAA_SMT1", -1, 56, 4, 0.050000f, 10.000000f, 0.500000f, 0.050000f, "rAA-3x 1 Smoothness"));
+		Params.push_back(ShaderParam("RAA_DVT1", -1, 60, 4, 0.050000f, 10.000000f, 1.000000f, 0.050000f, "rAA-3x 1 Deviation"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

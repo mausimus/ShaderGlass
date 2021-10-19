@@ -2284,16 +2284,16 @@ public:
 		VertexLength = sizeof(RetroArchAntiAliasingShadersSmaaSmaaPass0ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchAntiAliasingShadersSmaaSmaaPass0ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchAntiAliasingShadersSmaaSmaaPass0ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SMAA_EDT", -1, 52, 4, 0.000000f, 1.000000f, 1.000000f));
-		Params.push_back(ShaderParam("SMAA_THRESHOLD", -1, 56, 4, 0.010000f, 0.500000f, 0.050000f));
-		Params.push_back(ShaderParam("SMAA_MAX_SEARCH_STEPS", -1, 60, 4, 4.000000f, 112.000000f, 32.000000f));
-		Params.push_back(ShaderParam("SMAA_MAX_SEARCH_STEPS_DIAG", -1, 64, 4, 4.000000f, 20.000000f, 16.000000f));
-		Params.push_back(ShaderParam("SMAA_LOCAL_CONTRAST_ADAPTATION_FACTOR", -1, 68, 4, 1.000000f, 4.000000f, 2.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("SMAA_EDT", -1, 52, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "SMAA Edge Detection: Luma | Color"));
+		Params.push_back(ShaderParam("SMAA_THRESHOLD", -1, 56, 4, 0.010000f, 0.500000f, 0.050000f, 0.010000f, "SMAA Threshold"));
+		Params.push_back(ShaderParam("SMAA_MAX_SEARCH_STEPS", -1, 60, 4, 4.000000f, 112.000000f, 32.000000f, 1.000000f, "SMAA Max Search Steps"));
+		Params.push_back(ShaderParam("SMAA_MAX_SEARCH_STEPS_DIAG", -1, 64, 4, 4.000000f, 20.000000f, 16.000000f, 1.000000f, "SMAA Max Search Steps Diagonal"));
+		Params.push_back(ShaderParam("SMAA_LOCAL_CONTRAST_ADAPTATION_FACTOR", -1, 68, 4, 1.000000f, 4.000000f, 2.000000f, 0.100000f, "SMAA Local Contrast Adapt. Factor"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

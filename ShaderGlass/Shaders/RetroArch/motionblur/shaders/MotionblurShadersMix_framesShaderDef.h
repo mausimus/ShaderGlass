@@ -359,7 +359,7 @@ public:
 		VertexLength = sizeof(RetroArchMotionblurShadersMix_framesShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMotionblurShadersMix_framesShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMotionblurShadersMix_framesShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("OriginalHistory1", 3));
 /*

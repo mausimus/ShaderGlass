@@ -480,13 +480,13 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGlowTrailsGlowTrails0ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGlowTrailsGlowTrails0ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGlowTrailsGlowTrails0ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("mixfactor", -1, 52, 4, 0.000000f, 1.000000f, 0.500000f));
-		Params.push_back(ShaderParam("threshold", -1, 56, 4, 0.000000f, 1.000000f, 0.900000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("mixfactor", -1, 52, 4, 0.000000f, 1.000000f, 0.500000f, 0.010000f, "Motionblur Fadeout"));
+		Params.push_back(ShaderParam("threshold", -1, 56, 4, 0.000000f, 1.000000f, 0.900000f, 0.010000f, "Brightness Threshold"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("PassFeedback0", 3));
 /*

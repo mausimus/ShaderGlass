@@ -374,11 +374,11 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGlowLinearizeShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGlowLinearizeShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGlowLinearizeShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("INPUT_GAMMA", -1, 0, 4, 2.000000f, 2.600000f, 2.400000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("INPUT_GAMMA", -1, 0, 4, 2.000000f, 2.600000f, 2.400000f, 0.020000f, "Input Gamma"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

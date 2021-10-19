@@ -624,13 +624,13 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestAdvancedBloom_horizontal_ntscShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestAdvancedBloom_horizontal_ntscShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestAdvancedBloom_horizontal_ntscShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SIZEHB", -1, 52, 4, 1.000000f, 50.000000f, 6.000000f));
-		Params.push_back(ShaderParam("SIGMA_HB", -1, 56, 4, 0.200000f, 15.000000f, 1.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("LinearizePassSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("SIZEHB", -1, 52, 4, 1.000000f, 50.000000f, 6.000000f, 1.000000f, "          Horizontal Bloom/Halation/(Glow) Radius"));
+		Params.push_back(ShaderParam("SIGMA_HB", -1, 56, 4, 0.200000f, 15.000000f, 1.000000f, 0.100000f, "          Horizontal Bloom/Halation/(Glow) Sigma"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("LinearizePassSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("LinearizePass", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

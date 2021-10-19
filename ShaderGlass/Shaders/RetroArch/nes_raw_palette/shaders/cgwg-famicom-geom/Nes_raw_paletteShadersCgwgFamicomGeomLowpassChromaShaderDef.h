@@ -668,13 +668,13 @@ public:
 		VertexLength = sizeof(RetroArchNes_raw_paletteShadersCgwgFamicomGeomLowpassChromaShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchNes_raw_paletteShadersCgwgFamicomGeomLowpassChromaShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchNes_raw_paletteShadersCgwgFamicomGeomLowpassChromaShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("postfilter_taps", -1, 52, 4, 1.000000f, 30.000000f, 15.000000f));
-		Params.push_back(ShaderParam("postfilter_chromacutoff", -1, 56, 4, 0.100000f, 1.000000f, 0.300000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("postfilter_taps", -1, 52, 4, 1.000000f, 30.000000f, 15.000000f, 1.000000f, "Post-filter Taps"));
+		Params.push_back(ShaderParam("postfilter_chromacutoff", -1, 56, 4, 0.100000f, 1.000000f, 0.300000f, 0.050000f, "Post-filter Chroma Cutoff"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

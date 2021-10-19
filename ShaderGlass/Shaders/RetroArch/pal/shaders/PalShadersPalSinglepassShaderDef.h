@@ -2508,14 +2508,14 @@ public:
 		VertexLength = sizeof(RetroArchPalShadersPalSinglepassShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchPalShadersPalSinglepassShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchPalShadersPalSinglepassShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("FIR_GAIN", -1, 0, 4, 0.000000f, 5.000000f, 1.500000f));
-		Params.push_back(ShaderParam("FIR_INVGAIN", -1, 4, 4, 0.000000f, 5.000000f, 1.100000f));
-		Params.push_back(ShaderParam("PHASE_NOISE", -1, 8, 4, 0.000000f, 5.000000f, 1.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("FIR_GAIN", -1, 0, 4, 0.000000f, 5.000000f, 1.500000f, 0.100000f, "FIR lowpass gain"));
+		Params.push_back(ShaderParam("FIR_INVGAIN", -1, 4, 4, 0.000000f, 5.000000f, 1.100000f, 0.100000f, "Inverse gain for luma recovery"));
+		Params.push_back(ShaderParam("PHASE_NOISE", -1, 8, 4, 0.000000f, 5.000000f, 1.000000f, 0.100000f, "Phase noise"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

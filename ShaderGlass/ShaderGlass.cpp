@@ -21,18 +21,18 @@ ShaderGlass::~ShaderGlass()
     m_context->Flush();
 }
 
-void ShaderGlass::Initialize(HWND                         outputWindow,
-                             HWND                         captureWindow,
-                             HMONITOR                     captureMonitor,
-                             bool                         clone,
-                             winrt::com_ptr<ID3D11Device> device,
+void ShaderGlass::Initialize(HWND                                outputWindow,
+                             HWND                                captureWindow,
+                             HMONITOR                            captureMonitor,
+                             bool                                clone,
+                             winrt::com_ptr<ID3D11Device>        device,
                              winrt::com_ptr<ID3D11DeviceContext> context)
 {
     m_outputWindow  = outputWindow;
     m_captureWindow = captureWindow;
     m_clone         = clone;
     m_device        = device;
-    m_context       = context;    
+    m_context       = context;
 
     if(captureMonitor && !clone)
     {
@@ -215,7 +215,8 @@ std::vector<std::tuple<int, ShaderParam*>> ShaderGlass::Params()
     for(auto& s : m_shaderPreset->m_shaders)
     {
         for(auto& p : s.Params())
-            params.push_back(std::make_tuple(i, p));
+            if(p->size == 4 && p->name != "FrameCount")
+                params.push_back(std::make_tuple(i, p));
 
         i++;
     }

@@ -500,15 +500,15 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersPhosphorlutScanlinesInterlaceLinearizeShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersPhosphorlutScanlinesInterlaceLinearizeShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersPhosphorlutScanlinesInterlaceLinearizeShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("input_gamma", -1, 64, 4, 0.000000f, 5.000000f, 2.500000f));
-		Params.push_back(ShaderParam("percent", -1, 52, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("enable_480i", -1, 56, 4, 0.000000f, 1.000000f, 1.000000f));
-		Params.push_back(ShaderParam("top_field_first", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("input_gamma", -1, 64, 4, 0.000000f, 5.000000f, 2.500000f, 0.100000f, "CRT Gamma"));
+		Params.push_back(ShaderParam("percent", -1, 52, 4, 0.000000f, 1.000000f, 0.000000f, 0.050000f, "Interlacing Scanline Bright %"));
+		Params.push_back(ShaderParam("enable_480i", -1, 56, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Enable 480i Mode"));
+		Params.push_back(ShaderParam("top_field_first", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Top Field First Enable"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

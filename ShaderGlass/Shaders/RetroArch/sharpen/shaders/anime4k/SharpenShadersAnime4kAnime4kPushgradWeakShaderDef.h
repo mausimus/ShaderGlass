@@ -1086,13 +1086,13 @@ public:
 		VertexLength = sizeof(RetroArchSharpenShadersAnime4kAnime4kPushgradWeakShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchSharpenShadersAnime4kAnime4kPushgradWeakShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchSharpenShadersAnime4kAnime4kPushgradWeakShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("STRENGTH_GRAD", -1, 56, 4, 0.000000f, 1.000000f, 0.300000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("STRENGTH_PUSH", -1, 52, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("STRENGTH_GRAD", -1, 56, 4, 0.000000f, 1.000000f, 0.300000f, 0.100000f, "Gradient strength"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("STRENGTH_PUSH", -1, 52, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

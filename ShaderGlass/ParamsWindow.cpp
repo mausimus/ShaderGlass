@@ -151,7 +151,7 @@ void ParamsWindow::RebuildControls()
     for(const auto& pt : m_captureManager.Params())
     {
         const auto& p = std::get<1>(pt);
-        if(p->size == 4 && p->name != "FrameCount" && p->maxValue != p->minValue)
+        if(p->maxValue != p->minValue)
         {
             int numSteps = 10;            
             if (p->stepValue != 0)
@@ -350,7 +350,7 @@ void ParamsWindow::AddTrackbar(UINT         iMin, // minimum value in trackbar r
     auto paramNameWnd = CreateWindowEx(0,
                                        L"STATIC",
                                        convertCharArrayToLPCWSTR(name),
-                                       SS_RIGHT | WS_CHILD | WS_VISIBLE,
+                                       SS_RIGHT | SS_NOTIFY | WS_CHILD | WS_VISIBLE,
                                        0,
                                        0,
                                        staticWidth,
@@ -361,6 +361,36 @@ void ParamsWindow::AddTrackbar(UINT         iMin, // minimum value in trackbar r
                                        NULL);
     SendMessage(hwndTrack, TBM_SETBUDDY, (WPARAM)TRUE, (LPARAM)paramNameWnd);
     SendMessage(paramNameWnd, WM_SETFONT, (LPARAM)m_font, true);
+
+    // tooltip
+    if (p->description.size())
+    {
+        // Get the window of the tool.
+        //HWND hwndTool = GetDlgItem(hDlg, toolID);
+
+        // Create the tooltip. g_hInst is the global instance handle.
+        HWND hwndTip = CreateWindowEx(NULL,
+                                      TOOLTIPS_CLASS,
+                                      NULL,
+                                      WS_POPUP | TTS_ALWAYSTIP | TTS_BALLOON,
+                                      CW_USEDEFAULT,
+                                      CW_USEDEFAULT,
+                                      CW_USEDEFAULT,
+                                      CW_USEDEFAULT,
+                                      m_mainWindow,
+                                      NULL,
+                                      m_instance,
+                                      NULL);
+
+        // Associate the tooltip with the tool.
+        TOOLINFO toolInfo = {0};
+        toolInfo.cbSize   = sizeof(toolInfo);
+        toolInfo.hwnd     = m_mainWindow;
+        toolInfo.uFlags   = TTF_IDISHWND | TTF_SUBCLASS;
+        toolInfo.uId      = (UINT_PTR)paramNameWnd;
+        toolInfo.lpszText = convertCharArrayToLPCWSTR(p->description.c_str());
+        SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+    }
 
     float value = p->minValue + (p->maxValue - p->minValue) * iStart / iSteps;
 

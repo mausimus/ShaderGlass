@@ -2773,9 +2773,9 @@ public:
 		VertexLength = sizeof(RetroArchScalefxShadersScalefxPass3ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchScalefxShadersScalefxPass3ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchScalefxShadersScalefxPass3ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SFX_SCN", -1, 16, 4, 0.000000f, 1.000000f, 1.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("SFX_SCN", -1, 16, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "ScaleFX Filter Corners"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 1));
 /*
 VertexSource = %*VERTEX_SOURCE*%;
