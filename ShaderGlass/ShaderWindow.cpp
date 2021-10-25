@@ -26,12 +26,13 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
             return;
         }
 
-        std::string                shaderCategory;
-        std::string                shaderName;
-        std::optional<std::string> windowName;
-        std::optional<std::string> desktopName;
-        std::optional<bool>        transparent;
-        std::optional<bool>        clone;
+        std::string                                       shaderCategory;
+        std::string                                       shaderName;
+        std::optional<std::string>                        windowName;
+        std::optional<std::string>                        desktopName;
+        std::optional<bool>                               transparent;
+        std::optional<bool>                               clone;
+        std::vector<std::tuple<int, std::string, double>> params;
         while(!infile.eof())
         {
             std::string key;
@@ -123,6 +124,24 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
                 else
                     CheckMenuItem(m_inputMenu, IDM_INPUT_CAPTURECURSOR, MF_UNCHECKED | MF_BYCOMMAND);
             }
+            else if (key.starts_with("Param-") && key.size() >= 9)
+            {
+                try
+                {
+                    size_t start = 6;
+                    size_t split = key.find('-', start);
+                    if(split == key.npos || split == key.size() - 1 || split == start)
+                        continue;
+
+                    auto passNo = std::stoi(key.substr(start, split - start));
+                    auto name = key.substr(split + 1);
+                    params.push_back(std::make_tuple(passNo, name, std::stod(value)));
+                }
+                catch(std::exception& e)
+                {
+                    // ignored
+                }
+            }
         }
         infile.close();
 
@@ -196,6 +215,12 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
             }
         }
 
+        // load any parameters
+        if(params.size())
+        {
+            m_captureManager.SetParams(params);
+        }
+
         if(paused)
             SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
     }
@@ -259,13 +284,13 @@ void ShaderWindow::SaveProfile(const std::string& fileName)
         std::wstring wname(info.szDevice);
         outfile << "CaptureDesktop " << std::quoted(std::string(wname.begin(), wname.end())) << std::endl;
     }
-    for (const auto& pt : m_captureManager.Params())
+    for(const auto& pt : m_captureManager.Params())
     {
         const auto& s = std::get<0>(pt);
         const auto& p = std::get<1>(pt);
-        if (p->currentValue != p->defaultValue)
+        if(p->currentValue != p->defaultValue)
         {
-            outfile << "Param_" << s << "_" << p->name << " " << std::quoted(std::to_string(p->currentValue)) << std::endl;
+            outfile << "Param-" << s << "-" << p->name << " " << std::quoted(std::to_string(p->currentValue)) << std::endl;
         }
     }
     outfile.close();
@@ -1254,7 +1279,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow)
     }
 
     m_paramsWindow = paramsWindow;
-        
+
     if(autoStart)
     {
         SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);

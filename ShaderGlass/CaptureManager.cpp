@@ -65,12 +65,19 @@ void CaptureManager::StartSession()
     UpdateOutputFlip();
     UpdateShaderPreset();
     UpdateFrameSkip();
+
     m_session = make_unique<CaptureSession>(
         device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass);
     UpdateCursor();
 }
 
-void CaptureManager::UpdateCursor() {
+void CaptureManager::SetParams(const std::vector<std::tuple<int, std::string, double>>& params)
+{
+    m_queuedParams = params;
+}
+
+void CaptureManager::UpdateCursor()
+{
     if(m_session)
         m_session->UpdateCursor(m_options.captureCursor);
 }
@@ -142,7 +149,8 @@ void CaptureManager::UpdateShaderPreset()
 {
     if(m_shaderGlass)
     {
-        m_shaderGlass->SetShaderPreset(m_presetList.at(m_options.presetNo).get());
+        m_shaderGlass->SetShaderPreset(m_presetList.at(m_options.presetNo).get(), m_queuedParams);
+        m_queuedParams.clear();
     }
 }
 
@@ -173,7 +181,7 @@ void CaptureManager::SaveOutput(LPWSTR fileName)
 
 void CaptureManager::UpdateParams()
 {
-    if (m_shaderGlass)
+    if(m_shaderGlass)
     {
         m_shaderGlass->UpdateParams();
     }

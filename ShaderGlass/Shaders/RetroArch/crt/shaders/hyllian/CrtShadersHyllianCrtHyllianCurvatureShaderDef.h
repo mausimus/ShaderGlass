@@ -4,6 +4,7 @@ https://github.com/libretro/slang-shaders/blob/master/crt/shaders/hyllian/crt-hy
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
+//layout(location = 1) in vec2 FragCoord;
 
 Hyllian's CRT Shader
 
@@ -324,15 +325,15 @@ static const BYTE sVertexByteCode[] =
 
 static const BYTE sFragmentByteCode[] =
 {
-68,88,66,67,155,15,
-229,167,53,172,64,116,
-87,235,183,57,182,20,
-29,100,1,0,0,0,
-144,87,0,0,5,0,
+68,88,66,67,83,24,
+205,195,63,218,239,112,
+170,222,76,2,176,187,
+29,160,1,0,0,0,
+120,87,0,0,5,0,
 0,0,52,0,0,0,
-28,7,0,0,104,7,
-0,0,156,7,0,0,
-244,86,0,0,82,68,
+28,7,0,0,80,7,
+0,0,132,7,0,0,
+220,86,0,0,82,68,
 69,70,224,6,0,0,
 2,0,0,0,220,0,
 0,0,4,0,0,0,
@@ -628,16 +629,12 @@ static const BYTE sFragmentByteCode[] =
 112,105,108,101,114,32,
 49,48,46,49,0,171,
 171,171,73,83,71,78,
-68,0,0,0,2,0,
+44,0,0,0,1,0,
 0,0,8,0,0,0,
-56,0,0,0,0,0,
+32,0,0,0,0,0,
 0,0,0,0,0,0,
 3,0,0,0,0,0,
 0,0,3,3,0,0,
-56,0,0,0,1,0,
-0,0,0,0,0,0,
-3,0,0,0,0,0,
-0,0,12,0,0,0,
 84,69,88,67,79,79,
 82,68,0,171,171,171,
 79,83,71,78,44,0,

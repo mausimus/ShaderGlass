@@ -167,9 +167,10 @@ void ShaderGlass::SetOutputFlip(bool h, bool v)
     m_outputRescaled = true;
 }
 
-void ShaderGlass::SetShaderPreset(PresetDef* p)
+void ShaderGlass::SetShaderPreset(PresetDef* p, const std::vector<std::tuple<int, std::string, double>>& params)
 {
     m_newShaderPreset = std::make_unique<Preset>(*p);
+    m_newParams       = params;
 }
 
 void ShaderGlass::SetFrameSkip(int s)
@@ -363,6 +364,23 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         m_shaderPreset.swap(m_newShaderPreset);
         m_newShaderPreset.reset();
         RebuildShaders();
+        if (m_newParams.size())
+        {
+            const auto& shaderParams = Params();
+            for(const auto& ip : m_newParams)
+            {
+                for(const auto& sp : shaderParams)
+                {
+                    if(get<0>(ip) == get<0>(sp) && get<1>(ip) == get<1>(sp)->name)
+                    {
+                        get<1>(sp)->currentValue = get<2>(ip);
+                        break;
+                    }
+                }
+            }
+            m_newParams.clear();
+            UpdateParams();
+        }
         inputRescaled = true;
         outputResized = true;
         rebuildPasses = true;
