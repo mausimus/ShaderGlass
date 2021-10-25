@@ -11,9 +11,10 @@ const int buttonHeight = 25;
 
 const int buttonTop = 20;
 const int paramsTop = 75;
+const int paramHeight = 40;
 
-const int windowWidth  = 500;
-const int windowHeight = 500;
+const int windowWidth  = 520;
+const int windowMaxHeight = 500;
 
 const int trackWidth  = 200;
 const int trackHeight = 30;
@@ -70,7 +71,7 @@ BOOL ParamsWindow::InitInstance(HINSTANCE hInstance, int nCmdShow)
     rect.left   = 0;
     rect.top    = 0;
     rect.right  = windowWidth;
-    rect.bottom = windowHeight;
+    rect.bottom = windowMaxHeight;
     AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, true, WS_EX_WINDOWEDGE);
 
     HWND hWnd = CreateWindowW(m_windowClass,
@@ -189,6 +190,27 @@ void ParamsWindow::RebuildControls()
 
     SetWindowPos(
         m_closeButtonWnd, m_mainWindow, (2 * windowWidth / 3) - (buttonWidth / 2), buttonTop /* yPos*/, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+
+    ScrollWindow(m_mainWindow, 0, 0, NULL, NULL);
+
+    /*
+    SCROLLINFO si;
+    si.cbSize = sizeof(si);
+    si.fMask  = SIF_ALL;
+    GetScrollInfo(m_mainWindow, SB_VERT, &si);
+    si.nMin = 0;
+    si.nMax = 
+    SetScrollInfo(m_mainWindow, SB_VERT, &si);
+    */
+
+    /* RECT rect;
+    rect.left = 0;
+    rect.top  = 0;
+    rect.right = windowWidth;
+    rect.bottom = (m_trackbars.size() + 1) * paramHeight + paramsTop;
+    AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+
+    SetWindowPos(m_mainWindow, NULL, 0, 0, windowWidth, rect.bottom < windowMaxHeight ? rect.bottom : windowMaxHeight, SWP_NOMOVE | SWP_NOZORDER);*/
 }
 
 LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -207,6 +229,7 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         ShowWindow(hWnd, SW_HIDE);
         return 0;
     }
+    case WM_MOUSEWHEEL:
     case WM_VSCROLL: {
         SCROLLINFO si;
         si.cbSize = sizeof(si);
@@ -215,7 +238,11 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
 
         // Save the position for comparison later on.
         int yPos = si.nPos;
-        switch(LOWORD(wParam))
+        if (message == WM_MOUSEWHEEL)
+        {
+            si.nPos -= paramHeight * GET_WHEEL_DELTA_WPARAM(wParam) / 120 / 4;
+        }
+        else switch(LOWORD(wParam))
         {
 
         // User clicked the HOME keyboard key.
@@ -326,7 +353,7 @@ void ParamsWindow::AddTrackbar(UINT         iMin, // minimum value in trackbar r
                                     L"Trackbar Control", // title (caption)
                                     WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS, // style
                                     staticWidth,
-                                    m_trackbars.size() * 50 + paramsTop, // position
+                                    m_trackbars.size() * paramHeight + paramsTop, // position
                                     trackWidth,
                                     trackHeight, // size
                                     m_mainWindow, // parent window
