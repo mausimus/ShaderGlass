@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ShaderGlass.h"
 #include "ShaderList.h"
+#include "resource.h"
 
 static HRESULT hr;
 
@@ -364,7 +365,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         m_shaderPreset.swap(m_newShaderPreset);
         m_newShaderPreset.reset();
         RebuildShaders();
-        if (m_newParams.size())
+        if(m_newParams.size())
         {
             const auto& shaderParams = Params();
             for(const auto& ip : m_newParams)
@@ -381,6 +382,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             m_newParams.clear();
             UpdateParams();
         }
+        PostMessage(m_outputWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
         inputRescaled = true;
         outputResized = true;
         rebuildPasses = true;
