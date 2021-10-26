@@ -3,25 +3,21 @@
 #include "resource.h"
 #include "ParamsWindow.h"
 
-const int staticWidth  = 200;
-const int staticHeight = 20;
-
-const int buttonWidth  = 100;
-const int buttonHeight = 25;
-
-const int buttonTop = 20;
-const int paramsTop = 75;
-const int paramHeight = 40;
-
-const int windowWidth  = 520;
-const int windowMaxHeight = 500;
-
-const int trackWidth  = 200;
-const int trackHeight = 30;
+constexpr int STATIC_WIDTH  = 230;
+constexpr int STATIC_HEIGHT = 20;
+constexpr int BUTTON_WIDTH  = 100;
+constexpr int BUTTON_HEIGHT = 25;
+constexpr int BUTTON_TOP    = 20;
+constexpr int PARAMS_TOP    = 75;
+constexpr int PARAM_HEIGHT  = 40;
+constexpr int WINDOW_WIDTH  = 600;
+constexpr int WINDOW_HEIGHT = 600;
+constexpr int TRACK_WIDTH   = 200;
+constexpr int TRACK_HEIGHT  = 30;
 
 ParamsWindow::ParamsWindow(CaptureManager& captureManager) :
     m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass(), m_resetButtonWnd(0),
-    m_closeButtonWnd(0), m_font(0)
+    m_closeButtonWnd(0), m_font(0), m_dpiScale(1.0f)
 { }
 
 LRESULT CALLBACK ParamsWindow::WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -53,12 +49,9 @@ ATOM ParamsWindow::MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SHADERGLASS));
     wcex.hCursor       = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)GetSysColorBrush(COLOR_MENU);
-    //(HBRUSH) GetStockObject(GRAY_BRUSH);
-    //CreateSolidBrush(RGB(200, 200, 200));
     wcex.lpszMenuName  = 0;
     wcex.lpszClassName = m_windowClass;
     wcex.hIconSm       = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-    //wcex.hCursor = NULL;
 
     return RegisterClassExW(&wcex);
 }
@@ -67,11 +60,13 @@ BOOL ParamsWindow::InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     m_instance = hInstance;
 
+    m_dpiScale = GetDpiForSystem() / 96.0f;
+
     RECT rect;
     rect.left   = 0;
     rect.top    = 0;
-    rect.right  = windowWidth;
-    rect.bottom = windowMaxHeight;
+    rect.right  = WINDOW_WIDTH * m_dpiScale;
+    rect.bottom = WINDOW_HEIGHT * m_dpiScale;
     AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, true, WS_EX_WINDOWEDGE);
 
     HWND hWnd = CreateWindowW(m_windowClass,
@@ -95,40 +90,33 @@ BOOL ParamsWindow::InitInstance(HINSTANCE hInstance, int nCmdShow)
     metrics.cbSize           = sizeof(metrics);
     SystemParametersInfo(SPI_GETNONCLIENTMETRICS, metrics.cbSize, &metrics, 0);
 
-    m_font = CreateFontIndirect(&metrics.lfCaptionFont);
-
-    // When you're done with the font, don't forget to call
-    //    DeleteObject(guiFont);
-
+    m_font       = CreateFontIndirect(&metrics.lfCaptionFont);
     m_mainWindow = hWnd;
-    /*
-    AddTrackbar(0, 100, 20, 10);
-    AddTrackbar(1000, 2000, 1200, 100);
-    */
-    m_resetButtonWnd = CreateWindow(L"BUTTON", // Predefined class; Unicode assumed
-                                    L"Reset", // Button text
-                                    WS_TABSTOP | WS_VISIBLE | WS_CHILD, // Styles
-                                    (windowWidth / 3) - (buttonWidth / 2), // x position
-                                    buttonTop, //m_trackbars.size() * 50 + 10, // y position
-                                    buttonWidth, // Button width
-                                    buttonHeight, // Button height
-                                    m_mainWindow, // Parent window
-                                    NULL, // No menu.
+
+    m_resetButtonWnd = CreateWindow(L"BUTTON",
+                                    L"Reset",
+                                    WS_TABSTOP | WS_VISIBLE | WS_CHILD,
+                                    m_dpiScale * ((WINDOW_WIDTH / 3) - (BUTTON_WIDTH / 2)),
+                                    m_dpiScale * BUTTON_TOP,
+                                    m_dpiScale * BUTTON_WIDTH,
+                                    m_dpiScale * BUTTON_HEIGHT,
+                                    m_mainWindow,
+                                    NULL,
                                     (HINSTANCE)GetWindowLongPtr(m_mainWindow, GWLP_HINSTANCE),
-                                    NULL); // Pointer not needed.
+                                    NULL);
     SendMessage(m_resetButtonWnd, WM_SETFONT, (LPARAM)m_font, true);
 
-    m_closeButtonWnd = CreateWindow(L"BUTTON", // Predefined class; Unicode assumed
-                                    L"Close", // Button text
-                                    WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, // Styles
-                                    (2 * windowWidth / 3) - (buttonWidth / 2), // x position
-                                    buttonTop, //m_trackbars.size() * 50 + 10, // y position
-                                    buttonWidth, // Button width
-                                    buttonHeight, // Button height
-                                    m_mainWindow, // Parent window
-                                    NULL, // No menu.
+    m_closeButtonWnd = CreateWindow(L"BUTTON",
+                                    L"Close",
+                                    WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+                                    m_dpiScale * ((2 * WINDOW_WIDTH / 3) - (BUTTON_WIDTH / 2)),
+                                    m_dpiScale * BUTTON_TOP,
+                                    m_dpiScale * BUTTON_WIDTH,
+                                    m_dpiScale * BUTTON_HEIGHT,
+                                    m_mainWindow,
+                                    NULL,
                                     (HINSTANCE)GetWindowLongPtr(m_mainWindow, GWLP_HINSTANCE),
-                                    NULL); // Pointer not needed.
+                                    NULL);
     SendMessage(m_closeButtonWnd, WM_SETFONT, (LPARAM)m_font, true);
 
     ShowWindow(hWnd, nCmdShow);
@@ -137,6 +125,40 @@ BOOL ParamsWindow::InitInstance(HINSTANCE hInstance, int nCmdShow)
     SetWindowPos(m_mainWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
     return TRUE;
+}
+
+void ParamsWindow::ResizeScrollBar()
+{
+    RECT rect;
+    GetClientRect(m_mainWindow, &rect);
+
+    SCROLLINFO si;
+    si.cbSize = sizeof(si);
+    si.fMask  = SIF_ALL;
+    GetScrollInfo(m_mainWindow, SB_VERT, &si);
+
+    // calculate
+    auto actualSize   = rect.bottom - rect.top;
+    auto requiredSize = m_dpiScale * ((m_trackbars.size() + 0) * PARAM_HEIGHT + PARAMS_TOP);
+
+    if(requiredSize < actualSize)
+    {
+        ScrollWindow(m_mainWindow, 0, 5 * si.nPos, NULL, NULL);
+        si.nMin = 0;
+        si.nMax = 0;
+        si.nPos = 0;
+        SetScrollInfo(m_mainWindow, SB_VERT, &si, true);
+        EnableScrollBar(m_mainWindow, SB_VERT, ESB_DISABLE_BOTH);
+    }
+    else
+    {
+        EnableScrollBar(m_mainWindow, SB_VERT, ESB_ENABLE_BOTH);
+        ScrollWindow(m_mainWindow, 0, 5 * si.nPos, NULL, NULL);
+        si.nMin = 0;
+        si.nMax = (requiredSize - actualSize) / 5;
+        si.nPos = 0;
+        SetScrollInfo(m_mainWindow, SB_VERT, &si, true);
+    }
 }
 
 void ParamsWindow::RebuildControls()
@@ -154,63 +176,42 @@ void ParamsWindow::RebuildControls()
         const auto& p = std::get<1>(pt);
         if(p->maxValue != p->minValue)
         {
-            int numSteps = 10;            
-            if (p->stepValue != 0)
+            int numSteps = 10;
+            if(p->stepValue != 0)
             {
                 numSteps = (int)roundf((p->maxValue - p->minValue) / p->stepValue);
-            }            
+            }
             int startValue = (int)roundf(numSteps * (p->currentValue - p->minValue) / (p->maxValue - p->minValue));
-            AddTrackbar(0,
-                        numSteps,
-                        startValue,
-                        numSteps,
-                        p->name.c_str(),
-                        p);
-            /* AddTrackbar(p->minValue * 100,
-                        p->maxValue * 100,
-                        p->currentValue * 100,
-                        p->stepValue != 0 ? p->stepValue * 100 : 10,
-                        p->name.c_str(),
-                        p);*/
+            AddTrackbar(0, numSteps, startValue, numSteps, p->name.c_str(), p);
         }
     }
 
-    //int yPos = m_trackbars.size() * 50 + 10;
     if(m_trackbars.size())
         SetWindowPos(m_resetButtonWnd,
                      m_mainWindow,
-                     (windowWidth / 3) - (buttonWidth / 2),
-                     buttonTop /* yPos*/,
+                     m_dpiScale * ((WINDOW_WIDTH / 3) - (BUTTON_WIDTH / 2)),
+                     m_dpiScale * BUTTON_TOP,
                      0,
                      0,
                      SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
     else
-        SetWindowPos(
-            m_resetButtonWnd, m_mainWindow, (windowWidth / 3) - (buttonWidth / 2), buttonTop /* yPos*/, 0, 0, SWP_NOSIZE | SWP_HIDEWINDOW);
+        SetWindowPos(m_resetButtonWnd,
+                     m_mainWindow,
+                     m_dpiScale * ((WINDOW_WIDTH / 3) - (BUTTON_WIDTH / 2)),
+                     m_dpiScale * BUTTON_TOP,
+                     0,
+                     0,
+                     SWP_NOSIZE | SWP_HIDEWINDOW);
 
-    SetWindowPos(
-        m_closeButtonWnd, m_mainWindow, (2 * windowWidth / 3) - (buttonWidth / 2), buttonTop /* yPos*/, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    SetWindowPos(m_closeButtonWnd,
+                 m_mainWindow,
+                 m_dpiScale * ((2 * WINDOW_WIDTH / 3) - (BUTTON_WIDTH / 2)),
+                 m_dpiScale * BUTTON_TOP,
+                 0,
+                 0,
+                 SWP_NOSIZE | SWP_NOZORDER);
 
-    ScrollWindow(m_mainWindow, 0, 0, NULL, NULL);
-
-    /*
-    SCROLLINFO si;
-    si.cbSize = sizeof(si);
-    si.fMask  = SIF_ALL;
-    GetScrollInfo(m_mainWindow, SB_VERT, &si);
-    si.nMin = 0;
-    si.nMax = 
-    SetScrollInfo(m_mainWindow, SB_VERT, &si);
-    */
-
-    /* RECT rect;
-    rect.left = 0;
-    rect.top  = 0;
-    rect.right = windowWidth;
-    rect.bottom = (m_trackbars.size() + 1) * paramHeight + paramsTop;
-    AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
-
-    SetWindowPos(m_mainWindow, NULL, 0, 0, windowWidth, rect.bottom < windowMaxHeight ? rect.bottom : windowMaxHeight, SWP_NOMOVE | SWP_NOZORDER);*/
+    ResizeScrollBar();
 }
 
 LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -229,6 +230,10 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         ShowWindow(hWnd, SW_HIDE);
         return 0;
     }
+    case WM_SIZE: {
+        ResizeScrollBar();
+        break;
+    }
     case WM_MOUSEWHEEL:
     case WM_VSCROLL: {
         SCROLLINFO si;
@@ -236,64 +241,46 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         si.fMask  = SIF_ALL;
         GetScrollInfo(hWnd, SB_VERT, &si);
 
-        // Save the position for comparison later on.
         int yPos = si.nPos;
-        if (message == WM_MOUSEWHEEL)
+        if(message == WM_MOUSEWHEEL)
         {
-            si.nPos -= paramHeight * GET_WHEEL_DELTA_WPARAM(wParam) / 120 / 4;
+            si.nPos -= PARAM_HEIGHT * GET_WHEEL_DELTA_WPARAM(wParam) / 120 / 4;
         }
-        else switch(LOWORD(wParam))
-        {
+        else
+            switch(LOWORD(wParam))
+            {
+            case SB_TOP:
+                si.nPos = si.nMin;
+                break;
+            case SB_BOTTOM:
+                si.nPos = si.nMax;
+                break;
+            case SB_LINEUP:
+                si.nPos -= 1;
+                break;
+            case SB_LINEDOWN:
+                si.nPos += 1;
+                break;
+            case SB_PAGEUP:
+                si.nPos -= si.nPage;
+                break;
+            case SB_PAGEDOWN:
+                si.nPos += si.nPage;
+                break;
+            case SB_THUMBTRACK:
+                si.nPos = si.nTrackPos;
+                break;
+            default:
+                break;
+            }
 
-        // User clicked the HOME keyboard key.
-        case SB_TOP:
-            si.nPos = si.nMin;
-            break;
-
-        // User clicked the END keyboard key.
-        case SB_BOTTOM:
-            si.nPos = si.nMax;
-            break;
-
-        // User clicked the top arrow.
-        case SB_LINEUP:
-            si.nPos -= 1;
-            break;
-
-        // User clicked the bottom arrow.
-        case SB_LINEDOWN:
-            si.nPos += 1;
-            break;
-
-        // User clicked the scroll bar shaft above the scroll box.
-        case SB_PAGEUP:
-            si.nPos -= si.nPage;
-            break;
-
-        // User clicked the scroll bar shaft below the scroll box.
-        case SB_PAGEDOWN:
-            si.nPos += si.nPage;
-            break;
-
-        // User dragged the scroll box.
-        case SB_THUMBTRACK:
-            si.nPos = si.nTrackPos;
-            break;
-
-        default:
-            break;
-        }
-
-        // Set the position and then retrieve it.  Due to adjustments
-        // by Windows it may not be the same as the value set.
         si.fMask = SIF_POS;
         SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
         GetScrollInfo(hWnd, SB_VERT, &si);
 
-        // If the position has changed, scroll window and update it.
         if(si.nPos != yPos)
         {
-            ScrollWindow(hWnd, 0, 5 /* yChar*/ * (yPos - si.nPos), NULL, NULL);
+            ScrollWindow(hWnd, 0, 5 * (yPos - si.nPos), NULL, NULL);
             UpdateWindow(hWnd);
         }
 
@@ -305,7 +292,7 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         {
             id       = GetDlgCtrlID((HWND)lParam);
             auto pos = SendMessage(m_trackbars[id].trackBarWnd, TBM_GETPOS, 0, 0);
-            auto  p     = m_trackbars[id].param;
+            auto p   = m_trackbars[id].param;
 
             float value = p->minValue + (p->maxValue - p->minValue) * pos / m_trackbars[id].steps;
 
@@ -334,6 +321,9 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 m_captureManager.ResetParams();
             }
         }
+        case IDM_UPDATE_PARAMS: {
+            RebuildControls();
+        }
             return 0;
         }
     }
@@ -341,31 +331,25 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void ParamsWindow::AddTrackbar(UINT         iMin, // minimum value in trackbar range
-                               UINT         iMax, // maximum value in trackbar range
-                               UINT         iStart,
-                               UINT         iSteps,
-                               const char*  name,
-                               ShaderParam* p) // maximum value in trackbar selection
+void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, const char* name, ShaderParam* p)
 {
-    auto hwndTrack = CreateWindowEx(0, // no extended styles
-                                    TRACKBAR_CLASS, // class name
-                                    L"Trackbar Control", // title (caption)
-                                    WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS, // style
-                                    staticWidth,
-                                    m_trackbars.size() * paramHeight + paramsTop, // position
-                                    trackWidth,
-                                    trackHeight, // size
-                                    m_mainWindow, // parent window
-                                    (HMENU)m_trackbars.size() /*ID_TRACKBAR*/, // control identifier
-                                    m_instance, // instance
-                                    NULL // no WM_CREATE parameter
-    );
+    auto hwndTrack = CreateWindowEx(0,
+                                    TRACKBAR_CLASS,
+                                    L"Trackbar Control",
+                                    WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
+                                    m_dpiScale * STATIC_WIDTH,
+                                    m_dpiScale * (m_trackbars.size() * PARAM_HEIGHT + PARAMS_TOP),
+                                    m_dpiScale * TRACK_WIDTH,
+                                    m_dpiScale * TRACK_HEIGHT,
+                                    m_mainWindow,
+                                    (HMENU)m_trackbars.size(),
+                                    m_instance,
+                                    NULL);
 
     SendMessage(hwndTrack,
                 TBM_SETRANGE,
                 (WPARAM)TRUE, // redraw flag
-                (LPARAM)MAKELONG(iMin, iMax)); // min. & max. positions
+                (LPARAM)MAKELONG(iMin, iMax));
 
     SendMessage(hwndTrack,
                 TBM_SETPOS,
@@ -380,8 +364,8 @@ void ParamsWindow::AddTrackbar(UINT         iMin, // minimum value in trackbar r
                                        SS_RIGHT | SS_NOTIFY | WS_CHILD | WS_VISIBLE,
                                        0,
                                        0,
-                                       staticWidth,
-                                       staticHeight,
+                                       m_dpiScale * STATIC_WIDTH,
+                                       m_dpiScale * STATIC_HEIGHT,
                                        m_mainWindow,
                                        NULL,
                                        m_instance,
@@ -390,12 +374,8 @@ void ParamsWindow::AddTrackbar(UINT         iMin, // minimum value in trackbar r
     SendMessage(paramNameWnd, WM_SETFONT, (LPARAM)m_font, true);
 
     // tooltip
-    if (p->description.size())
+    if(p->description.size())
     {
-        // Get the window of the tool.
-        //HWND hwndTool = GetDlgItem(hDlg, toolID);
-
-        // Create the tooltip. g_hInst is the global instance handle.
         HWND hwndTip = CreateWindowEx(NULL,
                                       TOOLTIPS_CLASS,
                                       NULL,
@@ -427,8 +407,8 @@ void ParamsWindow::AddTrackbar(UINT         iMin, // minimum value in trackbar r
                                         SS_LEFT | WS_CHILD | WS_VISIBLE,
                                         0,
                                         0,
-                                        staticWidth,
-                                        staticHeight,
+                                        m_dpiScale * STATIC_WIDTH,
+                                        m_dpiScale * STATIC_HEIGHT,
                                         m_mainWindow,
                                         NULL,
                                         m_instance,
