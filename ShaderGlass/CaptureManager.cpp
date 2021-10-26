@@ -29,7 +29,10 @@ const vector<unique_ptr<PresetDef>>& CaptureManager::Presets()
 
 vector<tuple<int, ShaderParam*>> CaptureManager::Params()
 {
-    return m_shaderGlass->Params();
+    if(IsActive())
+        return m_shaderGlass->Params();
+
+    return vector<tuple<int, ShaderParam*>>();
 }
 
 void CaptureManager::UpdateInput()

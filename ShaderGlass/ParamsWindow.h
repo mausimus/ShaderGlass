@@ -16,10 +16,10 @@ struct ParamsTrackbar
     UINT        def;
     UINT        steps;
 
-    UINT        controlId;
-    HWND        trackBarWnd;
-    HWND        paramNameWnd;
-    HWND        paramValueWnd;
+    UINT controlId;
+    HWND trackBarWnd;
+    HWND paramNameWnd;
+    HWND paramValueWnd;
 
     ShaderParam* param;
 };
@@ -42,10 +42,12 @@ private:
     HFONT           m_font;
     CaptureManager& m_captureManager;
     CaptureOptions& m_captureOptions;
+    float           m_dpiScale;
 
     std::vector<ParamsTrackbar> m_trackbars;
 
     void AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iStep, const char* name, ShaderParam* p);
+    void ResizeScrollBar();
     void RebuildControls();
 
     static LRESULT CALLBACK WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

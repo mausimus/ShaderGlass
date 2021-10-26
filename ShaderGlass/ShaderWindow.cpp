@@ -749,13 +749,11 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case ID_PROCESSING_SCREENSHOT:
             SetTimer(m_mainWindow, ID_PROCESSING_SCREENSHOT, MENU_FADE_DELAY, NULL);
             break;
+        case IDM_UPDATE_PARAMS:
+            PostMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
+            break;
         case IDM_SHADER_PARAMETERS:
             ShowWindow(m_paramsWindow, SW_SHOW);
-            if(m_captureManager.IsActive() && !m_captureOptions.clone && !m_captureOptions.captureWindow)
-                SetWindowDisplayAffinity(m_paramsWindow, WDA_EXCLUDEFROMCAPTURE);
-            else
-                SetWindowDisplayAffinity(m_paramsWindow, WDA_NONE);
-
             return 0;
         case IDM_TOGGLEMENU:
             if(GetMenu(hWnd))
@@ -890,7 +888,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     CheckMenuItem(m_shaderMenu, wmId, MF_CHECKED | MF_BYCOMMAND);
                     CheckMenuItem(m_shaderMenu, m_captureOptions.presetNo + WM_SHADER(0), MF_UNCHECKED | MF_BYCOMMAND);
                     m_captureOptions.presetNo = wmId - WM_SHADER(0);
-                    m_captureManager.UpdateShaderPreset();
+                    m_captureManager.UpdateShaderPreset();                    
                     UpdateWindowState();
                     break;
                 }
@@ -1111,6 +1109,7 @@ void ShaderWindow::Stop()
     EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_DISABLED);
     EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_ENABLED);
     UpdateWindowState();
+    SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
 }
 
 void ShaderWindow::Screenshot()
