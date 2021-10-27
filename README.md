@@ -44,6 +44,10 @@ https://github.com/rohatsu/ShaderGlass/releases/download/v0.5/ShaderGlass-0.5-wi
 
 <br/>
 
+Follow [ShaderGlass on itch.io](https://mausimus.itch.io/shaderglass) for latest updates.
+
+<br/>
+
 ### Requirements
 
 * __Windows 10, version 2004__ (build 19041) or __Windows 11__
