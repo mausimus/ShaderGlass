@@ -2,9 +2,11 @@
 
 #define MAX_LOADSTRING 100
 #define MENU_FADE_DELAY 1000
+#define CUSTOM_PARAM_SCALE 1000
 
 #include "Options.h"
 #include "CaptureManager.h"
+#include "InputDialog.h"
 #include "Helpers.h"
 
 class ShaderWindow
@@ -47,6 +49,7 @@ private:
     bool                         m_isTransparent {false};
     bool                         m_isBorderless {false};
     RECT                         m_lastPosition;
+    std::unique_ptr<InputDialog> m_inputDialog;
 
     void LoadProfile(const std::string& fileName);
     void LoadProfile();

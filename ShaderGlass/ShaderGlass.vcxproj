@@ -161,6 +161,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Helpers.h" />
+    <ClInclude Include="InputDialog.h" />
     <ClInclude Include="ParamsWindow.h" />
     <ClInclude Include="Preset.h" />
     <ClInclude Include="Options.h" />
@@ -194,6 +195,7 @@
   <ItemGroup>
     <ClCompile Include="CaptureManager.cpp" />
     <ClCompile Include="CaptureSession.cpp" />
+    <ClCompile Include="InputDialog.cpp" />
     <ClCompile Include="WIC\ScreenGrab11.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="ParamsWindow.cpp" />
