@@ -19,6 +19,8 @@
 #define WM_CAPTURE_WINDOW(i) (static_cast<UINT> WM_OUTPUT_SCALE(MAX_OUTPUT_SCALES) + i)
 #define WM_CAPTURE_DISPLAY(i) (static_cast<UINT> WM_CAPTURE_WINDOW(MAX_CAPTURE_WINDOWS) + i)
 
+#define CUSTOM_MNEMONIC "Custom"
+
 struct PixelSizeInfo
 {
     float       w;
@@ -87,7 +89,7 @@ static const std::map<UINT, PixelSizeInfo> pixelSizes = {
     {WM_PIXEL_SIZE(13), PixelSizeInfo(10.8f, 10.8f, "x10.8 (200p -> 4K)", "10.8")}
 };
 
-static const std::map<UINT, AspectRatioInfo> aspectRatios = {
+static std::map<UINT, AspectRatioInfo> aspectRatios = {
     {WM_ASPECT_RATIO(0), AspectRatioInfo(1.0f, L"None", "1")},
     {WM_ASPECT_RATIO(1), AspectRatioInfo(1.2f, L"x1.2 (DOS, NTSC)", "1.2")},
     {WM_ASPECT_RATIO(2), AspectRatioInfo(0.9375f, L"x0.94 (PAL)", "0.94")},
@@ -95,6 +97,7 @@ static const std::map<UINT, AspectRatioInfo> aspectRatios = {
     {WM_ASPECT_RATIO(4), AspectRatioInfo(0.857143f, L"x0.86 (SNES)", "0.86")},
     {WM_ASPECT_RATIO(5), AspectRatioInfo(0.5f, L"x0.5 (double wide)", "0.5")},
     {WM_ASPECT_RATIO(6), AspectRatioInfo(2.0f, L"x2.0 (double tall)", "2.0")},
+    {WM_ASPECT_RATIO(7), AspectRatioInfo(1.0f, L"Custom", CUSTOM_MNEMONIC)},
 };
 
 static const std::map<UINT, FrameSkipInfo> frameSkips = {
