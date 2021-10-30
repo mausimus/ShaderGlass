@@ -80,7 +80,7 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
                         if(customValue != 0 && !std::isnan(customValue))
                             SendMessage(m_mainWindow, WM_COMMAND, aspectRatios.rbegin()->first, customValue * CUSTOM_PARAM_SCALE);
                     }
-                    catch (std::exception&)
+                    catch(std::exception&)
                     {
                         // ignored
                     }
@@ -773,8 +773,28 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case IDM_UPDATE_PARAMS:
             PostMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
             break;
-        case IDM_SHADER_PARAMETERS:
+        case IDM_SHADER_PARAMETERS: {
+            if(!m_paramsPositioned)
+            {
+                RECT rc, rcDlg, rcOwner;
+                GetWindowRect(m_mainWindow, &rcOwner);
+                GetWindowRect(m_paramsWindow, &rcDlg);
+                CopyRect(&rc, &rcOwner);
+                OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
+                OffsetRect(&rc, -rc.left, -rc.top);
+                OffsetRect(&rc, -rcDlg.right, -rcDlg.bottom);
+
+                SetWindowPos(m_paramsWindow,
+                             HWND_TOP,
+                             rcOwner.left + (rc.right / 2),
+                             rcOwner.top + max(0, (rc.bottom / 2)),
+                             0,
+                             0, // Ignores size arguments.
+                             SWP_NOSIZE);
+                m_paramsPositioned = true;
+            }
             ShowWindow(m_paramsWindow, SW_SHOW);
+        }
             return 0;
         case IDM_TOGGLEMENU:
             if(GetMenu(hWnd))
@@ -993,7 +1013,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                         }
                         else
                         {
-                            float customInput = m_inputDialog->GetInput("Set Custom Aspect Ratio:", aspectRatio->second.r);
+                            float customInput = m_inputDialog->GetInput("Aspect Ratio Correction (Pixel Height):", aspectRatio->second.r);
                             if(std::isnan(customInput))
                                 break;
 
