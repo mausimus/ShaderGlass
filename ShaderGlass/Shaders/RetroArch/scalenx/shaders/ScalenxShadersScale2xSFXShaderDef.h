@@ -1698,14 +1698,14 @@ public:
 		VertexLength = sizeof(RetroArchScalenxShadersScale2xSFXShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchScalenxShadersScale2xSFXShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchScalenxShadersScale2xSFXShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("YTR", -1, 52, 4, 0.000000f, 255.000000f, 48.000000f));
-		Params.push_back(ShaderParam("UTR", -1, 56, 4, 0.000000f, 255.000000f, 7.000000f));
-		Params.push_back(ShaderParam("VTR", -1, 60, 4, 0.000000f, 255.000000f, 6.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("YTR", -1, 52, 4, 0.000000f, 255.000000f, 48.000000f, 1.000000f, "SCALE2xSFX Y Threshold"));
+		Params.push_back(ShaderParam("UTR", -1, 56, 4, 0.000000f, 255.000000f, 7.000000f, 1.000000f, "SCALE2xSFX U Threshold"));
+		Params.push_back(ShaderParam("VTR", -1, 60, 4, 0.000000f, 255.000000f, 6.000000f, 1.000000f, "SCALE2xSFX V Threshold"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

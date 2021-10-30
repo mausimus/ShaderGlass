@@ -1118,9 +1118,9 @@ public:
 		VertexLength = sizeof(RetroArchInterpolationShadersBandlimitPixelShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchInterpolationShadersBandlimitPixelShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchInterpolationShadersBandlimitPixelShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SMOOTHNESS", 0, 80, 4, 0.000000f, 5.000000f, 0.500000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("SMOOTHNESS", 0, 80, 4, 0.000000f, 5.000000f, 0.500000f, 0.100000f, "Smoothness"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 1));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

@@ -132,7 +132,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dwmapi.lib;windowsapp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;dwmapi.lib;windowsapp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,12 +155,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dwmapi.lib;windowsapp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Comctl32.lib;dwmapi.lib;windowsapp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Helpers.h" />
+    <ClInclude Include="InputDialog.h" />
     <ClInclude Include="ParamsWindow.h" />
     <ClInclude Include="Preset.h" />
     <ClInclude Include="Options.h" />
@@ -194,6 +195,7 @@
   <ItemGroup>
     <ClCompile Include="CaptureManager.cpp" />
     <ClCompile Include="CaptureSession.cpp" />
+    <ClCompile Include="InputDialog.cpp" />
     <ClCompile Include="WIC\ScreenGrab11.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="ParamsWindow.cpp" />

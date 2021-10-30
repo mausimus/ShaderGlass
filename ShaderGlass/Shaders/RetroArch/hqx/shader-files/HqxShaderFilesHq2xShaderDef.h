@@ -587,10 +587,10 @@ public:
 		VertexLength = sizeof(RetroArchHqxShaderFilesHq2xShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHqxShaderFilesHq2xShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHqxShaderFilesHq2xShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Original", 4));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("LUT", 3));

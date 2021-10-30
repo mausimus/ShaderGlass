@@ -46,6 +46,8 @@ struct ShaderParam
         iss >> max;
         if(!iss.eof())
             iss >> step;
+        else
+            step = 0;
     }
 
     int    buffer; // -1 - push constant, 0 - first UBO, etc.

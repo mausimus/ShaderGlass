@@ -688,15 +688,15 @@ public:
 		VertexLength = sizeof(RetroArchReshadeShadersFilmGrainShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchReshadeShadersFilmGrainShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchReshadeShadersFilmGrainShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("Intensity", -1, 0, 4, 0.000000f, 1.000000f, 0.500000f));
-		Params.push_back(ShaderParam("Variance", -1, 4, 4, 0.000000f, 1.000000f, 0.400000f));
-		Params.push_back(ShaderParam("Mean", -1, 8, 4, 0.000000f, 1.000000f, 0.500000f));
-		Params.push_back(ShaderParam("SignalToNoiseRatio", -1, 12, 4, 0.000000f, 16.000000f, 6.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("Intensity", -1, 0, 4, 0.000000f, 1.000000f, 0.500000f, 0.010000f, "Intensity"));
+		Params.push_back(ShaderParam("Variance", -1, 4, 4, 0.000000f, 1.000000f, 0.400000f, 0.010000f, "Variance - lower is smoother"));
+		Params.push_back(ShaderParam("Mean", -1, 8, 4, 0.000000f, 1.000000f, 0.500000f, 0.010000f, "Mean - affects brightness"));
+		Params.push_back(ShaderParam("SignalToNoiseRatio", -1, 12, 4, 0.000000f, 16.000000f, 6.000000f, 1.000000f, "SNR - higher is less grain on brighter pixels."));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

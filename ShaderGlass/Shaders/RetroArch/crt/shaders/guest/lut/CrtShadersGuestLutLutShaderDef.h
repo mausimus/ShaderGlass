@@ -935,12 +935,12 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestLutLutShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestLutLutShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestLutLutShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("TNTC", -1, 52, 4, 0.000000f, 3.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("TNTC", -1, 52, 4, 0.000000f, 3.000000f, 0.000000f, 1.000000f, "LUT Colors"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("SamplerLUT1", 3));
 		Samplers.push_back(ShaderSampler("SamplerLUT2", 4));

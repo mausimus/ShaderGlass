@@ -6,12 +6,17 @@
 #define IDD_SHADERGLASS_DIALOG          102
 #define IDS_APP_TITLE                   103
 #define IDM_ABOUT                       104
-#define IDM_EXIT                        105
-#define IDI_SHADERGLASS                 107
-#define IDI_SMALL                       108
-#define IDC_SHADERGLASS                 109
-#define IDM_PIXELSIZE_NEXT              110
+#define IDC_SHADERPARAMS                105
+#define IDM_EXIT                        106
+#define IDS_PARAM_TITLE                 107
+#define IDI_SHADERGLASS                 108
+#define IDI_SMALL                       109
+#define IDC_SHADERGLASS                 110
+#define IDM_PIXELSIZE_NEXT              111
+#define IDM_UPDATE_PARAMS               112
 #define IDR_MAINFRAME                   128
+#define IDD_INPUT_DIALOG                129
+#define IDC_EDIT1                       1000
 #define ID_FILE_START                   32771
 #define IDM_FILE_START                  32772
 #define IDM_START                       32773
@@ -120,16 +125,19 @@
 #define IDM_INPUT_REMOVEBORDER          32884
 #define ID_PROCESSING_SCREENSHOT        32885
 #define ID_PROCESSING_PAUSE             32886
+#define ID_SHADER_PARAMETERS            32887
+#define IDM_SHADER_PARAMETERS           32888
 #define IDC_STATIC                      -1
+#define IDC_STATIC_LABEL                -1
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        129
-#define _APS_NEXT_COMMAND_VALUE         32887
-#define _APS_NEXT_CONTROL_VALUE         1000
-#define _APS_NEXT_SYMED_VALUE           111
+#define _APS_NEXT_RESOURCE_VALUE        130
+#define _APS_NEXT_COMMAND_VALUE         32889
+#define _APS_NEXT_CONTROL_VALUE         1001
+#define _APS_NEXT_SYMED_VALUE           113
 #endif
 #endif

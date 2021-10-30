@@ -343,8 +343,8 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestLinearizeShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestLinearizeShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestLinearizeShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("GAMMA_INPUT", -1, 0, 4, 1.000000f, 5.000000f, 2.400000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("GAMMA_INPUT", -1, 0, 4, 1.000000f, 5.000000f, 2.400000f, 0.050000f, "Gamma Input"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("AfterglowPass", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

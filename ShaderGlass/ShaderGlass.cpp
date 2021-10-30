@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ShaderGlass.h"
 #include "ShaderList.h"
+#include "resource.h"
 
 static HRESULT hr;
 
@@ -21,18 +22,18 @@ ShaderGlass::~ShaderGlass()
     m_context->Flush();
 }
 
-void ShaderGlass::Initialize(HWND                         outputWindow,
-                             HWND                         captureWindow,
-                             HMONITOR                     captureMonitor,
-                             bool                         clone,
-                             winrt::com_ptr<ID3D11Device> device,
+void ShaderGlass::Initialize(HWND                                outputWindow,
+                             HWND                                captureWindow,
+                             HMONITOR                            captureMonitor,
+                             bool                                clone,
+                             winrt::com_ptr<ID3D11Device>        device,
                              winrt::com_ptr<ID3D11DeviceContext> context)
 {
     m_outputWindow  = outputWindow;
     m_captureWindow = captureWindow;
     m_clone         = clone;
     m_device        = device;
-    m_context       = context;    
+    m_context       = context;
 
     if(captureMonitor && !clone)
     {
@@ -142,6 +143,8 @@ void ShaderGlass::RebuildShaders()
     {
         m_presetTextures.insert(make_pair(texture.second.m_name, texture.second.m_textureView));
     }
+
+    ResetParams();
 }
 
 void ShaderGlass::SetInputScale(float w, float h)
@@ -165,9 +168,10 @@ void ShaderGlass::SetOutputFlip(bool h, bool v)
     m_outputRescaled = true;
 }
 
-void ShaderGlass::SetShaderPreset(PresetDef* p)
+void ShaderGlass::SetShaderPreset(PresetDef* p, const std::vector<std::tuple<int, std::string, double>>& params)
 {
     m_newShaderPreset = std::make_unique<Preset>(*p);
+    m_newParams       = params;
 }
 
 void ShaderGlass::SetFrameSkip(int s)
@@ -184,6 +188,41 @@ void ShaderGlass::DestroyTargets()
         m_preprocessedTexture      = nullptr;
         m_displayTexture           = nullptr;
     }
+}
+
+void ShaderGlass::UpdateParams()
+{
+    for(auto& s : m_shaderPreset->m_shaders)
+        for(auto& p : s.Params())
+        {
+            if(p->size == 4 && p->name != "FrameCount")
+                s.SetParam(p, &p->currentValue);
+        }
+}
+
+void ShaderGlass::ResetParams()
+{
+    for(auto& s : m_shaderPreset->m_shaders)
+        for(auto& p : s.Params())
+        {
+            if(p->size == 4 && p->name != "FrameCount")
+                s.SetParam(p, &p->defaultValue);
+        }
+}
+
+std::vector<std::tuple<int, ShaderParam*>> ShaderGlass::Params()
+{
+    std::vector<std::tuple<int, ShaderParam*>> params;
+    int                                        i = 0;
+    for(auto& s : m_shaderPreset->m_shaders)
+    {
+        for(auto& p : s.Params())
+            if(p->size == 4 && p->name != "FrameCount")
+                params.push_back(std::make_tuple(i, p));
+
+        i++;
+    }
+    return params;
 }
 
 bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
@@ -326,6 +365,24 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         m_shaderPreset.swap(m_newShaderPreset);
         m_newShaderPreset.reset();
         RebuildShaders();
+        if(m_newParams.size())
+        {
+            const auto& shaderParams = Params();
+            for(const auto& ip : m_newParams)
+            {
+                for(const auto& sp : shaderParams)
+                {
+                    if(get<0>(ip) == get<0>(sp) && get<1>(ip) == get<1>(sp)->name)
+                    {
+                        get<1>(sp)->currentValue = get<2>(ip);
+                        break;
+                    }
+                }
+            }
+            m_newParams.clear();
+            UpdateParams();
+        }
+        PostMessage(m_outputWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
         inputRescaled = true;
         outputResized = true;
         rebuildPasses = true;

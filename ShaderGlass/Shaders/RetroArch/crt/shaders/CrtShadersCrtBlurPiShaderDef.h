@@ -686,15 +686,15 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtBlurPiShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtBlurPiShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtBlurPiShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("scanlineGain", -1, 52, 4, 0.000000f, 1.000000f, 0.300000f));
-		Params.push_back(ShaderParam("rgbExtraGain", -1, 56, 4, 0.000000f, 1.000000f, 0.100000f));
-		Params.push_back(ShaderParam("blurGain", -1, 60, 4, 0.000000f, 1.000000f, 0.150000f));
-		Params.push_back(ShaderParam("blurRadius", -1, 64, 4, 0.100000f, 3.000000f, 1.500000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("scanlineGain", -1, 52, 4, 0.000000f, 1.000000f, 0.300000f, 0.050000f, "scanlineGain"));
+		Params.push_back(ShaderParam("rgbExtraGain", -1, 56, 4, 0.000000f, 1.000000f, 0.100000f, 0.050000f, "rgbExtraGain"));
+		Params.push_back(ShaderParam("blurGain", -1, 60, 4, 0.000000f, 1.000000f, 0.150000f, 0.050000f, "blurGain"));
+		Params.push_back(ShaderParam("blurRadius", -1, 64, 4, 0.100000f, 3.000000f, 1.500000f, 0.100000f, "blurRadius"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

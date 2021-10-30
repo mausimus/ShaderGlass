@@ -27,6 +27,14 @@ const vector<unique_ptr<PresetDef>>& CaptureManager::Presets()
     return m_presetList;
 }
 
+vector<tuple<int, ShaderParam*>> CaptureManager::Params()
+{
+    if(IsActive())
+        return m_shaderGlass->Params();
+
+    return vector<tuple<int, ShaderParam*>>();
+}
+
 void CaptureManager::UpdateInput()
 {
     if(IsActive())
@@ -60,12 +68,19 @@ void CaptureManager::StartSession()
     UpdateOutputFlip();
     UpdateShaderPreset();
     UpdateFrameSkip();
+
     m_session = make_unique<CaptureSession>(
         device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass);
     UpdateCursor();
 }
 
-void CaptureManager::UpdateCursor() {
+void CaptureManager::SetParams(const std::vector<std::tuple<int, std::string, double>>& params)
+{
+    m_queuedParams = params;
+}
+
+void CaptureManager::UpdateCursor()
+{
     if(m_session)
         m_session->UpdateCursor(m_options.captureCursor);
 }
@@ -137,7 +152,8 @@ void CaptureManager::UpdateShaderPreset()
 {
     if(m_shaderGlass)
     {
-        m_shaderGlass->SetShaderPreset(m_presetList.at(m_options.presetNo).get());
+        m_shaderGlass->SetShaderPreset(m_presetList.at(m_options.presetNo).get(), m_queuedParams);
+        m_queuedParams.clear();
     }
 }
 
@@ -163,5 +179,21 @@ void CaptureManager::SaveOutput(LPWSTR fileName)
     if(m_outputTexture)
     {
         DirectX::SaveWICTextureToFile(m_context.get(), m_outputTexture.get(), GUID_ContainerFormatPng, fileName, nullptr, nullptr, true);
+    }
+}
+
+void CaptureManager::UpdateParams()
+{
+    if(m_shaderGlass)
+    {
+        m_shaderGlass->UpdateParams();
+    }
+}
+
+void CaptureManager::ResetParams()
+{
+    if(m_shaderGlass)
+    {
+        m_shaderGlass->ResetParams();
     }
 }

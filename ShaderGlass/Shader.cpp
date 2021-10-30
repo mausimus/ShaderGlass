@@ -139,14 +139,32 @@ void Shader::FillParams(int buffer, void* data)
         memcpy(data, m_uboBuffer.get(), BufferSize(buffer));
 }
 
+std::vector<ShaderParam*> Shader::Params()
+{
+    std::vector<ShaderParam*> params;
+    for(auto& p : m_shaderDef.Params)
+        params.push_back(&p);
+    return params;
+}
+
+void Shader::SetParam(ShaderParam* p, void* v)
+{
+    char* buf = (char*)(p->buffer == PUSH_BUFFER ? m_pushBuffer.get() : m_uboBuffer.get());
+
+    // if it's float remember value (user parameter)
+    if(p->size == 4)
+        p->currentValue = *((float*)v);
+
+    memcpy(buf + p->offset, v, p->size);
+}
+
 void Shader::SetParam(std::string name, void* v)
 {
-    for(const auto& p : m_shaderDef.Params)
+    for(auto& p : m_shaderDef.Params)
     {
         if(p.name == name)
         {
-            char* buf = (char*)(p.buffer == PUSH_BUFFER ? m_pushBuffer.get() : m_uboBuffer.get());
-            memcpy(buf + p.offset, v, p.size);
+            SetParam(&p, v);
             // return; // same param can be in both bufs
         }
     }
@@ -179,9 +197,10 @@ Shader::Shader(Shader&& shader) : m_shaderDef(shader.m_shaderDef)
     throw new std::runtime_error("This shouldn't happen");
 }
 
-Shader::~Shader() {
-    m_pixelShader = nullptr;
+Shader::~Shader()
+{
+    m_pixelShader  = nullptr;
     m_vertexShader = nullptr;
-    m_vertexBlob = nullptr;
-    m_pixelBlob = nullptr;
+    m_vertexBlob   = nullptr;
+    m_pixelBlob    = nullptr;
 }

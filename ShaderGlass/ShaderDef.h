@@ -2,9 +2,9 @@
 
 struct ShaderParam
 {
-    ShaderParam(const char* name, int buffer, int offset, int size, float minValue, float maxValue, float defaultValue) :
+    ShaderParam(const char* name, int buffer, int offset, int size, float minValue, float maxValue, float defaultValue, float stepValue = 0.0f, const char* description = "") :
         name {name}, buffer {buffer}, offset {offset}, size {size}, minValue {minValue}, maxValue {maxValue}, defaultValue {defaultValue},
-        currentValue {defaultValue}
+        currentValue {defaultValue}, stepValue {stepValue}, description {description}
     { }
 
     std::string name;
@@ -15,6 +15,8 @@ struct ShaderParam
     float       maxValue;
     float       currentValue;
     float       defaultValue;
+    float       stepValue;
+    std::string description;
 };
 
 struct ShaderSampler
