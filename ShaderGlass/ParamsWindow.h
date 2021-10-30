@@ -29,7 +29,7 @@ class ParamsWindow
 public:
     ParamsWindow(CaptureManager& manager);
 
-    bool Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow);
+    bool Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow, _In_ HWND shaderWindow);
 
     HWND m_mainWindow {nullptr};
 
@@ -39,6 +39,7 @@ private:
     HINSTANCE       m_instance {nullptr};
     HWND            m_resetButtonWnd;
     HWND            m_closeButtonWnd;
+    HWND            m_shaderWindow;
     HFONT           m_font;
     CaptureManager& m_captureManager;
     CaptureOptions& m_captureOptions;

@@ -76,7 +76,7 @@ BOOL ParamsWindow::InitInstance(HINSTANCE hInstance, int nCmdShow)
                               CW_USEDEFAULT,
                               rect.right - rect.left,
                               rect.bottom - rect.top,
-                              nullptr,
+                              m_shaderWindow,
                               nullptr,
                               hInstance,
                               this);
@@ -94,7 +94,7 @@ BOOL ParamsWindow::InitInstance(HINSTANCE hInstance, int nCmdShow)
     m_mainWindow = hWnd;
 
     m_resetButtonWnd = CreateWindow(L"BUTTON",
-                                    L"Reset",
+                                    L"Defaults",
                                     WS_TABSTOP | WS_VISIBLE | WS_CHILD,
                                     m_dpiScale * ((WINDOW_WIDTH / 3) - (BUTTON_WIDTH / 2)),
                                     m_dpiScale * BUTTON_TOP,
@@ -427,8 +427,10 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
     m_trackbars.emplace_back(pt);
 }
 
-bool ParamsWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
+bool ParamsWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow, _In_ HWND shaderWindow)
 {
+    m_shaderWindow = shaderWindow;
+
     LoadStringW(hInstance, IDS_PARAM_TITLE, m_title, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_SHADERPARAMS, m_windowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);

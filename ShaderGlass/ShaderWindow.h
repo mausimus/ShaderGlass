@@ -16,12 +16,12 @@ public:
 
     bool Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow);
     void Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow);
+    HWND m_mainWindow {nullptr};
 
 private:
     WCHAR                        m_title[MAX_LOADSTRING];
     WCHAR                        m_windowClass[MAX_LOADSTRING];
     HINSTANCE                    m_instance {nullptr};
-    HWND                         m_mainWindow {nullptr};
     HWND                         m_paramsWindow {nullptr};
     HMENU                        m_mainMenu {nullptr};
     HMENU                        m_programMenu {nullptr};
@@ -48,6 +48,7 @@ private:
     unsigned                     m_selectedFrameSkip {0};
     bool                         m_isTransparent {false};
     bool                         m_isBorderless {false};
+    bool                         m_paramsPositioned {false};
     RECT                         m_lastPosition;
     std::unique_ptr<InputDialog> m_inputDialog;
 
