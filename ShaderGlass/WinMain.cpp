@@ -37,7 +37,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     }
 
     ParamsWindow paramsWindow(captureManager);
-    if(!paramsWindow.Create(hInstance, SW_HIDE))
+    if(!paramsWindow.Create(hInstance, SW_HIDE, shaderWindow.m_mainWindow))
     {
         return FALSE;
     }
