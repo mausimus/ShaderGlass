@@ -26,12 +26,13 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
             return;
         }
 
-        std::string                shaderCategory;
-        std::string                shaderName;
-        std::optional<std::string> windowName;
-        std::optional<std::string> desktopName;
-        std::optional<bool>        transparent;
-        std::optional<bool>        clone;
+        std::string                                       shaderCategory;
+        std::string                                       shaderName;
+        std::optional<std::string>                        windowName;
+        std::optional<std::string>                        desktopName;
+        std::optional<bool>                               transparent;
+        std::optional<bool>                               clone;
+        std::vector<std::tuple<int, std::string, double>> params;
         while(!infile.eof())
         {
             std::string key;
@@ -61,10 +62,28 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
             }
             else if(key == "AspectRatio")
             {
+                bool found = false;
                 for(const auto& p : aspectRatios)
                 {
                     if(value == p.second.mnemonic)
+                    {
                         SendMessage(m_mainWindow, WM_COMMAND, p.first, 0);
+                        found = true;
+                    }
+                }
+                if(!found)
+                {
+                    // set as custom
+                    try
+                    {
+                        float customValue = std::stof(value);
+                        if(customValue != 0 && !std::isnan(customValue))
+                            SendMessage(m_mainWindow, WM_COMMAND, aspectRatios.rbegin()->first, customValue * CUSTOM_PARAM_SCALE);
+                    }
+                    catch(std::exception&)
+                    {
+                        // ignored
+                    }
                 }
             }
             else if(key == "ShaderCategory")
@@ -122,6 +141,24 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
                     CheckMenuItem(m_inputMenu, IDM_INPUT_CAPTURECURSOR, MF_CHECKED | MF_BYCOMMAND);
                 else
                     CheckMenuItem(m_inputMenu, IDM_INPUT_CAPTURECURSOR, MF_UNCHECKED | MF_BYCOMMAND);
+            }
+            else if(key.starts_with("Param-") && key.size() >= 9)
+            {
+                try
+                {
+                    size_t start = 6;
+                    size_t split = key.find('-', start);
+                    if(split == key.npos || split == key.size() - 1 || split == start)
+                        continue;
+
+                    auto passNo = std::stoi(key.substr(start, split - start));
+                    auto name   = key.substr(split + 1);
+                    params.push_back(std::make_tuple(passNo, name, std::stod(value)));
+                }
+                catch(std::exception& e)
+                {
+                    // ignored
+                }
             }
         }
         infile.close();
@@ -196,6 +233,12 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
             }
         }
 
+        // load any parameters
+        if(params.size())
+        {
+            m_captureManager.SetParams(params);
+        }
+
         if(paused)
             SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
     }
@@ -239,7 +282,10 @@ void ShaderWindow::SaveProfile(const std::string& fileName)
     std::ofstream outfile(fileName);
     outfile << "ProfileVersion " << std::quoted("1.0") << std::endl;
     outfile << "PixelSize " << std::quoted(pixelSize.mnemonic) << std::endl;
-    outfile << "AspectRatio " << std::quoted(aspectRatio.mnemonic) << std::endl;
+    if(aspectRatio.mnemonic == CUSTOM_MNEMONIC)
+        outfile << "AspectRatio " << std::quoted(std::to_string(aspectRatio.r)) << std::endl;
+    else
+        outfile << "AspectRatio " << std::quoted(aspectRatio.mnemonic) << std::endl;
     outfile << "ShaderCategory " << std::quoted(shader->Category) << std::endl;
     outfile << "ShaderName " << std::quoted(shader->Name) << std::endl;
     outfile << "FrameSkip " << std::quoted(frameSkip.mnemonic) << std::endl;
@@ -258,6 +304,15 @@ void ShaderWindow::SaveProfile(const std::string& fileName)
         GetMonitorInfo(m_captureOptions.monitor, &info);
         std::wstring wname(info.szDevice);
         outfile << "CaptureDesktop " << std::quoted(std::string(wname.begin(), wname.end())) << std::endl;
+    }
+    for(const auto& pt : m_captureManager.Params())
+    {
+        const auto& s = std::get<0>(pt);
+        const auto& p = std::get<1>(pt);
+        if(p->currentValue != p->defaultValue)
+        {
+            outfile << "Param-" << s << "-" << p->name << " " << std::quoted(std::to_string(p->currentValue)) << std::endl;
+        }
     }
     outfile.close();
 }
@@ -633,10 +688,16 @@ void ShaderWindow::UpdateWindowState()
         SetWindowLong(m_mainWindow, GWL_EXSTYLE, cur_style & ~WS_EX_LAYERED);
 
     if(m_captureManager.IsActive() && !m_captureOptions.clone && !m_captureOptions.captureWindow)
-        // desktop glass - exclude from capture
+    // desktop glass - exclude from capture
+    {
         SetWindowDisplayAffinity(m_mainWindow, WDA_EXCLUDEFROMCAPTURE);
+        //SetWindowDisplayAffinity(m_paramsWindow, WDA_EXCLUDEFROMCAPTURE);
+    }
     else
+    {
         SetWindowDisplayAffinity(m_mainWindow, WDA_NONE);
+        //SetWindowDisplayAffinity(m_paramsWindow, WDA_NONE);
+    }
 
     // update title
     if(m_captureManager.IsActive())
@@ -709,6 +770,32 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case ID_PROCESSING_SCREENSHOT:
             SetTimer(m_mainWindow, ID_PROCESSING_SCREENSHOT, MENU_FADE_DELAY, NULL);
             break;
+        case IDM_UPDATE_PARAMS:
+            PostMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
+            break;
+        case IDM_SHADER_PARAMETERS: {
+            if(!m_paramsPositioned)
+            {
+                RECT rc, rcDlg, rcOwner;
+                GetWindowRect(m_mainWindow, &rcOwner);
+                GetWindowRect(m_paramsWindow, &rcDlg);
+                CopyRect(&rc, &rcOwner);
+                OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
+                OffsetRect(&rc, -rc.left, -rc.top);
+                OffsetRect(&rc, -rcDlg.right, -rcDlg.bottom);
+
+                SetWindowPos(m_paramsWindow,
+                             HWND_TOP,
+                             rcOwner.left + (rc.right / 2),
+                             rcOwner.top + max(0, (rc.bottom / 2)),
+                             0,
+                             0, // Ignores size arguments.
+                             SWP_NOSIZE);
+                m_paramsPositioned = true;
+            }
+            ShowWindow(m_paramsWindow, SW_SHOW);
+        }
+            return 0;
         case IDM_TOGGLEMENU:
             if(GetMenu(hWnd))
                 SetMenu(hWnd, NULL);
@@ -831,7 +918,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
 #ifdef _DEBUG
             m_captureManager.Debug();
 #else
-            ShellExecute(0, 0, L"https://github.com/rohatsu/ShaderGlass", 0, 0, SW_SHOW);
+            ShellExecute(0, 0, L"https://github.com/mausimus/ShaderGlass", 0, 0, SW_SHOW);
 #endif
             break;
         default:
@@ -917,6 +1004,23 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 const auto& aspectRatio = aspectRatios.find(wmId);
                 if(aspectRatio != aspectRatios.end())
                 {
+                    if(aspectRatio->second.mnemonic == CUSTOM_MNEMONIC)
+                    {
+                        if(lParam != 0)
+                        {
+                            // loading profile?
+                            aspectRatio->second.r = lParam / (float)CUSTOM_PARAM_SCALE;
+                        }
+                        else
+                        {
+                            float customInput = m_inputDialog->GetInput("Aspect Ratio Correction (Pixel Height):", aspectRatio->second.r);
+                            if(std::isnan(customInput))
+                                break;
+
+                            aspectRatio->second.r = customInput; // store new ratio in menu item
+                        }
+                    }
+
                     m_selectedAspectRatio = wmId - WM_ASPECT_RATIO(0);
                     CheckMenuRadioItem(
                         m_aspectRatioMenu, 0, static_cast<UINT>(aspectRatios.size()), wmId - WM_ASPECT_RATIO(0), MF_BYPOSITION);
@@ -1063,6 +1167,7 @@ void ShaderWindow::Stop()
     EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_DISABLED);
     EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_ENABLED);
     UpdateWindowState();
+    SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
 }
 
 void ShaderWindow::Screenshot()
@@ -1204,7 +1309,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     return TRUE;
 }
 
-void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
+void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow)
 {
     bool autoStart  = true;
     bool fullScreen = false;
@@ -1230,9 +1335,13 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine)
         }
     }
 
+    m_paramsWindow = paramsWindow;
+    m_inputDialog.reset(new InputDialog(m_instance, m_mainWindow));
+
     if(autoStart)
     {
         SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
+        SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
     }
     if(fullScreen)
     {

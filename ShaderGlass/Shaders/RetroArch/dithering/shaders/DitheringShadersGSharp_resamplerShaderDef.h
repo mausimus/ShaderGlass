@@ -1251,15 +1251,15 @@ public:
 		VertexLength = sizeof(RetroArchDitheringShadersGSharp_resamplerShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchDitheringShadersGSharp_resamplerShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchDitheringShadersGSharp_resamplerShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("HSHARP0", -1, 56, 4, 1.000000f, 6.000000f, 1.200000f));
-		Params.push_back(ShaderParam("SIGMA_HV", -1, 52, 4, 0.100000f, 7.000000f, 0.750000f));
-		Params.push_back(ShaderParam("SHAR", -1, 64, 4, 0.000000f, 2.000000f, 0.500000f));
-		Params.push_back(ShaderParam("HAR", -1, 60, 4, 0.000000f, 1.000000f, 0.500000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("HSHARP0", -1, 56, 4, 1.000000f, 6.000000f, 1.200000f, 0.100000f, "Filter Range"));
+		Params.push_back(ShaderParam("SIGMA_HV", -1, 52, 4, 0.100000f, 7.000000f, 0.750000f, 0.050000f, "Gaussian Blur Sigma"));
+		Params.push_back(ShaderParam("SHAR", -1, 64, 4, 0.000000f, 2.000000f, 0.500000f, 0.050000f, "Sharpness Definition"));
+		Params.push_back(ShaderParam("HAR", -1, 60, 4, 0.000000f, 1.000000f, 0.500000f, 0.100000f, "Anti-Ringing"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

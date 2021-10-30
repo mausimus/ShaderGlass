@@ -19,6 +19,8 @@
 #define WM_CAPTURE_WINDOW(i) (static_cast<UINT> WM_OUTPUT_SCALE(MAX_OUTPUT_SCALES) + i)
 #define WM_CAPTURE_DISPLAY(i) (static_cast<UINT> WM_CAPTURE_WINDOW(MAX_CAPTURE_WINDOWS) + i)
 
+#define CUSTOM_MNEMONIC "Custom"
+
 struct PixelSizeInfo
 {
     float       w;
@@ -82,14 +84,20 @@ static const std::map<UINT, PixelSizeInfo> pixelSizes = {
     {WM_PIXEL_SIZE(8), PixelSizeInfo(7.0f, 7.0f, "x7", "7")},
     {WM_PIXEL_SIZE(9), PixelSizeInfo(7.2f, 7.2f, "x7.2 (200p -> 1440p)", "7.2")},
     {WM_PIXEL_SIZE(10), PixelSizeInfo(8.0f, 8.0f, "x8", "8")},
+    {WM_PIXEL_SIZE(11), PixelSizeInfo(9.0f, 9.0f, "x9 (240p -> 4K)", "9")},
+    {WM_PIXEL_SIZE(12), PixelSizeInfo(10.0f, 10.0f, "x10", "10")},
+    {WM_PIXEL_SIZE(13), PixelSizeInfo(10.8f, 10.8f, "x10.8 (200p -> 4K)", "10.8")}
 };
 
-static const std::map<UINT, AspectRatioInfo> aspectRatios = {
+static std::map<UINT, AspectRatioInfo> aspectRatios = {
     {WM_ASPECT_RATIO(0), AspectRatioInfo(1.0f, L"None", "1")},
     {WM_ASPECT_RATIO(1), AspectRatioInfo(1.2f, L"x1.2 (DOS, NTSC)", "1.2")},
     {WM_ASPECT_RATIO(2), AspectRatioInfo(0.9375f, L"x0.94 (PAL)", "0.94")},
     {WM_ASPECT_RATIO(3), AspectRatioInfo(0.8f, L"x0.8 (NES)", "0.8")},
     {WM_ASPECT_RATIO(4), AspectRatioInfo(0.857143f, L"x0.86 (SNES)", "0.86")},
+    {WM_ASPECT_RATIO(5), AspectRatioInfo(0.5f, L"x0.5 (double wide)", "0.5")},
+    {WM_ASPECT_RATIO(6), AspectRatioInfo(2.0f, L"x2.0 (double tall)", "2.0")},
+    {WM_ASPECT_RATIO(7), AspectRatioInfo(1.0f, L"Custom", CUSTOM_MNEMONIC)},
 };
 
 static const std::map<UINT, FrameSkipInfo> frameSkips = {
@@ -99,6 +107,15 @@ static const std::map<UINT, FrameSkipInfo> frameSkips = {
     {WM_FRAME_SKIP(3), FrameSkipInfo(3, L"/4", "4")},
     {WM_FRAME_SKIP(4), FrameSkipInfo(4, L"/5", "5")},
     {WM_FRAME_SKIP(5), FrameSkipInfo(5, L"/6", "6")},
+    {WM_FRAME_SKIP(6), FrameSkipInfo(6, L"/7", "7")},
+    {WM_FRAME_SKIP(7), FrameSkipInfo(7, L"/8", "8")},
+    {WM_FRAME_SKIP(8), FrameSkipInfo(8, L"/9", "9")},
+    {WM_FRAME_SKIP(9), FrameSkipInfo(9, L"/10", "10")},
+    {WM_FRAME_SKIP(10), FrameSkipInfo(11, L"/12", "12")},
+    {WM_FRAME_SKIP(11), FrameSkipInfo(13, L"/14", "14")},
+    {WM_FRAME_SKIP(12), FrameSkipInfo(15, L"/16", "16")},
+    {WM_FRAME_SKIP(13), FrameSkipInfo(17, L"/18", "18")},
+    {WM_FRAME_SKIP(14), FrameSkipInfo(19, L"/20", "20")}
 };
 
 static const std::map<UINT, OutputScaleInfo> outputScales = {{WM_OUTPUT_SCALE(0), OutputScaleInfo(1.0f, L"100%", "100")},

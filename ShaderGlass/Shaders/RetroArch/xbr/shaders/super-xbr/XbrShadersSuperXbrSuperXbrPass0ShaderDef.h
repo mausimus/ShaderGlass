@@ -2023,17 +2023,17 @@ public:
 		VertexLength = sizeof(RetroArchXbrShadersSuperXbrSuperXbrPass0ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchXbrShadersSuperXbrSuperXbrPass0ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchXbrShadersSuperXbrSuperXbrPass0ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("MODE", -1, 64, 4, 0.000000f, 2.000000f, 0.000000f));
-		Params.push_back(ShaderParam("XBR_EDGE_STR_P0", -1, 52, 4, 0.000000f, 5.000000f, 5.000000f));
-		Params.push_back(ShaderParam("XBR_WEIGHT", -1, 56, 4, 0.000000f, 1.500000f, 1.000000f));
-		Params.push_back(ShaderParam("XBR_EDGE_SHP", -1, 68, 4, 0.000000f, 3.000000f, 0.400000f));
-		Params.push_back(ShaderParam("XBR_TEXTURE_SHP", -1, 72, 4, 0.000000f, 2.000000f, 1.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("XBR_ANTI_RINGING", -1, 60, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("MODE", -1, 64, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "Mode - Normal, Details, Adaptive"));
+		Params.push_back(ShaderParam("XBR_EDGE_STR_P0", -1, 52, 4, 0.000000f, 5.000000f, 5.000000f, 0.500000f, "Xbr - Edge Strength p0"));
+		Params.push_back(ShaderParam("XBR_WEIGHT", -1, 56, 4, 0.000000f, 1.500000f, 1.000000f, 0.010000f, "Xbr - Filter Weight"));
+		Params.push_back(ShaderParam("XBR_EDGE_SHP", -1, 68, 4, 0.000000f, 3.000000f, 0.400000f, 0.100000f, "Adaptive Dynamic Edge Sharp"));
+		Params.push_back(ShaderParam("XBR_TEXTURE_SHP", -1, 72, 4, 0.000000f, 2.000000f, 1.000000f, 0.100000f, "Adaptive Static Edge Sharp"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("XBR_ANTI_RINGING", -1, 60, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

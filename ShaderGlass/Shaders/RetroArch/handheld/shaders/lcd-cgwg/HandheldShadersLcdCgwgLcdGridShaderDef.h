@@ -1441,12 +1441,12 @@ public:
 		VertexLength = sizeof(RetroArchHandheldShadersLcdCgwgLcdGridShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldShadersLcdCgwgLcdGridShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldShadersLcdCgwgLcdGridShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("GRID_STRENGTH", 0, 112, 4, 0.000000f, 1.000000f, 0.050000f));
-		Params.push_back(ShaderParam("gamma", 0, 116, 4, 1.000000f, 5.000000f, 2.200000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("GRID_STRENGTH", 0, 112, 4, 0.000000f, 1.000000f, 0.050000f, 0.010000f, "LCD Grid Strength"));
+		Params.push_back(ShaderParam("gamma", 0, 116, 4, 1.000000f, 5.000000f, 2.200000f, 0.100000f, "LCD Input Gamma"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

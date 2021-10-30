@@ -1939,16 +1939,16 @@ public:
 		VertexLength = sizeof(RetroArchXbrShadersXbrLv2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchXbrShadersXbrLv2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchXbrShadersXbrLv2ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("XBR_Y_WEIGHT", -1, 52, 4, 0.000000f, 100.000000f, 48.000000f));
-		Params.push_back(ShaderParam("XBR_EQ_THRESHOLD", -1, 56, 4, 0.000000f, 50.000000f, 15.000000f));
-		Params.push_back(ShaderParam("XBR_LV1_COEFFICIENT", -1, 60, 4, 0.000000f, 30.000000f, 0.500000f));
-		Params.push_back(ShaderParam("XBR_LV2_COEFFICIENT", -1, 64, 4, 1.000000f, 3.000000f, 2.000000f));
-		Params.push_back(ShaderParam("small_details", -1, 68, 4, 0.000000f, 1.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("XBR_Y_WEIGHT", -1, 52, 4, 0.000000f, 100.000000f, 48.000000f, 1.000000f, "Y Weight"));
+		Params.push_back(ShaderParam("XBR_EQ_THRESHOLD", -1, 56, 4, 0.000000f, 50.000000f, 15.000000f, 1.000000f, "Eq Threshold"));
+		Params.push_back(ShaderParam("XBR_LV1_COEFFICIENT", -1, 60, 4, 0.000000f, 30.000000f, 0.500000f, 0.500000f, "Lv1 Coefficient"));
+		Params.push_back(ShaderParam("XBR_LV2_COEFFICIENT", -1, 64, 4, 1.000000f, 3.000000f, 2.000000f, 0.100000f, "Lv2 Coefficient"));
+		Params.push_back(ShaderParam("small_details", -1, 68, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Preserve Small Details"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

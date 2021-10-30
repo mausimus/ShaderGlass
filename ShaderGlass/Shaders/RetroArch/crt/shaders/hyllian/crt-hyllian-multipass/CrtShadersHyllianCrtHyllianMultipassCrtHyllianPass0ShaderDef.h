@@ -659,14 +659,14 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersHyllianCrtHyllianMultipassCrtHyllianPass0ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersHyllianCrtHyllianMultipassCrtHyllianPass0ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersHyllianCrtHyllianMultipassCrtHyllianPass0ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SHARPNESS", -1, 52, 4, 1.000000f, 5.000000f, 1.000000f));
-		Params.push_back(ShaderParam("CRT_ANTI_RINGING", -1, 56, 4, 0.000000f, 1.000000f, 0.800000f));
-		Params.push_back(ShaderParam("InputGamma", -1, 60, 4, 0.000000f, 5.000000f, 2.500000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("SHARPNESS", -1, 52, 4, 1.000000f, 5.000000f, 1.000000f, 1.000000f, "CRT - Sharpness Hack"));
+		Params.push_back(ShaderParam("CRT_ANTI_RINGING", -1, 56, 4, 0.000000f, 1.000000f, 0.800000f, 0.100000f, "CRT - Anti-Ringing"));
+		Params.push_back(ShaderParam("InputGamma", -1, 60, 4, 0.000000f, 5.000000f, 2.500000f, 0.100000f, "CRT - Input gamma"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

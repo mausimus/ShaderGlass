@@ -705,11 +705,11 @@ public:
 		VertexLength = sizeof(RetroArchMotionblurShadersBraidRewindShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMotionblurShadersBraidRewindShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMotionblurShadersBraidRewindShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameDirection", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameDirection", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("OriginalHistory7", 9));
 		Samplers.push_back(ShaderSampler("OriginalHistory6", 8));

@@ -1513,8 +1513,8 @@ public:
 		VertexLength = sizeof(RetroArchScalefxShadersScalefxPass2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchScalefxShadersScalefxPass2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchScalefxShadersScalefxPass2ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("scalefx_pass0", 2));
 		Samplers.push_back(ShaderSampler("Source", 1));
 /*

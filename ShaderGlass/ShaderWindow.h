@@ -2,9 +2,11 @@
 
 #define MAX_LOADSTRING 100
 #define MENU_FADE_DELAY 1000
+#define CUSTOM_PARAM_SCALE 1000
 
 #include "Options.h"
 #include "CaptureManager.h"
+#include "InputDialog.h"
 #include "Helpers.h"
 
 class ShaderWindow
@@ -13,13 +15,14 @@ public:
     ShaderWindow(CaptureManager& manager);
 
     bool Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow);
-    void Start(_In_ LPWSTR lpCmdLine);
+    void Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow);
+    HWND m_mainWindow {nullptr};
 
 private:
     WCHAR                        m_title[MAX_LOADSTRING];
     WCHAR                        m_windowClass[MAX_LOADSTRING];
     HINSTANCE                    m_instance {nullptr};
-    HWND                         m_mainWindow {nullptr};
+    HWND                         m_paramsWindow {nullptr};
     HMENU                        m_mainMenu {nullptr};
     HMENU                        m_programMenu {nullptr};
     HMENU                        m_pixelSizeMenu {nullptr};
@@ -45,7 +48,9 @@ private:
     unsigned                     m_selectedFrameSkip {0};
     bool                         m_isTransparent {false};
     bool                         m_isBorderless {false};
+    bool                         m_paramsPositioned {false};
     RECT                         m_lastPosition;
+    std::unique_ptr<InputDialog> m_inputDialog;
 
     void LoadProfile(const std::string& fileName);
     void LoadProfile();

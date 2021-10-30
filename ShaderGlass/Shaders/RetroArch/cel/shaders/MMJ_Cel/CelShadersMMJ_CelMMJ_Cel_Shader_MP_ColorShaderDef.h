@@ -955,12 +955,12 @@ public:
 		VertexLength = sizeof(RetroArchCelShadersMMJ_CelMMJ_Cel_Shader_MP_ColorShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCelShadersMMJ_CelMMJ_Cel_Shader_MP_ColorShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCelShadersMMJ_CelMMJ_Cel_Shader_MP_ColorShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("ColorLevels", -1, 32, 4, 1.000000f, 32.000000f, 12.000000f));
-		Params.push_back(ShaderParam("ColorSaturation", -1, 36, 4, 0.000000f, 2.000000f, 1.150000f));
-		Params.push_back(ShaderParam("ColorWeight", -1, 40, 4, 0.000000f, 1.000000f, 0.500000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("MMJ_OutlineSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("ColorLevels", -1, 32, 4, 1.000000f, 32.000000f, 12.000000f, 1.000000f, "Color Levels"));
+		Params.push_back(ShaderParam("ColorSaturation", -1, 36, 4, 0.000000f, 2.000000f, 1.150000f, 0.050000f, "Color Saturation"));
+		Params.push_back(ShaderParam("ColorWeight", -1, 40, 4, 0.000000f, 1.000000f, 0.500000f, 0.050000f, "Color Weight"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("MMJ_OutlineSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Original", 2));
 		Samplers.push_back(ShaderSampler("MMJ_OutlinePass", 3));
 /*

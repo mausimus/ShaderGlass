@@ -986,16 +986,16 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestFastCrtGuestAdvancedPass1ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestFastCrtGuestAdvancedPass1ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestFastCrtGuestAdvancedPass1ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("h_sharp", -1, 56, 4, 0.200000f, 15.000000f, 5.200000f));
-		Params.push_back(ShaderParam("s_sharp", -1, 60, 4, 0.000000f, 1.500000f, 0.500000f));
-		Params.push_back(ShaderParam("spike", -1, 64, 4, 0.000000f, 2.000000f, 1.000000f));
-		Params.push_back(ShaderParam("prescalex", -1, 68, 4, 1.000000f, 4.000000f, 1.000000f));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f));
-		Params.push_back(ShaderParam("IOS", -1, 52, 4, 0.000000f, 0.000000f, 0.000000f));
+		Params.push_back(ShaderParam("h_sharp", -1, 56, 4, 0.200000f, 15.000000f, 5.200000f, 0.100000f, "          Horizontal sharpness"));
+		Params.push_back(ShaderParam("s_sharp", -1, 60, 4, 0.000000f, 1.500000f, 0.500000f, 0.100000f, "          Substractive sharpness (1.0 recommended)"));
+		Params.push_back(ShaderParam("spike", -1, 64, 4, 0.000000f, 2.000000f, 1.000000f, 0.100000f, "          Scanline Spike Removal"));
+		Params.push_back(ShaderParam("prescalex", -1, 68, 4, 1.000000f, 4.000000f, 1.000000f, 1.000000f, "          Prescale-X Factor (for xBR...pre-shader)"));
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("IOS", -1, 52, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("LinearizePass", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

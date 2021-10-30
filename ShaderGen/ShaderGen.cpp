@@ -319,7 +319,7 @@ void populateShaderTemplate(ShaderDef def)
     buffer << infile.rdbuf();
     auto bufferString = buffer.str();
     replace(bufferString, "%LIB_NAME%", _libName);
-    replace(bufferString, "%CLASS_NAME%", info.className);
+    replace(bufferString, "%CLASS_NAME%", info.className);    
     replace(bufferString, "%SHADER_NAME%", info.shaderName);
     replace(bufferString, "%SHADER_CATEGORY%", info.category);
     replace(bufferString, "%VERTEX_SOURCE%", splitCode(def.vertexSource));
@@ -365,6 +365,8 @@ void populateShaderTemplate(ShaderDef def)
                     replace(paramLine, "%PARAM_MIN%", to_string(p.min));
                     replace(paramLine, "%PARAM_MAX%", to_string(p.max));
                     replace(paramLine, "%PARAM_DEF%", to_string(p.def));
+                    replace(paramLine, "%PARAM_STEP%", to_string(p.step));
+                    replace(paramLine, "%PARAM_DESC%", p.desc);
                     outfile << paramLine << endl;
                 }
             }

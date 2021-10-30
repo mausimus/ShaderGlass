@@ -5,42 +5,28 @@ Overlay for running GPU shaders on top of Windows desktop.
 ### Features
 
 * applies shader effects on top of any window on the desktop
-* screen capture and shader calculations all performed on the GPU
 * includes [RetroArch](https://github.com/libretro/RetroArch) shader library covering:
   * CRT monitor simulation
   * image upscaling
   * TV / VHS simulation
-  * softening, denoising, blur and sharpen
-* works with most emulators and retro platforms (in windowed/borderless modes) including:
-  * [DOSBox](https://www.dosbox.com/)
-  * [FS-UAE](https://github.com/FrodeSolheim/fs-uae)
-  * [Altirra](http://www.virtualdub.org/altirra.html)
-  * [ScummVM](https://github.com/scummvm/scummvm)
-  * [AGS](https://github.com/adventuregamestudio/ags)
-* you can even use it on top of YouTube or Twitch, albeit with some option tuning necessary to clean up video scaling
-* able to save and load profiles
-* borderless fullscreen mode
-* currently in __alpha__ with features still being worked on:
-  * shader parameter control
-  * more shaders and bugfixes (some still broken)
-
-Feel free to post any problematic scenarios you're experiencing in the Issues tab.
+  * softening, denoising, blur, sharpen and many more
+* works with most emulators and retro platforms including:
+  * [DOSBox](https://www.dosbox.com/), [FS-UAE](https://github.com/FrodeSolheim/fs-uae), [Altirra](http://www.virtualdub.org/altirra.html),
+  [ScummVM](https://github.com/scummvm/scummvm), [AGS](https://github.com/adventuregamestudio/ags), [VICE](https://sf.net/projects/vice-emu), etc.
+* excellent companion for pixel art drawing showing shaded and/or aspect-ratio corrected preview
+* you can even use it on top of YouTube, Twitch or modern games
+* saving and loading profiles
+* multiple operating modes, including borderless fullscreen
 
 <br/>
 
 ### Download
 
-Latest ___beta___ release:
-* ability to export a .png screenshot
-* RetroArch shaders repo sync (~100 new shader presets)
+Latest release (v0.6, 31st Oct 2021):
+* adds ability to fine-tune Parameters for each shader
+* refresh of RetroArch shader library (200+ new shader profiles)
 
-https://github.com/rohatsu/ShaderGlass/releases/download/v0.6/ShaderGlass-0.6-beta-win-x64.zip
-
-<br/>
-
-Latest ___stable___ release:
-
-https://github.com/rohatsu/ShaderGlass/releases/download/v0.5/ShaderGlass-0.5-win-x64.zip
+https://github.com/rohatsu/ShaderGlass/releases/download/v0.6/ShaderGlass-0.6-win-x64.zip
 
 <br/>
 
@@ -57,8 +43,6 @@ Follow [ShaderGlass on itch.io](https://mausimus.itch.io/shaderglass) for latest
 
 If the app reports missing libraries please install [Visual C++ Redistributable 2019](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
-Since the app uses DirectX for both capture and shading it will remain Windows-only for the foreseeable future.
-
 <br/>
 
 ### Screenshots
@@ -67,7 +51,7 @@ Since the app uses DirectX for both capture and shading it will remain Windows-o
 
 In this mode a transparent floating window will apply a shader to anything behind it.
 
-This mode is not OBS-friendly, use Window Glass or Clone modes to capture/screenshot ShaderGlass.
+This mode is not OBS-friendly, use Window Glass or Clone modes to capture ShaderGlass.
 
 Requires Windows 10 2004 - on 1903/1909 you will see only a black window if you switch to this mode.
 
@@ -145,12 +129,17 @@ Currently supported options are:
 
 * _Output -> Aspect Ratio Correction_ - presets for common aspect ratio correction factors (DOS, etc.), applied horizontally to preserve scanline count
 
+  * If you select _Custom_ you can enter your own correction ratio expressed as pixel height (1.0 being square pixel). For example,
+  in MS-DOS era a picture of 320x200 resolution (16:10) was displayed on a 4:3 screen meaning each pixel was 1.2x tall on screen, 1.2 = (16/10) / (4/3)
+
 * _Output -> Frame Skip_ - in order to improve performance divide frame rate by n (capture is done at VSync rate)
 
 * _Output -> Fullscreen_ (Ctrl+Shift+G) - turn ShaderGlass into a topmost fullscreen borderless window, in Glass mode you will still see yellow outline around the screen but if you can use
 Window Glass (surrounding black bars) or Window Clone (top-left aligned) with your source then you can avoid yellow edges; press Ctrl+Shift+G to revert
 
 * _Shader_ - choose RetroArch shader to apply, or _none_ shader for testing
+
+  * _Parameters_ - show and modify active shader's parameters
 
 You can save and load profile files which will store all the options. It's also possible to pass profile file path on the command
 line and ShaderGlass will load it on startup.
@@ -180,7 +169,7 @@ In order to achieve the best effect it's necessary to tune parameters to match y
 * use Window Clone mode if you can, it's fastest and most compatible; if you need mouse click-through use Glass mode
 
 __Always check that input is crisply pixelated using the "none" shader__ as there is often implicit
-scaling happening (for example even when Chrome displays an image at 100%, Windows display scaling is still applied).
+scaling happening (for example even when Chrome displays an image at 100%, Windows DPI scaling is still applied).
 The none shader should display a pixelated image with no smoothing whatsoever,
 try to match Input Pixel Size setting with your input's size to achieve that.
 
@@ -221,8 +210,8 @@ into .h files which can be merged into ShaderGlass. The conversion process requi
 
 * ShaderGlass application is provided under [GNU General Public License v3.0](LICENSE)
 
-* Includes pre-built shaders from [libretro/RetroArch shader repository](https://github.com/libretro/slang-shaders). Please follow links to original files for detailed copyright holder and license information about
-each shader. Shaders are included in good faith for personal and non-commercial use only.
+* Includes precompiled shaders from [libretro/RetroArch shader repository](https://github.com/libretro/slang-shaders).
+Please refer to copyright notes within shader code for detailed copyright and license information about each shader.
 
 * App icon courtesy of [Icons-Land](http://www.icons-land.com/)
 
