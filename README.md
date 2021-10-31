@@ -50,9 +50,7 @@ If the app reports missing libraries please install [Visual C++ Redistributable 
 ##### Desktop Glass mode
 
 In this mode a transparent floating window will apply a shader to anything behind it.
-
 This mode is not OBS-friendly, use Window Glass or Clone modes to capture ShaderGlass.
-
 Requires Windows 10 2004 - on 1903/1909 you will see only a black window if you switch to this mode.
 
 Wikipedia in Chrome processed by crt-geom shader which applies scanlines and CRT curvature.
