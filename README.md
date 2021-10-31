@@ -173,6 +173,13 @@ scaling happening (for example even when Chrome displays an image at 100%, Windo
 The none shader should display a pixelated image with no smoothing whatsoever,
 try to match Input Pixel Size setting with your input's size to achieve that.
 
+### Parameters
+
+All shaders start using default Parameters as defined by their authors, but you can also tweak them using
+_Shader -> Parameters_ menu option.
+
+![params](images/params.png)
+
 ##### Emulators
 
 Most emulators (DOSBox, FS-UAE, Altirra etc.) will capture mouse by default so you can use them in Window Clone mode.
