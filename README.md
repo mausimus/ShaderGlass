@@ -26,7 +26,7 @@ Latest release (v0.6, 31st Oct 2021):
 * adds ability to fine-tune Parameters for each shader
 * refresh of RetroArch shader library (200+ new shader profiles)
 
-https://github.com/rohatsu/ShaderGlass/releases/download/v0.6/ShaderGlass-0.6-win-x64.zip
+https://github.com/mausimus/ShaderGlass/releases/download/v0.6/ShaderGlass-0.6-win-x64.zip
 
 <br/>
 
