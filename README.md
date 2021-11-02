@@ -1,3 +1,5 @@
+![License](https://img.shields.io/github/license/mausimus/ShaderGlass) ![Downloads](https://img.shields.io/github/downloads/mausimus/ShaderGlass/total) ![GitHub Version](https://img.shields.io/github/v/release/mausimus/ShaderGlass)
+
 ## ShaderGlass
 
 Overlay for running GPU shaders on top of Windows desktop.
