@@ -49,6 +49,7 @@ private:
     bool                         m_isTransparent {false};
     bool                         m_isBorderless {false};
     bool                         m_paramsPositioned {false};
+    float                        m_dpiScale {1.0f};
     RECT                         m_lastPosition;
     std::unique_ptr<InputDialog> m_inputDialog;
 
@@ -68,6 +69,7 @@ private:
     bool Start();
     void Stop();
     void Screenshot();
+    void LoadImage();
 
     static BOOL CALLBACK    EnumWindowsProcProxy(_In_ HWND hwnd, _In_ LPARAM lParam);
     static BOOL CALLBACK    EnumDisplayMonitorsProcProxy(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam);

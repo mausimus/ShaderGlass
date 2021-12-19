@@ -11,19 +11,16 @@ class ShaderGlass
 {
 public:
     ShaderGlass();
-    void                            Initialize(HWND                                outputWindow,
-                                               HWND                                captureWindow,
-                                               HMONITOR                            captureMonitor,
-                                               bool                                clone,
-                                               winrt::com_ptr<ID3D11Device>        device,
-                                               winrt::com_ptr<ID3D11DeviceContext> context);
-    void                            Process(winrt::com_ptr<ID3D11Texture2D> texture);
-    void                            SetInputScale(float w, float h);
-    void                            SetOutputScale(float w, float h);
-    void                            SetOutputFlip(bool h, bool v);
-    void                            SetShaderPreset(PresetDef* p, const std::vector<std::tuple<int, std::string, double>>& params);
-    void                            SetFrameSkip(int s);
-    winrt::com_ptr<ID3D11Texture2D> GrabOutput();
+    void Initialize(HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, bool image, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context);
+    void Process(winrt::com_ptr<ID3D11Texture2D> texture);
+    void SetInputScale(float w, float h);
+    void SetOutputScale(float w, float h);
+    void SetOutputFlip(bool h, bool v);
+    void SetShaderPreset(PresetDef* p, const std::vector<std::tuple<int, std::string, double>>& params);
+    void SetFrameSkip(int s);
+    void SetLockedArea(RECT area);
+    void SetFreeScale(bool freeScale);
+    winrt::com_ptr<ID3D11Texture2D>            GrabOutput();
     std::vector<std::tuple<int, ShaderParam*>> Params();
     void                                       UpdateParams();
     void                                       ResetParams();
@@ -61,6 +58,7 @@ private:
     HWND       m_outputWindow {0};
     HWND       m_captureWindow {0};
     bool       m_clone {false};
+    bool       m_image {false};
     int        m_frameCounter {0};
     bool       m_requiresFeedback {false};
     std::mutex m_mutex {};
@@ -85,4 +83,7 @@ private:
     volatile bool  m_outputRescaled {false};
     volatile bool  m_flipHorizontal {false};
     volatile bool  m_flipVertical {false};
+    volatile RECT  m_lockedArea {0, 0, 0, 0};
+    volatile bool  m_lockedAreaUpdated {false};
+    volatile bool  m_freeScale {false};
 };

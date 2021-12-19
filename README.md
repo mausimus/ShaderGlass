@@ -24,11 +24,14 @@ Overlay for running GPU shaders on top of Windows desktop.
 
 ### Download
 
-Latest release (v0.6, 31st Oct 2021):
-* adds ability to fine-tune Parameters for each shader
-* refresh of RetroArch shader library (200+ new shader profiles)
+Latest release (v0.7, 19 Dec 2021):
+* load .png/.jpg image file as input
+* lock capture area to clone a portion of the screen
+* free resizing & scaling support in Windowed Clone mode
+* option to account for display DPI scaling in pixel size adjustment
+* fixes to shaders
 
-https://github.com/mausimus/ShaderGlass/releases/download/v0.6/ShaderGlass-0.6-win-x64.zip
+https://github.com/mausimus/ShaderGlass/releases/download/v0.7/ShaderGlass-0.7-win-x64.zip
 
 <br/>
 
@@ -105,13 +108,20 @@ Currently supported options are:
 
 * _Input -> Desktop_ - captures the whole desktop or an individual monitor, defaults to Glass mode
 
+  * _Lock Current Area_ - always capture current area even if ShaderGlass window is moved
+
 * _Input -> Window_ - captures the selected window, defaults to Clone mode
+
+* _Input -> File..._ - load a .png or .jpg file as input
 
 * _Input -> Capture Cursor_ - whether to include mouse cursor in capture
 
 * _Input -> Remove Yellow Border_ - disables yellow frame around captured area (forced security feature); currently only supported on Windows 11
 
 * _Input -> Pixel Size_ - indicates the size of input pixels (pre-scaling), i.e. if you run a game in x3 scaling mode set this to x3 as well so that ShaderGlass can tell the original resolution
+
+  * _Adjust for DPI Scale_ - if your source always applies Windows DPI Scaling when displaying images
+(for example browsers) enable this option to take it into account; most emulators don't do this however
 
 * _Output -> Mode_ - overrides default mode for the input type:
 
@@ -127,12 +137,16 @@ Currently supported options are:
 
 * _Output -> Scale_ - apply additional scaling to the output if you'd like it to be larger; using no pre-scaling and only output scaling should result in best performance
 
+  * _Free_ - allow manual resizing of ShaderGlass window (Window Clone and File modes only)
+
 * _Output -> Aspect Ratio Correction_ - presets for common aspect ratio correction factors (DOS, etc.), applied horizontally to preserve scanline count
 
   * If you select _Custom_ you can enter your own correction ratio expressed as pixel height (1.0 being square pixel). For example,
   in MS-DOS era a picture of 320x200 resolution (16:10) was displayed on a 4:3 screen meaning each pixel was 1.2x tall on screen, 1.2 = (16/10) / (4/3)
 
 * _Output -> Frame Skip_ - in order to improve performance divide frame rate by n (capture is done at VSync rate)
+
+* _Output -> Take Snapshot_ - export current picture in .png format
 
 * _Output -> Fullscreen_ (Ctrl+Shift+G) - turn ShaderGlass into a topmost fullscreen borderless window, in Glass mode you will still see yellow outline around the screen but if you can use
 Window Glass (surrounding black bars) or Window Clone (top-left aligned) with your source then you can avoid yellow edges; press Ctrl+Shift+G to revert
