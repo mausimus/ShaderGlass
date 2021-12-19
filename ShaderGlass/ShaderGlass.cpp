@@ -6,9 +6,8 @@
 static HRESULT hr;
 
 ShaderGlass::ShaderGlass() :
-    m_lastSize {}, m_lastPos {}, m_lastCaptureWindowPos {}, m_passthroughDef(), m_shaderPreset(new Preset(m_passthroughDef)),
-    m_preprocessShader(m_preprocessShaderDef), m_preprocessPreset(m_preprocessPresetDef),
-    m_preprocessPass(m_preprocessShader, m_preprocessPreset)
+    m_lastSize {}, m_lastPos {}, m_lastCaptureWindowPos {}, m_passthroughDef(), m_shaderPreset(new Preset(m_passthroughDef)), m_preprocessShader(m_preprocessShaderDef),
+    m_preprocessPreset(m_preprocessPresetDef), m_preprocessPass(m_preprocessShader, m_preprocessPreset)
 { }
 
 ShaderGlass::~ShaderGlass()
@@ -22,16 +21,13 @@ ShaderGlass::~ShaderGlass()
     m_context->Flush();
 }
 
-void ShaderGlass::Initialize(HWND                                outputWindow,
-                             HWND                                captureWindow,
-                             HMONITOR                            captureMonitor,
-                             bool                                clone,
-                             winrt::com_ptr<ID3D11Device>        device,
-                             winrt::com_ptr<ID3D11DeviceContext> context)
+void ShaderGlass::Initialize(
+    HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, bool image, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context)
 {
     m_outputWindow  = outputWindow;
     m_captureWindow = captureWindow;
     m_clone         = clone;
+    m_image         = image;
     m_device        = device;
     m_context       = context;
 
@@ -179,6 +175,21 @@ void ShaderGlass::SetFrameSkip(int s)
     m_frameSkip = s;
 }
 
+void ShaderGlass::SetLockedArea(RECT lockedArea)
+{
+    m_lockedArea.top    = lockedArea.top;
+    m_lockedArea.bottom = lockedArea.bottom;
+    m_lockedArea.left   = lockedArea.left;
+    m_lockedArea.right  = lockedArea.right;
+    m_lockedAreaUpdated = true;
+}
+
+void ShaderGlass::SetFreeScale(bool freeScale)
+{
+    m_freeScale      = freeScale;
+    m_outputRescaled = true;
+}
+
 void ShaderGlass::DestroyTargets()
 {
     if(m_preprocessedRenderTarget != nullptr)
@@ -238,8 +249,7 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
         m_displayTexture      = nullptr;
         m_displayRenderTarget = nullptr;
 
-        hr = m_swapChain->ResizeBuffers(
-            0, static_cast<UINT>(clientRect.right), static_cast<UINT>(clientRect.bottom), DXGI_FORMAT_UNKNOWN, 0);
+        hr = m_swapChain->ResizeBuffers(0, static_cast<UINT>(clientRect.right), static_cast<UINT>(clientRect.bottom), DXGI_FORMAT_UNKNOWN, 0);
         assert(SUCCEEDED(hr));
 
         hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_displayTexture.put());
@@ -306,6 +316,9 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     RECT outputRect;
     GetWindowRect(m_outputWindow, &outputRect);
 
+    D3D11_TEXTURE2D_DESC capturedTextureDesc = {};
+    texture->GetDesc(&capturedTextureDesc);
+
     // properties of the window being captured
     RECT  captureRect;
     POINT captureTopLeft;
@@ -319,20 +332,25 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         GetClientRect(m_captureWindow, &captureClient);
 
         DwmGetWindowAttribute(m_captureWindow, DWMWA_EXTENDED_FRAME_BOUNDS, &captureRect, sizeof(RECT));
-        outputMoved = (m_lastCaptureWindowPos.y != captureRect.left || m_lastCaptureWindowPos.y != captureRect.bottom);
+        outputMoved = (m_lastCaptureWindowPos.x != captureRect.left || m_lastCaptureWindowPos.y != captureRect.bottom);
         if(outputMoved)
         {
             m_lastCaptureWindowPos.x = captureRect.left;
             m_lastCaptureWindowPos.y = captureRect.bottom;
         }
     }
-
-    D3D11_TEXTURE2D_DESC desc = {};
-    texture->GetDesc(&desc);
+    else if (m_image)
+    {
+        captureRect.left   = 0;
+        captureRect.top    = 0;
+        captureRect.right = capturedTextureDesc.Width;
+        captureRect.bottom = capturedTextureDesc.Height;
+        captureClient      = captureRect;
+    }
 
     RECT textureRect;
-    textureRect.right  = desc.Width;
-    textureRect.bottom = desc.Height;
+    textureRect.right  = capturedTextureDesc.Width;
+    textureRect.bottom = capturedTextureDesc.Height;
 
     auto outputResized = false;
     outputResized      = TryResizeSwapChain(clientRect, m_outputRescaled);
@@ -424,13 +442,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     if(inputRescaled || outputResized)
     {
         m_textureSizes.clear();
-        m_textureSizes.insert(
-            std::make_pair("Original", float4 {(float)originalWidth, (float)originalHeight, 1.0f / originalWidth, 1.0f / originalHeight}));
-        m_textureSizes.insert(std::make_pair(
-            "FinalViewport", float4 {(float)viewportWidth, (float)viewportHeight, 1.0f / viewportWidth, 1.0f / viewportHeight}));
+        m_textureSizes.insert(std::make_pair("Original", float4 {(float)originalWidth, (float)originalHeight, 1.0f / originalWidth, 1.0f / originalHeight}));
+        m_textureSizes.insert(std::make_pair("FinalViewport", float4 {(float)viewportWidth, (float)viewportHeight, 1.0f / viewportWidth, 1.0f / viewportHeight}));
 
         // preprocess takes original texture full size
-        m_preprocessPass.Resize(desc.Width, desc.Height, originalWidth, originalHeight, m_textureSizes);
+        m_preprocessPass.Resize(capturedTextureDesc.Width, capturedTextureDesc.Height, originalWidth, originalHeight, m_textureSizes);
 
         UINT                             sourceWidth  = originalWidth;
         UINT                             sourceHeight = originalHeight;
@@ -465,9 +481,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
                 passSizes.push_back({sourceWidth, sourceHeight, outputWidth, outputHeight});
                 if(!shaderPass.m_shader.m_alias.empty())
                 {
-                    m_textureSizes.insert(
-                        std::make_pair(shaderPass.m_shader.m_alias,
-                                       float4 {(float)outputWidth, (float)outputHeight, 1.0f / outputWidth, 1.0f / outputHeight}));
+                    m_textureSizes.insert(std::make_pair(shaderPass.m_shader.m_alias, float4 {(float)outputWidth, (float)outputHeight, 1.0f / outputWidth, 1.0f / outputHeight}));
                 }
                 sourceWidth  = outputWidth;
                 sourceHeight = outputHeight;
@@ -567,56 +581,66 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         m_shaderPasses[m_shaderPasses.size() - 1].m_targetView = m_displayRenderTarget.get();
     }
 
-    if(outputMoved || outputResized || (m_lastPos.x != topLeft.x || m_lastPos.y != topLeft.y))
+    if(outputMoved || outputResized || (m_lastPos.x != topLeft.x || m_lastPos.y != topLeft.y) || m_lockedAreaUpdated)
     {
         // preprocess captured frame to a texture: crop (via scale & translation), reduce resolution, and whatnot (invert y?)
         float sx = 1.0f, sy = 1.0f, tx = 0.0f, ty = 0.0f;
-        if(!m_captureWindow)
+        POINT finalTopLeft  = topLeft;
+        m_lockedAreaUpdated = false;
+        if(m_lockedArea.right - m_lockedArea.left != 0)
+        {
+            // we only lock position
+            finalTopLeft.x = m_lockedArea.left;
+            finalTopLeft.y = m_lockedArea.top;
+        }
+        if(!m_captureWindow && !m_image)
         {
             if(m_clone)
             {
                 // desktop clone (take from 0,0)
                 auto clientW = destWidth;
                 auto clientH = destHeight;
-                sx           = 1.0f * desc.Width / clientW;
-                sy           = 1.0f * desc.Height / clientH;
-                tx           = 1.0f * desc.Width / clientW - 1.0f;
-                ty           = -1.0f * desc.Height / clientH + 1.0f;
+                sx           = 1.0f * capturedTextureDesc.Width / clientW;
+                sy           = 1.0f * capturedTextureDesc.Height / clientH;
+                tx           = 1.0f * capturedTextureDesc.Width / clientW - 1.0f;
+                ty           = -1.0f * capturedTextureDesc.Height / clientH + 1.0f;
             }
             else
             {
                 // desktop glass
                 auto clientW = destWidth;
                 auto clientH = destHeight;
-                sx           = 1.0f * desc.Width / clientW;
-                sy           = 1.0f * desc.Height / clientH;
-                tx           = -(2.0f * topLeft.x - desc.Width) / clientW - 1.0f;
-                ty           = (2.0f * topLeft.y - desc.Height) / clientH + 1.0f;
+                sx           = 1.0f * capturedTextureDesc.Width / clientW;
+                sy           = 1.0f * capturedTextureDesc.Height / clientH;
+                tx           = -(2.0f * finalTopLeft.x - capturedTextureDesc.Width) / clientW - 1.0f;
+                ty           = (2.0f * finalTopLeft.y - capturedTextureDesc.Height) / clientH + 1.0f;
             }
         }
         else
         {
             if(m_clone)
             {
-                // window clone
                 auto clientW = destWidth;
                 auto clientH = destHeight;
-                sx           = 1.0f * captureClient.right / clientW;
-                sy           = 1.0f * captureClient.bottom / clientH;
-                sx           = 1.0f * desc.Width / clientW;
-                sy           = 1.0f * desc.Height / clientH;
-                tx           = -(2.0f * (captureTopLeft.x - captureRect.left) - desc.Width) / clientW - 1.0f;
-                ty           = (2.0f * (captureTopLeft.y - captureRect.top) - desc.Height) / clientH + 1.0f;
+                if(m_freeScale)
+                {
+                    clientW = captureClient.right;
+                    clientH = captureClient.bottom;
+                }
+                sx = 1.0f * capturedTextureDesc.Width / clientW;
+                sy = 1.0f * capturedTextureDesc.Height / clientH;
+                tx = -(2.0f * (captureTopLeft.x - captureRect.left) - capturedTextureDesc.Width) / clientW - 1.0f;
+                ty = (2.0f * (captureTopLeft.y - captureRect.top) - capturedTextureDesc.Height) / clientH + 1.0f;
             }
             else
             {
                 // window glass
                 auto clientW = destWidth;
                 auto clientH = destHeight;
-                sx           = 1.0f * desc.Width / clientW;
-                sy           = 1.0f * desc.Height / clientH;
-                tx           = -(2.0f * (topLeft.x - captureRect.left) - desc.Width) / clientW - 1.0f;
-                ty           = (2.0f * (topLeft.y - captureRect.top) - desc.Height) / clientH + 1.0f;
+                sx           = 1.0f * capturedTextureDesc.Width / clientW;
+                sy           = 1.0f * capturedTextureDesc.Height / clientH;
+                tx           = -(2.0f * (finalTopLeft.x - captureRect.left) - capturedTextureDesc.Width) / clientW - 1.0f;
+                ty           = (2.0f * (finalTopLeft.y - captureRect.top) - capturedTextureDesc.Height) / clientH + 1.0f;
             }
         }
         if(m_flipHorizontal)

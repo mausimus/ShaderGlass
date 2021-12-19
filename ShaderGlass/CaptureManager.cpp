@@ -8,12 +8,15 @@
 
 #include <wincodec.h>
 #include "WIC\ScreenGrab11.h"
+#include "WIC\WICTextureLoader11.h"
 
 using namespace std;
 using namespace util;
 using namespace util::uwp;
 
-CaptureManager::CaptureManager() : m_options() { }
+class CaptureManager* CaptureManager::s_this {nullptr};
+
+CaptureManager::CaptureManager() : m_options(), m_timer(0) { }
 
 bool CaptureManager::Initialize()
 {
@@ -54,23 +57,52 @@ void CaptureManager::StartSession()
 
     auto dxgiDevice = m_d3dDevice.as<IDXGIDevice>();
     auto device     = CreateDirect3DDevice(dxgiDevice.get());
-    auto captureItem =
-        m_options.captureWindow ? CreateCaptureItemForWindow(m_options.captureWindow) : CreateCaptureItemForMonitor(m_options.monitor);
 
 #ifdef _DEBUG
     m_d3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(m_debug.put()));
 #endif
 
     m_shaderGlass = make_unique<ShaderGlass>();
-    m_shaderGlass->Initialize(m_options.outputWindow, m_options.captureWindow, m_options.monitor, m_options.clone, m_d3dDevice, m_context);
+    m_shaderGlass->Initialize(m_options.outputWindow, m_options.captureWindow, m_options.monitor, m_options.clone, !m_options.imageFile.empty(), m_d3dDevice, m_context);
     UpdatePixelSize();
     UpdateOutputSize();
     UpdateOutputFlip();
     UpdateShaderPreset();
     UpdateFrameSkip();
+    UpdateLockedArea();
 
-    m_session = make_unique<CaptureSession>(
-        device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass);
+    if(m_options.imageFile.size())
+    {
+        winrt::com_ptr<ID3D11Texture2D>          inputTexture;
+        winrt::com_ptr<ID3D11ShaderResourceView> inputTextureView;
+        auto hr = DirectX::CreateWICTextureFromFile(m_d3dDevice.get(), m_options.imageFile.c_str(), (ID3D11Resource**)(inputTexture.put()), inputTextureView.put());
+        assert(SUCCEEDED(hr));
+
+        // retrieve input image size
+        D3D11_TEXTURE2D_DESC desc = {};
+        inputTexture->GetDesc(&desc);
+        m_options.imageWidth  = desc.Width;
+        m_options.imageHeight = desc.Height;
+
+        m_session = make_unique<CaptureSession>(device, inputTexture, *m_shaderGlass);
+
+        int frameInterval = 1000 / 60; // set to 60fps if we fail to retrieve refresh rate
+
+        DEVMODE devmode;
+        devmode.dmSize = sizeof(DEVMODE);
+        if(EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode) && devmode.dmDisplayFrequency != 0)
+        {
+            frameInterval = 1000 / devmode.dmDisplayFrequency;
+        }
+        s_this  = this; // horrible hack
+        m_timer = SetTimer(NULL, 0, frameInterval, CaptureManager::TimerFuncProxy);
+    }
+    else
+    {
+        auto captureItem = m_options.captureWindow ? CreateCaptureItemForWindow(m_options.captureWindow) : CreateCaptureItemForMonitor(m_options.monitor);
+
+        m_session = make_unique<CaptureSession>(device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass);
+    }
     UpdateCursor();
 }
 
@@ -96,6 +128,14 @@ bool CaptureManager::IsActive()
     return m_session.get();
 }
 
+void CaptureManager::ForceProcess()
+{
+    if(m_session.get())
+    {
+        m_session->ProcessInput();
+    }
+}
+
 void CaptureManager::StopSession()
 {
     if(m_session.get())
@@ -110,6 +150,12 @@ void CaptureManager::Exit()
 {
     if(m_session.get())
     {
+        if(m_timer)
+        {
+            KillTimer(NULL, m_timer);
+            m_timer = 0;
+        }
+
         m_session->Stop();
         delete m_session.release();
 
@@ -128,7 +174,7 @@ void CaptureManager::UpdatePixelSize()
 {
     if(m_shaderGlass)
     {
-        m_shaderGlass->SetInputScale(m_options.pixelWidth, m_options.pixelHeight);
+        m_shaderGlass->SetInputScale(m_options.pixelWidth * m_options.dpiScale, m_options.pixelHeight * m_options.dpiScale);
     }
 }
 
@@ -137,6 +183,7 @@ void CaptureManager::UpdateOutputSize()
     if(m_shaderGlass)
     {
         m_shaderGlass->SetOutputScale(1.0f * m_options.aspectRatio / m_options.outputScale, 1.0f / m_options.outputScale);
+        m_shaderGlass->SetFreeScale(m_options.freeScale);
     }
 }
 
@@ -162,6 +209,14 @@ void CaptureManager::UpdateFrameSkip()
     if(m_shaderGlass)
     {
         m_shaderGlass->SetFrameSkip(m_options.frameSkip);
+    }
+}
+
+void CaptureManager::UpdateLockedArea()
+{
+    if(m_shaderGlass)
+    {
+        m_shaderGlass->SetLockedArea(m_options.inputArea);
     }
 }
 
@@ -195,5 +250,13 @@ void CaptureManager::ResetParams()
     if(m_shaderGlass)
     {
         m_shaderGlass->ResetParams();
+    }
+}
+
+void CaptureManager::TimerFuncProxy(_In_ HWND hwnd, _In_ UINT param2, _In_ UINT_PTR param3, _In_ DWORD param4)
+{
+    if(s_this)
+    {
+        s_this->ForceProcess();
     }
 }
