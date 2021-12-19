@@ -12,9 +12,9 @@ Overlay for running GPU shaders on top of Windows desktop.
   * image upscaling
   * TV / VHS simulation
   * softening, denoising, blur, sharpen and many more
-* works with most emulators and retro platforms including:
+* works with most emulators, retro platforms and pixel art editors including:
   * [DOSBox](https://www.dosbox.com/), [FS-UAE](https://github.com/FrodeSolheim/fs-uae), [Altirra](http://www.virtualdub.org/altirra.html),
-  [ScummVM](https://github.com/scummvm/scummvm), [AGS](https://github.com/adventuregamestudio/ags), [VICE](https://sf.net/projects/vice-emu), etc.
+  [ScummVM](https://github.com/scummvm/scummvm), [AGS](https://github.com/adventuregamestudio/ags), [VICE](https://sf.net/projects/vice-emu), [Aseprite](https://www.aseprite.org/) etc.
 * excellent companion for pixel art drawing showing shaded and/or aspect-ratio corrected preview
 * you can even use it on top of YouTube, Twitch or modern games
 * saving and loading profiles
@@ -49,6 +49,12 @@ Follow [ShaderGlass on itch.io](https://mausimus.itch.io/shaderglass) for latest
 If the app reports missing libraries please install [Visual C++ Redistributable 2019](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
 <br/>
+
+### See it in action
+
+Demonstration video (YouTube):
+
+[![ShaderGlass](https://img.youtube.com/vi/5WLit0TBYIw/0.jpg)](https://www.youtube.com/watch?v=5WLit0TBYIw "ShaderGlass")
 
 ### Screenshots
 
