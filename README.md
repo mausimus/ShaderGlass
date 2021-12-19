@@ -29,7 +29,7 @@ Latest release (v0.7, 19 Dec 2021):
 * lock capture area to clone a portion of the screen
 * free resizing & scaling support in Windowed Clone mode
 * option to account for display DPI scaling in pixel size adjustment
-* fixes to shaders
+* shader fixes
 
 https://github.com/mausimus/ShaderGlass/releases/download/v0.7/ShaderGlass-0.7-win-x64.zip
 
