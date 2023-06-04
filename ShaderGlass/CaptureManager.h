@@ -54,6 +54,8 @@ public:
     void UpdateParams();
     void ResetParams();
     void SetParams(const std::vector<std::tuple<int, std::string, double>>& params);
+    void RememberLastPreset();
+    void ForgetLastPreset();
     void SaveOutput(LPWSTR fileName);
     void ForceProcess();
     void Exit();
@@ -70,4 +72,6 @@ private:
     std::unique_ptr<ShaderGlass>                      m_shaderGlass {nullptr};
     std::vector<std::unique_ptr<PresetDef>>           m_presetList;
     std::vector<std::tuple<int, std::string, double>> m_queuedParams;
+    std::vector<std::tuple<int, std::string, double>> m_lastParams;
+    unsigned int                                      m_lastPreset;
 };
