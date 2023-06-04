@@ -1095,6 +1095,9 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             ShellExecute(0, 0, L"https://github.com/mausimus/ShaderGlass", 0, 0, SW_SHOW);
 #endif
             break;
+        case ID_HELP_FREQUENTLYASKEDQUESTIONS:
+            ShellExecute(0, 0, L"https://github.com/mausimus/ShaderGlass/FAQ.md", 0, 0, SW_SHOW);
+            break;
         default:
             if(wmId >= WM_USER && wmId <= 0x7FFF)
             {

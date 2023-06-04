@@ -135,6 +135,7 @@
 #define IDM_FULLSCREEN                  32892
 #define IDM_SCREENSHOT                  32893
 #define IDM_PAUSE                       32894
+#define ID_HELP_FREQUENTLYASKEDQUESTIONS 32895
 #define IDC_STATIC                      -1
 #define IDC_STATIC_LABEL                -1
 
@@ -144,7 +145,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        130
-#define _APS_NEXT_COMMAND_VALUE         32895
+#define _APS_NEXT_COMMAND_VALUE         32896
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           115
 #endif
