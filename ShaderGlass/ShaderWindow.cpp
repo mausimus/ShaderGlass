@@ -13,6 +13,8 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
         if(paused)
             Stop();
 
+        m_captureManager.ForgetLastPreset();
+
         std::ifstream infile(fileName);
         if(!infile.good())
         {

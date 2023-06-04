@@ -16,7 +16,7 @@ using namespace util::uwp;
 
 class CaptureManager* CaptureManager::s_this {nullptr};
 
-CaptureManager::CaptureManager() : m_options(), m_timer(0) { }
+CaptureManager::CaptureManager() : m_options(), m_timer(0), m_lastPreset(-1) { }
 
 bool CaptureManager::Initialize()
 {
@@ -108,6 +108,7 @@ void CaptureManager::StartSession()
 
 void CaptureManager::SetParams(const std::vector<std::tuple<int, std::string, double>>& params)
 {
+    ForgetLastPreset();
     m_queuedParams = params;
 }
 
@@ -140,6 +141,8 @@ void CaptureManager::StopSession()
 {
     if(m_session.get())
     {
+        RememberLastPreset();
+
         GrabOutput();
 
         Exit();
@@ -199,8 +202,15 @@ void CaptureManager::UpdateShaderPreset()
 {
     if(m_shaderGlass)
     {
+        // restore params when restarting
+        if(m_lastPreset == m_options.presetNo && !m_queuedParams.size() && m_lastParams.size())
+        {
+            m_queuedParams = m_lastParams;
+        }
+        ForgetLastPreset();
         m_shaderGlass->SetShaderPreset(m_presetList.at(m_options.presetNo).get(), m_queuedParams);
         m_queuedParams.clear();
+        m_lastPreset = m_options.presetNo;
     }
 }
 
@@ -259,4 +269,25 @@ void CaptureManager::TimerFuncProxy(_In_ HWND hwnd, _In_ UINT param2, _In_ UINT_
     {
         s_this->ForceProcess();
     }
+}
+
+void CaptureManager::RememberLastPreset()
+{
+    if(m_shaderGlass)
+    {
+        auto params = Params();
+        m_lastParams.clear();
+        for(const auto& param : params)
+        {
+            const auto pass = std::get<0>(param);
+            const auto shaderParam = std::get<1>(param);
+            m_lastParams.push_back(std::make_tuple(pass, shaderParam->name, shaderParam->currentValue));
+        }
+    }
+}
+
+void CaptureManager::ForgetLastPreset()
+{
+    m_lastParams.clear();
+    m_lastPreset = -1;
 }
