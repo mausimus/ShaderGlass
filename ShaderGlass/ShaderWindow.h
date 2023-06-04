@@ -70,6 +70,10 @@ private:
     void Stop();
     void Screenshot();
     void LoadImage();
+    void RegisterHotkeys();
+    void UnregisterHotkeys();
+    void SaveHotkeyState(bool state);
+    bool GetHotkeyState();
 
     static BOOL CALLBACK    EnumWindowsProcProxy(_In_ HWND hwnd, _In_ LPARAM lParam);
     static BOOL CALLBACK    EnumDisplayMonitorsProcProxy(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam);

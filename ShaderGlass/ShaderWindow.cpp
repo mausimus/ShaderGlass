@@ -901,6 +901,20 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case ID_INPUT_FILE:
             LoadImage();
             break;
+        case ID_PROCESSING_GLOBALHOTKEYS:
+            if(GetMenuState(m_programMenu, ID_PROCESSING_GLOBALHOTKEYS, MF_BYCOMMAND) & MF_CHECKED)
+            {
+                UnregisterHotkeys();
+                CheckMenuItem(m_programMenu, ID_PROCESSING_GLOBALHOTKEYS, MF_UNCHECKED);
+                SaveHotkeyState(false);
+            }
+            else
+            {
+                RegisterHotkeys();
+                CheckMenuItem(m_programMenu, ID_PROCESSING_GLOBALHOTKEYS, MF_CHECKED);
+                SaveHotkeyState(true);
+            }
+            break;
         case ID_DESKTOP_LOCKINPUTAREA:
             if(m_captureOptions.inputArea.right - m_captureOptions.inputArea.left != 0)
             {
@@ -963,6 +977,18 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             break;
         case IDM_SHADER_RANDOM:
             SendMessage(hWnd, WM_COMMAND, WM_SHADER(rand() % m_numPresets), 0);
+            break;
+        case IDM_FULLSCREEN:
+            ToggleBorderless(hWnd);
+            break;
+        case IDM_SCREENSHOT:
+            Screenshot();
+            break;
+        case IDM_PAUSE:
+            if(m_captureManager.IsActive())
+                Stop();
+            else
+                Start();
             break;
         case IDM_PIXELSIZE_NEXT:
             SendMessage(hWnd, WM_COMMAND, WM_PIXEL_SIZE((m_selectedPixelSize + 1) % pixelSizes.size()), 0);
@@ -1420,9 +1446,14 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 
     SetMenu(m_mainWindow, m_mainMenu);
     srand(static_cast<unsigned>(time(NULL)));
-    RegisterHotKey(m_mainWindow, HK_FULLSCREEN, MOD_CONTROL | MOD_SHIFT, 0x47); // G
-    RegisterHotKey(m_mainWindow, HK_SCREENSHOT, MOD_CONTROL | MOD_SHIFT, 0x53); // S
-    RegisterHotKey(m_mainWindow, HK_PAUSE, MOD_CONTROL | MOD_SHIFT, 0x50); // P
+    if(GetHotkeyState())
+    {
+        RegisterHotkeys();
+    }
+    else
+    {
+        CheckMenuItem(m_programMenu, ID_PROCESSING_GLOBALHOTKEYS, MF_BYCOMMAND | MF_UNCHECKED);
+    }
 
     m_captureOptions.monitor      = nullptr;
     m_captureOptions.outputWindow = m_mainWindow;
@@ -1437,6 +1468,46 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     SendMessage(m_mainWindow, WM_COMMAND, Is1903() ? IDM_MODE_CLONE : IDM_MODE_GLASS, 0);
 
     return TRUE;
+}
+
+void ShaderWindow::SaveHotkeyState(bool state)
+{
+    HKEY  hkey;
+    DWORD dwDisposition;
+    if(RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\ShaderGlass"), 0, NULL, 0, KEY_WRITE | KEY_SET_VALUE, NULL, &hkey, &dwDisposition) == ERROR_SUCCESS)
+    {
+        DWORD size = sizeof(DWORD);
+        DWORD value = state ? 1 : 0;
+        RegSetValueEx(hkey, TEXT("Global Hotkeys"), 0, REG_DWORD, (PBYTE)&value, size);
+        RegCloseKey(hkey);
+    }
+}
+
+bool ShaderWindow::GetHotkeyState()
+{
+    HKEY hKey;
+    if(RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Software\\ShaderGlass"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
+    {
+        DWORD value = 1;
+        DWORD size = sizeof(DWORD);
+        RegGetValue(hKey, NULL, TEXT("Global Hotkeys"), RRF_RT_REG_DWORD, NULL, &value, &size);
+        return value == 1;
+    }
+    return true;
+}
+
+void ShaderWindow::RegisterHotkeys()
+{
+    RegisterHotKey(m_mainWindow, HK_FULLSCREEN, MOD_CONTROL | MOD_SHIFT, 0x47); // G
+    RegisterHotKey(m_mainWindow, HK_SCREENSHOT, MOD_CONTROL | MOD_SHIFT, 0x53); // S
+    RegisterHotKey(m_mainWindow, HK_PAUSE, MOD_CONTROL | MOD_SHIFT, 0x50); // P
+}
+
+void ShaderWindow::UnregisterHotkeys()
+{
+    UnregisterHotKey(m_mainWindow, HK_FULLSCREEN);
+    UnregisterHotKey(m_mainWindow, HK_SCREENSHOT);
+    UnregisterHotKey(m_mainWindow, HK_PAUSE);
 }
 
 void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow)
