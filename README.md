@@ -19,19 +19,17 @@ Overlay for running GPU shaders on top of Windows desktop.
 * you can even use it on top of YouTube, Twitch or modern games
 * saving and loading profiles
 * multiple operating modes, including borderless fullscreen
+* can be captured by OBS (using Game Capture source)
 
 <br/>
 
 ### Download
 
-Latest release (v0.7, 19 Dec 2021):
-* load .png/.jpg image file as input
-* lock capture area to clone a portion of the screen
-* free resizing & scaling support in Windowed Clone mode
-* option to account for display DPI scaling in pixel size adjustment
-* shader fixes
+Latest release (v0.8, 4 Jun 2023):
+* ability to disable global hotkeys
+* fix: shader parameters are lost when minimizing/restarting
 
-https://github.com/mausimus/ShaderGlass/releases/download/v0.7/ShaderGlass-0.7-win-x64.zip
+https://github.com/mausimus/ShaderGlass/releases/download/v0.8/ShaderGlass-0.8-win-x64.zip
 
 <br/>
 
@@ -61,7 +59,6 @@ Demonstration video (YouTube):
 ##### Desktop Glass mode
 
 In this mode a transparent floating window will apply a shader to anything behind it.
-This mode is not OBS-friendly, use Window Glass or Clone modes to capture ShaderGlass.
 Requires Windows 10 2004 - on 1903/1909 you will see only a black window if you switch to this mode.
 
 Wikipedia in Chrome processed by crt-geom shader which applies scanlines and CRT curvature.
@@ -111,6 +108,8 @@ with C64 monitor shader applied.
 ### Options
 
 Currently supported options are:
+
+* _Processing -> Enable Global Hotkeys_ - toggle use of global hotkeys (if they conflict with another app)
 
 * _Input -> Desktop_ - captures the whole desktop or an individual monitor, defaults to Glass mode
 
@@ -220,9 +219,15 @@ and/or aspect ratio correction in ShaderGlass and enjoy the game.
 
 <br/>
 
+### Frequently Asked Questions
+
+See FAQ [here](FAQ.md).
+
+<br/>
+
 ### Code
 
-Built using Visual Studio 2019 using ISO C++ 20, Windows SDK 10.0.20348, Windows Capture API and DirectX 11.
+Built using Visual Studio 2022 using ISO C++ 20, Windows SDK 10.0.22000, Windows Capture API and DirectX 11.
 
 ShaderGlass includes a limited implementation of RetroArch shader back-end.
 [ShaderGen](ShaderGen) is a command-line tool for converting Slang shaders 
