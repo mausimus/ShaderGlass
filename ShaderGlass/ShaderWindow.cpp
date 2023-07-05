@@ -3,7 +3,7 @@
 #include "resource.h"
 #include "ShaderWindow.h"
 
-ShaderWindow::ShaderWindow(CaptureManager& captureManager) : m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass() { }
+ShaderWindow::ShaderWindow(CaptureManager& captureManager) : m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass(), m_toggledNone(false) { }
 
 void ShaderWindow::LoadProfile(const std::string& fileName)
 {
@@ -1231,6 +1231,27 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
 
         break;
     }
+    case WM_KEYDOWN:
+        if (wParam == VK_TAB)
+        {
+            if (!m_toggledNone) 
+            {
+                m_toggledNone = true;
+                m_toggledPresetNo = m_captureOptions.presetNo;
+                SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_numPresets-1), 0);
+            }
+        }
+        break;
+    case WM_KEYUP:
+        if (wParam == VK_TAB)
+        {
+            if (m_toggledNone) 
+            {
+                m_toggledNone = false;
+                SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_toggledPresetNo), 0);
+            }
+        }
+        break;
     case WM_SIZE: {
         switch(wParam)
         {
