@@ -55,6 +55,7 @@ public:
     void ResetParams();
     void SetParams(const std::vector<std::tuple<int, std::string, double>>& params);
     void RememberLastPreset();
+    void SetLastPreset(unsigned presetNo);
     void ForgetLastPreset();
     void SaveOutput(LPWSTR fileName);
     void ForceProcess();

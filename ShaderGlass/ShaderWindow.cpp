@@ -1238,6 +1238,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             {
                 m_toggledNone = true;
                 m_toggledPresetNo = m_captureOptions.presetNo;
+                m_captureManager.RememberLastPreset();
                 SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_numPresets-1), 0);
             }
         }
@@ -1248,6 +1249,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             if (m_toggledNone) 
             {
                 m_toggledNone = false;
+                m_captureManager.SetLastPreset(m_toggledPresetNo);
                 SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_toggledPresetNo), 0);
             }
         }
