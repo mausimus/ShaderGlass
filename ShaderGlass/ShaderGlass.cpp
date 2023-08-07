@@ -460,24 +460,18 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             {
                 UINT outputWidth  = sourceWidth;
                 UINT outputHeight = sourceHeight;
-                if(shaderPass.m_shader.m_scaleX != 1.0f)
-                {
-                    if(shaderPass.m_shader.m_scaleViewportX)
-                        outputWidth = static_cast<UINT>(viewportWidth * shaderPass.m_shader.m_scaleX);
-                    else if(shaderPass.m_shader.m_scaleAbsoluteX)
-                        outputWidth = static_cast<UINT>(shaderPass.m_shader.m_scaleX);
-                    else
-                        outputWidth = static_cast<UINT>(sourceWidth * shaderPass.m_shader.m_scaleX);
-                }
-                if(shaderPass.m_shader.m_scaleY != 1.0f)
-                {
-                    if(shaderPass.m_shader.m_scaleViewportY)
-                        outputHeight = static_cast<UINT>(viewportHeight * shaderPass.m_shader.m_scaleY);
-                    else if(shaderPass.m_shader.m_scaleAbsoluteY)
-                        outputHeight = static_cast<UINT>(shaderPass.m_shader.m_scaleY);
-                    else
-                        outputHeight = static_cast<UINT>(sourceHeight * shaderPass.m_shader.m_scaleY);
-                }
+                if(shaderPass.m_shader.m_scaleViewportX)
+                    outputWidth = static_cast<UINT>(viewportWidth * shaderPass.m_shader.m_scaleX);
+                else if(shaderPass.m_shader.m_scaleAbsoluteX)
+                    outputWidth = static_cast<UINT>(shaderPass.m_shader.m_scaleX);
+                else
+                    outputWidth = static_cast<UINT>(sourceWidth * shaderPass.m_shader.m_scaleX);
+                if(shaderPass.m_shader.m_scaleViewportY)
+                    outputHeight = static_cast<UINT>(viewportHeight * shaderPass.m_shader.m_scaleY);
+                else if(shaderPass.m_shader.m_scaleAbsoluteY)
+                    outputHeight = static_cast<UINT>(shaderPass.m_shader.m_scaleY);
+                else
+                    outputHeight = static_cast<UINT>(sourceHeight * shaderPass.m_shader.m_scaleY);
                 passSizes.push_back({sourceWidth, sourceHeight, outputWidth, outputHeight});
                 if(!shaderPass.m_shader.m_alias.empty())
                 {
