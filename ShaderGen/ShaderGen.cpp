@@ -1,6 +1,6 @@
 /*
 ShaderGen: slangp shader converter for ShaderGlass
-https://github.com/rohatsu/ShaderGlass
+https://github.com/mausimus/ShaderGlass
 GNU General Public License v3.0
 */
 
@@ -385,7 +385,7 @@ void populateShaderTemplate(ShaderDef def)
         else if(line.starts_with("%HEADER"))
         {
             outfile << "ShaderGlass shader " << info.category << "\\" << info.shaderName << " imported from " << _libName << ":" << endl;
-            outfile << "https://github.com/libretro/slang-shaders/blob/master/" << def.input.generic_string() << endl;
+            outfile << "https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/" << def.input.generic_string() << endl;
             outfile << "See original file for full credits and usage license with excerpts below. " << endl;
             outfile << "This file is auto-generated, do not modify directly." << endl;
             if (def.comments.size())
@@ -426,7 +426,7 @@ void populateTextureTemplate(TextureDef def)
         if(line.starts_with("%HEADER"))
         {
             outfile << "ShaderGlass texture " << info.category << " / " << info.shaderName << " imported from " << _libName << ":" << endl;
-            outfile << "https://github.com/libretro/slang-shaders/blob/master/" << def.input.generic_string() << endl;
+            outfile << "https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/" << def.input.generic_string() << endl;
             outfile << "See original file for credits and usage license. " << endl;
             outfile << "This file is auto-generated, do not modify directly." << endl;
         }
@@ -505,7 +505,7 @@ void populatePresetTemplate(const filesystem::path& input, const vector<ShaderDe
         else if(line.starts_with("%HEADER"))
         {
             outfile << "ShaderGlass preset " << info.category << " / " << info.shaderName << " imported from " << _libName << ":" << endl;
-            outfile << "https://github.com/libretro/slang-shaders/blob/master/" << input.generic_string() << endl;
+            outfile << "https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/" << input.generic_string() << endl;
             outfile << "See original file for credits and usage license. " << endl;
             outfile << "This file is auto-generated, do not modify directly." << endl;
         }

@@ -28,7 +28,7 @@ const char* _inputPath  = "..\\..\\slang-shaders";
 const char* _outputPath = "..\\ShaderGlass\\ShaderGlass\\Shaders\\";
 const char* _glslPath   = "..\\ShaderGlass\\Tools\\glslangValidator.exe";
 const char* _spirvPath  = "..\\ShaderGlass\\Tools\\spirv-cross.exe";
-const char* _fxcPath    = "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.20348.0\\x64\\fxc.exe";
+const char* _fxcPath    = "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.22000.0\\x64\\fxc.exe";
 bool _force = false;
 
 struct ShaderParam
