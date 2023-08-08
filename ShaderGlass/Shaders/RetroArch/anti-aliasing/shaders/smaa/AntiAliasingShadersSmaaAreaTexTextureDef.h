@@ -1,6 +1,6 @@
 /*
 ShaderGlass texture anti-aliasing-shaders-smaa / AreaTex imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/anti-aliasing/shaders/smaa/AreaTex.png
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/anti-aliasing/shaders/smaa/AreaTex.png
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -776,6 +776,7 @@ class AntiAliasingShadersSmaaAreaTexTextureDef : public TextureDef
 public:
 	AntiAliasingShadersSmaaAreaTexTextureDef() : TextureDef{}
 	{
+		Name = "AreaTex.png";
 		Data = AntiAliasingShadersSmaaAreaTexTextureDefs::sData;
 		DataLength = sizeof(AntiAliasingShadersSmaaAreaTexTextureDefs::sData);
 	}

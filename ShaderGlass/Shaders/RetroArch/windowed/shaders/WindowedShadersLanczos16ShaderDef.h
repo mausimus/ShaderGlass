@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader windowed-shaders\lanczos16 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/windowed/shaders/lanczos16.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/windowed/shaders/lanczos16.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -35,10 +35,10 @@ namespace RetroArchWindowedShadersLanczos16ShaderDefs
 {
 static const BYTE sVertexByteCode[] =
 {
-68,88,66,67,233,232,
-48,85,147,164,246,186,
-89,68,199,222,151,78,
-227,101,1,0,0,0,
+68,88,66,67,94,135,
+141,162,5,197,48,38,
+227,139,149,87,214,48,
+44,122,1,0,0,0,
 88,7,0,0,5,0,
 0,0,52,0,0,0,
 192,2,0,0,12,3,
@@ -226,8 +226,8 @@ static const BYTE sVertexByteCode[] =
 50,0,16,0,0,0,
 0,0,70,16,16,0,
 1,0,0,0,2,64,
-0,0,8,0,128,63,
-8,0,128,63,0,0,
+0,0,71,3,128,63,
+71,3,128,63,0,0,
 0,0,0,0,0,0,
 54,0,0,5,50,32,
 16,0,0,0,0,0,
@@ -255,9 +255,9 @@ static const BYTE sVertexByteCode[] =
 16,0,1,0,0,0,
 6,21,16,0,1,0,
 0,0,2,64,0,0,
-8,0,128,63,8,0,
-128,63,8,0,128,63,
-8,0,128,63,70,14,
+71,3,128,63,71,3,
+128,63,71,3,128,63,
+71,3,128,63,70,14,
 16,0,0,0,0,0,
 56,0,0,11,114,0,
 16,0,0,0,0,0,
@@ -273,9 +273,9 @@ static const BYTE sVertexByteCode[] =
 0,12,242,32,16,0,
 2,0,0,0,6,21,
 16,0,1,0,0,0,
-2,64,0,0,8,0,
-128,63,8,0,128,63,
-8,0,128,63,8,0,
+2,64,0,0,71,3,
+128,63,71,3,128,63,
+71,3,128,63,71,3,
 128,63,70,14,16,0,
 0,0,0,0,56,0,
 0,11,210,0,16,0,
@@ -292,9 +292,9 @@ static const BYTE sVertexByteCode[] =
 242,32,16,0,3,0,
 0,0,6,21,16,0,
 1,0,0,0,2,64,
-0,0,8,0,128,63,
-8,0,128,63,8,0,
-128,63,8,0,128,63,
+0,0,71,3,128,63,
+71,3,128,63,71,3,
+128,63,71,3,128,63,
 70,14,16,0,0,0,
 0,0,56,0,0,8,
 242,0,16,0,0,0,

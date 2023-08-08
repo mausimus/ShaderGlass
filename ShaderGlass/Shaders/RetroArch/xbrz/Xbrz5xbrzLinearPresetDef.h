@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset xbrz / 5xbrz-linear imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/xbrz/5xbrz-linear.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/xbrz/5xbrz-linear.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -24,7 +24,8 @@ public:
 .Param("scale", "5.0")
 .Param("scale_type", "source"));
          	ShaderDefs.push_back(StockStockShaderDef()
-.Param("filter_linear", "true"));
+.Param("filter_linear", "true")
+.Param("scale_type", "viewport"));
 	}
 };
 }

@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset nes_raw_palette / cgwg-famicom-geom imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/nes_raw_palette/cgwg-famicom-geom.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/nes_raw_palette/cgwg-famicom-geom.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -37,7 +37,8 @@ public:
          	ShaderDefs.push_back(Nes_raw_paletteShadersCgwgFamicomGeomLowpassChromaShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true"));
-         	ShaderDefs.push_back(Nes_raw_paletteShadersCgwgFamicomGeomCrtGeomFamicomShaderDef());
+         	ShaderDefs.push_back(Nes_raw_paletteShadersCgwgFamicomGeomCrtGeomFamicomShaderDef()
+.Param("scale_type", "viewport"));
 	}
 };
 }

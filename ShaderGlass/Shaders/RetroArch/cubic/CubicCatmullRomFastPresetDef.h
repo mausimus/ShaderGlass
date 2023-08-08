@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset cubic / catmull-rom-fast imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/cubic/catmull-rom-fast.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/cubic/catmull-rom-fast.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -19,8 +19,13 @@ public:
 	}
 
 	virtual void Build() {
-         	ShaderDefs.push_back(CubicShadersCatmullRomFastShaderDef()
-.Param("filter_linear", "true"));
+         	ShaderDefs.push_back(CubicShadersCatmullRomXShaderDef()
+.Param("filter_linear", "false")
+.Param("scale", "1.0")
+.Param("scale_type_x", "viewport")
+.Param("scale_type_y", "source"));
+         	ShaderDefs.push_back(CubicShadersCatmullRomYShaderDef()
+.Param("filter_linear", "false"));
 	}
 };
 }

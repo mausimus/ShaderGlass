@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset presets / mdapt+fast-bilateral+super-4xbr+scanlines imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/presets/mdapt+fast-bilateral+super-4xbr+scanlines.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/presets/mdapt+fast-bilateral+super-4xbr+scanlines.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -19,6 +19,8 @@ public:
 	}
 
 	virtual void Build() {
+         	ShaderDefs.push_back(StockStockShaderDef()
+.Param("alias", "mdapt_refpass"));
          	ShaderDefs.push_back(DitheringShadersMdaptPassesMdaptPass0ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
@@ -39,8 +41,12 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(DitheringShadersMdaptPassesMdaptPass4ShaderDef());
+         	ShaderDefs.push_back(DitheringShadersMdaptPassesMdaptPass4ShaderDef()
+.Param("filter_linear", "false")
+.Param("scale", "1.0")
+.Param("scale_type", "source"));
          	ShaderDefs.push_back(DenoisersShadersFastBilateralShaderDef()
+.Param("alias", "XbrSource")
 .Param("filter_linear", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")

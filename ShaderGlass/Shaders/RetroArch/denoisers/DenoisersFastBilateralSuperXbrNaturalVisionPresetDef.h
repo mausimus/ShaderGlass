@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset denoisers / fast-bilateral-super-xbr-natural-vision imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/denoisers/fast-bilateral-super-xbr-natural-vision.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/denoisers/fast-bilateral-super-xbr-natural-vision.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -25,7 +25,7 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000"));
-         	ShaderDefs.push_back(MiscNaturalVisionShaderDef()
+         	ShaderDefs.push_back(MiscShadersNaturalVisionShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
@@ -50,7 +50,8 @@ public:
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000"));
          	ShaderDefs.push_back(WindowedShadersJinc2ShaderDef()
-.Param("filter_linear", "false"));
+.Param("filter_linear", "false")
+.Param("scale_type", "viewport"));
 	}
 };
 }

@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader dithering-shaders-ps1dither\PS1-Undither-AntiBayer imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/dithering/shaders/ps1dither/PS1-Undither-AntiBayer.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/dithering/shaders/ps1dither/PS1-Undither-AntiBayer.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 

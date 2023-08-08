@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader sharpen-shaders-anime4k\anime4k-compute-lum imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/sharpen/shaders/anime4k/anime4k-compute-lum.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/sharpen/shaders/anime4k/anime4k-compute-lum.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 

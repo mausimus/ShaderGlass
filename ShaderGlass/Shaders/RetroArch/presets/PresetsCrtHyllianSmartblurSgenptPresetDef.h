@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset presets / crt-hyllian-smartblur-sgenpt imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/presets/crt-hyllian-smartblur-sgenpt.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/presets/crt-hyllian-smartblur-sgenpt.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -28,7 +28,7 @@ public:
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
 .Param("srgb_framebuffer", "false"));
-         	ShaderDefs.push_back(BlursSmartBlurShaderDef()
+         	ShaderDefs.push_back(BlursShadersSmartBlurShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")

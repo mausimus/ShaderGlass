@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-crt-royale-src\crt-royale-bloom-vertical imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/crt/shaders/crt-royale/src/crt-royale-bloom-vertical.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-royale/src/crt-royale-bloom-vertical.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -2697,7 +2697,7 @@ return tile_uv + jump_exists * pixel_in_first_half_tile;
 //  Estimate: max error = ~0.16486, mean sq. error = ~0.0041041:
 //return 0.5985*triad_size - triad_size*sqrt(thresh)
 //  Get the uv sample distance between output pixels.  Calculate dxdy like
-//  blurs/vertex-shader-blur-fast-vertical.h.
+//  blurs/shaders/vertex-shader-blur-fast-vertical.h.
 //  This blur is vertical-only, so zero out the vertical offset:
 //  Calculate a runtime bloom_sigma in case it's needed:
 //////////////////////////////  FRAGMENT INCLUDES  //////////////////////////////

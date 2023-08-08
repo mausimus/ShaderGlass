@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader sabr-shaders\sabr-hybrid-deposterize imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/sabr/shaders/sabr-hybrid-deposterize.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/sabr/shaders/sabr-hybrid-deposterize.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -548,10 +548,10 @@ static const BYTE sVertexByteCode[] =
 
 static const BYTE sFragmentByteCode[] =
 {
-68,88,66,67,207,31,
-142,36,86,176,124,17,
-253,104,195,203,193,144,
-221,175,1,0,0,0,
+68,88,66,67,206,98,
+248,145,199,23,180,188,
+222,75,176,180,242,8,
+172,207,1,0,0,0,
 4,62,0,0,5,0,
 0,0,52,0,0,0,
 20,3,0,0,240,3,
@@ -2742,9 +2742,9 @@ static const BYTE sFragmentByteCode[] =
 0,0,70,14,16,0,
 4,0,0,0,60,0,
 0,7,242,0,16,0,
-3,0,0,0,150,9,
+3,0,0,0,182,11,
 16,0,4,0,0,0,
-54,3,16,0,4,0,
+22,1,16,0,4,0,
 0,0,60,0,0,7,
 242,0,16,0,4,0,
 0,0,70,14,16,0,

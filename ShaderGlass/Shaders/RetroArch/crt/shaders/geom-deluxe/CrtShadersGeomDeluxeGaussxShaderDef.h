@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-geom-deluxe\gaussx imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/crt/shaders/geom-deluxe/gaussx.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/geom-deluxe/gaussx.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -1163,12 +1163,12 @@ public:
 		Params.push_back(ShaderParam("angle_y", -1, 36, 4, -1.000000f, 1.000000f, 0.000000f, 0.010000f, "Tilt Y"));
 		Params.push_back(ShaderParam("cornersize", -1, 56, 4, 0.000000f, 0.100000f, 0.010000f, 0.010000f, "Rounded corner size"));
 		Params.push_back(ShaderParam("cornersmooth", -1, 60, 4, 100.000000f, 2000.000000f, 1000.000000f, 100.000000f, "Border smoothness"));
-		Params.push_back(ShaderParam("overscan_x", -1, 64, 4, 0.800000f, 1.200000f, 1.000000f, 0.020000f, "Overscan X"));
-		Params.push_back(ShaderParam("overscan_y", -1, 68, 4, 0.800000f, 1.200000f, 1.000000f, 0.020000f, "Overscan Y"));
+		Params.push_back(ShaderParam("overscan_x", -1, 64, 4, 0.800000f, 1.200000f, 1.000000f, 0.005000f, "Overscan X"));
+		Params.push_back(ShaderParam("overscan_y", -1, 68, 4, 0.800000f, 1.200000f, 1.000000f, 0.005000f, "Overscan Y"));
 		Params.push_back(ShaderParam("monitorgamma", -1, 72, 4, 0.700000f, 4.000000f, 2.200000f, 0.050000f, "Gamma of output display"));
 		Params.push_back(ShaderParam("aspect_x", -1, 16, 4, 0.300000f, 1.000000f, 1.000000f, 0.010000f, "Aspect ratio X"));
 		Params.push_back(ShaderParam("aspect_y", -1, 20, 4, 0.300000f, 1.000000f, 0.750000f, 0.010000f, "Aspect ratio Y"));
-		Params.push_back(ShaderParam("scanline_weight", -1, 84, 4, 0.100000f, 0.500000f, 0.300000f, 0.050000f, "CRTGeom Scanline Weight"));
+		Params.push_back(ShaderParam("scanline_weight", -1, 84, 4, 0.100000f, 0.500000f, 0.300000f, 0.010000f, "CRTGeom Scanline Weight"));
 		Params.push_back(ShaderParam("geom_lum", -1, 88, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "CRTGeom Luminance"));
 		Params.push_back(ShaderParam("interlace_detect", -1, 92, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "CRTGeom Interlacing Simulation"));
 		Params.push_back(ShaderParam("MVP", 0, 96, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));

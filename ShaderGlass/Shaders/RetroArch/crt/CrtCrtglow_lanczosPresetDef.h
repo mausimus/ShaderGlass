@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset crt / crtglow_lanczos imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/crt/crtglow_lanczos.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/crtglow_lanczos.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -48,7 +48,8 @@ public:
 .Param("filter_linear", "true")
 .Param("srgb_framebuffer", "true"));
          	ShaderDefs.push_back(CrtShadersGlowResolveShaderDef()
-.Param("filter_linear", "true"));
+.Param("filter_linear", "true")
+.Param("scale_type", "viewport"));
 	}
 };
 }

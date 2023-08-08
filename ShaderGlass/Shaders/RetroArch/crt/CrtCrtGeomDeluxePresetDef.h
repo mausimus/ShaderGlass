@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset crt / crt-geom-deluxe imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/crt/crt-geom-deluxe.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/crt-geom-deluxe.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -31,13 +31,17 @@ public:
 .Param("filter_linear", "true"));
          	ShaderDefs.push_back(CrtShadersGeomDeluxeCrtGeomDeluxeShaderDef()
 .Param("filter_linear", "true")
-.Param("mipmap_input", "true"));
+.Param("mipmap_input", "true")
+.Param("scale_type", "viewport"));
             TextureDefs.push_back(CrtShadersGeomDeluxeMasksAperture_2_4_rgbTextureDef()
-.Param("name", "aperture"));
+.Param("name", "aperture")
+.Param("wrap_mode", "repeat"));
             TextureDefs.push_back(CrtShadersGeomDeluxeMasksSlot_2_5x4_bgrTextureDef()
-.Param("name", "slot"));
+.Param("name", "slot")
+.Param("wrap_mode", "repeat"));
             TextureDefs.push_back(CrtShadersGeomDeluxeMasksDelta_2_4x1_rgbTextureDef()
-.Param("name", "delta"));
+.Param("name", "delta")
+.Param("wrap_mode", "repeat"));
 	}
 };
 }

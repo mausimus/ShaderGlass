@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset interpolation / bandlimit-pixel imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/interpolation/bandlimit-pixel.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/interpolation/bandlimit-pixel.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -25,7 +25,8 @@ public:
 .Param("scale_type", "source")
 .Param("srgb_framebuffer", "true"));
          	ShaderDefs.push_back(InterpolationShadersBandlimitPixelShaderDef()
-.Param("filter_linear", "true"));
+.Param("filter_linear", "true")
+.Param("scale_type", "viewport"));
 	}
 };
 }

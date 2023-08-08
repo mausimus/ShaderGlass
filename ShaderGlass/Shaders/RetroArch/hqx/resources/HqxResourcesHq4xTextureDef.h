@@ -1,6 +1,6 @@
 /*
 ShaderGlass texture hqx-resources / hq4x imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/hqx/resources/hq4x.png
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/hqx/resources/hq4x.png
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -315,6 +315,7 @@ class HqxResourcesHq4xTextureDef : public TextureDef
 public:
 	HqxResourcesHq4xTextureDef() : TextureDef{}
 	{
+		Name = "hq4x.png";
 		Data = HqxResourcesHq4xTextureDefs::sData;
 		DataLength = sizeof(HqxResourcesHq4xTextureDefs::sData);
 	}

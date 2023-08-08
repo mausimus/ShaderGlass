@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader ntsc-shaders-mame-ntsc\mame-postproc imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/ntsc/shaders/mame-ntsc/mame-postproc.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/ntsc/shaders/mame-ntsc/mame-postproc.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 

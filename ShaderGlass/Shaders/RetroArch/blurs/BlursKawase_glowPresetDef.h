@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset blurs / kawase_glow imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/blurs/kawase_glow.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/blurs/kawase_glow.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -22,32 +22,32 @@ public:
          	ShaderDefs.push_back(StockStockShaderDef()
 .Param("alias", "Reference")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(BlursKawaseLinearizeShaderDef()
+         	ShaderDefs.push_back(BlursShadersKawaseLinearizeShaderDef()
 .Param("scale_type", "source")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(BlursKawaseKawase0ShaderDef()
+         	ShaderDefs.push_back(BlursShadersKawaseKawase0ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(BlursKawaseKawase1ShaderDef()
+         	ShaderDefs.push_back(BlursShadersKawaseKawase1ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(BlursKawaseKawase1ShaderDef()
+         	ShaderDefs.push_back(BlursShadersKawaseKawase1ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(BlursKawaseKawase2ShaderDef()
+         	ShaderDefs.push_back(BlursShadersKawaseKawase2ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(BlursKawaseKawase3ShaderDef()
+         	ShaderDefs.push_back(BlursShadersKawaseKawase3ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(BlursKawaseDelinearizeShaderDef()
+         	ShaderDefs.push_back(BlursShadersKawaseDelinearizeShaderDef()
 .Param("filter_linear", "true"));
-         	ShaderDefs.push_back(BlursKawaseScreen_combineShaderDef());
+         	ShaderDefs.push_back(BlursShadersKawaseScreen_combineShaderDef());
 	}
 };
 }

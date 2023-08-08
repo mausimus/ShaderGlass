@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader xbr-shaders-super-xbr\super-xbr-pass0 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/xbr/shaders/super-xbr/super-xbr-pass0.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/xbr/shaders/super-xbr/super-xbr-pass0.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -2023,9 +2023,9 @@ public:
 		VertexLength = sizeof(RetroArchXbrShadersSuperXbrSuperXbrPass0ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchXbrShadersSuperXbrSuperXbrPass0ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchXbrShadersSuperXbrSuperXbrPass0ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("MODE", -1, 64, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "Mode - Normal, Details, Adaptive"));
+		Params.push_back(ShaderParam("MODE", -1, 64, 4, 0.000000f, 2.000000f, 1.000000f, 1.000000f, "Mode - Normal, Details, Adaptive"));
 		Params.push_back(ShaderParam("XBR_EDGE_STR_P0", -1, 52, 4, 0.000000f, 5.000000f, 5.000000f, 0.500000f, "Xbr - Edge Strength p0"));
-		Params.push_back(ShaderParam("XBR_WEIGHT", -1, 56, 4, 0.000000f, 1.500000f, 1.000000f, 0.010000f, "Xbr - Filter Weight"));
+		Params.push_back(ShaderParam("XBR_WEIGHT", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f, 0.100000f, "Xbr - Filter Weight"));
 		Params.push_back(ShaderParam("XBR_EDGE_SHP", -1, 68, 4, 0.000000f, 3.000000f, 0.400000f, 0.100000f, "Adaptive Dynamic Edge Sharp"));
 		Params.push_back(ShaderParam("XBR_TEXTURE_SHP", -1, 72, 4, 0.000000f, 2.000000f, 1.000000f, 0.100000f, "Adaptive Static Edge Sharp"));
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));

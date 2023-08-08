@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset presets / scalefx9-aa-blur-hazy-vibrance-sh1nra358 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/presets/scalefx9-aa-blur-hazy-vibrance-sh1nra358.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/presets/scalefx9-aa-blur-hazy-vibrance-sh1nra358.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -19,6 +19,8 @@ public:
 	}
 
 	virtual void Build() {
+         	ShaderDefs.push_back(StockStockShaderDef()
+.Param("alias", "scalefx_old_refpass"));
          	ShaderDefs.push_back(ScalefxShadersOldScalefxPass0ShaderDef()
 .Param("alias", "sfxp0")
 .Param("filter_linear", "false")
@@ -59,7 +61,7 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "3.0")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(MiscImageAdjustmentShaderDef()
+         	ShaderDefs.push_back(MiscShadersImageAdjustmentShaderDef()
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
@@ -76,11 +78,11 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(BlursBlurGaussHShaderDef()
+         	ShaderDefs.push_back(BlursShadersBlurGaussHShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(BlursBlurGaussVShaderDef()
+         	ShaderDefs.push_back(BlursShadersBlurGaussVShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));

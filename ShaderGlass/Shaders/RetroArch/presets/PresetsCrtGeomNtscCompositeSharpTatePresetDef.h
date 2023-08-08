@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset presets / crt-geom-ntsc-composite-sharp-tate imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/presets/crt-geom-ntsc-composite-sharp-tate.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/presets/crt-geom-ntsc-composite-sharp-tate.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -19,7 +19,7 @@ public:
 	}
 
 	virtual void Build() {
-         	ShaderDefs.push_back(MiscNtscColorsShaderDef()
+         	ShaderDefs.push_back(MiscShadersNtscColorsShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")

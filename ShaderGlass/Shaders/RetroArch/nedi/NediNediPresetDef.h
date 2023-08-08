@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset nedi / nedi imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/nedi/nedi.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/nedi/nedi.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -42,7 +42,8 @@ public:
 .Param("scale_y", "1.000000"));
          	ShaderDefs.push_back(NediShadersNediJincShaderDef()
 .Param("filter_linear", "false")
-.Param("float_framebuffer", "false"));
+.Param("float_framebuffer", "false")
+.Param("scale_type", "viewport"));
 	}
 };
 }

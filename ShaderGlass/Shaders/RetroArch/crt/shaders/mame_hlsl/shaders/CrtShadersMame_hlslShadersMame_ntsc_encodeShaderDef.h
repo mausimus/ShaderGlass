@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-mame_hlsl-shaders\mame_ntsc_encode imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/crt/shaders/mame_hlsl/shaders/mame_ntsc_encode.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/mame_hlsl/shaders/mame_ntsc_encode.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 

@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader interpolation-shaders\grid-blend-hybrid imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/interpolation/shaders/grid-blend-hybrid.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/interpolation/shaders/grid-blend-hybrid.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 

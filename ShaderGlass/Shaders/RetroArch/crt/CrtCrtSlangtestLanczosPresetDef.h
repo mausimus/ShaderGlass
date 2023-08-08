@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset crt / crt-slangtest-lanczos imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/crt/crt-slangtest-lanczos.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/crt-slangtest-lanczos.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -32,7 +32,8 @@ public:
 .Param("scale_y", "1.0")
 .Param("srgb_framebuffer", "true"));
          	ShaderDefs.push_back(CrtShadersCrtSlangtestScanlineShaderDef()
-.Param("filter_linear", "false"));
+.Param("filter_linear", "false")
+.Param("scale_type", "viewport"));
 	}
 };
 }

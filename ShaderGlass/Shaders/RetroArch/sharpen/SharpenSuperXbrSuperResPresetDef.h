@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset sharpen / super-xbr-super-res imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/sharpen/super-xbr-super-res.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/sharpen/super-xbr-super-res.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -19,6 +19,10 @@ public:
 	}
 
 	virtual void Build() {
+         	ShaderDefs.push_back(StockStockShaderDef()
+.Param("alias", "diff_refpass"));
+         	ShaderDefs.push_back(StockStockShaderDef()
+.Param("alias", "XbrSource"));
          	ShaderDefs.push_back(XbrShadersSuperXbrSuperXbrPass0ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale", "1.000000")
@@ -44,16 +48,14 @@ public:
 .Param("filter_linear", "true")
 .Param("scale", "2.000000")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(MiscDeposterizePass0ShaderDef()
+         	ShaderDefs.push_back(MiscShadersDeposterizeDeposterizePass0ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale", "1.000000")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(MiscDeposterizePass1ShaderDef()
+         	ShaderDefs.push_back(MiscShadersDeposterizeDeposterizePass1ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale", "1.000000")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(XbrShadersSuperXbrCustomJinc2SharperShaderDef()
-.Param("filter_linear", "false"));
 	}
 };
 }

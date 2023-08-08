@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader nedi-shaders\nedi-pass2 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/nedi/shaders/nedi-pass2.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/nedi/shaders/nedi-pass2.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 

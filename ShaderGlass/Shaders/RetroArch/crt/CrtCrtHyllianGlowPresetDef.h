@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset crt / crt-hyllian-glow imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/crt/crt-hyllian-glow.slangp
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/crt-hyllian-glow.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -35,7 +35,7 @@ public:
 .Param("scale_y", "1.000000")
 .Param("srgb_framebuffer", "true"));
          	ShaderDefs.push_back(CrtShadersGlowThresholdShaderDef()
-.Param("filter_linear", "false")
+.Param("filter_linear", "true")
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")
 .Param("srgb_framebuffer", "true"));
@@ -57,6 +57,7 @@ public:
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")
+.Param("scale_type", "viewport")
 .Param("srgb_framebuffer", "false"));
 	}
 };

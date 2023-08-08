@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader ntsc-shaders-artifact-colors\artifact-colors2 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/master/ntsc/shaders/artifact-colors/artifact-colors2.slang
+https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/ntsc/shaders/artifact-colors/artifact-colors2.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -812,7 +812,7 @@ public:
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("Pass1", 5));
-		Samplers.push_back(ShaderSampler("Original", 3));
+		Samplers.push_back(ShaderSampler("artifact_colors_refpass", 3));
 		Samplers.push_back(ShaderSampler("Pass2", 4));
 /*
 VertexSource = %*VERTEX_SOURCE*%;
