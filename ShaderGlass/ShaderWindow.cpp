@@ -376,7 +376,7 @@ void ShaderWindow::SaveProfile(const std::string& fileName)
     outfile << "FlipH " << std::quoted(std::to_string(m_captureOptions.flipHorizontal)) << std::endl;
     outfile << "FlipV " << std::quoted(std::to_string(m_captureOptions.flipVertical)) << std::endl;
     outfile << "Clone " << std::quoted(std::to_string(m_captureOptions.clone)) << std::endl;
-    outfile << "CaptureCursor " << std::quoted(std::to_string(m_captureOptions.clone)) << std::endl;
+    outfile << "CaptureCursor " << std::quoted(std::to_string(m_captureOptions.captureCursor)) << std::endl;
     outfile << "Transparent " << std::quoted(std::to_string(m_captureOptions.transparent)) << std::endl;
     outfile << "InputArea \"" << std::to_string(m_captureOptions.inputArea.left) << " " << std::to_string(m_captureOptions.inputArea.top) << " "
             << std::to_string(m_captureOptions.inputArea.right) << " " << std::to_string(m_captureOptions.inputArea.bottom) << "\"" << std::endl;
