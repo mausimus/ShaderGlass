@@ -39,6 +39,7 @@ private:
     HINSTANCE       m_instance {nullptr};
     HWND            m_resetButtonWnd;
     HWND            m_closeButtonWnd;
+    HWND            m_hwndTip;
     HWND            m_shaderWindow;
     HFONT           m_font;
     CaptureManager& m_captureManager;

@@ -13,11 +13,11 @@ constexpr int PARAM_HEIGHT  = 40;
 constexpr int WINDOW_WIDTH  = 600;
 constexpr int WINDOW_HEIGHT = 600;
 constexpr int TRACK_WIDTH   = 200;
-constexpr int TRACK_HEIGHT  = 30;
+constexpr int TRACK_HEIGHT  = 30;        
 
 ParamsWindow::ParamsWindow(CaptureManager& captureManager) :
     m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass(), m_resetButtonWnd(0),
-    m_closeButtonWnd(0), m_font(0), m_dpiScale(1.0f)
+    m_closeButtonWnd(0), m_font(0), m_dpiScale(1.0f), m_hwndTip(NULL)
 { }
 
 LRESULT CALLBACK ParamsWindow::WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -169,7 +169,24 @@ void ParamsWindow::RebuildControls()
         DestroyWindow(t.paramValueWnd);
         DestroyWindow(t.trackBarWnd);
     }
+    if(m_hwndTip)
+    {
+        DestroyWindow(m_hwndTip);
+    }
     m_trackbars.clear();
+
+    m_hwndTip = CreateWindowEx(NULL,
+                             TOOLTIPS_CLASS,
+                             NULL,
+                             WS_POPUP | TTS_NOANIMATE | TTS_NOFADE | TTS_NOPREFIX,
+                             CW_USEDEFAULT,
+                             CW_USEDEFAULT,
+                             CW_USEDEFAULT,
+                             CW_USEDEFAULT,
+                             m_mainWindow,
+                             NULL,
+                             m_instance,
+                             NULL);
 
     for(const auto& pt : m_captureManager.Params())
     {
@@ -320,6 +337,7 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
 
                 m_captureManager.ResetParams();
             }
+            return 0;
         }
         case IDM_UPDATE_PARAMS: {
             RebuildControls();
@@ -376,19 +394,6 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
     // tooltip
     if(p->description.size())
     {
-        HWND hwndTip = CreateWindowEx(NULL,
-                                      TOOLTIPS_CLASS,
-                                      NULL,
-                                      WS_POPUP | TTS_ALWAYSTIP | TTS_BALLOON,
-                                      CW_USEDEFAULT,
-                                      CW_USEDEFAULT,
-                                      CW_USEDEFAULT,
-                                      CW_USEDEFAULT,
-                                      m_mainWindow,
-                                      NULL,
-                                      m_instance,
-                                      NULL);
-
         // Associate the tooltip with the tool.
         TOOLINFO toolInfo = {0};
         toolInfo.cbSize   = sizeof(toolInfo);
@@ -396,7 +401,7 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
         toolInfo.uFlags   = TTF_IDISHWND | TTF_SUBCLASS;
         toolInfo.uId      = (UINT_PTR)paramNameWnd;
         toolInfo.lpszText = convertCharArrayToLPCWSTR(p->description.c_str());
-        SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+        SendMessage(m_hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
     }
 
     float value = p->minValue + (p->maxValue - p->minValue) * iStart / iSteps;
