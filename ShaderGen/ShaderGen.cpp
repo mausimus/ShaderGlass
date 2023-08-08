@@ -412,6 +412,7 @@ void populateTextureTemplate(TextureDef def)
     buffer << infile.rdbuf();
     auto bufferString = buffer.str();
     replace(bufferString, "%LIB_NAME%", _libName);
+    replace(bufferString, "%TEXTURE_NAME%", def.input.filename().string());
     replace(bufferString, "%CLASS_NAME%", info.className);
     replace(bufferString, "%TEXTURE_DATA%", def.data);
 

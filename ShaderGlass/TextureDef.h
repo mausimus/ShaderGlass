@@ -5,6 +5,7 @@ class TextureDef
 public:
     TextureDef() : Data {}, DataLength {}, PresetParams {} { }
 
+    const char*                        Name;
     const BYTE*                        Data;
     int                                DataLength;
     std::map<std::string, std::string> PresetParams;

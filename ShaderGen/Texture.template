@@ -15,6 +15,7 @@ class %CLASS_NAME%TextureDef : public TextureDef
 public:
 	%CLASS_NAME%TextureDef() : TextureDef{}
 	{
+		Name = "%TEXTURE_NAME%";
 		Data = %CLASS_NAME%TextureDefs::sData;
 		DataLength = sizeof(%CLASS_NAME%TextureDefs::sData);
 	}
