@@ -175,9 +175,21 @@ void ParamsWindow::RebuildControls()
     }
     m_trackbars.clear();
 
+    SCROLLINFO si;
+    si.cbSize = sizeof(si);
+    si.fMask  = SIF_ALL;
+    GetScrollInfo(m_mainWindow, SB_VERT, &si);
+    if(si.nPos != 0)
+    {
+        ResizeScrollBar();
+    }
+
     char title[200];
     const auto& shader = m_captureManager.Presets().at(m_captureOptions.presetNo);
-    snprintf(title, 200, "Shader Parameters: %s", shader->Name);
+    if(m_captureManager.IsActive())
+        snprintf(title, 200, "Shader Parameters: %s", shader->Name);
+    else
+        snprintf(title, 200, "Shader Parameters");
     SetWindowTextA(m_mainWindow, title);
 
     m_hwndTip = CreateWindowEx(NULL,
@@ -217,13 +229,7 @@ void ParamsWindow::RebuildControls()
                      0,
                      SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
     else
-        SetWindowPos(m_resetButtonWnd,
-                     m_mainWindow,
-                     m_dpiScale * ((WINDOW_WIDTH / 3) - (BUTTON_WIDTH / 2)),
-                     m_dpiScale * BUTTON_TOP,
-                     0,
-                     0,
-                     SWP_NOSIZE | SWP_HIDEWINDOW);
+        ShowWindow(m_resetButtonWnd, SW_HIDE);
 
     SetWindowPos(m_closeButtonWnd,
                  m_mainWindow,
@@ -322,13 +328,16 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         {
             id       = GetDlgCtrlID((HWND)lParam);
             auto pos = SendMessage(m_trackbars[id].trackBarWnd, TBM_GETPOS, 0, 0);
-            auto p   = m_trackbars[id].param;
+            auto p   = *m_trackbars[id].params.begin();
 
             float value = p->minValue + (p->maxValue - p->minValue) * pos / m_trackbars[id].steps;
 
             SetWindowText(m_trackbars[id].paramValueWnd, convertCharArrayToLPCWSTR(std::to_string(value).c_str()));
 
-            m_trackbars[id].param->currentValue = value;
+            for(auto& tp : m_trackbars[id].params)
+            {
+                tp->currentValue = value;
+            }
 
             m_captureManager.UpdateParams();
         }
@@ -367,6 +376,16 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
 
 void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, const char* name, ShaderParam* p)
 {
+    // de-dupe parameters
+    for(auto& t : m_trackbars)
+    {
+        if(strcmp(t.paramName, name) == 0 && t.def == iStart && t.steps == iSteps)
+        {
+            t.params.push_back(p);
+            return;
+        }
+    }
+
     auto hwndTrack = CreateWindowEx(0,
                                     TRACKBAR_CLASS,
                                     L"Trackbar Control",
@@ -392,9 +411,12 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
 
     SendMessage(hwndTrack, WM_SETFONT, (LPARAM)m_font, true);
 
+    const char* label = p->description.size() ? p->description.c_str() : name;
+    const char* tooltip = p->description.size() ? name : p->description.c_str();
+
     auto paramNameWnd = CreateWindowEx(0,
                                        L"STATIC",
-                                       convertCharArrayToLPCWSTR(name),
+                                       convertCharArrayToLPCWSTR(label),
                                        SS_RIGHT | SS_NOTIFY | WS_CHILD | WS_VISIBLE,
                                        0,
                                        0,
@@ -408,7 +430,7 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
     SendMessage(paramNameWnd, WM_SETFONT, (LPARAM)m_font, true);
 
     // tooltip
-    if(p->description.size())
+    if(strlen(tooltip) != 0)
     {
         // Associate the tooltip with the tool.
         TOOLINFO toolInfo = {0};
@@ -416,7 +438,7 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
         toolInfo.hwnd     = m_mainWindow;
         toolInfo.uFlags   = TTF_IDISHWND | TTF_SUBCLASS;
         toolInfo.uId      = (UINT_PTR)paramNameWnd;
-        toolInfo.lpszText = convertCharArrayToLPCWSTR(p->description.c_str());
+        toolInfo.lpszText = convertCharArrayToLPCWSTR(tooltip);
         SendMessage(m_hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
     }
 
@@ -438,12 +460,13 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
     SendMessage(paramValueWnd, WM_SETFONT, (LPARAM)m_font, true);
 
     ParamsTrackbar pt;
+    pt.paramName     = name;
     pt.trackBarWnd   = hwndTrack;
     pt.paramNameWnd  = paramNameWnd;
     pt.paramValueWnd = paramValueWnd;
     pt.def           = iStart;
     pt.steps         = iSteps;
-    pt.param         = p;
+    pt.params.push_back(p);
 
     m_trackbars.emplace_back(pt);
 }

@@ -8,7 +8,7 @@
 
 struct ParamsTrackbar
 {
-    std::string paramName;
+    const char* paramName;
     float       min;
     float       max;
     float       step;
@@ -21,7 +21,7 @@ struct ParamsTrackbar
     HWND paramNameWnd;
     HWND paramValueWnd;
 
-    ShaderParam* param;
+    std::vector<ShaderParam*> params;
 };
 
 class ParamsWindow
