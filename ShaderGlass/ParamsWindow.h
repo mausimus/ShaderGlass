@@ -50,7 +50,7 @@ private:
 
     void AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iStep, const char* name, ShaderParam* p);
     void ResizeScrollBar();
-    void RebuildControls();    
+    void RebuildControls();
 
     static LRESULT CALLBACK WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     ATOM                    MyRegisterClass(HINSTANCE hInstance);

@@ -585,30 +585,8 @@ void ShaderWindow::BuildOutputMenu()
 
 void ShaderWindow::BuildShaderMenu()
 {
-    m_shaderMenu = GetSubMenu(m_mainMenu, 3);
-    DeleteMenu(m_shaderMenu, 0, MF_BYPOSITION);
-    unsigned i = 0;
-
-    for(const auto& sp : m_captureManager.Presets())
-    {
-        if(strcmp(sp->Category, "general") == 0)
-        {
-            AppendMenu(m_shaderMenu, MF_STRING, WM_SHADER(i++), convertCharArrayToLPCWSTR(sp->Name));
-            continue;
-        }
-        if(m_categoryMenus.find(sp->Category) == m_categoryMenus.end())
-        {
-            m_categoryMenus.insert(std::make_pair(sp->Category, CreatePopupMenu()));
-        }
-        auto menu = m_categoryMenus.find(sp->Category)->second;
-        AppendMenu(menu, MF_STRING, WM_SHADER(i++), convertCharArrayToLPCWSTR(sp->Name));
-    }
-
-    for(auto m : m_categoryMenus)
-    {
-        AppendMenu(m_shaderMenu, MF_STRING | MF_POPUP, (UINT_PTR)m.second, convertCharArrayToLPCWSTR(m.first.c_str()));
-    }
-    m_numPresets = i;
+    // now deferred to BrowserWindow
+    m_numPresets = m_captureManager.Presets().size();
 }
 
 LRESULT CALLBACK ShaderWindow::WndProcProxy(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -741,7 +719,7 @@ void ShaderWindow::AdjustWindowSize(HWND hWnd)
             r.right  = requiredW;
             r.bottom = requiredH;
             AdjustWindowRect(&r, GetWindowLong(hWnd, GWL_STYLE), TRUE);
-            SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER);
+            SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
         }
     }
     else if(!m_isBorderless)
@@ -768,7 +746,7 @@ void ShaderWindow::AdjustWindowSize(HWND hWnd)
 
                 RECT windowRect;
                 GetWindowRect(hWnd, &windowRect);
-                SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, clientRect.right - clientRect.left, clientRect.bottom - clientRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER);
+                SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, clientRect.right - clientRect.left, clientRect.bottom - clientRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
             }
         }
     }
@@ -778,9 +756,9 @@ void ShaderWindow::UpdateWindowState()
 {
     // always topmost when processing
     if(m_captureManager.IsActive())
-        SetWindowPos(m_mainWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(m_mainWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
     else
-        SetWindowPos(m_mainWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(m_mainWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 
     LONG cur_style = GetWindowLong(m_mainWindow, GWL_EXSTYLE);
     if(m_captureManager.IsActive() && m_captureOptions.transparent)
@@ -869,6 +847,33 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case IDM_UPDATE_PARAMS:
             PostMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
             break;
+        case ID_SHADER_BROWSE: {
+            if(!m_browserPositioned)
+            {
+                RECT rc, rcDlg, rcOwner;
+                GetWindowRect(m_mainWindow, &rcOwner);
+                GetWindowRect(m_browserWindow, &rcDlg);
+                CopyRect(&rc, &rcOwner);
+                OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
+                OffsetRect(&rc, -rc.left, -rc.top);
+                OffsetRect(&rc, -rcDlg.right, -rcDlg.bottom);
+
+                if(!SetWindowPos(m_browserWindow,
+                             HWND_TOP,
+                             rcOwner.right - (rcDlg.right - rcDlg.left),
+                             rcOwner.top + max(0, (rc.bottom / 2)),
+                             0,
+                             0, // Ignores size arguments.
+                             SWP_NOSIZE))
+                {
+                    int x = 4;
+                    x++;
+                }
+                m_browserPositioned = true;
+            }
+            ShowWindow(m_browserWindow, SW_SHOW);
+        }
+            return 0;
         case IDM_SHADER_PARAMETERS: {
             if(!m_paramsPositioned)
             {
@@ -1103,8 +1108,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             {
                 if(wmId >= WM_SHADER(0) && wmId < WM_SHADER(MAX_SHADERS))
                 {
-                    CheckMenuItem(m_shaderMenu, wmId, MF_CHECKED | MF_BYCOMMAND);
-                    CheckMenuItem(m_shaderMenu, m_captureOptions.presetNo + WM_SHADER(0), MF_UNCHECKED | MF_BYCOMMAND);
+                    PostMessage(m_browserWindow, WM_COMMAND, WM_USER, wmId);
                     m_captureOptions.presetNo = wmId - WM_SHADER(0);
                     m_captureManager.UpdateShaderPreset();
                     UpdateWindowState();
@@ -1513,7 +1517,7 @@ void ShaderWindow::UnregisterHotkeys()
     UnregisterHotKey(m_mainWindow, HK_PAUSE);
 }
 
-void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow)
+void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserWindow)
 {
     bool autoStart  = true;
     bool fullScreen = false;
@@ -1540,6 +1544,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow)
     }
 
     m_paramsWindow = paramsWindow;
+    m_browserWindow = browserWindow;
     m_inputDialog.reset(new InputDialog(m_instance, m_mainWindow));
 
     if(autoStart)

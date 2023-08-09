@@ -175,6 +175,11 @@ void ParamsWindow::RebuildControls()
     }
     m_trackbars.clear();
 
+    char title[200];
+    const auto& shader = m_captureManager.Presets().at(m_captureOptions.presetNo);
+    snprintf(title, 200, "Shader Parameters: %s", shader->Name);
+    SetWindowTextA(m_mainWindow, title);
+
     m_hwndTip = CreateWindowEx(NULL,
                              TOOLTIPS_CLASS,
                              NULL,
@@ -240,6 +245,14 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         {
             // showing
             RebuildControls();
+        }
+        break;
+    }
+    case WM_KEYDOWN: {
+        if(wParam == VK_ESCAPE)
+        {
+            ShowWindow(m_mainWindow, SW_HIDE);
+            return 1;
         }
         break;
     }
@@ -340,7 +353,10 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             return 0;
         }
         case IDM_UPDATE_PARAMS: {
-            RebuildControls();
+            if(IsWindowVisible(m_mainWindow))
+            {
+                RebuildControls();
+            }
         }
             return 0;
         }

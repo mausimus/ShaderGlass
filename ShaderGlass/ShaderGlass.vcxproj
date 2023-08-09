@@ -161,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BrowserWindow.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="InputDialog.h" />
     <ClInclude Include="ParamsWindow.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="WIC\WICTextureLoader11.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BrowserWindow.cpp" />
     <ClCompile Include="CaptureManager.cpp" />
     <ClCompile Include="CaptureSession.cpp" />
     <ClCompile Include="InputDialog.cpp" />
@@ -219,6 +221,8 @@
     <ResourceCompile Include="ShaderGlass.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="folder.bmp" />
+    <Image Include="shader.bmp" />
     <Image Include="ShaderGlass.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

@@ -6,8 +6,10 @@
 #define IDD_SHADERGLASS_DIALOG          102
 #define IDS_APP_TITLE                   103
 #define IDM_ABOUT                       104
+#define IDS_BROWSER_TITLE               104
 #define IDC_SHADERPARAMS                105
 #define IDM_EXIT                        106
+#define IDC_SHADERBROWSER               106
 #define IDS_PARAM_TITLE                 107
 #define IDI_SHADERGLASS                 108
 #define IDI_SMALL                       109
@@ -18,6 +20,9 @@
 #define IDM_OUTPUT_FREESCALE            114
 #define IDR_MAINFRAME                   128
 #define IDD_INPUT_DIALOG                129
+#define IDB_SHADER                      135
+#define IDB_BITMAP1                     136
+#define IDB_FOLDER                      136
 #define IDC_EDIT1                       1000
 #define ID_FILE_START                   32771
 #define IDM_FILE_START                  32772
@@ -136,6 +141,7 @@
 #define IDM_SCREENSHOT                  32893
 #define IDM_PAUSE                       32894
 #define ID_HELP_FREQUENTLYASKEDQUESTIONS 32895
+#define ID_SHADER_BROWSE                32896
 #define IDC_STATIC                      -1
 #define IDC_STATIC_LABEL                -1
 
@@ -144,8 +150,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        130
-#define _APS_NEXT_COMMAND_VALUE         32896
+#define _APS_NEXT_RESOURCE_VALUE        137
+#define _APS_NEXT_COMMAND_VALUE         32897
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           115
 #endif

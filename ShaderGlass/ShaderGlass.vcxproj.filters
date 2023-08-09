@@ -114,6 +114,9 @@
     <ClInclude Include="InputDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BrowserWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -161,12 +164,21 @@
     <ClCompile Include="InputDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BrowserWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="ShaderGlass.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="shader.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="folder.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

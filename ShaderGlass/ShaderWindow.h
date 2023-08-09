@@ -15,7 +15,7 @@ public:
     ShaderWindow(CaptureManager& manager);
 
     bool Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow);
-    void Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow);
+    void Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserWindow);
     HWND m_mainWindow {nullptr};
 
 private:
@@ -23,20 +23,19 @@ private:
     WCHAR                        m_windowClass[MAX_LOADSTRING];
     HINSTANCE                    m_instance {nullptr};
     HWND                         m_paramsWindow {nullptr};
+    HWND                         m_browserWindow {nullptr};
     HMENU                        m_mainMenu {nullptr};
     HMENU                        m_programMenu {nullptr};
     HMENU                        m_pixelSizeMenu {nullptr};
     HMENU                        m_aspectRatioMenu {nullptr};
     HMENU                        m_outputScaleMenu {nullptr};
     HMENU                        m_frameSkipMenu {nullptr};
-    HMENU                        m_shaderMenu {nullptr};
     HMENU                        m_flipMenu {nullptr};
     HMENU                        m_windowMenu {nullptr};
     HMENU                        m_modeMenu {nullptr};
     HMENU                        m_displayMenu {nullptr};
     HMENU                        m_outputWindowMenu {nullptr};
     HMENU                        m_inputMenu {nullptr};
-    std::map<std::string, HMENU> m_categoryMenus;
     std::vector<CaptureWindow>   m_captureWindows;
     std::vector<CaptureDisplay>  m_captureDisplays;
     CaptureManager&              m_captureManager;
@@ -49,6 +48,7 @@ private:
     bool                         m_isTransparent {false};
     bool                         m_isBorderless {false};
     bool                         m_paramsPositioned {false};
+    bool                         m_browserPositioned {false};
     float                        m_dpiScale {1.0f};
     RECT                         m_lastPosition;
     std::unique_ptr<InputDialog> m_inputDialog;
