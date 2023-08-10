@@ -1137,6 +1137,11 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     m_captureOptions.presetNo = wmId - WM_SHADER(0);
                     m_captureManager.UpdateShaderPreset();
                     UpdateWindowState();
+                    if(wmId != WM_SHADER(m_numPresets - 1) && m_toggledNone)
+                    {
+                        m_toggledNone = false;
+                        CheckMenuItem(m_shaderMenu, ID_QUICK_TOGGLE, MF_CHECKED | MF_BYCOMMAND);
+                    }
                     break;
                 }
                 if(wmId >= WM_CAPTURE_WINDOW(0) && wmId < WM_CAPTURE_WINDOW(MAX_CAPTURE_WINDOWS))
