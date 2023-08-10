@@ -111,8 +111,8 @@ void CaptureManager::StartSession()
 
 void CaptureManager::SetParams(const std::vector<std::tuple<int, std::string, double>>& params)
 {
-    ForgetLastPreset();
     m_queuedParams = params;
+    ForgetLastPreset();
 }
 
 void CaptureManager::UpdateCursor()
@@ -208,9 +208,8 @@ void CaptureManager::UpdateShaderPreset()
         // restore params when restarting
         if(m_lastPreset == m_options.presetNo && !m_queuedParams.size() && m_lastParams.size())
         {
-            m_queuedParams = m_lastParams;
+            SetParams(m_lastParams);
         }
-        ForgetLastPreset();
         m_shaderGlass->SetShaderPreset(m_presetList.at(m_options.presetNo).get(), m_queuedParams);
         m_queuedParams.clear();
         m_lastPreset = m_options.presetNo;
@@ -287,6 +286,11 @@ void CaptureManager::RememberLastPreset()
             m_lastParams.push_back(std::make_tuple(pass, shaderParam->name, shaderParam->currentValue));
         }
     }
+}
+
+void CaptureManager::SetLastPreset(unsigned presetNo)
+{
+    m_lastPreset = presetNo;
 }
 
 void CaptureManager::ForgetLastPreset()

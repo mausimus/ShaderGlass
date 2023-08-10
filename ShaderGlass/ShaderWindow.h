@@ -52,6 +52,8 @@ private:
     float                        m_dpiScale {1.0f};
     RECT                         m_lastPosition;
     std::unique_ptr<InputDialog> m_inputDialog;
+    bool                         m_toggledNone;
+    unsigned                     m_toggledPresetNo;
 
     void LoadProfile(const std::string& fileName);
     void LoadProfile();
