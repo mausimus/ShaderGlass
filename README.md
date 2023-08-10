@@ -25,11 +25,12 @@ Overlay for running GPU shaders on top of Windows desktop.
 
 ### Download
 
-Latest release (v0.8, 4 Jun 2023):
-* ability to disable global hotkeys
-* fix: shader parameters are lost when minimizing/restarting
+Latest release (v0.9, 10 Aug 2023):
+* refresh or RetroArch shader library
+* new Shader Browser window
+* bug fixes
 
-https://github.com/mausimus/ShaderGlass/releases/download/v0.8/ShaderGlass-0.8-win-x64.zip
+https://github.com/mausimus/ShaderGlass/releases/download/v0.9/ShaderGlass-0.9-win-x64.zip
 
 <br/>
 
@@ -48,13 +49,13 @@ If the app reports missing libraries please install [Visual C++ Redistributable 
 
 <br/>
 
-### See it in action
-
-Demonstration video (YouTube):
-
-[![ShaderGlass](https://img.youtube.com/vi/5WLit0TBYIw/0.jpg)](https://www.youtube.com/watch?v=5WLit0TBYIw "ShaderGlass")
-
 ### Screenshots
+
+ShaderGlass running over multiple applications on Windows 11 desktop.
+
+![screenshot](images/screen7.png)
+
+[Demonstration video (YouTube)](https://www.youtube.com/watch?v=5WLit0TBYIw "ShaderGlass")
 
 ##### Desktop Glass mode
 
@@ -158,6 +159,14 @@ Window Glass (surrounding black bars) or Window Clone (top-left aligned) with yo
 
 * _Shader_ - choose RetroArch shader to apply, or _none_ shader for testing
 
+  * _Choose_ - open Shader Browser to switch the current shader
+
+  * _Next_ - switch to the next Shader
+
+  * _Random_ - choose a random Shader
+
+  * _Active_ - temporarily switch to 'none' Shader to see the difference (hold TAB)
+
   * _Parameters_ - show and modify active shader's parameters
 
 You can save and load profile files which will store all the options. It's also possible to pass profile file path on the command
@@ -248,3 +257,5 @@ Please refer to copyright notes within shader code for detailed copyright and li
 * App icon courtesy of [Icons-Land](http://www.icons-land.com/)
 
 * Big kudos to RetroArch team, emulator developers and the wide retro community!
+
+* Thanks to @lonestarr for PRs :thumbsup:
