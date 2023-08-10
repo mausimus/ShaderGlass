@@ -1091,6 +1091,31 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             m_captureManager.StopSession();
             DestroyWindow(hWnd);
             break;
+        case ID_QUICK_TOGGLE: {
+            bool isChecked = GetMenuState(m_shaderMenu, ID_QUICK_TOGGLE, MF_BYCOMMAND) & MF_CHECKED;
+            if(lParam == 1 || (lParam == 0 && isChecked)) // down/disable
+            {
+                if(!m_toggledNone)
+                {
+                    m_toggledNone     = true;
+                    m_toggledPresetNo = m_captureOptions.presetNo;
+                    m_captureManager.RememberLastPreset();
+                    SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_numPresets - 1), 0);
+                    CheckMenuItem(m_shaderMenu, ID_QUICK_TOGGLE, MF_UNCHECKED | MF_BYCOMMAND);
+                }
+            }
+            else if(lParam == 2 || (lParam == 0 && !isChecked)) // up/enable
+            {
+                if(m_toggledNone)
+                {
+                    m_toggledNone = false;
+                    m_captureManager.SetLastPreset(m_toggledPresetNo);
+                    SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_toggledPresetNo), 0);
+                    CheckMenuItem(m_shaderMenu, ID_QUICK_TOGGLE, MF_CHECKED | MF_BYCOMMAND);
+                }
+            }
+        }
+        break;
         case IDM_ABOUT1:
         case IDM_ABOUT2:
         case IDM_ABOUT3:
@@ -1238,24 +1263,13 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
     case WM_KEYDOWN:
         if (wParam == VK_TAB)
         {
-            if (!m_toggledNone) 
-            {
-                m_toggledNone = true;
-                m_toggledPresetNo = m_captureOptions.presetNo;
-                m_captureManager.RememberLastPreset();
-                SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_numPresets-1), 0);
-            }
+            SendMessage(hWnd, WM_COMMAND, ID_QUICK_TOGGLE, 1);
         }
         break;
     case WM_KEYUP:
         if (wParam == VK_TAB)
         {
-            if (m_toggledNone) 
-            {
-                m_toggledNone = false;
-                m_captureManager.SetLastPreset(m_toggledPresetNo);
-                SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_toggledPresetNo), 0);
-            }
+            SendMessage(hWnd, WM_COMMAND, ID_QUICK_TOGGLE, 2);
         }
         break;
     case WM_SIZE: {
@@ -1452,6 +1466,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     m_mainMenu = LoadMenu(hInstance, MAKEINTRESOURCEW(IDC_SHADERGLASS));
 
     m_programMenu = GetSubMenu(m_mainMenu, 0);
+    m_shaderMenu = GetSubMenu(m_mainMenu, 3);
     BuildInputMenu();
     BuildOutputMenu();
     BuildShaderMenu();

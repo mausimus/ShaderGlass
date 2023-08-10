@@ -26,6 +26,7 @@ private:
     HWND                         m_browserWindow {nullptr};
     HMENU                        m_mainMenu {nullptr};
     HMENU                        m_programMenu {nullptr};
+    HMENU                        m_shaderMenu {nullptr};
     HMENU                        m_pixelSizeMenu {nullptr};
     HMENU                        m_aspectRatioMenu {nullptr};
     HMENU                        m_outputScaleMenu {nullptr};
