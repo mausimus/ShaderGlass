@@ -26,7 +26,7 @@ Overlay for running GPU shaders on top of Windows desktop.
 ### Download
 
 Latest release (v0.9, 10 Aug 2023):
-* refresh or RetroArch shader library
+* refresh of RetroArch shader library
 * new Shader Browser window
 * bug fixes
 
