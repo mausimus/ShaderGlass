@@ -412,7 +412,7 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
     SendMessage(hwndTrack, WM_SETFONT, (LPARAM)m_font, true);
 
     const char* label = p->description.size() ? p->description.c_str() : name;
-    const char* tooltip = p->description.size() ? name : p->description.c_str();
+    const char* tooltip = label; //p->description.size() ? name : p->description.c_str();
 
     auto paramNameWnd = CreateWindowEx(0,
                                        L"STATIC",
