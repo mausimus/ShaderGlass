@@ -354,10 +354,8 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             }
             else if(lParam == (UINT)m_resetButtonWnd)
             {
-                for(const auto& t : m_trackbars)
-                    auto pos = SendMessage(t.trackBarWnd, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)t.def);
-
                 m_captureManager.ResetParams();
+                RebuildControls();
             }
             return 0;
         }
