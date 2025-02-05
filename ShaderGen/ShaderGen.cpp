@@ -7,6 +7,7 @@ GNU General Public License v3.0
 #include "ShaderGen.h"
 
 filesystem::path startupPath;
+filesystem::path tempPath;
 filesystem::path listPath(_outputPath);
 vector<string>   shaderList;
 
@@ -63,17 +64,22 @@ void saveSource(const filesystem::path& fileName, const string& source)
 
 filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, const vector<string> source)
 {
-    filesystem::path input = shaderPath;
+    filesystem::path input = tempPath / shaderPath;
     input.replace_extension("." + stage + ".glsl");
-    filesystem::path output = shaderPath;
+    filesystem::path output = tempPath / shaderPath;
     output.replace_extension("." + stage + ".spv");
+    filesystem::create_directories(output.parent_path());
 
     saveSource(input, source);
 
     stringstream cmd;
     cmd << "\"" << _glslPath << "\" "
-        << "-V -S " << stage << " -o " << output.string() << " " << input.string();
-    exec(cmd.str().c_str());
+        << "-V --quiet -S " << stage << " -o " << output.string() << " " << input.string();
+    const auto& result = exec(cmd.str().c_str());
+    if(result.length() > 0)
+        saveSource(output.string() + ".log", result);
+    if(result.contains("ERROR"))
+        throw new exception("GLSL error");
     return output;
 }
 
@@ -90,9 +96,9 @@ pair<string, string> spirv(const filesystem::path& input)
 
 string fxc(const filesystem::path& shaderPath, const string& profile, const string& source)
 {
-    filesystem::path input = shaderPath;
+    filesystem::path input = tempPath / shaderPath;
     input.replace_extension("." + profile + ".hlsl");
-    filesystem::path output = shaderPath;
+    filesystem::path output = tempPath / shaderPath;
     output.replace_extension("." + profile + ".h");
 
     saveSource(input, source);
@@ -596,12 +602,12 @@ void processShader(ShaderDef def)
                 inComment = true;
             }
         }
-        else if (trimLine.ends_with("*/"))
+        else if (inComment && trimLine.ends_with("*/"))
         {
             def.comments.push_back(trimLine.substr(0, trimLine.length() - 2));
             inComment = false;
         }
-        else if(trimLine.starts_with("*/"))
+        else if(inComment && trimLine.starts_with("*/"))
         {
             inComment = false;
         }
@@ -625,7 +631,7 @@ void processShader(ShaderDef def)
     def.fragmentSource         = fragmentOutput.first;
     def.fragmentMetadata       = fragmentOutput.second;
 
-    filesystem::path metaOutput(def.input);
+    filesystem::path metaOutput(tempPath / def.input);
     metaOutput.replace_extension(".meta");
     saveSource(metaOutput, fragmentOutput.second);
 
@@ -866,6 +872,9 @@ int main(int argc, char* argv[])
 {
     startupPath = filesystem::current_path();
     filesystem::current_path(_inputPath);
+
+    filesystem::create_directory(_tempPath);
+    tempPath = filesystem::path(_tempPath);
 
     processListTemplate();
 
