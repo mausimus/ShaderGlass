@@ -1,15 +1,8 @@
 /*
 ShaderGlass shader crt-shaders\snes-hires-blend imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/snes-hires-blend.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/snes-hires-blend.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-SNES Hires Blend Fix
-by OV2, Sp00kyFox, hunterk
-Filter:    Nearest
-Scale:    1x
-The original shader has the problem that it blends every horizontal pair of adjacent pixels where it should only blend pairwise disjointed pixel pairs instead.
 
 // pixel location
 // reading the texels

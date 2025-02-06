@@ -1,23 +1,11 @@
 /*
 ShaderGlass shader dithering-shaders-mdapt-passes\mdapt-pass4 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/dithering/shaders/mdapt/passes/mdapt-pass4.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/dithering/shaders/mdapt/passes/mdapt-pass4.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-
-Merge Dithering and Pseudo Transparency Shader v2.8 - Pass 4
-by Sp00kyFox, 2014
-
-Blends pixels based on detected dithering patterns.
-
-
 //#define TEX(dx,dy)   texture(Source, vTexCoord+vec2((dx),(dy))*params.SourceSize.zw)
 //#define TEXt0(dx,dy) texture(mdapt_refpass, vTexCoord+vec2((dx),(dy))*params.SourceSize.zw)
-
-UL U UR
-L  C R
-DL D DR
-
 // Backpropagation
 //standard formula: C/2 + (L + R + D + U)/8
 // Checkerboard Smoothing

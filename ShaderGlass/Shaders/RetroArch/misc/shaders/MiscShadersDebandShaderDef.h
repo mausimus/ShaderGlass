@@ -1,34 +1,8 @@
 /*
 ShaderGlass shader misc-shaders\deband imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/misc/shaders/deband.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/misc/shaders/deband.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-* Deband shader by haasn
-* https://github.com/mpv-player/mpv/blob/master/video/out/opengl/video_shaders.c
-*
-* This file is part of mpv.
-*
-* mpv is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* mpv is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with mpv.  If not, see <http://www.gnu.org/licenses/>.
-*
-* You can alternatively redistribute this file and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* Modified and optimized for RetroArch by hunterk
 
 // Wide usage friendly PRNG, shamelessly stolen from a GLSL tricks forum post.
 // Obtain random numbers by calling rand(h), followed by h = permute(h) to

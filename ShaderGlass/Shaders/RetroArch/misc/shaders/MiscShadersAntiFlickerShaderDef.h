@@ -1,17 +1,8 @@
 /*
 ShaderGlass shader misc-shaders\anti-flicker imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/misc/shaders/anti-flicker.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/misc/shaders/anti-flicker.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Anti-Flicker shader
-by hunterk
-License: public domain
-
-This shader detects large variations in luminance from frame to frame
-and then blends frames to smooth the transition. In flicker-based
-shadow effects, this should result in true transparency.
 
 // sample the textures
 // get luma for comparison

@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-crt-lottes-multipass\bloompass-glow imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-lottes-multipass/bloompass-glow.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-lottes-multipass/bloompass-glow.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -249,15 +249,15 @@ static const BYTE sVertexByteCode[] =
 
 static const BYTE sFragmentByteCode[] =
 {
-68,88,66,67,47,95,
-181,127,123,144,74,102,
-194,188,200,210,184,182,
-180,1,1,0,0,0,
-120,35,0,0,5,0,
+68,88,66,67,110,200,
+85,119,142,124,78,17,
+107,35,21,198,203,92,
+109,253,1,0,0,0,
+96,35,0,0,5,0,
 0,0,52,0,0,0,
-208,5,0,0,28,6,
-0,0,80,6,0,0,
-220,34,0,0,82,68,
+208,5,0,0,4,6,
+0,0,56,6,0,0,
+196,34,0,0,82,68,
 69,70,148,5,0,0,
 2,0,0,0,240,0,
 0,0,4,0,0,0,
@@ -497,17 +497,13 @@ static const BYTE sFragmentByteCode[] =
 114,32,67,111,109,112,
 105,108,101,114,32,49,
 48,46,49,0,171,171,
-73,83,71,78,68,0,
-0,0,2,0,0,0,
-8,0,0,0,56,0,
-0,0,0,0,0,0,
-0,0,0,0,3,0,
-0,0,0,0,0,0,
-3,3,0,0,56,0,
+73,83,71,78,44,0,
 0,0,1,0,0,0,
+8,0,0,0,32,0,
+0,0,0,0,0,0,
 0,0,0,0,3,0,
 0,0,0,0,0,0,
-12,0,0,0,84,69,
+3,3,0,0,84,69,
 88,67,79,79,82,68,
 0,171,171,171,79,83,
 71,78,44,0,0,0,

@@ -1,17 +1,8 @@
 /*
 ShaderGlass shader motionblur-shaders\response-time imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/motionblur/shaders/response-time.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/motionblur/shaders/response-time.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Response Time
-Based on the response time function from Harlequin's Game Boy and LCD shaders
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the Free
-Software Foundation; either version 2 of the License, or (at your option)
-any later version.
 
 // Simulate response time
 // Higher values result in longer color transition periods - [0, 1]

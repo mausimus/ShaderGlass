@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader pal-shaders\pal-r57shell-moire-only imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/pal/shaders/pal-r57shell-moire-only.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/pal/shaders/pal-r57shell-moire-only.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -14,10 +14,6 @@ This file is auto-generated, do not modify directly.
 // http://twitch.tv/elektropage
 // some details
 // http://forums.nesdev.com/viewtopic.php?f=3&t=12788&start=15
-vec3 rgb = vec3(
-yuv.x + 1.28033 * yuv.z,
-yuv.x - 0.21482 * yuv.y - 0.38059 * yuv.z,
-yuv.x + 2.12798 * yuv.y);
 // pos (left corner, sample size)
 // linear interpolation was...
 // now other thing.

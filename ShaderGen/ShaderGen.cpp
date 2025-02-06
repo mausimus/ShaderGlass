@@ -8,6 +8,7 @@ GNU General Public License v3.0
 
 filesystem::path startupPath;
 filesystem::path tempPath;
+filesystem::path reportPath;
 filesystem::path listPath(_outputPath);
 vector<string>   shaderList;
 
@@ -28,11 +29,11 @@ static inline string trim(std::string s)
     return s;
 }
 
-std::string exec(const char* cmd)
+std::string exec(const char* cmd, ofstream& log)
 {
     std::array<char, 128> buffer;
     std::string           result;
-    cout << cmd << endl;
+    log << cmd << endl;
     std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd, "r"), _pclose);
     if(!pipe)
     {
@@ -62,7 +63,7 @@ void saveSource(const filesystem::path& fileName, const string& source)
     outfile.close();
 }
 
-filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, const vector<string> source)
+filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, const vector<string> source, ofstream& log)
 {
     filesystem::path input = tempPath / shaderPath;
     input.replace_extension("." + stage + ".glsl");
@@ -74,39 +75,55 @@ filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, c
 
     stringstream cmd;
     cmd << "\"" << _glslPath << "\" "
-        << "-V --quiet -S " << stage << " -o " << output.string() << " " << input.string();
-    const auto& result = exec(cmd.str().c_str());
+        << "-V --quiet -S " << stage << " -o " << output.string() << " " << input.string() << "";
+    auto        cmds      = cmd.str();
+    auto        cmdstring = cmds.c_str();
+    const auto& result    = exec(cmdstring, log);
     if(result.length() > 0)
-        saveSource(output.string() + ".log", result);
-    if(result.contains("ERROR"))
-        throw new exception("GLSL error");
+        log << result << endl;
+    if(result.contains("error") || result.contains("ERROR"))
+        throw std::runtime_error("SPIR-V conversion error");
     return output;
 }
 
-pair<string, string> spirv(const filesystem::path& input)
+pair<string, string> spirv(const filesystem::path& input, ofstream& log)
 {
     stringstream cmd1, cmd2;
     cmd1 << "\"" << _spirvPath << "\" "
-         << " --hlsl --shader-model 50 " << input.string();
-    const auto& code = exec(cmd1.str().c_str());
+         << " --hlsl --shader-model 50 " << input.string() << "";
+    const auto& code = exec(cmd1.str().c_str(), log);
     cmd2 << "\"" << _spirvPath << "\" " << input.string() << " --reflect";
-    const auto& metadata = exec(cmd2.str().c_str());
+    const auto& metadata = exec(cmd2.str().c_str(), log);
     return make_pair(code, metadata);
 }
 
-string fxc(const filesystem::path& shaderPath, const string& profile, const string& source)
+string fxc(const filesystem::path& shaderPath, const string& profile, const string& source, ofstream& log, bool& warn)
 {
     filesystem::path input = tempPath / shaderPath;
     input.replace_extension("." + profile + ".hlsl");
     filesystem::path output = tempPath / shaderPath;
     output.replace_extension("." + profile + ".h");
 
-    saveSource(input, source);
+    // 3557 - forcing loop to unroll
+    // 3570 - gradient instruction used in a loop with varying iteration
+    // 3571 - pow with negative
+    // 4000 - use of potentially uninitialized variable
+    // 4008 - floating point division by zero
+    auto fullSource = std::string("#pragma warning (disable : 3557)\r\n#pragma warning (disable : 3570)\r\n#pragma warning (disable : 3571)\r\n#pragma warning (disable : "
+                                  "4000)\r\n#pragma warning (disable : 4008)\r\n" +
+                                  source);
+    saveSource(input, fullSource);
 
     stringstream cmd;
     cmd << "\"" << _fxcPath << "\" "
-        << " /O3 /E main /T " << profile << " /Fh " << output.string() << " " << input.string();
-    exec(cmd.str().c_str());
+        << " /nologo /O3 /E main /T " << profile << " /Fh " << output.string() << " " << input.string() << " 2>&1";
+    const auto& result = exec(cmd.str().c_str(), log);
+    if(result.length() > 0)
+        log << result << endl;
+    if(result.contains("error") || result.contains("ERROR"))
+        throw std::runtime_error("FXC compilation error");
+    if(result.contains("warn"))
+        warn = true;
 
     fstream      infile(output.string());
     stringstream outs;
@@ -174,7 +191,7 @@ int getSize(const std::string& mtype)
     }
     else
     {
-        throw exception("Unknown type");
+        throw std::runtime_error("Unknown type");
     }
 }
 
@@ -316,7 +333,7 @@ void updatePresetList(const ShaderInfo& shaderInfo)
         saveSource(listPath, shaderList);
 }
 
-void populateShaderTemplate(ShaderDef def)
+void populateShaderTemplate(ShaderDef def, ofstream& log)
 {
     const auto& info = def.info;
 
@@ -325,7 +342,7 @@ void populateShaderTemplate(ShaderDef def)
     buffer << infile.rdbuf();
     auto bufferString = buffer.str();
     replace(bufferString, "%LIB_NAME%", _libName);
-    replace(bufferString, "%CLASS_NAME%", info.className);    
+    replace(bufferString, "%CLASS_NAME%", info.className);
     replace(bufferString, "%SHADER_NAME%", info.shaderName);
     replace(bufferString, "%SHADER_CATEGORY%", info.category);
     replace(bufferString, "%VERTEX_SOURCE%", splitCode(def.vertexSource));
@@ -335,7 +352,7 @@ void populateShaderTemplate(ShaderDef def)
 
     if(def.fragmentByteCode.empty() || def.vertexByteCode.empty())
     {
-        throw exception("Shader compilation failed");
+        throw std::runtime_error("Shader compilation failed");
     }
 
     // built-in parameters
@@ -391,13 +408,13 @@ void populateShaderTemplate(ShaderDef def)
         else if(line.starts_with("%HEADER"))
         {
             outfile << "ShaderGlass shader " << info.category << "\\" << info.shaderName << " imported from " << _libName << ":" << endl;
-            outfile << "https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/" << def.input.generic_string() << endl;
+            outfile << _raUrl << def.input.generic_string() << endl;
             outfile << "See original file for full credits and usage license with excerpts below. " << endl;
             outfile << "This file is auto-generated, do not modify directly." << endl;
-            if (def.comments.size())
+            if(def.comments.size())
             {
                 outfile << endl;
-                for(const auto& c: def.comments)
+                for(const auto& c : def.comments)
                     outfile << c << endl;
             }
             outfile << endl;
@@ -406,10 +423,10 @@ void populateShaderTemplate(ShaderDef def)
             outfile << line << endl;
     }
     outfile.close();
-    cout << "Generated ShaderDef " << info.outputPath << endl;
+    log << "Generated ShaderDef " << info.outputPath << endl;
 }
 
-void populateTextureTemplate(TextureDef def)
+void populateTextureTemplate(TextureDef def, ofstream& log)
 {
     const auto& info = def.info;
 
@@ -433,7 +450,7 @@ void populateTextureTemplate(TextureDef def)
         if(line.starts_with("%HEADER"))
         {
             outfile << "ShaderGlass texture " << info.category << " / " << info.shaderName << " imported from " << _libName << ":" << endl;
-            outfile << "https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/" << def.input.generic_string() << endl;
+            outfile << _raUrl << def.input.generic_string() << endl;
             outfile << "See original file for credits and usage license. " << endl;
             outfile << "This file is auto-generated, do not modify directly." << endl;
         }
@@ -441,10 +458,10 @@ void populateTextureTemplate(TextureDef def)
             outfile << line << endl;
     }
     outfile.close();
-    cout << "Generated TextureDef " << info.outputPath << endl;
+    log << "Generated TextureDef " << info.outputPath << endl;
 }
 
-void populatePresetTemplate(const filesystem::path& input, const vector<ShaderDef>& shaders, const vector<TextureDef>& textures)
+void populatePresetTemplate(const filesystem::path& input, const vector<ShaderDef>& shaders, const vector<TextureDef>& textures, ofstream& log)
 {
     const auto& info = getShaderInfo(input, "PresetDef");
 
@@ -512,7 +529,7 @@ void populatePresetTemplate(const filesystem::path& input, const vector<ShaderDe
         else if(line.starts_with("%HEADER"))
         {
             outfile << "ShaderGlass preset " << info.category << " / " << info.shaderName << " imported from " << _libName << ":" << endl;
-            outfile << "https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/" << input.generic_string() << endl;
+            outfile << _raUrl << input.generic_string() << endl;
             outfile << "See original file for credits and usage license. " << endl;
             outfile << "This file is auto-generated, do not modify directly." << endl;
         }
@@ -520,7 +537,7 @@ void populatePresetTemplate(const filesystem::path& input, const vector<ShaderDe
             outfile << line << endl;
     }
     outfile.close();
-    cout << "Generated PresetDef " << info.outputPath << endl;
+    log << "Generated PresetDef " << info.outputPath << endl;
 }
 
 vector<string> loadSource(const filesystem::path& input, bool followIncludes)
@@ -551,14 +568,14 @@ vector<string> loadSource(const filesystem::path& input, bool followIncludes)
     return lines;
 }
 
-void processShader(ShaderDef def)
+void processShader(ShaderDef def, ofstream& log, bool& warn)
 {
     vector<string> vertexSource;
     vector<string> fragmentSource;
 
     bool        isVertex = true, isFragment = true;
-    const auto& source = loadSource(def.input, true);
-    bool inComment = false;
+    const auto& source    = loadSource(def.input, true);
+    bool        inComment = false;
     for(const auto& line : source)
     {
         auto trimLine = trim(line);
@@ -578,9 +595,13 @@ void processShader(ShaderDef def)
             isVertex   = false;
             inComment  = false;
         }
+        else if(trimLine.starts_with("#pragma format") && !trimLine.ends_with("R8G8B8A8_UNORM") && !trimLine.ends_with("R8G8B8A8_SRGB"))
+        {
+            throw std::runtime_error("Unsupported shader format");
+        }
         else if(trimLine.starts_with("//"))
         {
-            if (trimLine.ends_with("*/"))
+            if(trimLine.ends_with("*/"))
             {
                 //def.comments.push_back(trimLine.substr(0, trimLine.length() - 2));
                 inComment = false;
@@ -592,17 +613,25 @@ void processShader(ShaderDef def)
         }
         else if(trimLine.starts_with("/*"))
         {
-            if (trimLine.ends_with("*/"))
+            if(trimLine.ends_with("*/"))
             {
                 def.comments.push_back(trimLine.substr(2, trimLine.length() - 4));
             }
-            else
+            else if(trimLine.find_first_of("*/") == string::npos)
             {
                 def.comments.push_back(trimLine.substr(2));
                 inComment = true;
             }
+            else
+            {
+                // comment within line
+                if(isFragment)
+                    fragmentSource.push_back(line);
+                if(isVertex)
+                    vertexSource.push_back(line);
+            }
         }
-        else if (inComment && trimLine.ends_with("*/"))
+        else if(inComment && trimLine.ends_with("*/"))
         {
             def.comments.push_back(trimLine.substr(0, trimLine.length() - 2));
             inComment = false;
@@ -624,8 +653,8 @@ void processShader(ShaderDef def)
         }
     }
 
-    const auto& vertexOutput   = spirv(glsl(def.input, "vert", vertexSource));
-    const auto& fragmentOutput = spirv(glsl(def.input, "frag", fragmentSource));
+    const auto& vertexOutput   = spirv(glsl(def.input, "vert", vertexSource, log), log);
+    const auto& fragmentOutput = spirv(glsl(def.input, "frag", fragmentSource, log), log);
     def.vertexSource           = vertexOutput.first;
     def.vertexMetadata         = vertexOutput.second;
     def.fragmentSource         = fragmentOutput.first;
@@ -635,13 +664,13 @@ void processShader(ShaderDef def)
     metaOutput.replace_extension(".meta");
     saveSource(metaOutput, fragmentOutput.second);
 
-    def.vertexByteCode   = fxc(def.input, "vs_5_0", vertexOutput.first);
-    def.fragmentByteCode = fxc(def.input, "ps_5_0", fragmentOutput.first);
+    def.vertexByteCode   = fxc(def.input, "vs_5_0", vertexOutput.first, log, warn);
+    def.fragmentByteCode = fxc(def.input, "ps_5_0", fragmentOutput.first, log, warn);
 
     replace(def.vertexByteCode, " ", "");
     replace(def.fragmentByteCode, " ", "");
 
-    populateShaderTemplate(def);
+    populateShaderTemplate(def, log);
 }
 
 string bin2string(filesystem::path input)
@@ -677,10 +706,10 @@ string bin2string(filesystem::path input)
     return oss.str();
 }
 
-void processTexture(TextureDef def)
+void processTexture(TextureDef def, ofstream& log)
 {
     def.data = bin2string(def.input);
-    populateTextureTemplate(def);
+    populateTextureTemplate(def, log);
 }
 
 pair<string, string> getKeyValue(string input)
@@ -757,7 +786,7 @@ void setPresetParams(TextureDef& def, std::string name, const map<string, string
     setPresetParam(name + "_", def, "mipmap", keyValues);
 }
 
-void processPreset(const filesystem::path& input)
+void processPreset(const filesystem::path& input, ofstream& log, bool& warn)
 {
     map<string, string> keyValues;
 
@@ -786,7 +815,7 @@ void processPreset(const filesystem::path& input)
         setPresetParams(def, i, keyValues);
         if(_force || !filesystem::exists(def.info.outputPath))
         {
-            processShader(def);
+            processShader(def, log, warn);
         }
         updateShaderList(def.info);
         shaders.push_back(def);
@@ -818,7 +847,7 @@ void processPreset(const filesystem::path& input)
                 setPresetParams(def, textureName, keyValues);
                 if(_force || !filesystem::exists(def.info.outputPath))
                 {
-                    processTexture(def);
+                    processTexture(def, log);
                 }
                 updateTextureList(def.info);
                 textures.push_back(def);
@@ -829,12 +858,12 @@ void processPreset(const filesystem::path& input)
     }
     if(_force || !filesystem::exists(pDef.outputPath))
     {
-        populatePresetTemplate(input, shaders, textures);
+        populatePresetTemplate(input, shaders, textures, log);
     }
     updatePresetList(getShaderInfo(input, "PresetDef"));
 }
 
-void processFile(const filesystem::path& input)
+void processFile(const filesystem::path& input, ofstream& reportStream)
 {
     if(input.filename().string()[0] == '-') // exclusions (files)
         return;
@@ -842,11 +871,52 @@ void processFile(const filesystem::path& input)
     if(input.string()[0] == '-') // exclusions (folders)
         return;
 
-    std::cout << "======= " << input << '\n';
-    if(input.extension() == ".slang")
-        processShader(input);
-    else if(input.extension() == ".slangp")
-        processPreset(input);
+    auto inputString = input.string();
+    std::replace(inputString.begin(), inputString.end(), '\\', '!');
+    std::filesystem::path logPath(tempPath / "logs" / (inputString + ".log"));
+    std::filesystem::create_directory(tempPath / "logs");
+    ofstream log(logPath);
+    bool     warn = false;
+    bool     err  = false;
+
+    try
+    {
+        std::cout << input << " ...";
+        if(input.extension() == ".slang")
+            processShader(input, log, warn);
+        else if(input.extension() == ".slangp")
+            processPreset(input, log, warn);
+
+        log << "OK" << endl;
+    }
+    catch(std::exception& e)
+    {
+        cout << e.what() << endl;
+        err = true;
+
+        log << "ERROR:" << e.what() << endl;
+    }
+    log.close();
+
+    if(err)
+    {
+        auto orgPath(logPath);
+        std::filesystem::rename(orgPath, logPath.replace_extension(".ERROR.log"));
+        std::cout << "ERROR" << endl;
+        reportStream << "ERROR: " << input << endl;
+    }
+    else if(warn)
+    {
+        auto orgPath(logPath);
+        std::filesystem::rename(orgPath, logPath.replace_extension(".WARN.log"));
+        std::cout << "WARN" << endl;
+        reportStream << "WARN: " << input << endl;
+    }
+    else
+    {
+        std::cout << "OK" << endl;
+        reportStream << "OK: " << input << endl;
+    }
 }
 
 void processListTemplate()
@@ -863,7 +933,7 @@ void processListTemplate()
         ofstream outfile(listPath);
         outfile << bufferString;
         outfile.close();
-        cout << "Generated list " << listPath.string() << endl;
+        std::cout << "Generated list " << listPath.string() << endl;
     }
     shaderList = loadSource(listPath, false);
 }
@@ -876,42 +946,63 @@ int main(int argc, char* argv[])
     filesystem::create_directory(_tempPath);
     tempPath = filesystem::path(_tempPath);
 
+    reportPath = tempPath / (std::format("{:%Y%m%d_%H%M%S}", std::chrono::system_clock::now()) + ".log");
+    ofstream reportStream(reportPath);
+    reportStream << "Starting at " << (std::format("{:%Y-%m-%d %H:%M:%S}", std::chrono::system_clock::now())) << endl;
+
     processListTemplate();
 
-    for(int i = 1; i < argc; i++)
+    try
     {
-        string input(argv[i]);
-        if(input == "force")
+        for(int i = 1; i < argc; i++)
         {
-            _force = true;
-            continue;
-        }
-        if(input == ".")
-        {
-            for(auto& p : filesystem::recursive_directory_iterator("."))
+            string input(argv[i]);
+            if(input == "force")
             {
-                try
+                _force = true;
+                continue;
+            }
+            if(input == ".")
+            {
+                for(auto& p : filesystem::recursive_directory_iterator("."))
                 {
                     if(p.path().extension() == ".slangp")
-                        processFile(p.path().lexically_normal());
-                }
-                catch (std::exception& e)
-                {
-                    cout << e.what() << endl;
-                }
-            }
-        }
-        else
-        {
-            if(filesystem::status(input).type() == filesystem::file_type::directory)
-            {
-                for(auto& p : filesystem::directory_iterator(input))
-                {
-                    processFile(p.path());
+                    {
+                        auto isExcluded  = false;
+                        auto excludePath = p.path().parent_path();
+                        do
+                        {
+                            isExcluded |= filesystem::exists(excludePath / ".exclude");
+                            excludePath = excludePath.parent_path();
+                        }
+                        while(!isExcluded && !excludePath.empty());
+
+                        if(!isExcluded)
+                        {
+                            processFile(p.path().lexically_normal(), reportStream);
+                        }
+                    }
                 }
             }
             else
-                processFile(input);
+            {
+                if(filesystem::status(input).type() == filesystem::file_type::directory)
+                {
+                    for(auto& p : filesystem::directory_iterator(input))
+                    {
+                        processFile(p.path(), reportStream);
+                    }
+                }
+                else
+                    processFile(input, reportStream);
+            }
         }
     }
+    catch(exception& e)
+    {
+        reportStream << "EXCEPTION: " << e.what() << endl;
+    }
+
+    reportStream << "Finishing at " << (std::format("{:%Y-%m-%d %H:%M:%S}", std::chrono::system_clock::now())) << endl;
+    reportStream.close();
 }

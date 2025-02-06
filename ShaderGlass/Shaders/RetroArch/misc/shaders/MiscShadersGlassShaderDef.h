@@ -1,24 +1,8 @@
 /*
 ShaderGlass shader misc-shaders\glass imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/misc/shaders/glass.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/misc/shaders/glass.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-CRT Glass shader
-> CRT related artifacts:
-::grain
-::glass inner reflection
-::glass outer reflection
-::chromatic aberration (for beam deconvergence and glass diffraction)
-::screen flicker
-::screen jitter
-::afterglow (dr-venom's mod)
-::CRT border corner (cgwg's crt-geom)
-> Stack just before scanlines. Works better with curved geometry modes.
-
-Author: Dogway
-License: Public domain
 
 // https://www.desmos.com/calculator/1nfq4uubnx
 // PER = 2.0 for realistic (1.0 or less when using scanlines). Phosphor Index; it's the same as in the "grade" shader
@@ -40,15 +24,9 @@ License: Public domain
 // NTSC color code from SimoneT
 // Jzazbz code from torridgristle
 // License: GPL v2+
-------------------------------------------------------------------------------
-[GAMMA CORRECTION CODE SECTION]
-------------------------------------------------------------------------------
 // more gamma linearization algos
 // use slower, more accurate calculation
 // use faster, less accurate calculation
-------------------------------------------------------------------------------
-[RGB TO GRAYSCALE / LUMA CODE SECTION]
-------------------------------------------------------------------------------
 // if you're already in linear gamma, definitely use this one ( Y = 0.2126R + 0.7152G + 0.0722B )
 // the Rec. 709 spec uses these same coefficients but with gamma-compressed components ( Y' = 0.2126R' + 0.7152G' + 0.0722B' )
 // for digital formats following CCIR 601 (that is, most digital standard def formats)
@@ -57,21 +35,6 @@ License: Public domain
 // SMPTE 240M; used by some transitional 1035i HDTV signals. Expects gamma-compressed components
 // ( Y' = 0.212R' + 0.701G' + 0.087B' )
 // Same as Rec. 709 but with quick-and-dirty gamma linearization added on top
-------------------------------------------------------------------------------
-[COLORSPACE CONVERSION CODE SECTION]
-------------------------------------------------------------------------------
- XYZ color space is a device-invariant representation that encompasses all color sensations that are visible to a person
-with average eyesight. Y is the luminance, Z is quasi-equal to blue and X is a mix of the three CIE RGB curves chosen to be non-negative 
- YUV is a color space that takes human perception into account, allowing reduced bandwidth for chrominance components,
-as compared with a direct RGB representation. It includes a luminance component, Y, with nonlinear perceptual brightness,
-and two color components, U and V. This colorspace was used in the PAL color broadcast standard and is the counterpart to
-NTSC's YIQ colorspace. It is still commonly used to describe YCbCr signals. 
- YIQ is the color space used for analog NTSC color broadcasts, whereby Y stands for luma, I stands for in-phase and
-Q stands for quadrature, referring to the components used in quadrature amplitude modulation. The IQ axes exist on the
-same plane as the UV axes from the YUV color space, just rotated 33 degrees. 
- CMYK--aka process color or four color--is a subtractive color model based on the CMY color model that is
-used in color printing and to describe the printing process itself. C is for Cyan, M is for Magenta, Y is for
-Yellow and K is for 'key' or black. 
 // RGB <-> CMYK conversions require 4 channels
 // Converting pure hue to RGB
 // Converting RGB to hue/chroma/value
@@ -86,10 +49,6 @@ Yellow and K is for 'key' or black.
 //KDS VS19
 //}
 //  ---  sRGB  ---  //
- Jzazbz is a color space designed for perceptual uniformity in high dynamic range (HDR) and wide color gamut (WCG) applications.
-It is conceptually similar to CIE Lab but is considered more "modern". As compared with Lab, perceptual color differences are
-predicted by Euclidean distance, it is more perceptually uniform and changes in saturation or lightness produce less shifts in hue
-(i.e., increased hue linearity). Jzazbz and JzCzhz are used by ImageMagick and not much else. 
  The polar version of Jzazbz 
 //-2.6274509803921568627450980392157
 //2.760784313725490196078431372549

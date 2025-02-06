@@ -1,6 +1,6 @@
 /*
 ShaderGlass preset dithering / bayer_4x4 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/dithering/bayer_4x4.slangp
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/dithering/bayer_4x4.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */

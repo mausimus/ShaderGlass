@@ -1,28 +1,8 @@
 /*
 ShaderGlass shader crt-shaders\crt-caligari imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-caligari.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-caligari.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Phosphor shader - Copyright (C) 2011 caligari.
-
-Ported by Hyllian.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 
 // 0.5 = the spot stays inside the original pixel
 // 1.0 = the spot bleeds up to the center of next pixel
@@ -925,8 +905,8 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtCaligariShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtCaligariShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtCaligariShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SPOT_WIDTH", -1, 52, 4, 0.100000f, 1.500000f, 0.900000f, 0.050000f, "CRTCaligari Spot Width"));
-		Params.push_back(ShaderParam("SPOT_HEIGHT", -1, 56, 4, 0.100000f, 1.500000f, 0.650000f, 0.050000f, "CRTCaligari Spot Height"));
+		Params.push_back(ShaderParam("SPOT_WIDTH", -1, 52, 4, 0.500000f, 1.500000f, 0.900000f, 0.050000f, "CRTCaligari Spot Width"));
+		Params.push_back(ShaderParam("SPOT_HEIGHT", -1, 56, 4, 0.500000f, 1.500000f, 0.650000f, 0.050000f, "CRTCaligari Spot Height"));
 		Params.push_back(ShaderParam("COLOR_BOOST", -1, 60, 4, 1.000000f, 2.000000f, 1.450000f, 0.050000f, "CRTCaligari Color Boost"));
 		Params.push_back(ShaderParam("InputGamma", -1, 64, 4, 0.000000f, 5.000000f, 2.400000f, 0.100000f, "CRTCaligari Input Gamma"));
 		Params.push_back(ShaderParam("OutputGamma", -1, 68, 4, 0.000000f, 5.000000f, 2.200000f, 0.100000f, "CRTCaligari Output Gamma"));

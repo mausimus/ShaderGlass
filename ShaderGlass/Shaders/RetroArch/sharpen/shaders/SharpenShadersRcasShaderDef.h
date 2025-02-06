@@ -1,64 +1,8 @@
 /*
 ShaderGlass shader sharpen-shaders\rcas imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/sharpen/shaders/rcas.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/sharpen/shaders/rcas.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Robust Contrast Adaptive (RCA) Sharpening v1.0, re-implemented by fishku
-
-Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-Changelog:
-v1.0: Initial release.
-
-
-The implementation and documentation largely follow these resources:
-- https://github.com/GPUOpen-Effects/FidelityFX-FSR/blob/master/ffx-fsr/ffx_fsr1.h#L602
-- https://www.shadertoy.com/view/7tfSWH
-
-RCAS is based on the following logic.
-RCAS uses a 5 tap filter in a cross pattern (same as CAS),
-w                n
-w 1 w  for taps  w m e
-w                s
-Where 'w' is the negative lobe weight.
-output = (w*(n+e+w+s)+m)/(4*w+1)
-RCAS solves for 'w' by seeing where the signal might clip out of the {0 to 1} input range,
-0 == (w*(n+e+w+s)+m)/(4*w+1) -> w = -m/(n+e+w+s)
-1 == (w*(n+e+w+s)+m)/(4*w+1) -> w = (1-m)/(n+e+w+s-4*1)
-Then chooses the 'w' which results in no clipping, limits 'w', and multiplies by the 'sharp' amount.
-This solution above has issues with MSAA input as the steps along the gradient cause edge detection
-issues.
-So RCAS uses 4x the maximum and 4x the minimum (depending on equation) in place of the individual
-taps.
-As well as switching from 'm' to either the minimum or maximum (depending on side), to help in
-energy conservation.
-This stabilizes RCAS. RCAS does a simple highpass which is normalized against the local contrast
-then shaped,
-0.25
-0.25  -1  0.25
-0.25
-This is used as a noise detection filter, to reduce the effect of RCAS on grain, and focus on real
-edges.
 
 // This is set at the limit of providing unnatural results for sharpening.
 // Luma times 2.

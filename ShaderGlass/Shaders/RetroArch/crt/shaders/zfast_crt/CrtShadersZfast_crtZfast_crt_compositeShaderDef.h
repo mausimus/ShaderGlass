@@ -1,21 +1,8 @@
 /*
 ShaderGlass shader crt-shaders-zfast_crt\zfast_crt_composite imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/zfast_crt/zfast_crt_composite.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/zfast_crt/zfast_crt_composite.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-zfast_crt - A very simple CRT shader.
-
-Copyright (C) 2017 Greg Hogan (SoltanGris42)
-edited by metallic 77.
-ported to slang by gregoricavichioli & hunterk.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the Free
-Software Foundation; either version 2 of the License, or (at your option)
-any later version.
-
 
 // Distortion of scanlines, and end of screen alpha.
 

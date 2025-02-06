@@ -1,55 +1,10 @@
 /*
 ShaderGlass shader crt-shaders\gizmo-crt imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/gizmo-crt.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/gizmo-crt.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-
-* gizmo98 crt shader
-* Copyright (C) 2023 gizmo98
-*
-*   This program is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU General Public License as published by the Free
-*   Software Foundation; either version 2 of the License, or (at your option)
-*   any later version.
-*
-* version 0.40, 29.04.2023
-* ---------------------------------------------------------------------------------------
-* - fix aspect ratio issue
-* - fix screen centering issue
-* - use CRT/PI curvator
-*
-* version 0.35, 29.04.2023
-* ---------------------------------------------------------------------------------------
-* - initial slang port
-* - remove NTSC and INTERLACE effects
-*
-* version 0.3, 28.04.2023
-* ---------------------------------------------------------------------------------------
-* - unify shader in one file
-* - replace fixed macros and defines with pragmas
-* - add BLUR_OFFSET setting. This setting can be used to set the strength of a bad signal
-* - add ANAMORPH setting for megadrive and snes
-*
-* https://github.com/gizmo98/gizmo-crt-shader
-*
-* This shader tries to mimic a CRT without extensive use of scanlines and rgb pattern emulation.
-* It uses horizontal subpixel scaling and adds brightness dependent scanline patterns and allows
-* fractional scaling.
-*
-* HORIZONTAL_BLUR simulates a bad composite signal which is neede for consoles like megadrive
-* VERTICAL_BLUR vertical blur simulates N64 vertical blur
-* BGR_LCD_PATTERN most LCDs have a RGB pixel pattern. Enable BGR pattern with this switch
-* BRIGHTNESS makes scanlines more or less visible
-* SHRINK shrink screen in Z direction
-*
-* uses parts of RetroPie barrel distortation shader
-* uses parts of texture anti-aliasing shader https://www.shadertoy.com/view/ldsSRX
-* uses gold noise shader https://www.shadertoy.com/view/ltB3zD
-
  Add some subpixel noise which simulates small CRT color variations 
- Add scanlines which are wider for dark colors.
-You cannot see scanlines if color is bright. 
 // Barrel distortion shrinks the display area a bit, this will allow us to counteract that.
 //  coord *= screenScale; // not necessary in slang
 //      coord /= screenScale; // not necessary in slang

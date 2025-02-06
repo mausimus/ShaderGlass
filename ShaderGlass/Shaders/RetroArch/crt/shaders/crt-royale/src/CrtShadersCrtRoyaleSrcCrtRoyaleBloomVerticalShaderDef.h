@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-crt-royale-src\crt-royale-bloom-vertical imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-royale/src/crt-royale-bloom-vertical.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-royale/src/crt-royale-bloom-vertical.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -1552,66 +1552,11 @@ This file is auto-generated, do not modify directly.
 //      - tex*DMS*
 //      - Variants returning integers
 //  Standard line length restrictions are ignored below for vertical brevity.
-
 //  tex1D:
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex1Dbias:
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dbias(tex, tex_coords));   }
-
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dbias(tex, tex_coords, texel_off));    }
-
 //  tex1Dfetch:
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords)
-{   return decode_input(tex1Dfetch(tex, tex_coords));  }
-
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex1Dlod:
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dlod(tex, tex_coords));    }
-
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dlod(tex, tex_coords, texel_off));     }
-
 //  tex1Dproj:
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
 //  tex2D:
 //inline float4 tex2D_linearize(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy)
 //{   return decode_input(texture(tex, tex_coords, dx, dy));   }
@@ -1632,118 +1577,39 @@ inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, 
 //inline float4 tex2Dfetch_linearize(const sampler2D tex, const int4 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dfetch(tex, tex_coords, texel_off));   }
 //  tex2Dlod:
-
 //  tex2Dproj:
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-
 //  tex3D:
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords)
-{   return decode_input(tex3D(tex, tex_coords));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, texel_off));    }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex3Dbias:
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dbias(tex, tex_coords));   }
-
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dbias(tex, tex_coords, texel_off));    }
-
 //  tex3Dfetch:
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords)
-{   return decode_input(tex3Dfetch(tex, tex_coords));  }
-
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex3Dlod:
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dlod(tex, tex_coords));    }
-
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dlod(tex, tex_coords, texel_off));     }
-
 //  tex3Dproj:
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dproj(tex, tex_coords));   }
-
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dproj(tex, tex_coords, texel_off));    }
 /////////*
-
 //  NONSTANDARD "SMART" LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  This narrow selection of nonstandard tex2D* functions can be useful:
-
 //  tex2Dlod0: Automatically fill in the tex2D LOD parameter for mip level 0.
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0)));   }
-
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0), texel_off));    }
-
-
 //  MANUALLY LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  Provide a narrower selection of tex2D* wrapper functions that decode an
 //  input sample with a specified gamma value.  These are useful for reading
 //  LUT's and for reading the input of pass0 in a later pass.
-
 //  tex2D:
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords), gamma);   }
-
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords.xy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //  tex2Dbias:
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords), gamma);   }
-
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords, texel_off), gamma);    }
-
 //  tex2Dfetch:
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords), gamma);  }
-
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords, texel_off), gamma);   }
-
 //  tex2Dlod:
 /////////////////////////////  GPL LICENSE NOTICE  /////////////////////////////
 //  crt-royale: A full-featured CRT shader, with cheese.
@@ -2633,10 +2499,6 @@ inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coo
 //  single unresized phosphor mask tile anyway.
 //  Repeat the full LUT at a 1:1 pixel:texel ratio without resizing:
 //  Hardware-resize the original LUT:
-
-float2 fix_tiling_discontinuities_normalized(const float2 tile_uv,
-float2 duv_dx, float2 duv_dy)
-{
 //  Requires:   1.) duv_dx == ddx(tile_uv)
 //              2.) duv_dy == ddy(tile_uv)
 //              3.) tile_uv contains tile-relative uv coords in [0, 1],
@@ -2656,13 +2518,6 @@ float2 duv_dx, float2 duv_dy)
 //  derivatives as parameters so the caller can reuse them.
 //  In case we're using high-quality (nVidia-style) derivatives, ensure
 //  diagonically opposite fragments see each other for correctness:
-duv_dx = abs(duv_dx) + abs(ddy(duv_dx));
-duv_dy = abs(duv_dy) + abs(ddx(duv_dy));
-const float2 pixel_in_first_half_tile = float2((tile_uv.x < 0.5),(tile_uv.y < 0.5));
-const float2 jump_exists = float2(((duv_dx + duv_dy).x > 0.5),((duv_dx + duv_dy).y > 0.5));
-return tile_uv + jump_exists * pixel_in_first_half_tile;
-}
-
 //  Requires:   1.) tile_uv_wrap contains tile-relative uv coords, where the
 //                  tile spans from [0, 1], such that (0.5, 0.5) is at the
 //                  tile center.  The input coords can range from [0, inf],
@@ -3713,66 +3568,11 @@ return tile_uv + jump_exists * pixel_in_first_half_tile;
 //      - tex*DMS*
 //      - Variants returning integers
 //  Standard line length restrictions are ignored below for vertical brevity.
-
 //  tex1D:
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex1Dbias:
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dbias(tex, tex_coords));   }
-
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dbias(tex, tex_coords, texel_off));    }
-
 //  tex1Dfetch:
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords)
-{   return decode_input(tex1Dfetch(tex, tex_coords));  }
-
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex1Dlod:
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dlod(tex, tex_coords));    }
-
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dlod(tex, tex_coords, texel_off));     }
-
 //  tex1Dproj:
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
 //  tex2D:
 //inline float4 tex2D_linearize(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy)
 //{   return decode_input(texture(tex, tex_coords, dx, dy));   }
@@ -3793,118 +3593,39 @@ inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, 
 //inline float4 tex2Dfetch_linearize(const sampler2D tex, const int4 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dfetch(tex, tex_coords, texel_off));   }
 //  tex2Dlod:
-
 //  tex2Dproj:
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-
 //  tex3D:
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords)
-{   return decode_input(tex3D(tex, tex_coords));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, texel_off));    }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex3Dbias:
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dbias(tex, tex_coords));   }
-
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dbias(tex, tex_coords, texel_off));    }
-
 //  tex3Dfetch:
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords)
-{   return decode_input(tex3Dfetch(tex, tex_coords));  }
-
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex3Dlod:
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dlod(tex, tex_coords));    }
-
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dlod(tex, tex_coords, texel_off));     }
-
 //  tex3Dproj:
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dproj(tex, tex_coords));   }
-
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dproj(tex, tex_coords, texel_off));    }
 /////////*
-
 //  NONSTANDARD "SMART" LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  This narrow selection of nonstandard tex2D* functions can be useful:
-
 //  tex2Dlod0: Automatically fill in the tex2D LOD parameter for mip level 0.
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0)));   }
-
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0), texel_off));    }
-
-
 //  MANUALLY LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  Provide a narrower selection of tex2D* wrapper functions that decode an
 //  input sample with a specified gamma value.  These are useful for reading
 //  LUT's and for reading the input of pass0 in a later pass.
-
 //  tex2D:
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords), gamma);   }
-
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords.xy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //  tex2Dbias:
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords), gamma);   }
-
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords, texel_off), gamma);    }
-
 //  tex2Dfetch:
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords), gamma);  }
-
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords, texel_off), gamma);   }
-
 //  tex2Dlod:
 /////////////////////////////////  MIT LICENSE  ////////////////////////////////
 //  Copyright (C) 2014 TroggleMonkey*

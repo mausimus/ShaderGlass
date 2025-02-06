@@ -1,19 +1,8 @@
 /*
 ShaderGlass shader misc-shaders\bob-deinterlacing imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/misc/shaders/bob-deinterlacing.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/misc/shaders/bob-deinterlacing.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Bob-Deinterlacing
-Author: hunterk
-License: Public domain
-
-Note: This shader is designed to work with the typical interlaced output from
-an emulator, which displays both even and odd fields twice.
-
-As such, it is inappropriate for general video use unless the video has
-already been similarly woven beforehand.
 
 // I wish there were some way to make this automatic...
 // snap to the center of the underlying texel

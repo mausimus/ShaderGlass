@@ -1,33 +1,8 @@
 /*
 ShaderGlass shader blurs-shaders\gizmo-blur imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/blurs/shaders/gizmo-blur.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/blurs/shaders/gizmo-blur.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-* gizmo98 blur shader
-* Copyright (C) 2023 gizmo98
-*
-*   This program is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU General Public License as published by the Free
-*   Software Foundation; either version 2 of the License, or (at your option)
-*   any later version.
-*
-* version 0.1, 03.05.2023
-* ---------------------------------------------------------------------------------------
-* - initial commit
-*
-* https://github.com/gizmo98/gizmo-crt-shader
-*
-* This shader allows fine granular blur in x and y direction with colour bleeding.
-*
-* HORIZONTAL_BLUR simulates a bad composite signal which is neede for consoles like megadrive
-* VERTICAL_BLUR vertical blur simulates N64 vertical blur
-* BGR_LCD_PATTERN most LCDs have a RGB pixel pattern. Enable BGR pattern with this switch
-* COLOUR_BLEEDING colour bleeding intensity
-*
-* uses parts of texture anti-aliasing shader from Ikaros https://www.shadertoy.com/view/ldsSRX
-
 
 */
 

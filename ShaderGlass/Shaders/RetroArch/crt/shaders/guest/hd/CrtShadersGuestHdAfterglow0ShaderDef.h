@@ -1,29 +1,8 @@
 /*
 ShaderGlass shader crt-shaders-guest-hd\afterglow0 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/guest/hd/afterglow0.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/guest/hd/afterglow0.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Phosphor Afterglow Shader pass 0
-
-Copyright (C) 2020 guest(r) - guest.r@gmail.com
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-
 
 */
 
@@ -190,10 +169,10 @@ static const BYTE sVertexByteCode[] =
 
 static const BYTE sFragmentByteCode[] =
 {
-68,88,66,67,148,211,
-249,183,223,28,39,236,
-217,223,103,16,230,131,
-218,149,1,0,0,0,
+68,88,66,67,56,115,
+148,70,26,151,208,36,
+233,129,245,246,48,43,
+155,48,1,0,0,0,
 40,9,0,0,5,0,
 0,0,52,0,0,0,
 196,3,0,0,248,3,
@@ -506,9 +485,9 @@ static const BYTE sFragmentByteCode[] =
 0,10,114,0,16,0,
 1,0,0,0,70,2,
 16,0,1,0,0,0,
-2,64,0,0,129,128,
-0,188,129,128,0,188,
-129,128,0,188,0,0,
+2,64,0,0,161,160,
+160,187,161,160,160,187,
+161,160,160,187,0,0,
 0,0,52,0,0,10,
 114,0,16,0,1,0,
 0,0,70,2,16,0,

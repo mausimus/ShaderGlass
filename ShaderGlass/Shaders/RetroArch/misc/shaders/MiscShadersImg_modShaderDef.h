@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader misc-shaders\img_mod imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/misc/shaders/img_mod.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/misc/shaders/img_mod.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -24,15 +24,9 @@ This file is auto-generated, do not modify directly.
 // NTSC color code from SimoneT
 // Jzazbz code from torridgristle
 // License: GPL v2+
-------------------------------------------------------------------------------
-[GAMMA CORRECTION CODE SECTION]
-------------------------------------------------------------------------------
 // more gamma linearization algos
 // use slower, more accurate calculation
 // use faster, less accurate calculation
-------------------------------------------------------------------------------
-[RGB TO GRAYSCALE / LUMA CODE SECTION]
-------------------------------------------------------------------------------
 // if you're already in linear gamma, definitely use this one ( Y = 0.2126R + 0.7152G + 0.0722B )
 // the Rec. 709 spec uses these same coefficients but with gamma-compressed components ( Y' = 0.2126R' + 0.7152G' + 0.0722B' )
 // for digital formats following CCIR 601 (that is, most digital standard def formats)
@@ -41,21 +35,6 @@ This file is auto-generated, do not modify directly.
 // SMPTE 240M; used by some transitional 1035i HDTV signals. Expects gamma-compressed components
 // ( Y' = 0.212R' + 0.701G' + 0.087B' )
 // Same as Rec. 709 but with quick-and-dirty gamma linearization added on top
-------------------------------------------------------------------------------
-[COLORSPACE CONVERSION CODE SECTION]
-------------------------------------------------------------------------------
- XYZ color space is a device-invariant representation that encompasses all color sensations that are visible to a person
-with average eyesight. Y is the luminance, Z is quasi-equal to blue and X is a mix of the three CIE RGB curves chosen to be non-negative 
- YUV is a color space that takes human perception into account, allowing reduced bandwidth for chrominance components,
-as compared with a direct RGB representation. It includes a luminance component, Y, with nonlinear perceptual brightness,
-and two color components, U and V. This colorspace was used in the PAL color broadcast standard and is the counterpart to
-NTSC's YIQ colorspace. It is still commonly used to describe YCbCr signals. 
- YIQ is the color space used for analog NTSC color broadcasts, whereby Y stands for luma, I stands for in-phase and
-Q stands for quadrature, referring to the components used in quadrature amplitude modulation. The IQ axes exist on the
-same plane as the UV axes from the YUV color space, just rotated 33 degrees. 
- CMYK--aka process color or four color--is a subtractive color model based on the CMY color model that is
-used in color printing and to describe the printing process itself. C is for Cyan, M is for Magenta, Y is for
-Yellow and K is for 'key' or black. 
 // RGB <-> CMYK conversions require 4 channels
 // Converting pure hue to RGB
 // Converting RGB to hue/chroma/value
@@ -70,10 +49,6 @@ Yellow and K is for 'key' or black.
 //KDS VS19
 //}
 //  ---  sRGB  ---  //
- Jzazbz is a color space designed for perceptual uniformity in high dynamic range (HDR) and wide color gamut (WCG) applications.
-It is conceptually similar to CIE Lab but is considered more "modern". As compared with Lab, perceptual color differences are
-predicted by Euclidean distance, it is more perceptually uniform and changes in saturation or lightness produce less shifts in hue
-(i.e., increased hue linearity). Jzazbz and JzCzhz are used by ImageMagick and not much else. 
  The polar version of Jzazbz 
 //-2.6274509803921568627450980392157
 //2.760784313725490196078431372549
@@ -90,15 +65,9 @@ predicted by Euclidean distance, it is more perceptually uniform and changes in 
 // NTSC color code from SimoneT
 // Jzazbz code from torridgristle
 // License: GPL v2+
-------------------------------------------------------------------------------
-[GAMMA CORRECTION CODE SECTION]
-------------------------------------------------------------------------------
 // more gamma linearization algos
 // use slower, more accurate calculation
 // use faster, less accurate calculation
-------------------------------------------------------------------------------
-[RGB TO GRAYSCALE / LUMA CODE SECTION]
-------------------------------------------------------------------------------
 // if you're already in linear gamma, definitely use this one ( Y = 0.2126R + 0.7152G + 0.0722B )
 // the Rec. 709 spec uses these same coefficients but with gamma-compressed components ( Y' = 0.2126R' + 0.7152G' + 0.0722B' )
 // for digital formats following CCIR 601 (that is, most digital standard def formats)
@@ -107,21 +76,6 @@ predicted by Euclidean distance, it is more perceptually uniform and changes in 
 // SMPTE 240M; used by some transitional 1035i HDTV signals. Expects gamma-compressed components
 // ( Y' = 0.212R' + 0.701G' + 0.087B' )
 // Same as Rec. 709 but with quick-and-dirty gamma linearization added on top
-------------------------------------------------------------------------------
-[COLORSPACE CONVERSION CODE SECTION]
-------------------------------------------------------------------------------
- XYZ color space is a device-invariant representation that encompasses all color sensations that are visible to a person
-with average eyesight. Y is the luminance, Z is quasi-equal to blue and X is a mix of the three CIE RGB curves chosen to be non-negative 
- YUV is a color space that takes human perception into account, allowing reduced bandwidth for chrominance components,
-as compared with a direct RGB representation. It includes a luminance component, Y, with nonlinear perceptual brightness,
-and two color components, U and V. This colorspace was used in the PAL color broadcast standard and is the counterpart to
-NTSC's YIQ colorspace. It is still commonly used to describe YCbCr signals. 
- YIQ is the color space used for analog NTSC color broadcasts, whereby Y stands for luma, I stands for in-phase and
-Q stands for quadrature, referring to the components used in quadrature amplitude modulation. The IQ axes exist on the
-same plane as the UV axes from the YUV color space, just rotated 33 degrees. 
- CMYK--aka process color or four color--is a subtractive color model based on the CMY color model that is
-used in color printing and to describe the printing process itself. C is for Cyan, M is for Magenta, Y is for
-Yellow and K is for 'key' or black. 
 // RGB <-> CMYK conversions require 4 channels
 // Converting pure hue to RGB
 // Converting RGB to hue/chroma/value
@@ -136,10 +90,6 @@ Yellow and K is for 'key' or black.
 //KDS VS19
 //}
 //  ---  sRGB  ---  //
- Jzazbz is a color space designed for perceptual uniformity in high dynamic range (HDR) and wide color gamut (WCG) applications.
-It is conceptually similar to CIE Lab but is considered more "modern". As compared with Lab, perceptual color differences are
-predicted by Euclidean distance, it is more perceptually uniform and changes in saturation or lightness produce less shifts in hue
-(i.e., increased hue linearity). Jzazbz and JzCzhz are used by ImageMagick and not much else. 
  The polar version of Jzazbz 
 //-2.6274509803921568627450980392157
 //2.760784313725490196078431372549
@@ -167,15 +117,9 @@ predicted by Euclidean distance, it is more perceptually uniform and changes in 
 // NTSC color code from SimoneT
 // Jzazbz code from torridgristle
 // License: GPL v2+
-------------------------------------------------------------------------------
-[GAMMA CORRECTION CODE SECTION]
-------------------------------------------------------------------------------
 // more gamma linearization algos
 // use slower, more accurate calculation
 // use faster, less accurate calculation
-------------------------------------------------------------------------------
-[RGB TO GRAYSCALE / LUMA CODE SECTION]
-------------------------------------------------------------------------------
 // if you're already in linear gamma, definitely use this one ( Y = 0.2126R + 0.7152G + 0.0722B )
 // the Rec. 709 spec uses these same coefficients but with gamma-compressed components ( Y' = 0.2126R' + 0.7152G' + 0.0722B' )
 // for digital formats following CCIR 601 (that is, most digital standard def formats)
@@ -184,21 +128,6 @@ predicted by Euclidean distance, it is more perceptually uniform and changes in 
 // SMPTE 240M; used by some transitional 1035i HDTV signals. Expects gamma-compressed components
 // ( Y' = 0.212R' + 0.701G' + 0.087B' )
 // Same as Rec. 709 but with quick-and-dirty gamma linearization added on top
-------------------------------------------------------------------------------
-[COLORSPACE CONVERSION CODE SECTION]
-------------------------------------------------------------------------------
- XYZ color space is a device-invariant representation that encompasses all color sensations that are visible to a person
-with average eyesight. Y is the luminance, Z is quasi-equal to blue and X is a mix of the three CIE RGB curves chosen to be non-negative 
- YUV is a color space that takes human perception into account, allowing reduced bandwidth for chrominance components,
-as compared with a direct RGB representation. It includes a luminance component, Y, with nonlinear perceptual brightness,
-and two color components, U and V. This colorspace was used in the PAL color broadcast standard and is the counterpart to
-NTSC's YIQ colorspace. It is still commonly used to describe YCbCr signals. 
- YIQ is the color space used for analog NTSC color broadcasts, whereby Y stands for luma, I stands for in-phase and
-Q stands for quadrature, referring to the components used in quadrature amplitude modulation. The IQ axes exist on the
-same plane as the UV axes from the YUV color space, just rotated 33 degrees. 
- CMYK--aka process color or four color--is a subtractive color model based on the CMY color model that is
-used in color printing and to describe the printing process itself. C is for Cyan, M is for Magenta, Y is for
-Yellow and K is for 'key' or black. 
 // RGB <-> CMYK conversions require 4 channels
 // Converting pure hue to RGB
 // Converting RGB to hue/chroma/value
@@ -213,10 +142,6 @@ Yellow and K is for 'key' or black.
 //KDS VS19
 //}
 //  ---  sRGB  ---  //
- Jzazbz is a color space designed for perceptual uniformity in high dynamic range (HDR) and wide color gamut (WCG) applications.
-It is conceptually similar to CIE Lab but is considered more "modern". As compared with Lab, perceptual color differences are
-predicted by Euclidean distance, it is more perceptually uniform and changes in saturation or lightness produce less shifts in hue
-(i.e., increased hue linearity). Jzazbz and JzCzhz are used by ImageMagick and not much else. 
  The polar version of Jzazbz 
 //-2.6274509803921568627450980392157
 //2.760784313725490196078431372549
@@ -228,35 +153,6 @@ predicted by Euclidean distance, it is more perceptually uniform and changes in 
 // R/G/B independent manual White Point adjustment
 // Linear color input
 // Add a phosphor mask effect onto the image
-
-A collection of CRT mask effects that work with LCD subpixel structures for
-small details
-
-author: hunterk
-license: public domain
-
-How to use it:
-
-Multiply your image by the vec3 output:
-FragColor.rgb *= mask_weights(gl_FragCoord.xy, 1.0, 1);
-
-In the "alpha" version, the alpha channel stores the number of lit subpixels per pixel for use in brightness-loss compensation efforts.
-
-The function needs to be tiled across the screen using the physical pixels, e.g.
-gl_FragCoord (the "vec2 coord" input). In the case of slang shaders, we use
-(vTexCoord.st * OutputSize.xy).
-
-The "mask_intensity" (float value between 0.0 and 1.0) is how strong the mask
-effect should be. Full-strength red, green and blue subpixels on a white pixel
-are the ideal, and are achieved with an intensity of 1.0, though this darkens
-the image significantly and may not always be desirable.
-
-The "phosphor_layout" (int value between 0 and 24) determines which phophor
-layout to apply. 0 is no mask/passthru.
-
-Many of these mask arrays are adapted from cgwg's crt-geom-deluxe LUTs, and
-those have their filenames included for easy identification
-
 // This pattern is used by a few layouts, so we'll define it here
 // classic aperture for RGB panels; good for 1080p, too small for 4K+
 // aka aperture_1_2_bgr
@@ -335,15 +231,9 @@ those have their filenames included for easy identification
 // NTSC color code from SimoneT
 // Jzazbz code from torridgristle
 // License: GPL v2+
-------------------------------------------------------------------------------
-[GAMMA CORRECTION CODE SECTION]
-------------------------------------------------------------------------------
 // more gamma linearization algos
 // use slower, more accurate calculation
 // use faster, less accurate calculation
-------------------------------------------------------------------------------
-[RGB TO GRAYSCALE / LUMA CODE SECTION]
-------------------------------------------------------------------------------
 // if you're already in linear gamma, definitely use this one ( Y = 0.2126R + 0.7152G + 0.0722B )
 // the Rec. 709 spec uses these same coefficients but with gamma-compressed components ( Y' = 0.2126R' + 0.7152G' + 0.0722B' )
 // for digital formats following CCIR 601 (that is, most digital standard def formats)
@@ -352,21 +242,6 @@ those have their filenames included for easy identification
 // SMPTE 240M; used by some transitional 1035i HDTV signals. Expects gamma-compressed components
 // ( Y' = 0.212R' + 0.701G' + 0.087B' )
 // Same as Rec. 709 but with quick-and-dirty gamma linearization added on top
-------------------------------------------------------------------------------
-[COLORSPACE CONVERSION CODE SECTION]
-------------------------------------------------------------------------------
- XYZ color space is a device-invariant representation that encompasses all color sensations that are visible to a person
-with average eyesight. Y is the luminance, Z is quasi-equal to blue and X is a mix of the three CIE RGB curves chosen to be non-negative 
- YUV is a color space that takes human perception into account, allowing reduced bandwidth for chrominance components,
-as compared with a direct RGB representation. It includes a luminance component, Y, with nonlinear perceptual brightness,
-and two color components, U and V. This colorspace was used in the PAL color broadcast standard and is the counterpart to
-NTSC's YIQ colorspace. It is still commonly used to describe YCbCr signals. 
- YIQ is the color space used for analog NTSC color broadcasts, whereby Y stands for luma, I stands for in-phase and
-Q stands for quadrature, referring to the components used in quadrature amplitude modulation. The IQ axes exist on the
-same plane as the UV axes from the YUV color space, just rotated 33 degrees. 
- CMYK--aka process color or four color--is a subtractive color model based on the CMY color model that is
-used in color printing and to describe the printing process itself. C is for Cyan, M is for Magenta, Y is for
-Yellow and K is for 'key' or black. 
 // RGB <-> CMYK conversions require 4 channels
 // Converting pure hue to RGB
 // Converting RGB to hue/chroma/value
@@ -381,10 +256,6 @@ Yellow and K is for 'key' or black.
 //KDS VS19
 //}
 //  ---  sRGB  ---  //
- Jzazbz is a color space designed for perceptual uniformity in high dynamic range (HDR) and wide color gamut (WCG) applications.
-It is conceptually similar to CIE Lab but is considered more "modern". As compared with Lab, perceptual color differences are
-predicted by Euclidean distance, it is more perceptually uniform and changes in saturation or lightness produce less shifts in hue
-(i.e., increased hue linearity). Jzazbz and JzCzhz are used by ImageMagick and not much else. 
  The polar version of Jzazbz 
 //-2.6274509803921568627450980392157
 //2.760784313725490196078431372549

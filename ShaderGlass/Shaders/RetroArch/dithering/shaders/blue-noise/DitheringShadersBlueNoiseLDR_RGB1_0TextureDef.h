@@ -1,6 +1,6 @@
 /*
 ShaderGlass texture dithering-shaders-blue-noise / LDR_RGB1_0 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/dithering/shaders/blue-noise/LDR_RGB1_0.png
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/dithering/shaders/blue-noise/LDR_RGB1_0.png
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */

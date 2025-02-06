@@ -1,23 +1,8 @@
 /*
 ShaderGlass shader warp-shaders\smart-morph imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/warp/shaders/smart-morph.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/warp/shaders/smart-morph.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Smart Morph v1.1
-by Sp00kyFox, 2014
-
-
-Determines the brightest (or darkest) pixel X in the orthogonal neighborship of pixel E (including itself).
-Output is a linear combination of X and E weighted with their luma difference d (range: [0.0, 1.0]):
-
-w = sstp{sat[(d - CUTLO)/(CUTHI - CUTLO)]^PWR} * (STRMAX - STRMIN) + STRMIN
-
-with
-sstp(x) := smoothstep(0, 1, x) = -2x^3 + 3x^2
-sat(x)  := saturate(x) = max(0, min(1, x))
-
 
 // STRMIN = CUTLO = 1.0 behaves equivalent to Hyllian's shaders.
 

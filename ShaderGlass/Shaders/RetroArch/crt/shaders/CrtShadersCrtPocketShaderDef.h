@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders\crt-pocket imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-pocket.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-pocket.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -291,10 +291,10 @@ static const BYTE sVertexByteCode[] =
 
 static const BYTE sFragmentByteCode[] =
 {
-68,88,66,67,134,49,
-18,251,230,4,98,28,
-174,55,136,97,66,203,
-193,204,1,0,0,0,
+68,88,66,67,194,157,
+130,159,200,159,214,167,
+149,72,255,254,155,53,
+32,32,1,0,0,0,
 244,51,0,0,5,0,
 0,0,52,0,0,0,
 56,9,0,0,108,9,
@@ -1189,7 +1189,7 @@ static const BYTE sFragmentByteCode[] =
 0,0,2,64,0,0,
 174,71,97,189,174,71,
 97,189,174,71,97,189,
-0,0,0,0,55,0,
+0,0,0,0,55,32,
 0,9,114,0,16,0,
 3,0,0,0,70,2,
 16,0,5,0,0,0,

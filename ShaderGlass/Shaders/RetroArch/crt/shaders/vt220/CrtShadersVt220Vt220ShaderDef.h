@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-vt220\vt220 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/vt220/vt220.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/vt220/vt220.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -10,35 +10,6 @@ This file is auto-generated, do not modify directly.
 //#define LIGHTS_ON true
 //#define LIGHTS_ON false
 //#define LIGHTS_ON sin(fract(iTime/23.)+2.74) + 0.1*abs(sin(iTime*1000.)) <.0
-
-A collection of CRT mask effects that work with LCD subpixel structures for
-small details
-
-author: hunterk
-license: public domain
-
-How to use it:
-
-Multiply your image by the vec3 output:
-FragColor.rgb *= mask_weights(gl_FragCoord.xy, 1.0, 1);
-
-In the "alpha" version, the alpha channel stores the number of lit subpixels per pixel for use in brightness-loss compensation efforts.
-
-The function needs to be tiled across the screen using the physical pixels, e.g.
-gl_FragCoord (the "vec2 coord" input). In the case of slang shaders, we use
-(vTexCoord.st * OutputSize.xy).
-
-The "mask_intensity" (float value between 0.0 and 1.0) is how strong the mask
-effect should be. Full-strength red, green and blue subpixels on a white pixel
-are the ideal, and are achieved with an intensity of 1.0, though this darkens
-the image significantly and may not always be desirable.
-
-The "phosphor_layout" (int value between 0 and 24) determines which phophor
-layout to apply. 0 is no mask/passthru.
-
-Many of these mask arrays are adapted from cgwg's crt-geom-deluxe LUTs, and
-those have their filenames included for easy identification
-
 // This pattern is used by a few layouts, so we'll define it here
 // classic aperture for RGB panels; good for 1080p, too small for 4K+
 // aka aperture_1_2_bgr

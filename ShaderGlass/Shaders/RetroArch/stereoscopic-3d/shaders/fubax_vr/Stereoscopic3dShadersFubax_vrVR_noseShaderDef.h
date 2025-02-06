@@ -1,21 +1,9 @@
 /*
 ShaderGlass shader stereoscopic-3d-shaders-fubax_vr\VR_nose imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/stereoscopic-3d/shaders/fubax_vr/VR_nose.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/stereoscopic-3d/shaders/fubax_vr/VR_nose.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-
-Nose PS (c) 2019 Jacob Maximilian Fober
-
-Anti-nausea shader for VR
-
-This work is licensed under the Creative Commons
-Attribution-ShareAlike 4.0 International License.
-To view a copy of this license, visit
-http://creativecommons.org/licenses/by-sa/4.0/.
-
-ParallaxOffset, ParallaxCenter, ParallaxSteps, ParallaxMaskScalar,
-ParallaxSwitch 
 // Grid settings
 //#pragma parameter ParallaxSwitch "Toggle Parallax Effect" 1.0 0.0 1.0 1.0
 //#pragma parameter ParallaxOffset "Parallax Horizontal Offset" 0.355 0.0 1.0 0.001

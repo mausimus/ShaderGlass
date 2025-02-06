@@ -1,18 +1,8 @@
 /*
 ShaderGlass shader nes_raw_palette-shaders\nes-color-decoder imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/nes_raw_palette/shaders/nes-color-decoder.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/nes_raw_palette/shaders/nes-color-decoder.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-NES NTSC Color Decoder shader
-Ported from Bisqwit's C++ NES Palette Generator
-https://forums.nesdev.com/viewtopic.php?p=85060#p85060
-
-Hue Preserve Clip functions ported from Drag's Palette Generator
-http://drag.wootest.net/misc/palgen.html
-
-Use with Nestopia or FCEUmm libretro cores with the palette set to 'raw'.
 
 //comment the define out to use the "common" conversion matrix instead of the FCC sanctioned one
 // Color 0xE and 0xF are black

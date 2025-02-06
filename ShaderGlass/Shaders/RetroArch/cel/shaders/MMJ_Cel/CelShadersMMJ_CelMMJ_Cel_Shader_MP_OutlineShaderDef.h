@@ -1,24 +1,8 @@
 /*
 ShaderGlass shader cel-shaders-MMJ_Cel\MMJ_Cel_Shader_MP_Outline imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/cel/shaders/MMJ_Cel/MMJ_Cel_Shader_MP_Outline.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/cel/shaders/MMJ_Cel/MMJ_Cel_Shader_MP_Outline.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-----------------------------------------------------------------
-MMJ's Cel Shader v2.0 - Multi-Pass
-----------------------------------------------------------------
-Parameters:
------------
-Outline Weight = Adjusts darkness of the outlines.
-
-At lower internal resolutions, smaller values work better to
-reduce the appearance of lines around individual areas of some
-textures. At higher internal resolutions, setting both a higher
-outline weight value plus increased blur factors will work
-together to thicken the appearance of the lines.
-----------------------------------------------------------------
-
 
 */
 

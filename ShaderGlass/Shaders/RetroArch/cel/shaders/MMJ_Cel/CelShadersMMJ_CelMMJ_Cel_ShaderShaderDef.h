@@ -1,68 +1,8 @@
 /*
 ShaderGlass shader cel-shaders-MMJ_Cel\MMJ_Cel_Shader imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/cel/shaders/MMJ_Cel/MMJ_Cel_Shader.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/cel/shaders/MMJ_Cel/MMJ_Cel_Shader.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-MMJ's Cel Shader - v1.03
-----------------------------------------------------------------
--- 180403 --
-This is a port of my old shader from around 2006 for Pete's OGL2
-plugin for ePSXe. It started out as a shader based on the
-CComic" shader by Maruke. I liked his concept, but I was
-looking for something a little different in the output.
-
-Since the last release, I've seen some test screenshots from MAME
-using a port of my original shader and have also seen another
-port to get it working with the PCSX2 emulator. Having recently
-seen some Kingdom Hearts II and Soul Calibur 3 YouTube videos with
-my ported shader inspired me to revisit it and get it working in
-RetroArch.
-
-As for this version (1.03), I've made a few small modifications
-(such as to remove the OGL2Param references, which were specific
-to Pete's plugin) and I added some RetroArch Parameter support,
-so some values can now be changed in real time.
-
-Keep in mind, that this was originally developed for PS1, using
-various 3D games as a test. In general, it will look better in
-games with less detailed textures, as "busy" textures will lead
-to more outlining / messy appearance. Increasing "Outline
-Brightness" can help mitigate this some by lessening the
-strength" of the outlines.
-
-Also (in regards to PS1 - I haven't really tested other systems
-too much yet), 1x internal resolution will look terrible. 2x
-will also probably be fairly blurry/messy-looking. For best
-results, you should probably stick to 4x or higher internal
-resolution with this shader.
-
-Parameters:
------------
-White Level Cutoff = Anything above this luminance value will be
-forced to pure white.
-
-Black Level Cutoff = Anything below this luminance value will be
-forced to pure black.
-
-Shading Levels = Determines how many color "slices" there should
-be (not counting black/white cutoffs, which are always
-applied).
-
-Saturation Modifier = Increase or decrease color saturation.
-Default value boosts saturation a little for a more
-cartoonish look. Set to 0.00 for grayscale.
-
-Outline Brightness = Adjusts darkness of the outlines. At a
-setting of 1, outlines should be disabled.
-
-Shader Strength = Adjusts the weight of the color banding
-portion of the shader from 0% (0.00) to 100% (1.00). At a
-setting of 0.00, you can turn off the color banding effect
-altogether, but still keep outlines enabled.
------------
-MMJuno
 
 // gray, no chroma
 // chromatic data

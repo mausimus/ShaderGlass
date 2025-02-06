@@ -1,22 +1,8 @@
 /*
 ShaderGlass shader dithering-shaders-mdapt-passes\mdapt-pass2 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/dithering/shaders/mdapt/passes/mdapt-pass2.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/dithering/shaders/mdapt/passes/mdapt-pass2.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Merge Dithering and Pseudo Transparency Shader v2.8 - Pass 2
-by Sp00kyFox, 2014
-
-Eliminating isolated detections.
-
-
-
-NW  UUL U2 UUR NE
-ULL UL  U1 UR  URR
-L2  L1  C  R1  R2
-DLL DL  D1 DR  DRR
-SW  DDL D2 DDR SE
 
 //phase 1
 //phase 2

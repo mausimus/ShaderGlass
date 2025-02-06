@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader reshade-shaders-bloom\BloomPass3 imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/reshade/shaders/bloom/BloomPass3.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/reshade/shaders/bloom/BloomPass3.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -38,19 +38,6 @@ This file is auto-generated, do not modify directly.
 //effect tint RGB
 // If 1, only pixels with depth = 1 get lens flares
 // This prevents white objects from getting lens flares sources, which would normally happen in LDR
- This isn't something RA has, so just comment it out
-#if CHAPMAN_DEPTH_CHECK
-if (textureLod(ReShade::DepthBuffer, vec4(coords.xy, 0, 3)).x < 0.99999)
-color = 0;
-#endif
-
- This isn't something RA has, so just comment it out
-#if FLARE_DEPTH_CHECK
-float checkdepth = tex2D(ReShade::DepthBuffer, coords).x;
-if (checkdepth < 0.99999)
-result = 0;
-#endif
-
 
 */
 

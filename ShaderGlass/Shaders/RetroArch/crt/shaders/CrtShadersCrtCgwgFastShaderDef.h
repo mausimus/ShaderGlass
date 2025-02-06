@@ -1,31 +1,8 @@
 /*
 ShaderGlass shader crt-shaders\crt-cgwg-fast imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-cgwg-fast.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-cgwg-fast.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-cgwg's CRT shader
-
-Copyright (C) 2010-2011 cgwg, Themaister
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the Free
-Software Foundation; either version 2 of the License, or (at your option)
-any later version.
-
-(cgwg gave their consent to have their code distributed under the GPL in
-this message:
-
-http://board.byuu.org/viewtopic.php?p=26075#p26075
-
-Feel free to distribute my shaders under the GPL. After all, the
-barrel distortion code was taken from the Curvature shader, which is
-under the GPL.
-)
-
- TODO/FIXME - Wrap all these in a struct-like type so we can address
-them in a struct-like way i.e. coords.c01 
 
 */
 

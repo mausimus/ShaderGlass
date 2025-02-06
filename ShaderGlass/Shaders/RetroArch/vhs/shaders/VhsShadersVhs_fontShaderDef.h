@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader vhs-shaders\vhs_font imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/vhs/shaders/vhs_font.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/vhs/shaders/vhs_font.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -10,8 +10,6 @@ This file is auto-generated, do not modify directly.
 // adapted for slang by hunterk
 // shadertoy compatibility macros
 // Font data gotten from STV5730's ROM, modified for size
- stv5730.bin (6/18/2022 2:37:22 PM)
-StartOffset(h): 00000000, EndOffset(h): 00000A1F, Length(h): 00000A20 
 // Character values are on the bottom of this document
 // https://github.com/codeman38/vcr-fonts/blob/master/sources/stv5730/STV5730a.pdf
 // I don't love this, but we have to match the CRT pass' curvature at least somewhat

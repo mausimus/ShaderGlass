@@ -1,45 +1,10 @@
 /*
 ShaderGlass shader crt-shaders\gizmo-slotmask-crt imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/gizmo-slotmask-crt.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/gizmo-slotmask-crt.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-
-* gizmo98 slotmask crt shader
-* Copyright (C) 2023 gizmo98
-*
-*   This program is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU General Public License as published by the Free
-*   Software Foundation; either version 2 of the License, or (at your option)
-*   any later version.
-*
-* version 0.1, 10.05.2023
-* ---------------------------------------------------------------------------------------
-* - initial commit
-*
-* https://github.com/gizmo98/gizmo-crt-shader
-*
-* This shader tries to mimic a CRT without extensive use of scanlines and masks and rgb pattern emulation.
-* It uses horizontal subpixel scaling and adds brightness dependent scanline patterns and allows
-* fractional scaling.
-*
-* HORIZONTAL_BLUR simulates a bad composite signal which is neede for consoles like megadrive
-* VERTICAL_BLUR vertical blur simulates N64 vertical blur
-* BGR_LCD_PATTERN most LCDs have a RGB pixel pattern. Enable BGR pattern with this switch
-* BRIGHTNESS makes scanlines more or less visible
-* SHRINK scale screen in X direction
-* SNR noise intensity
-* COLOUR_BLEEDING colour bleeding intensity
-* GRID slotmask intensity
-* SLOTMASK switch between slotmask (1) and aperture grille (0)
-*
-* uses parts curvator of CRT-PI shader from davej https://github.com/libretro/glsl-shaders/blob/master/crt/shaders/crt-pi.glsl
-* uses parts of texture anti-aliasing shader from Ikaros https://www.shadertoy.com/view/ldsSRX
-* uses gold noise shader from dcerisano https://www.shadertoy.com/view/ltB3zD
-
  Add some subpixel noise which simulates small CRT color variations 
- Add scanlines which are wider for dark colors.
-You cannot see scanlines if color is bright. 
 // Barrel distortion shrinks the display area a bit, this will allow us to counteract that.
 //  coord *= screenScale; // not necessary in slang
 //      coord /= screenScale; // not necessary in slang

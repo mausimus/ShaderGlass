@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-crtsim\screen imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crtsim/screen.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crtsim/screen.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -44,57 +44,16 @@ This file is auto-generated, do not modify directly.
 //#pragma parameter Tuning_LightPos_B "Light Position B" 1.0 0.0 1.0 0.05
 //	ScaledUV *= UVScalar;
 //	ScaledUV += UVOffset;
-  // commenting this to move to present shader
 // Apply overscan after scanline sampling is done.
-half2 overscanuv = (ScaledUV * params.Tuning_Overscan) - ((params.Tuning_Overscan - 1.0) * 0.5);
-
 // Curve UVs for composite texture inwards to garble things a bit.
-overscanuv = overscanuv - half2(0.5,0.5);
-half rsq = (overscanuv.x*overscanuv.x) + (overscanuv.y*overscanuv.y);
-overscanuv = overscanuv + (overscanuv * (params.Tuning_Barrel * rsq)) + half2(0.5,0.5);
-
 //layout(location = 1) out vec3 norm;
 //layout(location = 2) out vec3 camDir;
 //layout(location = 3) out vec3 lightDir;
-
 //	Going head and getting this stuff ready but not hooking anything up yet
-mat3x3 wMat3 = mat3x3(worldMat[0].xyz, worldMat[1].xyz, worldMat[2].xyz);
-mat3x3 invWorldRot = transpose(wMat3);
-
 // Don't normalize this pre-pixel shader
-camDir = mul(camPos - worldPos, invWorldRot);
-vec3 Tuning_lightPos = vec3(params.Tuning_lightPos_R, params.Tuning_lightPos_G, params.Tuning_lightPos_B);
-lightDir = mul(Tuning_LightPos - worldPos, invWorldRot)
-
 //layout(location = 1) in vec3 norm;
 //layout(location = 2) in vec3 camDir;
 //layout(location = 3) in vec3 lightDir;
-
-half3 norm = normalize(norm);
-
-half3 camDir = normalize(camDir);
-half3 lightDir = normalize(lightDir);
-
-half3 refl = reflect(camDir, norm);
-
-half diffuse = saturate(dot(norm, lightDir));
-half4 colordiff = half4(0.175, 0.15, 0.2, 1.) * diffuse * params.Tuning_Diff_Brightness;
-
-half3 halfVec = normalize(lightDir + camDir);
-half spec = saturate(dot(norm, halfVec));
-spec = pow(spec, params.Tuning_Spec_Power);
-half4 colorspec = half4(0.25, 0.25, 0.25, 1.) * spec * params.Tuning_Spec_Brightness;
-
-half fres = 1.0 - dot(camDir, norm);
-fres = (fres*fres) * params.Tuning_Fres_Brightness;
-half4 colorfres = half4(0.45, 0.4, 0.5, 1.) * fres;
-
-half4 emissive = SampleCRT(shadowMaskSampler, Source, vTexCoord);
-
-half4 nearfinal = colorfres + colordiff + colorspec + emissive;
-
-FragColor = (nearfinal * lerp(ivec4(1,1,1,1), color, params.Tuning_Dimming)); //TODO: not sure what 'color' would be here
-
 
 */
 

@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders\crt-consumer imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-consumer.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-consumer.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -3043,10 +3043,10 @@ public:
 		FragmentLength = sizeof(RetroArchCrtShadersCrtConsumerShaderDefs::sFragmentByteCode);
 		Params.push_back(ShaderParam("PRE_SCALE", 0, 196, 4, 1.000000f, 4.000000f, 1.500000f, 0.100000f, "Pre-Scale Sharpening"));
 		Params.push_back(ShaderParam("blurx", 0, 64, 4, -4.000000f, 4.000000f, 0.250000f, 0.050000f, "Convergence X"));
-		Params.push_back(ShaderParam("blury", 0, 68, 4, -4.000000f, 4.000000f, 0.100000f, 0.050000f, "Convergence Y"));
-		Params.push_back(ShaderParam("warpx", 0, 72, 4, 0.000000f, 0.120000f, 0.020000f, 0.010000f, "  Curvature X"));
+		Params.push_back(ShaderParam("blury", 0, 68, 4, -4.000000f, 4.000000f, -0.100000f, 0.050000f, "Convergence Y"));
+		Params.push_back(ShaderParam("warpx", 0, 72, 4, 0.000000f, 0.120000f, 0.030000f, 0.010000f, "  Curvature X"));
 		Params.push_back(ShaderParam("warpy", 0, 76, 4, 0.000000f, 0.120000f, 0.040000f, 0.010000f, "  Curvature Y"));
-		Params.push_back(ShaderParam("corner", 0, 80, 4, 0.000000f, 0.100000f, 0.010000f, 0.010000f, "  Corner size"));
+		Params.push_back(ShaderParam("corner", 0, 80, 4, 0.000000f, 0.100000f, 0.030000f, 0.010000f, "  Corner size"));
 		Params.push_back(ShaderParam("smoothness", 0, 84, 4, 100.000000f, 600.000000f, 400.000000f, 5.000000f, "  Border Smoothness"));
 		Params.push_back(ShaderParam("inter", 0, 172, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Interlacing Toggle"));
 		Params.push_back(ShaderParam("Downscale", -1, 60, 4, 1.000000f, 8.000000f, 2.000000f, 1.000000f, "Interlacing Downscale Scanlines"));
@@ -3055,11 +3055,11 @@ public:
 		Params.push_back(ShaderParam("beamlow", 0, 96, 4, 0.500000f, 2.500000f, 1.450000f, 0.050000f, "Scanlines dark"));
 		Params.push_back(ShaderParam("beamhigh", 0, 100, 4, 0.500000f, 2.500000f, 1.050000f, 0.050000f, "Scanlines bright"));
 		Params.push_back(ShaderParam("preserve", 0, 200, 4, 0.000000f, 1.000000f, 0.980000f, 0.010000f, "  Protect White On Masks"));
-		Params.push_back(ShaderParam("brightboost1", 0, 104, 4, 0.000000f, 3.000000f, 1.200000f, 0.050000f, "  Bright boost dark pixels"));
+		Params.push_back(ShaderParam("brightboost1", 0, 104, 4, 0.000000f, 3.000000f, 1.250000f, 0.050000f, "  Bright boost dark pixels"));
 		Params.push_back(ShaderParam("brightboost2", 0, 108, 4, 0.000000f, 3.000000f, 1.000000f, 0.050000f, "  Bright boost bright pixels"));
-		Params.push_back(ShaderParam("glow", 0, 148, 4, 1.000000f, 4.000000f, 4.000000f, 1.000000f, "  Glow pixels per axis"));
-		Params.push_back(ShaderParam("quality", -1, 64, 4, 0.500000f, 4.000000f, 1.000000f, 0.100000f, "  Glow quality"));
-		Params.push_back(ShaderParam("glow_str", 0, 152, 4, 0.000100f, 1.000000f, 0.000000f, 0.050000f, "  Glow intensity"));
+		Params.push_back(ShaderParam("glow", 0, 148, 4, 1.000000f, 6.000000f, 3.000000f, 1.000000f, "  Glow pixels per axis"));
+		Params.push_back(ShaderParam("quality", -1, 64, 4, 0.250000f, 4.000000f, 1.000000f, 0.050000f, "  Glow quality"));
+		Params.push_back(ShaderParam("glow_str", 0, 152, 4, 0.000100f, 2.000000f, 0.300000f, 0.050000f, "  Glow intensity"));
 		Params.push_back(ShaderParam("nois", 0, 164, 4, 0.000000f, 32.000000f, 0.000000f, 1.000000f, "  Add Noise"));
 		Params.push_back(ShaderParam("postbr", 0, 192, 4, 0.000000f, 2.500000f, 1.000000f, 0.020000f, "  Post Brightness"));
 		Params.push_back(ShaderParam("palette_fix", -1, 68, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "Palette Fixes. Sega, PUAE Atari ST dark colors "));
@@ -3071,7 +3071,7 @@ public:
 		Params.push_back(ShaderParam("slotwidth", 0, 132, 4, 1.000000f, 6.000000f, 2.000000f, 0.500000f, "Slot Mask Width"));
 		Params.push_back(ShaderParam("double_slot", 0, 136, 4, 1.000000f, 2.000000f, 1.000000f, 1.000000f, "Slot Mask Height: 2x1 or 4x1"));
 		Params.push_back(ShaderParam("slotms", 0, 140, 4, 1.000000f, 2.000000f, 1.000000f, 1.000000f, "Slot Mask Size"));
-		Params.push_back(ShaderParam("GAMMA_OUT", 0, 144, 4, 0.000000f, 4.000000f, 2.200000f, 0.100000f, "  Gamma Out"));
+		Params.push_back(ShaderParam("GAMMA_OUT", 0, 144, 4, 0.000000f, 4.000000f, 2.250000f, 0.050000f, "  Gamma Out"));
 		Params.push_back(ShaderParam("sat", 0, 156, 4, 0.000000f, 2.000000f, 1.000000f, 0.050000f, "  Saturation"));
 		Params.push_back(ShaderParam("contrast", 0, 160, 4, 0.000000f, 2.000000f, 1.000000f, 0.050000f, "  Contrast, 1.0:Off"));
 		Params.push_back(ShaderParam("WP", 0, 168, 4, -100.000000f, 100.000000f, 0.000000f, 5.000000f, "  Color Temperature %"));

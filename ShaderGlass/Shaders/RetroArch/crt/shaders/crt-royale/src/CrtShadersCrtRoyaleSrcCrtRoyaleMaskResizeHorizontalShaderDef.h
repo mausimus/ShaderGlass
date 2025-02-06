@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-crt-royale-src\crt-royale-mask-resize-horizontal imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-royale/src/crt-royale-mask-resize-horizontal.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-royale/src/crt-royale-mask-resize-horizontal.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -2272,10 +2272,6 @@ This file is auto-generated, do not modify directly.
 //  single unresized phosphor mask tile anyway.
 //  Repeat the full LUT at a 1:1 pixel:texel ratio without resizing:
 //  Hardware-resize the original LUT:
-
-float2 fix_tiling_discontinuities_normalized(const float2 tile_uv,
-float2 duv_dx, float2 duv_dy)
-{
 //  Requires:   1.) duv_dx == ddx(tile_uv)
 //              2.) duv_dy == ddy(tile_uv)
 //              3.) tile_uv contains tile-relative uv coords in [0, 1],
@@ -2295,13 +2291,6 @@ float2 duv_dx, float2 duv_dy)
 //  derivatives as parameters so the caller can reuse them.
 //  In case we're using high-quality (nVidia-style) derivatives, ensure
 //  diagonically opposite fragments see each other for correctness:
-duv_dx = abs(duv_dx) + abs(ddy(duv_dx));
-duv_dy = abs(duv_dy) + abs(ddx(duv_dy));
-const float2 pixel_in_first_half_tile = float2((tile_uv.x < 0.5),(tile_uv.y < 0.5));
-const float2 jump_exists = float2(((duv_dx + duv_dy).x > 0.5),((duv_dx + duv_dy).y > 0.5));
-return tile_uv + jump_exists * pixel_in_first_half_tile;
-}
-
 //  Requires:   1.) tile_uv_wrap contains tile-relative uv coords, where the
 //                  tile spans from [0, 1], such that (0.5, 0.5) is at the
 //                  tile center.  The input coords can range from [0, inf],

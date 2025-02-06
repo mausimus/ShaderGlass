@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-mame_hlsl-shaders\mame_ntsc_decode imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/mame_hlsl/shaders/mame_ntsc_decode.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/mame_hlsl/shaders/mame_ntsc_decode.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -94,133 +94,8 @@ This file is auto-generated, do not modify directly.
 // Constants
 //-----------------------------------------------------------------------------
 ////// new version included for future debugging purposes ///////////
-
-void main()
-{
-vec4 BaseTexel = texture(s_screen, v_texcoord0.xy);
-
-vec4 zero = vec4(0.0, 0.0, 0.0, 0.0);
-vec4 quarter = vec4(0.25, 0.25, 0.25, 0.25);
-vec4 onehalf = vec4(0.5, 0.5, 0.5, 0.5);
-vec4 one = vec4(1.0, 1.0, 1.0, 1.0);
-vec4 two = vec4(2.0, 2.0, 2.0, 2.0);
-vec4 four = vec4(4.0, 4.0, 4.0, 4.0);
-int iSampleCount = 64;
-vec4 SampleCount = vec4(64.0, 64.0, 64.0, 64.0);
-vec4 HalfSampleCount = SampleCount / two;
-
-vec4 TimePerSample = u_scan_time.xxxx / (u_source_dims.xxxx * four);
-
-vec4 PI = vec4(3.1415927, 3.1415927, 3.1415927, 3.1415927);
-vec4 PI2 = vec4(6.2831854, 6.2831854, 6.2831854, 6.2831854);
-
-vec4 Fc_y1 = (u_cc_value.xxxx - u_notch_width.xxxx * onehalf) * TimePerSample;
-vec4 Fc_y2 = (u_cc_value.xxxx + u_notch_width.xxxx * onehalf) * TimePerSample;
-vec4 Fc_y3 = u_y_freq_response.xxxx * TimePerSample;
-vec4 Fc_i = u_i_freq_response.xxxx * TimePerSample;
-vec4 Fc_q = u_q_freq_response.xxxx * TimePerSample;
-vec4 Fc_i_2 = Fc_i * two;
-vec4 Fc_q_2 = Fc_q * two;
-vec4 Fc_y1_2 = Fc_y1 * two;
-vec4 Fc_y2_2 = Fc_y2 * two;
-vec4 Fc_y3_2 = Fc_y3 * two;
-vec4 Fc_i_pi2 = Fc_i * PI2;
-vec4 Fc_q_pi2 = Fc_q * PI2;
-vec4 Fc_y1_pi2 = Fc_y1 * PI2;
-vec4 Fc_y2_pi2 = Fc_y2 * PI2;
-vec4 Fc_y3_pi2 = Fc_y3 * PI2;
-vec4 PI2Length = PI2 / SampleCount;
-
-vec4 W = PI2 * u_cc_value.xxxx * u_scan_time.xxxx;
-vec4 WoPI = W / PI;
-
-vec4 HOffset = (u_b_value.xxxx + u_jitter_amount.xxxx * u_jitter_offset.xxxx) / WoPI;
-vec4 VScale = (u_a_value.xxxx * u_source_dims.yyyy) / WoPI;
-
-vec4 YAccum = vec4(0.0);
-vec4 IAccum = vec4(0.0);
-vec4 QAccum = vec4(0.0);
-
-vec4 Cy = v_texcoord0.yyyy;
-vec4 VPosition = Cy;
-
-vec4 n = vec4(0.0);
-vec4 n4 = vec4(0.0);
-vec4 Cx = vec4(0.0);
-vec4 HPosition = vec4(0.0);
-vec4 C = vec4(0.0);
-vec4 T = vec4(0.0);
-vec4 WT = vec4(0.0);
-vec4 SincKernel = vec4(0.0);
-vec4 SincYIn1 = vec4(0.0);
-vec4 SincYIn2 = vec4(0.0);
-vec4 SincYIn3 = vec4(0.0);
-vec4 SincIIn = vec4(0.0);
-vec4 SincQIn = vec4(0.0);
-vec4 SincY1 = vec4(0.0);
-vec4 SincY2 = vec4(0.0);
-vec4 SincY3 = vec4(0.0);
-vec4 IdealY = vec4(0.0);
-vec4 IdealI = vec4(0.0);
-vec4 IdealQ = vec4(0.0);
-vec4 FilterY = vec4(0.0);
-vec4 FilterI = vec4(0.0);
-vec4 FilterQ = vec4(0.0);
-
-for (int i = 0; i < 64; i++)
-{
-i += 4;
-n = vec4(i, i, i, i) - vec4(32.0, 32.0, 32.0, 32.0);
-n4 = n + vec4(0.0, 1.0, 2.0, 3.0);
-
-Cx = v_texcoord0.xxxx + (n4 * quarter) / u_source_dims.xxxx;
-HPosition = Cx;
-
-C = texture(s_tex, vec2(Cx.x, Cy.x));
-
-T = HPosition + HOffset + VPosition * VScale;
-WT = W * T + u_o_value.xxxx;
-
-SincKernel.rgb = vec4(0.54, 0.54, 0.54, 0.54).rgb + vec4(0.46, 0.46, 0.46, 0.46).rgb * cos(PI2Length * n4).rgb;
 //      SincKernel.a = anything nonzero, we get NaN
-
-SincYIn1 = Fc_y1_pi2 * n4;
-SincYIn2 = Fc_y2_pi2 * n4;
-SincYIn3 = Fc_y3_pi2 * n4;
-SincIIn = Fc_i_pi2 * n4;
-SincQIn = Fc_q_pi2 * n4;
-
-SincY1 = (SincYIn1 != zero) ? sin(SincYIn1) / SincYIn1 : one;
-SincY2 = (SincYIn2 != zero) ? sin(SincYIn2) / SincYIn2 : one;
-SincY3 = (SincYIn3 != zero) ? sin(SincYIn3) / SincYIn3 : one;
-
-IdealY = (Fc_y1_2 * SincY1 - Fc_y2_2 * SincY2) + Fc_y3_2 * SincY3;
-IdealI = Fc_i_2 * (SincIIn != zero ? sin(SincIIn) / SincIIn : one);
-IdealQ = Fc_q_2 * (SincQIn != zero ? sin(SincQIn) / SincQIn : one);
-
-FilterY = SincKernel * IdealY;
-FilterI = SincKernel * IdealI;
-FilterQ = SincKernel * IdealQ;
-
-YAccum = YAccum + C * FilterY;
-IAccum = IAccum + C * cos(WT) * FilterI;
-QAccum = QAccum + C * sin(WT) * FilterQ;
-}
-
-vec3 YIQ = vec3(
-(YAccum.r + YAccum.g + YAccum.b + YAccum.a),
-(IAccum.r + IAccum.g + IAccum.b + IAccum.a) * 2.0,
-(QAccum.r + QAccum.g + QAccum.b + QAccum.a) * 2.0);
-
-vec3 RGB = vec3(
-dot(YIQ, vec3(1.0, 0.956, 0.621)),
-dot(YIQ, vec3(1.0, -0.272, -0.647)),
-dot(YIQ, vec3(1.0, -1.106, 1.703)));
-
 // RGB obviously contains a NaN somewhere along the line! Returns black if vec4 etc. are included, white if just vec4(1.0)
-FragColor = vec4(RGB, BaseTexel.a) * v_color0;
-}
-
 
 */
 

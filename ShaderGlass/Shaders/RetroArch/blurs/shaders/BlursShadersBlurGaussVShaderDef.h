@@ -1,16 +1,11 @@
 /*
 ShaderGlass shader blurs-shaders\blur-gauss-v imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/blurs/shaders/blur-gauss-v.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/blurs/shaders/blur-gauss-v.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
 // Implementation based on the article "Efficient Gaussian blur with linear sampling
 // http://rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/
- A version for MasterEffect Reborn, a standalone version, and a custom shader version for SweetFX can be
-found at http://reshade.me/forum/shader-presentation/27-gaussian-blur-bloom-unsharpmask 
------------------------------------------------------------.
-/                  Gaussian Blur settings                     /
-'-----------------------------------------------------------
 
 */
 

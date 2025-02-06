@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-metacrt\bufC imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/metacrt/bufC.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/metacrt/bufC.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -87,23 +87,7 @@ This file is auto-generated, do not modify directly.
 //resultScreen.fDist = (length( vScreenDomain - vec3(0,0,fScreenCurveRadius)) - fScreenCurveRadius - fBevel);
 //float fXSectionDist = length( vXSectionClosest ) - fXSectionR;
 //resultComputer.fDist = x;
-
-vec3 vKeyPos = vPos.xyz - vec3(0,0.125,0);
-vKeyPos.y -= vKeyPos.z * (fXSectionR2 - fXSectionR1) * 2.0 / fXSectionLength;
-float fDomainRepeatScale = 0.02;
-if ( fract(vKeyPos.z * 0.5 / fDomainRepeatScale + 0.25) > 0.5) vKeyPos.x += fDomainRepeatScale * 0.5;
-vec2 vKeyIndex = round(vKeyPos.xz / fDomainRepeatScale);
-vKeyIndex.x = clamp( vKeyIndex.x, -8.0, 8.0 );
-vKeyIndex.y = clamp( vKeyIndex.y, -10.0, -5.0 );
 //vKeyPos.xz = (fract( vKeyPos.xz / fDomainRepeatScale ) - 0.5) * fDomainRepeatScale;
-vKeyPos.xz = (vKeyPos.xz - (vKeyIndex) * fDomainRepeatScale);
-vKeyPos.xz /= 0.7 + vKeyPos.y;
-SceneResult resultKey;
-resultKey.vUVW = vPos.xzy;
-resultKey.fDist = UdRoundBox( vKeyPos, vec3(0.01), 0.001 );
-resultKey.iObjectId = MAT_TV_TRIM;
-Scene_Union( resultComputer, resultKey );
-
 //result.fDist = vPos.y;
 //vPos.x = fract( vPos.x - 0.5) - 0.5;
 //SceneResult resultComputer = Scene_GetComputer( vPos - vec3(0.0, 0.0, -0.1) );

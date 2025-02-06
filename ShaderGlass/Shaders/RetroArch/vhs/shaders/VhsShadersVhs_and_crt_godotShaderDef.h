@@ -1,16 +1,8 @@
 /*
 ShaderGlass shader vhs-shaders\vhs_and_crt_godot imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/vhs/shaders/vhs_and_crt_godot.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/vhs/shaders/vhs_and_crt_godot.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Shader from Godot Shaders - the free shader library.
-godotshaders.com/shader/VHS-and-CRT-monitor-effect
-
-This shader is under CC0 license. Feel free to use, improve and
-change this shader according to your needs and consider sharing
-the modified result to godotshaders.com.
 
 // useless for slang, but I'm leaving it in just to avoid changing the original code unnecessarily
 // hook this one up to the actual image resolution

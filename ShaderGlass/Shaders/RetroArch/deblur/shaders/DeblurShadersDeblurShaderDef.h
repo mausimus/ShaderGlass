@@ -1,28 +1,8 @@
 /*
 ShaderGlass shader deblur-shaders\deblur imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/deblur/shaders/deblur.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/deblur/shaders/deblur.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Deblur Shader
-
-Copyright (C) 2005 - 2019 guest(r) - guest.r@gmail.com
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 
 */
 
@@ -32,15 +12,15 @@ namespace RetroArchDeblurShadersDeblurShaderDefs
 {
 static const BYTE sVertexByteCode[] =
 {
-68,88,66,67,110,239,
-1,38,44,138,120,137,
-121,214,212,137,93,170,
-129,5,1,0,0,0,
-140,3,0,0,5,0,
+68,88,66,67,7,90,
+244,202,208,136,239,143,
+61,205,42,234,171,96,
+146,251,1,0,0,0,
+160,3,0,0,5,0,
 0,0,52,0,0,0,
 60,1,0,0,136,1,
 0,0,224,1,0,0,
-240,2,0,0,82,68,
+4,3,0,0,82,68,
 69,70,0,1,0,0,
 1,0,0,0,96,0,
 0,0,1,0,0,0,
@@ -112,9 +92,9 @@ static const BYTE sVertexByteCode[] =
 82,68,0,83,86,95,
 80,111,115,105,116,105,
 111,110,0,171,171,171,
-83,72,69,88,8,1,
+83,72,69,88,28,1,
 0,0,80,0,1,0,
-66,0,0,0,106,8,
+71,0,0,0,106,8,
 0,1,89,0,0,4,
 70,142,32,0,0,0,
 0,0,4,0,0,0,
@@ -128,50 +108,45 @@ static const BYTE sVertexByteCode[] =
 16,0,1,0,0,0,
 1,0,0,0,104,0,
 0,2,1,0,0,0,
-54,0,0,5,50,32,
+56,0,0,10,50,32,
 16,0,0,0,0,0,
 70,16,16,0,1,0,
-0,0,56,0,0,8,
-242,0,16,0,0,0,
-0,0,86,21,16,0,
-0,0,0,0,70,142,
-32,0,0,0,0,0,
-1,0,0,0,50,0,
-0,10,242,0,16,0,
-0,0,0,0,6,16,
+0,0,2,64,0,0,
+71,3,128,63,71,3,
+128,63,0,0,0,0,
+0,0,0,0,56,0,
+0,8,242,0,16,0,
+0,0,0,0,86,21,
 16,0,0,0,0,0,
 70,142,32,0,0,0,
+0,0,1,0,0,0,
+50,0,0,10,242,0,
+16,0,0,0,0,0,
+6,16,16,0,0,0,
+0,0,70,142,32,0,
 0,0,0,0,0,0,
+0,0,70,14,16,0,
+0,0,0,0,50,0,
+0,10,242,0,16,0,
+0,0,0,0,166,26,
+16,0,0,0,0,0,
+70,142,32,0,0,0,
+0,0,2,0,0,0,
 70,14,16,0,0,0,
 0,0,50,0,0,10,
-242,0,16,0,0,0,
-0,0,166,26,16,0,
+242,32,16,0,1,0,
+0,0,246,31,16,0,
 0,0,0,0,70,142,
 32,0,0,0,0,0,
-2,0,0,0,70,14,
+3,0,0,0,70,14,
 16,0,0,0,0,0,
-50,0,0,10,242,32,
-16,0,1,0,0,0,
-246,31,16,0,0,0,
-0,0,70,142,32,0,
-0,0,0,0,3,0,
-0,0,70,14,16,0,
-0,0,0,0,62,0,
-0,1,83,84,65,84,
-148,0,0,0,6,0,
-0,0,1,0,0,0,
-0,0,0,0,4,0,
-0,0,4,0,0,0,
+62,0,0,1,83,84,
+65,84,148,0,0,0,
+6,0,0,0,1,0,
 0,0,0,0,0,0,
-0,0,1,0,0,0,
+4,0,0,0,5,0,
 0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,1,0,0,0,
+0,0,0,0,1,0,
 0,0,0,0,0,0,
 0,0,0,0,0,0,
 0,0,0,0,0,0,
@@ -183,7 +158,15 @@ static const BYTE sVertexByteCode[] =
 0,0,0,0,0,0,
 0,0,0,0,0,0,
 0,0,0,0,0,0,
-0,0
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0
 };
 
 

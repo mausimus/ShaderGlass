@@ -1,25 +1,14 @@
 /*
 ShaderGlass shader reshade-shaders\FilmGrain imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/reshade/shaders/FilmGrain.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/reshade/shaders/FilmGrain.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-*
-* FilmGrain version 1.0
-* by Christian Cann Schuldt Jensen ~ CeeJay.dk
-*
-* Computes a noise pattern and blends it with the image to create a film grain look.
-* ----------------------------------------------------------------------------------
-* Ported from https://github.com/crosire/reshade-shaders/blob/019921117c49beb4d1569af48f33cbb4e13033af/Shaders/FilmGrain.fx
 
  How visible the grain is. Higher is more visible. 
  Controls the variance of the Gaussian noise. Lower values look smoother. 
  Affects the brightness of the noise. 
  Higher Signal-to-Noise Ratio values give less grain to brighter pixels. 0 disables this feature. 
 //float inv_luma = dot(color, vec3(-0.2126, -0.7152, -0.0722)) + 1.0;
----------------------.
-| :: Generate Grain :: |
-'---------------------
  We use slang's FrameCount uniform variable instead of ReShade's Timer 
  We assume frame rate is 60 
 //PRNG 2D - create two uniform noise values and save one DP2ADD
@@ -33,9 +22,6 @@ This file is auto-generated, do not modify directly.
 //Apply grain
 //color = (grain-1.0) *2.0 + 0.5;
 //color = mix(color,colorInput.rgb,sqrt(luma));
--------------------------.
-| :: Debugging features :: |
-'-------------------------
 //color.rgb = fract(gauss_noise1).xxx; //show the noise
 //color.rgb = (gauss_noise1 > 0.999) ? vec3(1.0,1.0,0.0) : 0.0 ; //does it reach 1.0?
 

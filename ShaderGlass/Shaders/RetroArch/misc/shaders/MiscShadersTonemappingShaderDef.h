@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader misc-shaders\tonemapping imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/misc/shaders/tonemapping.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/misc/shaders/tonemapping.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -8,20 +8,6 @@ This file is auto-generated, do not modify directly.
 // sections using each tonemapping method or do splitscreen comparison
 // #define HORIZ_BANDS
 // #define VERT_BANDS
-
-This shader experiments the effect of different tone mapping operators.
-This is still a work in progress.
-More info:
-http://slideshare.net/ozlael/hable-john-uncharted2-hdr-lighting
-http://filmicgames.com/archives/75
-http://filmicgames.com/archives/183
-http://filmicgames.com/archives/190
-http://imdoingitwrong.wordpress.com/2010/08/19/why-reinhard-desaturates-my-blacks-3/
-http://mynameismjp.wordpress.com/2010/04/30/a-closer-look-at-tone-mapping/
-http://renderwonk.com/publications/s2010-color-course/
---
-Zavie
-
 
 */
 

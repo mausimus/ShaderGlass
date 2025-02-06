@@ -1,25 +1,13 @@
 /*
 ShaderGlass shader blurs-shaders-gauss_4tap\gauss_2tap_h imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/blurs/shaders/gauss_4tap/gauss_2tap_h.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/blurs/shaders/gauss_4tap/gauss_2tap_h.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-// See common.slang for copyright and other information.
-// See common.slang for copyright and other information.
+// See common.inc for copyright and other information.
+// See common.inc for copyright and other information.
 // clang-format off
 // clang-format on
-
-Gauss-4tap v1.0 by fishku
-Copyright (C) 2023
-Public domain license (CC0)
-
-Simple two-pass Gaussian blur filter which does two taps per pass.
-Idea based on:
-https://www.rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/
-
-Changelog:
-v1.0: Initial release.
-
 // Finds the offset so that two samples drawn with linear filtering at that
 // offset from a central pixel, multiplied with 1/2 each, sum up to a 3-sample
 // approximation of the Gaussian sampled at pixel centers.

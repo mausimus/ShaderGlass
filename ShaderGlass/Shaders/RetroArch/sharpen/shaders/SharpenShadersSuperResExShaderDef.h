@@ -1,29 +1,8 @@
 /*
 ShaderGlass shader sharpen-shaders\super-res-ex imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/sharpen/shaders/super-res-ex.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/sharpen/shaders/super-res-ex.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Super-res shader - Shiandow
-
-Ported from Shiandow's code by Hyllian, 2016.
-
-This file is a part of MPDN Extensions.
-https://github.com/zachsaw/MPDN_Extensions
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 3.0 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library.
 
 // -- Edge detection options --
 // -- Input processing --

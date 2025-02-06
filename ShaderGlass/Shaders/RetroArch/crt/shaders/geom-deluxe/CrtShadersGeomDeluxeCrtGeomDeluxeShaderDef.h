@@ -1,49 +1,11 @@
 /*
 ShaderGlass shader crt-shaders-geom-deluxe\crt-geom-deluxe imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/geom-deluxe/crt-geom-deluxe.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/geom-deluxe/crt-geom-deluxe.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-  CRT shader
-*
-*  Copyright (C) 2010-2016 cgwg, Themaister and DOLLS
-*
-*  This program is free software; you can redistribute it and/or modify it
-*  under the terms of the GNU General Public License as published by the Free
-*  Software Foundation; either version 2 of the License, or (at your option)
-*  any later version.
-
 //#pragma parameter rasterbloom_smooth "Raster bloom temporal smoothing" 0.5 0.0 0.99 0.01
 //#define rasterbloom_smooth params.rasterbloom_smooth
-
-A collection of CRT mask effects that work with LCD subpixel structures for
-small details
-
-author: hunterk
-license: public domain
-
-How to use it:
-
-Multiply your image by the vec3 output:
-FragColor.rgb *= mask_weights(gl_FragCoord.xy, 1.0, 1);
-
-In the "alpha" version, the alpha channel stores the number of lit subpixels per pixel for use in brightness-loss compensation efforts.
-
-The function needs to be tiled across the screen using the physical pixels, e.g.
-gl_FragCoord (the "vec2 coord" input). In the case of slang shaders, we use
-(vTexCoord.st * OutputSize.xy).
-
-The "mask_intensity" (float value between 0.0 and 1.0) is how strong the mask
-effect should be. Full-strength red, green and blue subpixels on a white pixel
-are the ideal, and are achieved with an intensity of 1.0, though this darkens
-the image significantly and may not always be desirable.
-
-The "phosphor_layout" (int value between 0 and 24) determines which phophor
-layout to apply. 0 is no mask/passthru.
-
-Many of these mask arrays are adapted from cgwg's crt-geom-deluxe LUTs, and
-those have their filenames included for easy identification
-
 // This pattern is used by a few layouts, so we'll define it here
 // classic aperture for RGB panels; good for 1080p, too small for 4K+
 // aka aperture_1_2_bgr

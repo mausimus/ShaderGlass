@@ -1,43 +1,10 @@
 /*
 ShaderGlass shader crt-shaders\crt-easymode imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-easymode.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-easymode.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
-
-CRT Shader by EasyMode
-License: GPL
-
-A flat CRT shader ideally for 1080p or higher displays.
-
-Recommended Settings:
-
-Video
-- Aspect Ratio:  4:3
-- Integer Scale: Off
-
-Shader
-- Filter: Nearest
-- Scale:  Don't Care
-
-Example RGB Mask Parameter Settings:
-
-Aperture Grille (Default)
-- Dot Width:  1
-- Dot Height: 1
-- Stagger:    0
-
-Lottes' Shadow Mask
-- Dot Width:  2
-- Dot Height: 1
-- Stagger:    3
-
 // Set to 0 to use linear filter and gain speed
-
-apply half-circle s-curve to distance for sharper (more pixelated) interpolation
-single line formula for Graph Toy:
-0.5 - sqrt(0.25 - (x - step(0.5, x)) * (x - step(0.5, x))) * sign(0.5 - x)
-
  main_fragment 
 
 */

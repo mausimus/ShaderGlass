@@ -1,33 +1,8 @@
 /*
 ShaderGlass shader crt-shaders\crt-1tap imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-1tap.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-1tap.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-crt-1tap v1.2 by fishku
-Copyright (C) 2023
-Public domain license (CC0)
-
-Extremely fast and lightweight dynamic scanline shader.
-Contrasty and sharp output. Easy to configure.
-Can be combined with other shaders.
-
-How it works: Uses a single texture "tap" per pixel, hence the name.
-Exploits bilinear interpolation plus local coordinate distortion to shape
-the scanline. A pseudo-sigmoid function with a configurable slope at the
-inflection point is used to control horizontal smoothness.
-Uses a clamped linear function to anti-alias the edge of the scanline while
-avoiding further branching. The final thickness is shaped with a gamma-like
-operation to control overall image contrast.
-The scanline subpixel position can be controlled to achieve the best
-sharpness and uniformity of the output given different input sizes, e.g.,
-for even and odd integer scaling.
-
-Changelog:
-v1.2: Better scanline sharpness; Minor cleanups.
-v1.1: Update license; Better defaults; Don't compute alpha.
-v1.0: Initial release.
 
 // clang-format off
 // clang-format on

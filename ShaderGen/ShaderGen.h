@@ -30,6 +30,7 @@ const char* _glslPath   = "..\\ShaderGlass\\Tools\\glslangValidator.exe";
 const char* _spirvPath  = "..\\ShaderGlass\\Tools\\spirv-cross.exe";
 const char* _tempPath   = "..\\ShaderGlass\\temp";
 const char* _fxcPath    = "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.22621.0\\x64\\fxc.exe";
+const char* _raUrl      = "https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/";
 bool _force = false;
 
 struct ShaderParam
@@ -119,7 +120,7 @@ ShaderInfo getShaderInfo(const filesystem::path& slangInput, const string& suffi
     bool         upper = true;
     for(const auto& c : info.category)
     {
-        if(c == '-' || c == '\\' || c == '.' || c == '-' || c == '+' || c == ' ' || c == '/')
+        if(c == '-' || c == '\\' || c == '.' || c == '-' || c == '+' || c == ' ' || c == '/' || c == '(' || c == ')')
         {
             upper = true;
             continue;
@@ -135,7 +136,7 @@ ShaderInfo getShaderInfo(const filesystem::path& slangInput, const string& suffi
     upper = true;
     for(const auto& c : stem.string())
     {
-        if(c == '-' || c == '.' || c == '-' || c == '+' || c == ' ' || c == '/')
+        if(c == '-' || c == '.' || c == '-' || c == '+' || c == ' ' || c == '/' || c == '(' || c == ')')
         {
             upper = true;
             shaderName << c;

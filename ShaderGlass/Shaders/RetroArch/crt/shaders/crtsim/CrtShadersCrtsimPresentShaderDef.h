@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-crtsim\present imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crtsim/present.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crtsim/present.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -47,15 +47,8 @@ This file is auto-generated, do not modify directly.
 //#pragma parameter Tuning_LightPos_B "Light Position B" 1.0 0.0 1.0 0.05
 //	ScaledUV *= UVScalar;
 //	ScaledUV += UVOffset;
-  // commenting this to move to present shader
 // Apply overscan after scanline sampling is done.
-half2 overscanuv = (ScaledUV * params.Tuning_Overscan) - ((params.Tuning_Overscan - 1.0) * 0.5);
-
 // Curve UVs for composite texture inwards to garble things a bit.
-overscanuv = overscanuv - half2(0.5,0.5);
-half rsq = (overscanuv.x*overscanuv.x) + (overscanuv.y*overscanuv.y);
-overscanuv = overscanuv + (overscanuv * (params.Tuning_Barrel * rsq)) + half2(0.5,0.5);
-
 // Apply power to brightness while preserving color
 // TODO: Clamp ActLuma to very small number to prevent (zero) division by zero when a component is zero?
 // This method preserves color better.

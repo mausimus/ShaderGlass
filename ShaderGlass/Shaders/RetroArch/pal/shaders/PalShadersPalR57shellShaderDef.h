@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader pal-shaders\pal-r57shell imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/pal/shaders/pal-r57shell.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/pal/shaders/pal-r57shell.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -66,46 +66,18 @@ This file is auto-generated, do not modify directly.
 // use sampled version. it's much more slower version of shader.
 // because it is computing x4 more values. NOT RECOMMENDED.
 //#define USE_SAMPLED
-#ifndef PARAMETER_UNIFORM
 // commented because parameters are always available in slang
-
 // NTSC standard gamma = 2.2
 // PAL standard gamma = 2.8
 // according to many sources, very unlikely gamma of TV is 2.8
 // most likely gamma of PAL TV is in range 2.4-2.5
-const float Gamma_static = 2.5; // gamma of virtual TV
-
-const float Brightness_static = 0.0;
-const float Contrast_static = 1.0;
-const float Saturation_static = 1.0;
-
-const int
-Ywidth_static = 12,
-Uwidth_static = 23,
-Vwidth_static = 23;
-
 // correct one is -2.5
 // works only with USE_RAW
-const float HueShift = -2.5;
-
 // rotation of hue due to luma level.
-const float HueRotation = 2.;
-
 // touch this only if you know what you doing
-const float Phase_Y = 2.; // fmod(341*10,12)
-const float Phase_One = 0.; // alternating phases.
-const float Phase_Two = 8.;
-
 // screen size, scanlines = y*2; y one field, and y other field.
-const int SizeX = 256;
-const int SizeY = 240;
-
 // count of pixels of virtual TV.
 // value close to 1000 produce small artifacts
-const int TV_Pixels = 400;
-
-const float dark_scanline = 0.5; // half
-#endif
 // this is using following matrixes.
 // it provides more scientific approach
 // by conversion into linear XYZ space
@@ -114,25 +86,7 @@ const float dark_scanline = 0.5; // half
 // define USE_GAMMA is not required.
 // TWEAKS end
 //#ifdef PARAMETER_UNIFORM
-#else
-
-#define Brightness Brightness_static
-#define Gamma Gamma_static
-
-#define Ywidth Ywidth_static
-#define Uwidth Uwidth_static
-#define Vwidth Vwidth_static
-
-const int Mwidth = max(float(Ywidth), max(float(Uwidth), float(Vwidth)));
-
-#ifdef USE_CORE_SIZE
 // just use core output size.
-#define size (params.SourceSize.xy)
-#else
-float2 size = float2(SizeX,SizeY);
-#endif
-
-#endif
 // from nesdev wiki page NTSC_video
 // use LUT for RAW palette decoding for speed vs quality
 // return early to avoid costly decoding in software
@@ -152,17 +106,7 @@ float2 size = float2(SizeX,SizeY);
 // outside of texture is 0,0,0 which is white instead of black
 //#ifdef PARAMETER_UNIFORM
 //#endif
-
 //old stupid method
-float z =
-#ifdef ANIMATE_SCANLINE
-fmod(params.FrameCount,2.0)+
-#endif
-0.5;
-
-if (abs(fmod(q.y+0.5,2)-z)<0.5)
-rgb *= params.dark_scanline;
-
 // size of pixel screen in texture coords:
 //float output_pixel_size = params.SourceSize.x/(params.OutputSize.x*params.SourceSize.x);
 // correctness check

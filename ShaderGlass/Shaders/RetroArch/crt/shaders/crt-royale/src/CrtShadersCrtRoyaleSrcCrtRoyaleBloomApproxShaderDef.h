@@ -1,6 +1,6 @@
 /*
 ShaderGlass shader crt-shaders-crt-royale-src\crt-royale-bloom-approx imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/crt-royale/src/crt-royale-bloom-approx.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-royale/src/crt-royale-bloom-approx.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
 
@@ -1148,66 +1148,11 @@ This file is auto-generated, do not modify directly.
 //      - tex*DMS*
 //      - Variants returning integers
 //  Standard line length restrictions are ignored below for vertical brevity.
-
 //  tex1D:
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex1Dbias:
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dbias(tex, tex_coords));   }
-
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dbias(tex, tex_coords, texel_off));    }
-
 //  tex1Dfetch:
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords)
-{   return decode_input(tex1Dfetch(tex, tex_coords));  }
-
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex1Dlod:
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dlod(tex, tex_coords));    }
-
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dlod(tex, tex_coords, texel_off));     }
-
 //  tex1Dproj:
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
 //  tex2D:
 //inline float4 tex2D_linearize(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy)
 //{   return decode_input(texture(tex, tex_coords, dx, dy));   }
@@ -1228,118 +1173,39 @@ inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, 
 //inline float4 tex2Dfetch_linearize(const sampler2D tex, const int4 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dfetch(tex, tex_coords, texel_off));   }
 //  tex2Dlod:
-
 //  tex2Dproj:
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-
 //  tex3D:
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords)
-{   return decode_input(tex3D(tex, tex_coords));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, texel_off));    }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex3Dbias:
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dbias(tex, tex_coords));   }
-
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dbias(tex, tex_coords, texel_off));    }
-
 //  tex3Dfetch:
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords)
-{   return decode_input(tex3Dfetch(tex, tex_coords));  }
-
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex3Dlod:
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dlod(tex, tex_coords));    }
-
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dlod(tex, tex_coords, texel_off));     }
-
 //  tex3Dproj:
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dproj(tex, tex_coords));   }
-
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dproj(tex, tex_coords, texel_off));    }
 /////////*
-
 //  NONSTANDARD "SMART" LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  This narrow selection of nonstandard tex2D* functions can be useful:
-
 //  tex2Dlod0: Automatically fill in the tex2D LOD parameter for mip level 0.
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0)));   }
-
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0), texel_off));    }
-
-
 //  MANUALLY LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  Provide a narrower selection of tex2D* wrapper functions that decode an
 //  input sample with a specified gamma value.  These are useful for reading
 //  LUT's and for reading the input of pass0 in a later pass.
-
 //  tex2D:
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords), gamma);   }
-
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords.xy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //  tex2Dbias:
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords), gamma);   }
-
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords, texel_off), gamma);    }
-
 //  tex2Dfetch:
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords), gamma);  }
-
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords, texel_off), gamma);   }
-
 //  tex2Dlod:
 /////////////////////////////  GPL LICENSE NOTICE  /////////////////////////////
 //  crt-royale: A full-featured CRT shader, with cheese.
@@ -2748,66 +2614,11 @@ inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coo
 //      - tex*DMS*
 //      - Variants returning integers
 //  Standard line length restrictions are ignored below for vertical brevity.
-
 //  tex1D:
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex1Dbias:
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dbias(tex, tex_coords));   }
-
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dbias(tex, tex_coords, texel_off));    }
-
 //  tex1Dfetch:
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords)
-{   return decode_input(tex1Dfetch(tex, tex_coords));  }
-
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex1Dlod:
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dlod(tex, tex_coords));    }
-
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dlod(tex, tex_coords, texel_off));     }
-
 //  tex1Dproj:
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
 //  tex2D:
 //inline float4 tex2D_linearize(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy)
 //{   return decode_input(texture(tex, tex_coords, dx, dy));   }
@@ -2828,118 +2639,39 @@ inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, 
 //inline float4 tex2Dfetch_linearize(const sampler2D tex, const int4 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dfetch(tex, tex_coords, texel_off));   }
 //  tex2Dlod:
-
 //  tex2Dproj:
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-
 //  tex3D:
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords)
-{   return decode_input(tex3D(tex, tex_coords));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, texel_off));    }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex3Dbias:
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dbias(tex, tex_coords));   }
-
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dbias(tex, tex_coords, texel_off));    }
-
 //  tex3Dfetch:
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords)
-{   return decode_input(tex3Dfetch(tex, tex_coords));  }
-
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex3Dlod:
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dlod(tex, tex_coords));    }
-
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dlod(tex, tex_coords, texel_off));     }
-
 //  tex3Dproj:
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dproj(tex, tex_coords));   }
-
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dproj(tex, tex_coords, texel_off));    }
 /////////*
-
 //  NONSTANDARD "SMART" LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  This narrow selection of nonstandard tex2D* functions can be useful:
-
 //  tex2Dlod0: Automatically fill in the tex2D LOD parameter for mip level 0.
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0)));   }
-
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0), texel_off));    }
-
-
 //  MANUALLY LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  Provide a narrower selection of tex2D* wrapper functions that decode an
 //  input sample with a specified gamma value.  These are useful for reading
 //  LUT's and for reading the input of pass0 in a later pass.
-
 //  tex2D:
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords), gamma);   }
-
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords.xy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //  tex2Dbias:
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords), gamma);   }
-
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords, texel_off), gamma);    }
-
 //  tex2Dfetch:
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords), gamma);  }
-
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords, texel_off), gamma);   }
-
 //  tex2Dlod:
 /////////////////////////////  SCANLINE FUNCTIONS  /////////////////////////////
 //  Requires:   Globals:
@@ -3492,66 +3224,11 @@ inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coo
 //      - tex*DMS*
 //      - Variants returning integers
 //  Standard line length restrictions are ignored below for vertical brevity.
-
 //  tex1D:
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex1Dbias:
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dbias(tex, tex_coords));   }
-
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dbias(tex, tex_coords, texel_off));    }
-
 //  tex1Dfetch:
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords)
-{   return decode_input(tex1Dfetch(tex, tex_coords));  }
-
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex1Dlod:
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dlod(tex, tex_coords));    }
-
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dlod(tex, tex_coords, texel_off));     }
-
 //  tex1Dproj:
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
 //  tex2D:
 //inline float4 tex2D_linearize(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy)
 //{   return decode_input(texture(tex, tex_coords, dx, dy));   }
@@ -3572,118 +3249,39 @@ inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, 
 //inline float4 tex2Dfetch_linearize(const sampler2D tex, const int4 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dfetch(tex, tex_coords, texel_off));   }
 //  tex2Dlod:
-
 //  tex2Dproj:
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-
 //  tex3D:
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords)
-{   return decode_input(tex3D(tex, tex_coords));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, texel_off));    }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex3Dbias:
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dbias(tex, tex_coords));   }
-
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dbias(tex, tex_coords, texel_off));    }
-
 //  tex3Dfetch:
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords)
-{   return decode_input(tex3Dfetch(tex, tex_coords));  }
-
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex3Dlod:
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dlod(tex, tex_coords));    }
-
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dlod(tex, tex_coords, texel_off));     }
-
 //  tex3Dproj:
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dproj(tex, tex_coords));   }
-
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dproj(tex, tex_coords, texel_off));    }
 /////////*
-
 //  NONSTANDARD "SMART" LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  This narrow selection of nonstandard tex2D* functions can be useful:
-
 //  tex2Dlod0: Automatically fill in the tex2D LOD parameter for mip level 0.
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0)));   }
-
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0), texel_off));    }
-
-
 //  MANUALLY LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  Provide a narrower selection of tex2D* wrapper functions that decode an
 //  input sample with a specified gamma value.  These are useful for reading
 //  LUT's and for reading the input of pass0 in a later pass.
-
 //  tex2D:
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords), gamma);   }
-
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords.xy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //  tex2Dbias:
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords), gamma);   }
-
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords, texel_off), gamma);    }
-
 //  tex2Dfetch:
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords), gamma);  }
-
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords, texel_off), gamma);   }
-
 //  tex2Dlod:
 /////////////////////////////////  MIT LICENSE  ////////////////////////////////
 //  Copyright (C) 2014 TroggleMonkey*
@@ -5479,66 +5077,11 @@ inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coo
 //      - tex*DMS*
 //      - Variants returning integers
 //  Standard line length restrictions are ignored below for vertical brevity.
-
 //  tex1D:
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex1Dbias:
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dbias(tex, tex_coords));   }
-
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dbias(tex, tex_coords, texel_off));    }
-
 //  tex1Dfetch:
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords)
-{   return decode_input(tex1Dfetch(tex, tex_coords));  }
-
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex1Dlod:
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dlod(tex, tex_coords));    }
-
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dlod(tex, tex_coords, texel_off));     }
-
 //  tex1Dproj:
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
 //  tex2D:
 //inline float4 tex2D_linearize(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy)
 //{   return decode_input(texture(tex, tex_coords, dx, dy));   }
@@ -5559,118 +5102,39 @@ inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, 
 //inline float4 tex2Dfetch_linearize(const sampler2D tex, const int4 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dfetch(tex, tex_coords, texel_off));   }
 //  tex2Dlod:
-
 //  tex2Dproj:
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-
 //  tex3D:
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords)
-{   return decode_input(tex3D(tex, tex_coords));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, texel_off));    }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex3Dbias:
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dbias(tex, tex_coords));   }
-
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dbias(tex, tex_coords, texel_off));    }
-
 //  tex3Dfetch:
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords)
-{   return decode_input(tex3Dfetch(tex, tex_coords));  }
-
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex3Dlod:
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dlod(tex, tex_coords));    }
-
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dlod(tex, tex_coords, texel_off));     }
-
 //  tex3Dproj:
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dproj(tex, tex_coords));   }
-
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dproj(tex, tex_coords, texel_off));    }
 /////////*
-
 //  NONSTANDARD "SMART" LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  This narrow selection of nonstandard tex2D* functions can be useful:
-
 //  tex2Dlod0: Automatically fill in the tex2D LOD parameter for mip level 0.
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0)));   }
-
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0), texel_off));    }
-
-
 //  MANUALLY LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  Provide a narrower selection of tex2D* wrapper functions that decode an
 //  input sample with a specified gamma value.  These are useful for reading
 //  LUT's and for reading the input of pass0 in a later pass.
-
 //  tex2D:
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords), gamma);   }
-
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords.xy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //  tex2Dbias:
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords), gamma);   }
-
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords, texel_off), gamma);    }
-
 //  tex2Dfetch:
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords), gamma);  }
-
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords, texel_off), gamma);   }
-
 //  tex2Dlod:
 /////////////////////////////////  MIT LICENSE  ////////////////////////////////
 //  Copyright (C) 2014 TroggleMonkey*
@@ -6722,66 +6186,11 @@ inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coo
 //      - tex*DMS*
 //      - Variants returning integers
 //  Standard line length restrictions are ignored below for vertical brevity.
-
 //  tex1D:
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1D(tex, tex_coords));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
-inline float4 tex1D_linearize(const sampler1D tex, const float2 tex_coords, const float dx, const float dy, const int texel_off)
-{   return decode_input(tex1D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex1Dbias:
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dbias(tex, tex_coords));   }
-
-inline float4 tex1Dbias_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dbias(tex, tex_coords, texel_off));    }
-
 //  tex1Dfetch:
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords)
-{   return decode_input(tex1Dfetch(tex, tex_coords));  }
-
-inline float4 tex1Dfetch_linearize(const sampler1D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex1Dlod:
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords)
-{   return decode_input(tex1Dlod(tex, tex_coords));    }
-
-inline float4 tex1Dlod_linearize(const sampler1D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex1Dlod(tex, tex_coords, texel_off));     }
-
 //  tex1Dproj:
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords)
-{   return decode_input(tex1Dproj(tex, tex_coords));   }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float2 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex1Dproj(tex, tex_coords, texel_off));    }
-
 //  tex2D:
 //inline float4 tex2D_linearize(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy)
 //{   return decode_input(texture(tex, tex_coords, dx, dy));   }
@@ -6802,118 +6211,39 @@ inline float4 tex1Dproj_linearize(const sampler1D tex, const float3 tex_coords, 
 //inline float4 tex2Dfetch_linearize(const sampler2D tex, const int4 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dfetch(tex, tex_coords, texel_off));   }
 //  tex2Dlod:
-
 //  tex2Dproj:
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords)
-{   return decode_input(tex2Dproj(tex, tex_coords));   }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-inline float4 tex2Dproj_linearize(const sampler2D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex2Dproj(tex, tex_coords, texel_off));    }
-
-
 //  tex3D:
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords)
-{   return decode_input(tex3D(tex, tex_coords));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, texel_off));    }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy));   }
-
-inline float4 tex3D_linearize(const sampler3D tex, const float3 tex_coords, const float3 dx, const float3 dy, const int texel_off)
-{   return decode_input(tex3D(tex, tex_coords, dx, dy, texel_off));    }
-
 //  tex3Dbias:
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dbias(tex, tex_coords));   }
-
-inline float4 tex3Dbias_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dbias(tex, tex_coords, texel_off));    }
-
 //  tex3Dfetch:
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords)
-{   return decode_input(tex3Dfetch(tex, tex_coords));  }
-
-inline float4 tex3Dfetch_linearize(const sampler3D tex, const int4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dfetch(tex, tex_coords, texel_off));   }
-
 //  tex3Dlod:
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dlod(tex, tex_coords));    }
-
-inline float4 tex3Dlod_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dlod(tex, tex_coords, texel_off));     }
-
 //  tex3Dproj:
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords)
-{   return decode_input(tex3Dproj(tex, tex_coords));   }
-
-inline float4 tex3Dproj_linearize(const sampler3D tex, const float4 tex_coords, const int texel_off)
-{   return decode_input(tex3Dproj(tex, tex_coords, texel_off));    }
 /////////*
-
 //  NONSTANDARD "SMART" LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  This narrow selection of nonstandard tex2D* functions can be useful:
-
 //  tex2Dlod0: Automatically fill in the tex2D LOD parameter for mip level 0.
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0)));   }
-
 //inline float4 tex2Dlod0_linearize(const sampler2D tex, const float2 tex_coords, const int texel_off)
 //{   return decode_input(tex2Dlod(tex, float4(tex_coords, 0.0, 0.0), texel_off));    }
-
-
 //  MANUALLY LINEARIZING TEXTURE LOOKUP FUNCTIONS:
 //  Provide a narrower selection of tex2D* wrapper functions that decode an
 //  input sample with a specified gamma value.  These are useful for reading
 //  LUT's and for reading the input of pass0 in a later pass.
-
 //  tex2D:
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords), gamma);   }
-
-inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float3 gamma)
-{   return decode_gamma_input(texture(tex, tex_coords.xy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy), gamma);   }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float2 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //inline float4 tex2D_linearize_gamma(const sampler2D tex, const float3 tex_coords, const float2 dx, const float2 dy, const int texel_off, const float3 gamma)
 //{   return decode_gamma_input(texture(tex, tex_coords, dx, dy, texel_off), gamma);    }
-
 //  tex2Dbias:
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords), gamma);   }
-
-inline float4 tex2Dbias_linearize_gamma(const sampler2D tex, const float4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dbias(tex, tex_coords, texel_off), gamma);    }
-
 //  tex2Dfetch:
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords), gamma);  }
-
-inline float4 tex2Dfetch_linearize_gamma(const sampler2D tex, const int4 tex_coords, const int texel_off, const float3 gamma)
-{   return decode_gamma_input(tex2Dfetch(tex, tex_coords, texel_off), gamma);   }
-
 //  tex2Dlod:
 ///////////////////////////////////  HELPERS  //////////////////////////////////
 //  Requires:   1.) All requirements of gamma-management.h must be satisfied!
@@ -7899,119 +7229,3293 @@ static const BYTE sVertexByteCode[] =
 
 static const BYTE sFragmentByteCode[] =
 {
-68,88,66,67,163,76,
-40,162,163,27,110,77,
-47,36,47,87,144,29,
-84,107,1,0,0,0,
-0,3,0,0,5,0,
+68,88,66,67,122,48,
+133,60,40,196,181,209,
+64,48,201,121,159,245,
+61,105,1,0,0,0,
+72,77,0,0,5,0,
 0,0,52,0,0,0,
-12,1,0,0,184,1,
-0,0,236,1,0,0,
-100,2,0,0,82,68,
-69,70,208,0,0,0,
-0,0,0,0,0,0,
-0,0,2,0,0,0,
+92,15,0,0,8,16,
+0,0,60,16,0,0,
+172,76,0,0,82,68,
+69,70,32,15,0,0,
+2,0,0,0,240,0,
+0,0,4,0,0,0,
 60,0,0,0,0,5,
 255,255,0,129,0,0,
-165,0,0,0,82,68,
+247,14,0,0,82,68,
 49,49,60,0,0,0,
 24,0,0,0,32,0,
 0,0,40,0,0,0,
 36,0,0,0,12,0,
 0,0,0,0,0,0,
-124,0,0,0,3,0,
+188,0,0,0,3,0,
 0,0,0,0,0,0,
 0,0,0,0,0,0,
 0,0,3,0,0,0,
 1,0,0,0,1,0,
-0,0,149,0,0,0,
+0,0,213,0,0,0,
 2,0,0,0,5,0,
 0,0,4,0,0,0,
 255,255,255,255,3,0,
 0,0,1,0,0,0,
-13,0,0,0,95,79,
-82,73,71,95,76,73,
-78,69,65,82,73,90,
-69,68,95,115,97,109,
-112,108,101,114,0,79,
-82,73,71,95,76,73,
-78,69,65,82,73,90,
-69,68,0,77,105,99,
+13,0,0,0,229,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,1,0,
+0,0,1,0,0,0,
+233,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,1,0,0,0,
+1,0,0,0,0,0,
+0,0,95,79,82,73,
+71,95,76,73,78,69,
+65,82,73,90,69,68,
+95,115,97,109,112,108,
+101,114,0,79,82,73,
+71,95,76,73,78,69,
+65,82,73,90,69,68,
+0,85,66,79,0,80,
+117,115,104,0,171,171,
+229,0,0,0,47,0,
+0,0,32,1,0,0,
+0,1,0,0,0,0,
+0,0,0,0,0,0,
+233,0,0,0,5,0,
+0,0,112,13,0,0,
+80,0,0,0,0,0,
+0,0,0,0,0,0,
+120,8,0,0,0,0,
+0,0,64,0,0,0,
+0,0,0,0,140,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,176,8,
+0,0,64,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,236,8,0,0,
+68,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+253,8,0,0,72,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,20,9,
+0,0,76,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,43,9,0,0,
+80,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+67,9,0,0,84,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,101,9,
+0,0,88,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,121,9,0,0,
+92,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+143,9,0,0,96,0,
+0,0,4,0,0,0,
+2,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,165,9,
+0,0,100,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,188,9,0,0,
+104,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+210,9,0,0,108,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,232,9,
+0,0,112,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,0,10,0,0,
+116,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+25,10,0,0,120,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,49,10,
+0,0,124,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,85,10,0,0,
+128,0,0,0,4,0,
+0,0,2,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+115,10,0,0,132,0,
+0,0,4,0,0,0,
+2,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,145,10,
+0,0,136,0,0,0,
+4,0,0,0,2,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,175,10,0,0,
+140,0,0,0,4,0,
+0,0,2,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+205,10,0,0,144,0,
+0,0,4,0,0,0,
+2,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,235,10,
+0,0,148,0,0,0,
+4,0,0,0,2,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,9,11,0,0,
+152,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+26,11,0,0,156,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,58,11,
+0,0,160,0,0,0,
+4,0,0,0,2,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,89,11,0,0,
+164,0,0,0,4,0,
+0,0,2,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+120,11,0,0,168,0,
+0,0,4,0,0,0,
+2,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,151,11,
+0,0,172,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,189,11,0,0,
+176,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+227,11,0,0,180,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,245,11,
+0,0,184,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,11,12,0,0,
+188,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+36,12,0,0,192,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,55,12,
+0,0,196,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,77,12,0,0,
+200,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+102,12,0,0,204,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,127,12,
+0,0,208,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,154,12,0,0,
+212,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+181,12,0,0,216,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,204,12,
+0,0,220,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,227,12,0,0,
+224,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+246,12,0,0,228,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,13,13,
+0,0,232,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,36,13,0,0,
+236,0,0,0,4,0,
+0,0,0,0,0,0,
+200,8,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+57,13,0,0,240,0,
+0,0,4,0,0,0,
+0,0,0,0,200,8,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,80,13,
+0,0,244,0,0,0,
+4,0,0,0,0,0,
+0,0,200,8,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,103,108,111,98,
+97,108,95,77,86,80,
+0,102,108,111,97,116,
+52,120,52,0,2,0,
+3,0,4,0,4,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+131,8,0,0,103,108,
+111,98,97,108,95,99,
+114,116,95,103,97,109,
+109,97,0,102,108,111,
+97,116,0,171,0,0,
+3,0,1,0,1,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+193,8,0,0,103,108,
+111,98,97,108,95,108,
+99,100,95,103,97,109,
+109,97,0,103,108,111,
+98,97,108,95,108,101,
+118,101,108,115,95,99,
+111,110,116,114,97,115,
+116,0,103,108,111,98,
+97,108,95,104,97,108,
+97,116,105,111,110,95,
+119,101,105,103,104,116,
+0,103,108,111,98,97,
+108,95,100,105,102,102,
+117,115,105,111,110,95,
+119,101,105,103,104,116,
+0,103,108,111,98,97,
+108,95,98,108,111,111,
+109,95,117,110,100,101,
+114,101,115,116,105,109,
+97,116,101,95,108,101,
+118,101,108,115,0,103,
+108,111,98,97,108,95,
+98,108,111,111,109,95,
+101,120,99,101,115,115,
+0,103,108,111,98,97,
+108,95,98,101,97,109,
+95,109,105,110,95,115,
+105,103,109,97,0,103,
+108,111,98,97,108,95,
+98,101,97,109,95,109,
+97,120,95,115,105,103,
+109,97,0,103,108,111,
+98,97,108,95,98,101,
+97,109,95,115,112,111,
+116,95,112,111,119,101,
+114,0,103,108,111,98,
+97,108,95,98,101,97,
+109,95,109,105,110,95,
+115,104,97,112,101,0,
+103,108,111,98,97,108,
+95,98,101,97,109,95,
+109,97,120,95,115,104,
+97,112,101,0,103,108,
+111,98,97,108,95,98,
+101,97,109,95,115,104,
+97,112,101,95,112,111,
+119,101,114,0,103,108,
+111,98,97,108,95,98,
+101,97,109,95,104,111,
+114,105,122,95,102,105,
+108,116,101,114,0,103,
+108,111,98,97,108,95,
+98,101,97,109,95,104,
+111,114,105,122,95,115,
+105,103,109,97,0,103,
+108,111,98,97,108,95,
+98,101,97,109,95,104,
+111,114,105,122,95,108,
+105,110,101,97,114,95,
+114,103,98,95,119,101,
+105,103,104,116,0,103,
+108,111,98,97,108,95,
+99,111,110,118,101,114,
+103,101,110,99,101,95,
+111,102,102,115,101,116,
+95,120,95,114,0,103,
+108,111,98,97,108,95,
+99,111,110,118,101,114,
+103,101,110,99,101,95,
+111,102,102,115,101,116,
+95,120,95,103,0,103,
+108,111,98,97,108,95,
+99,111,110,118,101,114,
+103,101,110,99,101,95,
+111,102,102,115,101,116,
+95,120,95,98,0,103,
+108,111,98,97,108,95,
+99,111,110,118,101,114,
+103,101,110,99,101,95,
+111,102,102,115,101,116,
+95,121,95,114,0,103,
+108,111,98,97,108,95,
+99,111,110,118,101,114,
+103,101,110,99,101,95,
+111,102,102,115,101,116,
+95,121,95,103,0,103,
+108,111,98,97,108,95,
+99,111,110,118,101,114,
+103,101,110,99,101,95,
+111,102,102,115,101,116,
+95,121,95,98,0,103,
+108,111,98,97,108,95,
+109,97,115,107,95,116,
+121,112,101,0,103,108,
+111,98,97,108,95,109,
+97,115,107,95,115,97,
+109,112,108,101,95,109,
+111,100,101,95,100,101,
+115,105,114,101,100,0,
+103,108,111,98,97,108,
+95,109,97,115,107,95,
+110,117,109,95,116,114,
+105,97,100,115,95,100,
+101,115,105,114,101,100,
+0,103,108,111,98,97,
+108,95,109,97,115,107,
+95,116,114,105,97,100,
+95,115,105,122,101,95,
+100,101,115,105,114,101,
+100,0,103,108,111,98,
+97,108,95,109,97,115,
+107,95,115,112,101,99,
+105,102,121,95,110,117,
+109,95,116,114,105,97,
+100,115,0,103,108,111,
+98,97,108,95,97,97,
+95,115,117,98,112,105,
+120,101,108,95,114,95,
+111,102,102,115,101,116,
+95,120,95,114,117,110,
+116,105,109,101,0,103,
+108,111,98,97,108,95,
+97,97,95,115,117,98,
+112,105,120,101,108,95,
+114,95,111,102,102,115,
+101,116,95,121,95,114,
+117,110,116,105,109,101,
+0,103,108,111,98,97,
+108,95,97,97,95,99,
+117,98,105,99,95,99,
+0,103,108,111,98,97,
+108,95,97,97,95,103,
+97,117,115,115,95,115,
+105,103,109,97,0,103,
+108,111,98,97,108,95,
+103,101,111,109,95,109,
+111,100,101,95,114,117,
+110,116,105,109,101,0,
+103,108,111,98,97,108,
+95,103,101,111,109,95,
+114,97,100,105,117,115,
+0,103,108,111,98,97,
+108,95,103,101,111,109,
+95,118,105,101,119,95,
+100,105,115,116,0,103,
+108,111,98,97,108,95,
+103,101,111,109,95,116,
+105,108,116,95,97,110,
+103,108,101,95,120,0,
+103,108,111,98,97,108,
+95,103,101,111,109,95,
+116,105,108,116,95,97,
+110,103,108,101,95,121,
+0,103,108,111,98,97,
+108,95,103,101,111,109,
+95,97,115,112,101,99,
+116,95,114,97,116,105,
+111,95,120,0,103,108,
+111,98,97,108,95,103,
+101,111,109,95,97,115,
+112,101,99,116,95,114,
+97,116,105,111,95,121,
+0,103,108,111,98,97,
+108,95,103,101,111,109,
+95,111,118,101,114,115,
+99,97,110,95,120,0,
+103,108,111,98,97,108,
+95,103,101,111,109,95,
+111,118,101,114,115,99,
+97,110,95,121,0,103,
+108,111,98,97,108,95,
+98,111,114,100,101,114,
+95,115,105,122,101,0,
+103,108,111,98,97,108,
+95,98,111,114,100,101,
+114,95,100,97,114,107,
+110,101,115,115,0,103,
+108,111,98,97,108,95,
+98,111,114,100,101,114,
+95,99,111,109,112,114,
+101,115,115,0,103,108,
+111,98,97,108,95,105,
+110,116,101,114,108,97,
+99,101,95,98,102,102,
+0,103,108,111,98,97,
+108,95,105,110,116,101,
+114,108,97,99,101,95,
+49,48,56,48,105,0,
+103,108,111,98,97,108,
+95,105,110,116,101,114,
+108,97,99,101,95,100,
+101,116,101,99,116,95,
+116,111,103,103,108,101,
+0,171,56,14,0,0,
+0,0,0,0,16,0,
+0,0,2,0,0,0,
+84,14,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+120,14,0,0,16,0,
+0,0,16,0,0,0,
+0,0,0,0,84,14,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,140,14,
+0,0,32,0,0,0,
+16,0,0,0,2,0,
+0,0,84,14,0,0,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+255,255,255,255,0,0,
+0,0,158,14,0,0,
+48,0,0,0,4,0,
+0,0,0,0,0,0,
+184,14,0,0,0,0,
+0,0,255,255,255,255,
+0,0,0,0,255,255,
+255,255,0,0,0,0,
+220,14,0,0,64,0,
+0,0,16,0,0,0,
+0,0,0,0,84,14,
+0,0,0,0,0,0,
+255,255,255,255,0,0,
+0,0,255,255,255,255,
+0,0,0,0,112,97,
+114,97,109,115,95,83,
+111,117,114,99,101,83,
+105,122,101,0,102,108,
+111,97,116,52,0,171,
+171,171,1,0,3,0,
+1,0,4,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,74,14,
+0,0,112,97,114,97,
+109,115,95,79,114,105,
+103,105,110,97,108,83,
+105,122,101,0,112,97,
+114,97,109,115,95,79,
+117,116,112,117,116,83,
+105,122,101,0,112,97,
+114,97,109,115,95,70,
+114,97,109,101,67,111,
+117,110,116,0,100,119,
+111,114,100,0,171,171,
+0,0,19,0,1,0,
+1,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,176,14,0,0,
+112,97,114,97,109,115,
+95,79,82,73,71,95,
+76,73,78,69,65,82,
+73,90,69,68,83,105,
+122,101,0,77,105,99,
 114,111,115,111,102,116,
 32,40,82,41,32,72,
 76,83,76,32,83,104,
 97,100,101,114,32,67,
 111,109,112,105,108,101,
 114,32,49,48,46,49,
-0,171,171,171,73,83,
-71,78,164,0,0,0,
-6,0,0,0,8,0,
-0,0,152,0,0,0,
-0,0,0,0,0,0,
-0,0,3,0,0,0,
-0,0,0,0,3,3,
-0,0,152,0,0,0,
-1,0,0,0,0,0,
-0,0,3,0,0,0,
-0,0,0,0,12,0,
-0,0,152,0,0,0,
-2,0,0,0,0,0,
-0,0,3,0,0,0,
-1,0,0,0,3,0,
-0,0,152,0,0,0,
-3,0,0,0,0,0,
-0,0,3,0,0,0,
-1,0,0,0,4,0,
-0,0,152,0,0,0,
-4,0,0,0,0,0,
-0,0,3,0,0,0,
-2,0,0,0,3,0,
-0,0,152,0,0,0,
-5,0,0,0,0,0,
-0,0,3,0,0,0,
-2,0,0,0,12,0,
-0,0,84,69,88,67,
-79,79,82,68,0,171,
-171,171,79,83,71,78,
-44,0,0,0,1,0,
+0,171,73,83,71,78,
+164,0,0,0,6,0,
 0,0,8,0,0,0,
-32,0,0,0,0,0,
+152,0,0,0,0,0,
 0,0,0,0,0,0,
 3,0,0,0,0,0,
-0,0,15,0,0,0,
-83,86,95,84,97,114,
-103,101,116,0,171,171,
-83,72,69,88,112,0,
-0,0,80,0,0,0,
-28,0,0,0,106,8,
-0,1,90,0,0,3,
+0,0,3,3,0,0,
+152,0,0,0,1,0,
+0,0,0,0,0,0,
+3,0,0,0,0,0,
+0,0,12,12,0,0,
+152,0,0,0,2,0,
+0,0,0,0,0,0,
+3,0,0,0,1,0,
+0,0,3,3,0,0,
+152,0,0,0,3,0,
+0,0,0,0,0,0,
+3,0,0,0,1,0,
+0,0,4,4,0,0,
+152,0,0,0,4,0,
+0,0,0,0,0,0,
+3,0,0,0,2,0,
+0,0,3,3,0,0,
+152,0,0,0,5,0,
+0,0,0,0,0,0,
+3,0,0,0,2,0,
+0,0,12,12,0,0,
+84,69,88,67,79,79,
+82,68,0,171,171,171,
+79,83,71,78,44,0,
+0,0,1,0,0,0,
+8,0,0,0,32,0,
+0,0,0,0,0,0,
+0,0,0,0,3,0,
+0,0,0,0,0,0,
+15,0,0,0,83,86,
+95,84,97,114,103,101,
+116,0,171,171,83,72,
+69,88,104,60,0,0,
+80,0,0,0,26,15,
+0,0,106,8,0,1,
+89,0,0,4,70,142,
+32,0,0,0,0,0,
+11,0,0,0,89,0,
+0,4,70,142,32,0,
+1,0,0,0,3,0,
+0,0,90,0,0,3,
 0,96,16,0,3,0,
 0,0,88,24,0,4,
 0,112,16,0,3,0,
 0,0,85,85,0,0,
 98,16,0,3,50,16,
 16,0,0,0,0,0,
+98,16,0,3,194,16,
+16,0,0,0,0,0,
+98,16,0,3,50,16,
+16,0,1,0,0,0,
+98,16,0,3,66,16,
+16,0,1,0,0,0,
+98,16,0,3,50,16,
+16,0,2,0,0,0,
+98,16,0,3,194,16,
+16,0,2,0,0,0,
 101,0,0,3,242,32,
+16,0,0,0,0,0,
+104,0,0,2,7,0,
+0,0,54,0,0,5,
+130,32,16,0,0,0,
+0,0,1,64,0,0,
+0,0,128,63,56,0,
+0,8,66,0,16,0,
+0,0,0,0,10,16,
+16,0,1,0,0,0,
+26,128,32,0,0,0,
+0,0,8,0,0,0,
+56,0,0,8,130,0,
+16,0,0,0,0,0,
+26,16,16,0,1,0,
+0,0,10,128,32,0,
+0,0,0,0,9,0,
+0,0,0,0,0,8,
+50,0,16,0,0,0,
+0,0,230,10,16,128,
+65,0,0,0,0,0,
+0,0,70,16,16,0,
+0,0,0,0,50,0,
+0,13,194,0,16,0,
+0,0,0,0,6,4,
+16,0,0,0,0,0,
+6,132,32,0,1,0,
+0,0,0,0,0,0,
+2,64,0,0,0,0,
+0,0,0,0,0,0,
+119,190,255,190,119,190,
+255,190,65,0,0,5,
+194,0,16,0,0,0,
+0,0,166,14,16,0,
+0,0,0,0,0,0,
+0,10,194,0,16,0,
+0,0,0,0,166,14,
+16,0,0,0,0,0,
+2,64,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,63,0,0,
+0,63,50,0,0,13,
+50,0,16,0,1,0,
+0,0,230,26,16,128,
+65,0,0,0,0,0,
+0,0,2,64,0,0,
+0,0,0,63,0,0,
+0,63,0,0,0,0,
+0,0,0,0,70,0,
+16,0,0,0,0,0,
+56,0,0,7,50,0,
+16,0,0,0,0,0,
+70,0,16,0,0,0,
+0,0,230,26,16,0,
+2,0,0,0,50,0,
+0,10,194,0,16,0,
+0,0,0,0,166,14,
+16,0,0,0,0,0,
+6,20,16,0,2,0,
+0,0,6,4,16,128,
+65,0,0,0,1,0,
+0,0,29,0,0,7,
+194,0,16,0,1,0,
+0,0,6,20,16,0,
+2,0,0,0,166,30,
+16,0,0,0,0,0,
+1,0,0,10,194,0,
+16,0,1,0,0,0,
+166,14,16,0,1,0,
+0,0,2,64,0,0,
+0,0,0,0,0,0,
+0,0,0,0,128,63,
+0,0,128,63,50,0,
+0,9,194,0,16,0,
+0,0,0,0,166,14,
+16,0,1,0,0,0,
+166,14,16,0,0,0,
+0,0,6,4,16,0,
+1,0,0,0,0,0,
+0,7,50,0,16,0,
+1,0,0,0,230,10,
+16,0,0,0,0,0,
+230,26,16,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,18,0,16,0,
+2,0,0,0,70,0,
+16,0,1,0,0,0,
+22,126,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,34,0,
+16,0,2,0,0,0,
+230,10,16,0,0,0,
+0,0,70,126,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+14,0,0,8,66,0,
+16,0,2,0,0,0,
+42,16,16,0,1,0,
+0,0,26,128,32,0,
+0,0,0,0,10,0,
+0,0,0,0,0,9,
+130,0,16,0,2,0,
+0,0,42,0,16,128,
+65,0,0,0,2,0,
+0,0,10,128,32,0,
+0,0,0,0,10,0,
+0,0,50,0,0,10,
+66,0,16,0,2,0,
+0,0,42,128,32,0,
+0,0,0,0,10,0,
+0,0,58,0,16,0,
+2,0,0,0,42,0,
+16,0,2,0,0,0,
+52,0,0,7,66,0,
+16,0,2,0,0,0,
+42,0,16,0,2,0,
+0,0,1,64,0,0,
+0,0,128,67,14,0,
+0,7,66,0,16,0,
+2,0,0,0,1,64,
+0,0,0,0,180,73,
+42,0,16,0,2,0,
+0,0,50,0,0,9,
+130,0,16,0,2,0,
+0,0,42,0,16,0,
+2,0,0,0,1,64,
+0,0,40,126,28,63,
+1,64,0,0,104,174,
+83,189,50,0,0,10,
+66,0,16,0,2,0,
+0,0,42,0,16,128,
+65,0,0,0,2,0,
+0,0,1,64,0,0,
+224,17,151,61,58,0,
+16,0,2,0,0,0,
+56,0,0,8,66,0,
+16,0,2,0,0,0,
+42,0,16,0,2,0,
+0,0,10,128,32,0,
+1,0,0,0,2,0,
+0,0,56,0,0,7,
+18,0,16,0,3,0,
+0,0,42,0,16,0,
+2,0,0,0,1,64,
+0,0,97,11,54,53,
+54,0,0,6,34,0,
+16,0,3,0,0,0,
+10,128,32,0,0,0,
+0,0,6,0,0,0,
+15,0,0,7,66,0,
+16,0,2,0,0,0,
+70,0,16,0,3,0,
+0,0,70,0,16,0,
+3,0,0,0,14,0,
+0,7,66,0,16,0,
+2,0,0,0,1,64,
+0,0,0,0,0,63,
+42,0,16,0,2,0,
+0,0,54,0,0,5,
+50,0,16,0,3,0,
+0,0,230,26,16,0,
+0,0,0,0,54,0,
+0,5,130,0,16,0,
+3,0,0,0,1,64,
+0,0,0,0,0,0,
+0,0,0,8,242,0,
+16,0,4,0,0,0,
+230,14,16,0,0,0,
+0,0,70,12,16,128,
+65,0,0,0,3,0,
+0,0,0,0,0,7,
+50,0,16,0,5,0,
+0,0,198,0,16,0,
+3,0,0,0,70,0,
+16,0,4,0,0,0,
+50,0,0,10,194,0,
+16,0,5,0,0,0,
+6,4,16,0,5,0,
+0,0,166,30,16,0,
+2,0,0,0,6,4,
+16,128,65,0,0,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,130,0,
+16,0,2,0,0,0,
+70,0,16,0,5,0,
+0,0,134,119,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+15,0,0,7,66,0,
+16,0,3,0,0,0,
+230,10,16,0,5,0,
+0,0,230,10,16,0,
+5,0,0,0,56,0,
+0,8,66,0,16,0,
+3,0,0,0,42,0,
+16,0,2,0,0,0,
+42,0,16,128,65,0,
+0,0,3,0,0,0,
+56,0,0,7,66,0,
+16,0,3,0,0,0,
+42,0,16,0,3,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,66,0,16,0,
+3,0,0,0,42,0,
+16,0,3,0,0,0,
+56,0,0,7,130,0,
+16,0,2,0,0,0,
+58,0,16,0,2,0,
+0,0,42,0,16,0,
+3,0,0,0,50,0,
+0,10,242,0,16,0,
+5,0,0,0,70,14,
+16,0,4,0,0,0,
+230,30,16,0,2,0,
+0,0,70,4,16,128,
+65,0,0,0,0,0,
+0,0,15,0,0,7,
+18,0,16,0,5,0,
+0,0,70,0,16,0,
+5,0,0,0,70,0,
+16,0,5,0,0,0,
+15,0,0,7,34,0,
+16,0,5,0,0,0,
+230,10,16,0,5,0,
+0,0,230,10,16,0,
+5,0,0,0,56,0,
+0,8,50,0,16,0,
+5,0,0,0,166,10,
+16,0,2,0,0,0,
+70,0,16,128,65,0,
+0,0,5,0,0,0,
+56,0,0,10,50,0,
+16,0,5,0,0,0,
+70,0,16,0,5,0,
+0,0,2,64,0,0,
+59,170,184,63,59,170,
+184,63,0,0,0,0,
+0,0,0,0,25,0,
+0,5,34,0,16,0,
+5,0,0,0,26,0,
+16,0,5,0,0,0,
+25,0,0,5,18,0,
+16,0,5,0,0,0,
+10,0,16,0,5,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+5,0,0,0,70,0,
+16,0,4,0,0,0,
+134,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,50,0,
+0,9,130,0,16,0,
+2,0,0,0,42,0,
+16,0,5,0,0,0,
+10,0,16,0,5,0,
+0,0,58,0,16,0,
+2,0,0,0,0,0,
+0,7,66,0,16,0,
+3,0,0,0,42,0,
+16,0,3,0,0,0,
+10,0,16,0,5,0,
+0,0,50,0,0,12,
+82,0,16,0,5,0,
+0,0,6,3,16,0,
+3,0,0,0,2,64,
+0,0,0,0,0,64,
+0,0,0,0,0,0,
+0,64,0,0,0,0,
+6,1,16,0,4,0,
+0,0,50,0,0,10,
+82,0,16,0,5,0,
+0,0,6,2,16,0,
+5,0,0,0,166,27,
+16,0,2,0,0,0,
+6,1,16,128,65,0,
+0,0,0,0,0,0,
+15,0,0,7,18,0,
+16,0,5,0,0,0,
+134,0,16,0,5,0,
+0,0,134,0,16,0,
+5,0,0,0,56,0,
+0,8,18,0,16,0,
+5,0,0,0,42,0,
+16,0,2,0,0,0,
+10,0,16,128,65,0,
+0,0,5,0,0,0,
+56,0,0,7,18,0,
+16,0,5,0,0,0,
+10,0,16,0,5,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,18,0,16,0,
+5,0,0,0,10,0,
+16,0,5,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+114,0,16,0,6,0,
+0,0,198,0,16,0,
+3,0,0,0,70,126,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,50,0,0,9,
+130,0,16,0,2,0,
+0,0,26,0,16,0,
+6,0,0,0,10,0,
+16,0,5,0,0,0,
+58,0,16,0,2,0,
+0,0,0,0,0,7,
+66,0,16,0,3,0,
+0,0,42,0,16,0,
+3,0,0,0,10,0,
+16,0,5,0,0,0,
+50,0,0,12,50,0,
+16,0,4,0,0,0,
+198,0,16,0,3,0,
+0,0,2,64,0,0,
+0,0,64,64,0,0,
+64,64,0,0,0,0,
+0,0,0,0,70,0,
+16,0,4,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+66,0,16,0,4,0,
+0,0,230,10,16,0,
+4,0,0,0,134,125,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,50,0,0,10,
+82,0,16,0,5,0,
+0,0,6,1,16,0,
+4,0,0,0,166,27,
+16,0,2,0,0,0,
+6,1,16,128,65,0,
+0,0,0,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+18,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,22,126,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,15,0,0,7,
+34,0,16,0,4,0,
+0,0,134,0,16,0,
+5,0,0,0,134,0,
+16,0,5,0,0,0,
+56,0,0,8,34,0,
+16,0,4,0,0,0,
+42,0,16,0,2,0,
+0,0,26,0,16,128,
+65,0,0,0,4,0,
+0,0,56,0,0,7,
+34,0,16,0,4,0,
+0,0,26,0,16,0,
+4,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,34,0,
+16,0,4,0,0,0,
+26,0,16,0,4,0,
+0,0,50,0,0,9,
+130,0,16,0,2,0,
+0,0,10,0,16,0,
+4,0,0,0,26,0,
+16,0,4,0,0,0,
+58,0,16,0,2,0,
+0,0,0,0,0,7,
+66,0,16,0,3,0,
+0,0,42,0,16,0,
+3,0,0,0,26,0,
+16,0,4,0,0,0,
+0,0,0,7,66,0,
+16,0,3,0,0,0,
+26,0,16,0,5,0,
+0,0,42,0,16,0,
+3,0,0,0,50,0,
+0,9,130,0,16,0,
+2,0,0,0,42,0,
+16,0,4,0,0,0,
+26,0,16,0,5,0,
+0,0,58,0,16,0,
+2,0,0,0,50,0,
+0,10,50,0,16,0,
+4,0,0,0,230,10,
+16,0,0,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,15,0,0,7,
+18,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,70,0,
+16,0,4,0,0,0,
+56,0,0,8,18,0,
+16,0,4,0,0,0,
+42,0,16,0,2,0,
+0,0,10,0,16,128,
+65,0,0,0,4,0,
+0,0,56,0,0,7,
+18,0,16,0,4,0,
+0,0,10,0,16,0,
+4,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,18,0,
+16,0,4,0,0,0,
+10,0,16,0,4,0,
+0,0,50,0,0,9,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,10,0,
+16,0,4,0,0,0,
+58,0,16,0,2,0,
+0,0,0,0,0,7,
+130,0,16,0,2,0,
+0,0,42,0,16,0,
+3,0,0,0,10,0,
+16,0,4,0,0,0,
+0,0,0,7,50,0,
+16,0,4,0,0,0,
+230,10,16,0,0,0,
+0,0,198,0,16,0,
+3,0,0,0,50,0,
+0,10,194,0,16,0,
+4,0,0,0,6,4,
+16,0,4,0,0,0,
+166,30,16,0,2,0,
+0,0,6,4,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+3,0,0,0,70,0,
+16,0,4,0,0,0,
+134,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,18,0,16,0,
+4,0,0,0,230,10,
+16,0,4,0,0,0,
+230,10,16,0,4,0,
+0,0,56,0,0,8,
+18,0,16,0,4,0,
+0,0,42,0,16,0,
+2,0,0,0,10,0,
+16,128,65,0,0,0,
+4,0,0,0,56,0,
+0,7,18,0,16,0,
+4,0,0,0,10,0,
+16,0,4,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+18,0,16,0,4,0,
+0,0,10,0,16,0,
+4,0,0,0,50,0,
+0,9,34,0,16,0,
+2,0,0,0,42,0,
+16,0,3,0,0,0,
+10,0,16,0,4,0,
+0,0,26,0,16,0,
+2,0,0,0,0,0,
+0,7,130,0,16,0,
+2,0,0,0,58,0,
+16,0,2,0,0,0,
+10,0,16,0,4,0,
+0,0,50,0,0,12,
+50,0,16,0,4,0,
+0,0,198,0,16,0,
+3,0,0,0,2,64,
+0,0,0,0,0,64,
+0,0,0,64,0,0,
+0,0,0,0,0,0,
+230,10,16,0,0,0,
+0,0,50,0,0,12,
+194,0,16,0,0,0,
+0,0,166,30,16,0,
+0,0,0,0,2,64,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,64,0,0,0,64,
+166,14,16,0,0,0,
+0,0,50,0,0,10,
+194,0,16,0,4,0,
+0,0,6,4,16,0,
+4,0,0,0,166,30,
+16,0,2,0,0,0,
+6,4,16,128,65,0,
+0,0,0,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+66,0,16,0,3,0,
+0,0,70,0,16,0,
+4,0,0,0,134,125,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,15,0,0,7,
+18,0,16,0,4,0,
+0,0,230,10,16,0,
+4,0,0,0,230,10,
+16,0,4,0,0,0,
+56,0,0,8,18,0,
+16,0,4,0,0,0,
+42,0,16,0,2,0,
+0,0,10,0,16,128,
+65,0,0,0,4,0,
+0,0,56,0,0,7,
+18,0,16,0,4,0,
+0,0,10,0,16,0,
+4,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,18,0,
+16,0,4,0,0,0,
+10,0,16,0,4,0,
+0,0,50,0,0,9,
+34,0,16,0,2,0,
+0,0,42,0,16,0,
+3,0,0,0,10,0,
+16,0,4,0,0,0,
+26,0,16,0,2,0,
+0,0,0,0,0,7,
+130,0,16,0,2,0,
+0,0,58,0,16,0,
+2,0,0,0,10,0,
+16,0,4,0,0,0,
+50,0,0,13,50,0,
+16,0,4,0,0,0,
+198,0,16,128,65,0,
+0,0,3,0,0,0,
+2,64,0,0,0,0,
+0,64,0,0,0,64,
+0,0,0,0,0,0,
+0,0,70,0,16,0,
+1,0,0,0,50,0,
+0,10,194,0,16,0,
+4,0,0,0,6,4,
+16,0,4,0,0,0,
+166,30,16,0,2,0,
+0,0,6,4,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+3,0,0,0,70,0,
+16,0,4,0,0,0,
+134,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,18,0,16,0,
+4,0,0,0,230,10,
+16,0,4,0,0,0,
+230,10,16,0,4,0,
+0,0,56,0,0,8,
+18,0,16,0,4,0,
+0,0,42,0,16,0,
+2,0,0,0,10,0,
+16,128,65,0,0,0,
+4,0,0,0,56,0,
+0,7,18,0,16,0,
+4,0,0,0,10,0,
+16,0,4,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+18,0,16,0,4,0,
+0,0,10,0,16,0,
+4,0,0,0,50,0,
+0,9,34,0,16,0,
+2,0,0,0,42,0,
+16,0,3,0,0,0,
+10,0,16,0,4,0,
+0,0,26,0,16,0,
+2,0,0,0,0,0,
+0,7,130,0,16,0,
+2,0,0,0,58,0,
+16,0,2,0,0,0,
+10,0,16,0,4,0,
+0,0,0,0,0,8,
+50,0,16,0,4,0,
+0,0,70,0,16,0,
+1,0,0,0,198,0,
+16,128,65,0,0,0,
+3,0,0,0,50,0,
+0,10,194,0,16,0,
+4,0,0,0,6,4,
+16,0,4,0,0,0,
+166,30,16,0,2,0,
+0,0,6,4,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+3,0,0,0,70,0,
+16,0,4,0,0,0,
+134,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,18,0,16,0,
+4,0,0,0,230,10,
+16,0,4,0,0,0,
+230,10,16,0,4,0,
+0,0,56,0,0,8,
+18,0,16,0,4,0,
+0,0,42,0,16,0,
+2,0,0,0,10,0,
+16,128,65,0,0,0,
+4,0,0,0,56,0,
+0,7,18,0,16,0,
+4,0,0,0,10,0,
+16,0,4,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+18,0,16,0,4,0,
+0,0,10,0,16,0,
+4,0,0,0,50,0,
+0,9,34,0,16,0,
+2,0,0,0,42,0,
+16,0,3,0,0,0,
+10,0,16,0,4,0,
+0,0,26,0,16,0,
+2,0,0,0,0,0,
+0,7,130,0,16,0,
+2,0,0,0,58,0,
+16,0,2,0,0,0,
+10,0,16,0,4,0,
+0,0,50,0,0,10,
+50,0,16,0,4,0,
+0,0,70,0,16,0,
+1,0,0,0,230,26,
+16,0,2,0,0,0,
+70,0,16,128,65,0,
+0,0,0,0,0,0,
+0,0,0,7,50,0,
+16,0,1,0,0,0,
+70,0,16,0,1,0,
+0,0,198,0,16,0,
+3,0,0,0,15,0,
+0,7,66,0,16,0,
+3,0,0,0,70,0,
+16,0,4,0,0,0,
+70,0,16,0,4,0,
+0,0,56,0,0,8,
+66,0,16,0,3,0,
+0,0,42,0,16,0,
+2,0,0,0,42,0,
+16,128,65,0,0,0,
+3,0,0,0,56,0,
+0,7,66,0,16,0,
+3,0,0,0,42,0,
+16,0,3,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+66,0,16,0,3,0,
+0,0,42,0,16,0,
+3,0,0,0,50,0,
+0,9,18,0,16,0,
+2,0,0,0,10,0,
+16,0,2,0,0,0,
+42,0,16,0,3,0,
+0,0,26,0,16,0,
+2,0,0,0,0,0,
+0,7,34,0,16,0,
+2,0,0,0,58,0,
+16,0,2,0,0,0,
+42,0,16,0,3,0,
+0,0,50,0,0,10,
+50,0,16,0,4,0,
+0,0,70,0,16,0,
+1,0,0,0,230,26,
+16,0,2,0,0,0,
+70,0,16,128,65,0,
+0,0,0,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+18,0,16,0,1,0,
+0,0,70,0,16,0,
+1,0,0,0,22,126,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,15,0,0,7,
+34,0,16,0,1,0,
+0,0,70,0,16,0,
+4,0,0,0,70,0,
+16,0,4,0,0,0,
+56,0,0,8,34,0,
+16,0,1,0,0,0,
+42,0,16,0,2,0,
+0,0,26,0,16,128,
+65,0,0,0,1,0,
+0,0,56,0,0,7,
+34,0,16,0,1,0,
+0,0,26,0,16,0,
+1,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,34,0,
+16,0,1,0,0,0,
+26,0,16,0,1,0,
+0,0,50,0,0,9,
+18,0,16,0,1,0,
+0,0,10,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+10,0,16,0,2,0,
+0,0,0,0,0,7,
+34,0,16,0,1,0,
+0,0,26,0,16,0,
+1,0,0,0,26,0,
+16,0,2,0,0,0,
+50,0,0,13,50,0,
+16,0,2,0,0,0,
+198,0,16,128,65,0,
+0,0,3,0,0,0,
+2,64,0,0,0,0,
+64,64,0,0,64,64,
+0,0,0,0,0,0,
+0,0,230,10,16,0,
+0,0,0,0,50,0,
+0,10,50,0,16,0,
+4,0,0,0,70,0,
+16,0,2,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,18,0,16,0,
+2,0,0,0,70,0,
+16,0,2,0,0,0,
+22,126,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,34,0,16,0,
+2,0,0,0,70,0,
+16,0,4,0,0,0,
+70,0,16,0,4,0,
+0,0,56,0,0,8,
+34,0,16,0,2,0,
+0,0,42,0,16,0,
+2,0,0,0,26,0,
+16,128,65,0,0,0,
+2,0,0,0,56,0,
+0,7,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,50,0,
+0,9,18,0,16,0,
+1,0,0,0,10,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,10,0,16,0,
+1,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+26,0,16,0,2,0,
+0,0,50,0,0,13,
+50,0,16,0,2,0,
+0,0,198,0,16,128,
+65,0,0,0,3,0,
+0,0,2,64,0,0,
+0,0,0,64,0,0,
+0,64,0,0,0,0,
+0,0,0,0,230,10,
+16,0,0,0,0,0,
+50,0,0,10,50,0,
+16,0,4,0,0,0,
+70,0,16,0,2,0,
+0,0,230,26,16,0,
+2,0,0,0,70,0,
+16,128,65,0,0,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,18,0,
+16,0,2,0,0,0,
+70,0,16,0,2,0,
+0,0,22,126,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+15,0,0,7,34,0,
+16,0,2,0,0,0,
+70,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,56,0,
+0,8,34,0,16,0,
+2,0,0,0,42,0,
+16,0,2,0,0,0,
+26,0,16,128,65,0,
+0,0,2,0,0,0,
+56,0,0,7,34,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+50,0,0,9,18,0,
+16,0,1,0,0,0,
+10,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,10,0,
+16,0,1,0,0,0,
+0,0,0,7,34,0,
+16,0,1,0,0,0,
+26,0,16,0,1,0,
+0,0,26,0,16,0,
+2,0,0,0,0,0,
+0,8,50,0,16,0,
+2,0,0,0,198,0,
+16,128,65,0,0,0,
+3,0,0,0,230,10,
+16,0,0,0,0,0,
+50,0,0,10,50,0,
+16,0,4,0,0,0,
+70,0,16,0,2,0,
+0,0,230,26,16,0,
+2,0,0,0,70,0,
+16,128,65,0,0,0,
+0,0,0,0,50,0,
+0,10,50,0,16,0,
+0,0,0,0,230,10,
+16,0,0,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+0,0,0,0,230,10,
+16,0,0,0,0,0,
+134,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,18,0,16,0,
+0,0,0,0,70,0,
+16,0,0,0,0,0,
+70,0,16,0,0,0,
+0,0,56,0,0,8,
+18,0,16,0,0,0,
+0,0,42,0,16,0,
+2,0,0,0,10,0,
+16,128,65,0,0,0,
+0,0,0,0,56,0,
+0,7,18,0,16,0,
+0,0,0,0,10,0,
+16,0,0,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+18,0,16,0,0,0,
+0,0,10,0,16,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,34,0,
+16,0,0,0,0,0,
+70,0,16,0,2,0,
+0,0,70,126,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+15,0,0,7,130,0,
+16,0,0,0,0,0,
+70,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,56,0,
+0,8,130,0,16,0,
+0,0,0,0,42,0,
+16,0,2,0,0,0,
+58,0,16,128,65,0,
+0,0,0,0,0,0,
+56,0,0,7,130,0,
+16,0,0,0,0,0,
+58,0,16,0,0,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,130,0,16,0,
+0,0,0,0,58,0,
+16,0,0,0,0,0,
+50,0,0,9,34,0,
+16,0,0,0,0,0,
+26,0,16,0,0,0,
+0,0,58,0,16,0,
+0,0,0,0,10,0,
+16,0,1,0,0,0,
+0,0,0,7,130,0,
+16,0,0,0,0,0,
+58,0,16,0,0,0,
+0,0,26,0,16,0,
+1,0,0,0,0,0,
+0,7,130,0,16,0,
+0,0,0,0,10,0,
+16,0,0,0,0,0,
+58,0,16,0,0,0,
+0,0,50,0,0,9,
+18,0,16,0,0,0,
+0,0,42,0,16,0,
+0,0,0,0,10,0,
+16,0,0,0,0,0,
+26,0,16,0,0,0,
+0,0,14,0,0,10,
+34,0,16,0,0,0,
+0,0,2,64,0,0,
+0,0,128,63,0,0,
+128,63,0,0,128,63,
+0,0,128,63,58,0,
+16,0,0,0,0,0,
+56,0,0,7,34,32,
+16,0,0,0,0,0,
+26,0,16,0,0,0,
+0,0,10,0,16,0,
+0,0,0,0,56,0,
+0,8,18,0,16,0,
+0,0,0,0,10,16,
+16,0,1,0,0,0,
+42,128,32,0,0,0,
+0,0,8,0,0,0,
+56,0,0,8,34,0,
+16,0,0,0,0,0,
+26,16,16,0,1,0,
+0,0,26,128,32,0,
+0,0,0,0,9,0,
+0,0,0,0,0,8,
+50,0,16,0,0,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,70,16,16,0,
+0,0,0,0,50,0,
+0,13,194,0,16,0,
+0,0,0,0,6,4,
+16,0,0,0,0,0,
+6,132,32,0,1,0,
+0,0,0,0,0,0,
+2,64,0,0,0,0,
+0,0,0,0,0,0,
+119,190,255,190,119,190,
+255,190,65,0,0,5,
+194,0,16,0,0,0,
+0,0,166,14,16,0,
+0,0,0,0,0,0,
+0,10,194,0,16,0,
+0,0,0,0,166,14,
+16,0,0,0,0,0,
+2,64,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,63,0,0,
+0,63,50,0,0,13,
+50,0,16,0,1,0,
+0,0,230,26,16,128,
+65,0,0,0,0,0,
+0,0,2,64,0,0,
+0,0,0,63,0,0,
+0,63,0,0,0,0,
+0,0,0,0,70,0,
+16,0,0,0,0,0,
+56,0,0,7,50,0,
+16,0,0,0,0,0,
+70,0,16,0,0,0,
+0,0,230,26,16,0,
+2,0,0,0,50,0,
+0,10,194,0,16,0,
+0,0,0,0,166,14,
+16,0,0,0,0,0,
+6,20,16,0,2,0,
+0,0,6,4,16,128,
+65,0,0,0,1,0,
+0,0,50,0,0,9,
+194,0,16,0,0,0,
+0,0,166,14,16,0,
+1,0,0,0,166,14,
+16,0,0,0,0,0,
+6,4,16,0,1,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,18,0,16,0,
+1,0,0,0,230,10,
+16,0,0,0,0,0,
+38,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,0,0,
+0,8,242,0,16,0,
+4,0,0,0,70,12,
+16,128,65,0,0,0,
+3,0,0,0,230,14,
+16,0,0,0,0,0,
+0,0,0,7,50,0,
+16,0,2,0,0,0,
+198,0,16,0,3,0,
+0,0,70,0,16,0,
+4,0,0,0,50,0,
+0,10,50,0,16,0,
+5,0,0,0,70,0,
+16,0,2,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,34,0,16,0,
+1,0,0,0,70,0,
+16,0,2,0,0,0,
+134,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,18,0,16,0,
+2,0,0,0,70,0,
+16,0,5,0,0,0,
+70,0,16,0,5,0,
+0,0,56,0,0,8,
+18,0,16,0,2,0,
+0,0,42,0,16,0,
+2,0,0,0,10,0,
+16,128,65,0,0,0,
+2,0,0,0,56,0,
+0,7,18,0,16,0,
+2,0,0,0,10,0,
+16,0,2,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+18,0,16,0,2,0,
+0,0,10,0,16,0,
+2,0,0,0,56,0,
+0,7,34,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+10,0,16,0,2,0,
+0,0,50,0,0,10,
+242,0,16,0,5,0,
+0,0,70,14,16,0,
+4,0,0,0,230,30,
+16,0,2,0,0,0,
+70,4,16,128,65,0,
+0,0,0,0,0,0,
+15,0,0,7,34,0,
+16,0,2,0,0,0,
+70,0,16,0,5,0,
+0,0,70,0,16,0,
+5,0,0,0,15,0,
+0,7,130,0,16,0,
+2,0,0,0,230,10,
+16,0,5,0,0,0,
+230,10,16,0,5,0,
+0,0,56,0,0,8,
+162,0,16,0,2,0,
+0,0,166,10,16,0,
+2,0,0,0,86,13,
+16,128,65,0,0,0,
+2,0,0,0,56,0,
+0,10,162,0,16,0,
+2,0,0,0,86,13,
+16,0,2,0,0,0,
+2,64,0,0,0,0,
+0,0,59,170,184,63,
+0,0,0,0,59,170,
+184,63,25,0,0,5,
+130,0,16,0,2,0,
+0,0,58,0,16,0,
+2,0,0,0,25,0,
+0,5,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+66,0,16,0,3,0,
+0,0,70,0,16,0,
+4,0,0,0,70,126,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,50,0,0,9,
+34,0,16,0,1,0,
+0,0,42,0,16,0,
+3,0,0,0,26,0,
+16,0,2,0,0,0,
+26,0,16,0,1,0,
+0,0,0,0,0,7,
+18,0,16,0,2,0,
+0,0,10,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+50,0,0,12,50,0,
+16,0,5,0,0,0,
+198,0,16,0,3,0,
+0,0,2,64,0,0,
+0,0,0,64,0,0,
+0,64,0,0,0,0,
+0,0,0,0,70,0,
+16,0,4,0,0,0,
+50,0,0,10,50,0,
+16,0,5,0,0,0,
+70,0,16,0,5,0,
+0,0,230,26,16,0,
+2,0,0,0,70,0,
+16,128,65,0,0,0,
+0,0,0,0,15,0,
+0,7,34,0,16,0,
+2,0,0,0,70,0,
+16,0,5,0,0,0,
+70,0,16,0,5,0,
+0,0,56,0,0,8,
+34,0,16,0,2,0,
+0,0,42,0,16,0,
+2,0,0,0,26,0,
+16,128,65,0,0,0,
+2,0,0,0,56,0,
+0,7,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,50,0,
+0,9,34,0,16,0,
+1,0,0,0,42,0,
+16,0,6,0,0,0,
+26,0,16,0,2,0,
+0,0,26,0,16,0,
+1,0,0,0,0,0,
+0,7,18,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+10,0,16,0,2,0,
+0,0,50,0,0,12,
+50,0,16,0,4,0,
+0,0,198,0,16,0,
+3,0,0,0,2,64,
+0,0,0,0,64,64,
+0,0,64,64,0,0,
+0,0,0,0,0,0,
+70,0,16,0,4,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,34,0,16,0,
+2,0,0,0,230,10,
+16,0,4,0,0,0,
+134,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,50,0,
+0,10,194,0,16,0,
+4,0,0,0,6,4,
+16,0,4,0,0,0,
+166,30,16,0,2,0,
+0,0,6,4,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+3,0,0,0,70,0,
+16,0,4,0,0,0,
+70,126,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,18,0,16,0,
+4,0,0,0,230,10,
+16,0,4,0,0,0,
+230,10,16,0,4,0,
+0,0,56,0,0,8,
+18,0,16,0,4,0,
+0,0,42,0,16,0,
+2,0,0,0,10,0,
+16,128,65,0,0,0,
+4,0,0,0,56,0,
+0,7,18,0,16,0,
+4,0,0,0,10,0,
+16,0,4,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+18,0,16,0,4,0,
+0,0,10,0,16,0,
+4,0,0,0,50,0,
+0,9,34,0,16,0,
+1,0,0,0,42,0,
+16,0,3,0,0,0,
+10,0,16,0,4,0,
+0,0,26,0,16,0,
+1,0,0,0,0,0,
+0,7,18,0,16,0,
+2,0,0,0,10,0,
+16,0,2,0,0,0,
+10,0,16,0,4,0,
+0,0,0,0,0,7,
+18,0,16,0,2,0,
+0,0,58,0,16,0,
+2,0,0,0,10,0,
+16,0,2,0,0,0,
+50,0,0,9,34,0,
+16,0,1,0,0,0,
+26,0,16,0,2,0,
+0,0,58,0,16,0,
+2,0,0,0,26,0,
+16,0,1,0,0,0,
+50,0,0,10,162,0,
+16,0,2,0,0,0,
+166,14,16,0,0,0,
+0,0,166,30,16,0,
+2,0,0,0,6,4,
+16,128,65,0,0,0,
+0,0,0,0,15,0,
+0,7,34,0,16,0,
+2,0,0,0,214,5,
+16,0,2,0,0,0,
+214,5,16,0,2,0,
+0,0,56,0,0,8,
+34,0,16,0,2,0,
+0,0,42,0,16,0,
+2,0,0,0,26,0,
+16,128,65,0,0,0,
+2,0,0,0,56,0,
+0,7,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,50,0,
+0,9,18,0,16,0,
+1,0,0,0,10,0,
+16,0,1,0,0,0,
+26,0,16,0,2,0,
+0,0,26,0,16,0,
+1,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,26,0,
+16,0,2,0,0,0,
+10,0,16,0,2,0,
+0,0,0,0,0,7,
+50,0,16,0,2,0,
+0,0,198,0,16,0,
+3,0,0,0,230,10,
+16,0,0,0,0,0,
+50,0,0,10,50,0,
+16,0,4,0,0,0,
+70,0,16,0,2,0,
+0,0,230,26,16,0,
+2,0,0,0,70,0,
+16,128,65,0,0,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,18,0,
+16,0,2,0,0,0,
+70,0,16,0,2,0,
+0,0,38,125,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+15,0,0,7,34,0,
+16,0,2,0,0,0,
+70,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,56,0,
+0,8,34,0,16,0,
+2,0,0,0,42,0,
+16,0,2,0,0,0,
+26,0,16,128,65,0,
+0,0,2,0,0,0,
+56,0,0,7,34,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+50,0,0,9,18,0,
+16,0,1,0,0,0,
+10,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,10,0,
+16,0,1,0,0,0,
+0,0,0,7,34,0,
+16,0,1,0,0,0,
+26,0,16,0,1,0,
+0,0,26,0,16,0,
+2,0,0,0,50,0,
+0,12,50,0,16,0,
+2,0,0,0,198,0,
+16,0,3,0,0,0,
+2,64,0,0,0,0,
+0,64,0,0,0,64,
+0,0,0,0,0,0,
+0,0,230,10,16,0,
+0,0,0,0,50,0,
+0,10,50,0,16,0,
+4,0,0,0,70,0,
+16,0,2,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,18,0,16,0,
+2,0,0,0,70,0,
+16,0,2,0,0,0,
+38,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,34,0,16,0,
+2,0,0,0,70,0,
+16,0,4,0,0,0,
+70,0,16,0,4,0,
+0,0,56,0,0,8,
+34,0,16,0,2,0,
+0,0,42,0,16,0,
+2,0,0,0,26,0,
+16,128,65,0,0,0,
+2,0,0,0,56,0,
+0,7,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,50,0,
+0,9,18,0,16,0,
+1,0,0,0,10,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,10,0,16,0,
+1,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+26,0,16,0,2,0,
+0,0,0,0,0,7,
+50,0,16,0,2,0,
+0,0,230,10,16,0,
+0,0,0,0,230,26,
+16,0,0,0,0,0,
+50,0,0,12,194,0,
+16,0,0,0,0,0,
+166,30,16,0,0,0,
+0,0,2,64,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,64,
+0,0,0,64,166,14,
+16,0,0,0,0,0,
+50,0,0,13,50,0,
+16,0,4,0,0,0,
+198,0,16,128,65,0,
+0,0,3,0,0,0,
+2,64,0,0,0,0,
+0,64,0,0,0,64,
+0,0,0,0,0,0,
+0,0,70,0,16,0,
+2,0,0,0,50,0,
+0,10,194,0,16,0,
+4,0,0,0,6,4,
+16,0,4,0,0,0,
+166,30,16,0,2,0,
+0,0,6,4,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,130,0,16,0,
+2,0,0,0,70,0,
+16,0,4,0,0,0,
+70,123,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,66,0,16,0,
+3,0,0,0,230,10,
+16,0,4,0,0,0,
+230,10,16,0,4,0,
+0,0,56,0,0,8,
+66,0,16,0,3,0,
+0,0,42,0,16,0,
+2,0,0,0,42,0,
+16,128,65,0,0,0,
+3,0,0,0,56,0,
+0,7,66,0,16,0,
+3,0,0,0,42,0,
+16,0,3,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+66,0,16,0,3,0,
+0,0,42,0,16,0,
+3,0,0,0,50,0,
+0,9,18,0,16,0,
+1,0,0,0,58,0,
+16,0,2,0,0,0,
+42,0,16,0,3,0,
+0,0,10,0,16,0,
+1,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+42,0,16,0,3,0,
+0,0,0,0,0,8,
+50,0,16,0,4,0,
+0,0,198,0,16,128,
+65,0,0,0,3,0,
+0,0,70,0,16,0,
+2,0,0,0,50,0,
+0,10,194,0,16,0,
+4,0,0,0,6,4,
+16,0,4,0,0,0,
+166,30,16,0,2,0,
+0,0,6,4,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,130,0,16,0,
+2,0,0,0,70,0,
+16,0,4,0,0,0,
+70,123,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,66,0,16,0,
+3,0,0,0,230,10,
+16,0,4,0,0,0,
+230,10,16,0,4,0,
+0,0,56,0,0,8,
+66,0,16,0,3,0,
+0,0,42,0,16,0,
+2,0,0,0,42,0,
+16,128,65,0,0,0,
+3,0,0,0,56,0,
+0,7,66,0,16,0,
+3,0,0,0,42,0,
+16,0,3,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+66,0,16,0,3,0,
+0,0,42,0,16,0,
+3,0,0,0,50,0,
+0,9,18,0,16,0,
+1,0,0,0,58,0,
+16,0,2,0,0,0,
+42,0,16,0,3,0,
+0,0,10,0,16,0,
+1,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+42,0,16,0,3,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,130,0,16,0,
+2,0,0,0,70,0,
+16,0,2,0,0,0,
+70,123,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,50,0,
+0,10,50,0,16,0,
+4,0,0,0,70,0,
+16,0,2,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,0,0,0,7,
+50,0,16,0,2,0,
+0,0,198,0,16,0,
+3,0,0,0,70,0,
+16,0,2,0,0,0,
+15,0,0,7,66,0,
+16,0,3,0,0,0,
+70,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,56,0,
+0,8,66,0,16,0,
+3,0,0,0,42,0,
+16,0,2,0,0,0,
+42,0,16,128,65,0,
+0,0,3,0,0,0,
+56,0,0,7,66,0,
+16,0,3,0,0,0,
+42,0,16,0,3,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,66,0,16,0,
+3,0,0,0,42,0,
+16,0,3,0,0,0,
+50,0,0,9,18,0,
+16,0,1,0,0,0,
+58,0,16,0,2,0,
+0,0,42,0,16,0,
+3,0,0,0,10,0,
+16,0,1,0,0,0,
+0,0,0,7,34,0,
+16,0,1,0,0,0,
+26,0,16,0,1,0,
+0,0,42,0,16,0,
+3,0,0,0,50,0,
+0,10,50,0,16,0,
+4,0,0,0,70,0,
+16,0,2,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,18,0,16,0,
+2,0,0,0,70,0,
+16,0,2,0,0,0,
+38,125,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,34,0,16,0,
+2,0,0,0,70,0,
+16,0,4,0,0,0,
+70,0,16,0,4,0,
+0,0,56,0,0,8,
+34,0,16,0,2,0,
+0,0,42,0,16,0,
+2,0,0,0,26,0,
+16,128,65,0,0,0,
+2,0,0,0,56,0,
+0,7,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,50,0,
+0,9,18,0,16,0,
+1,0,0,0,10,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,10,0,16,0,
+1,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+26,0,16,0,2,0,
+0,0,50,0,0,13,
+50,0,16,0,2,0,
+0,0,198,0,16,128,
+65,0,0,0,3,0,
+0,0,2,64,0,0,
+0,0,64,64,0,0,
+64,64,0,0,0,0,
+0,0,0,0,230,10,
+16,0,0,0,0,0,
+50,0,0,10,50,0,
+16,0,4,0,0,0,
+70,0,16,0,2,0,
+0,0,230,26,16,0,
+2,0,0,0,70,0,
+16,128,65,0,0,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,18,0,
+16,0,2,0,0,0,
+70,0,16,0,2,0,
+0,0,38,125,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+15,0,0,7,34,0,
+16,0,2,0,0,0,
+70,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,56,0,
+0,8,34,0,16,0,
+2,0,0,0,42,0,
+16,0,2,0,0,0,
+26,0,16,128,65,0,
+0,0,2,0,0,0,
+56,0,0,7,34,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+50,0,0,9,18,0,
+16,0,1,0,0,0,
+10,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,10,0,
+16,0,1,0,0,0,
+0,0,0,7,34,0,
+16,0,1,0,0,0,
+26,0,16,0,1,0,
+0,0,26,0,16,0,
+2,0,0,0,50,0,
+0,13,50,0,16,0,
+2,0,0,0,198,0,
+16,128,65,0,0,0,
+3,0,0,0,2,64,
+0,0,0,0,0,64,
+0,0,0,64,0,0,
+0,0,0,0,0,0,
+230,10,16,0,0,0,
+0,0,50,0,0,10,
+50,0,16,0,4,0,
+0,0,70,0,16,0,
+2,0,0,0,230,26,
+16,0,2,0,0,0,
+70,0,16,128,65,0,
+0,0,0,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+18,0,16,0,2,0,
+0,0,70,0,16,0,
+2,0,0,0,38,125,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,15,0,0,7,
+34,0,16,0,2,0,
+0,0,70,0,16,0,
+4,0,0,0,70,0,
+16,0,4,0,0,0,
+56,0,0,8,34,0,
+16,0,2,0,0,0,
+42,0,16,0,2,0,
+0,0,26,0,16,128,
+65,0,0,0,2,0,
+0,0,56,0,0,7,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,34,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,50,0,0,9,
+18,0,16,0,1,0,
+0,0,10,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+10,0,16,0,1,0,
+0,0,0,0,0,7,
+34,0,16,0,1,0,
+0,0,26,0,16,0,
+1,0,0,0,26,0,
+16,0,2,0,0,0,
+0,0,0,8,50,0,
+16,0,2,0,0,0,
+198,0,16,128,65,0,
+0,0,3,0,0,0,
+230,10,16,0,0,0,
+0,0,50,0,0,10,
+50,0,16,0,4,0,
+0,0,70,0,16,0,
+2,0,0,0,230,26,
+16,0,2,0,0,0,
+70,0,16,128,65,0,
+0,0,0,0,0,0,
+50,0,0,10,50,0,
+16,0,0,0,0,0,
+230,10,16,0,0,0,
+0,0,230,26,16,0,
+2,0,0,0,70,0,
+16,128,65,0,0,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,66,0,
+16,0,0,0,0,0,
+230,10,16,0,0,0,
+0,0,70,126,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+15,0,0,7,18,0,
+16,0,0,0,0,0,
+70,0,16,0,0,0,
+0,0,70,0,16,0,
+0,0,0,0,56,0,
+0,8,18,0,16,0,
+0,0,0,0,42,0,
+16,0,2,0,0,0,
+10,0,16,128,65,0,
+0,0,0,0,0,0,
+56,0,0,7,18,0,
+16,0,0,0,0,0,
+10,0,16,0,0,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,18,0,16,0,
+0,0,0,0,10,0,
 16,0,0,0,0,0,
 69,0,0,139,194,0,
 0,128,67,85,21,0,
-242,32,16,0,0,0,
-0,0,70,16,16,0,
-0,0,0,0,70,126,
+34,0,16,0,0,0,
+0,0,70,0,16,0,
+2,0,0,0,134,125,
 16,0,3,0,0,0,
 0,96,16,0,3,0,
-0,0,62,0,0,1,
-83,84,65,84,148,0,
+0,0,15,0,0,7,
+130,0,16,0,0,0,
+0,0,70,0,16,0,
+4,0,0,0,70,0,
+16,0,4,0,0,0,
+56,0,0,8,130,0,
+16,0,0,0,0,0,
+42,0,16,0,2,0,
+0,0,58,0,16,128,
+65,0,0,0,0,0,
+0,0,56,0,0,7,
+130,0,16,0,0,0,
+0,0,58,0,16,0,
+0,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,130,0,
+16,0,0,0,0,0,
+58,0,16,0,0,0,
+0,0,50,0,0,9,
+34,0,16,0,0,0,
+0,0,26,0,16,0,
+0,0,0,0,58,0,
+16,0,0,0,0,0,
+10,0,16,0,1,0,
+0,0,0,0,0,7,
+130,0,16,0,0,0,
+0,0,58,0,16,0,
+0,0,0,0,26,0,
+16,0,1,0,0,0,
+0,0,0,7,130,0,
+16,0,0,0,0,0,
+10,0,16,0,0,0,
+0,0,58,0,16,0,
+0,0,0,0,50,0,
+0,9,18,0,16,0,
+0,0,0,0,42,0,
+16,0,0,0,0,0,
+10,0,16,0,0,0,
+0,0,26,0,16,0,
+0,0,0,0,14,0,
+0,10,34,0,16,0,
+0,0,0,0,2,64,
+0,0,0,0,128,63,
+0,0,128,63,0,0,
+128,63,0,0,128,63,
+58,0,16,0,0,0,
+0,0,56,0,0,7,
+66,32,16,0,0,0,
+0,0,26,0,16,0,
+0,0,0,0,10,0,
+16,0,0,0,0,0,
+50,0,0,11,50,0,
+16,0,0,0,0,0,
+198,128,32,128,65,0,
+0,0,0,0,0,0,
+8,0,0,0,70,16,
+16,0,1,0,0,0,
+70,16,16,0,0,0,
+0,0,50,0,0,13,
+194,0,16,0,0,0,
+0,0,6,4,16,0,
+0,0,0,0,6,132,
+32,0,1,0,0,0,
+0,0,0,0,2,64,
+0,0,0,0,0,0,
+0,0,0,0,119,190,
+255,190,119,190,255,190,
+65,0,0,5,194,0,
+16,0,0,0,0,0,
+166,14,16,0,0,0,
+0,0,0,0,0,10,
+194,0,16,0,0,0,
+0,0,166,14,16,0,
+0,0,0,0,2,64,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,63,0,0,0,63,
+50,0,0,13,50,0,
+16,0,1,0,0,0,
+230,26,16,128,65,0,
+0,0,0,0,0,0,
+2,64,0,0,0,0,
+0,63,0,0,0,63,
+0,0,0,0,0,0,
+0,0,70,0,16,0,
+0,0,0,0,56,0,
+0,7,50,0,16,0,
+0,0,0,0,70,0,
+16,0,0,0,0,0,
+230,26,16,0,2,0,
+0,0,50,0,0,10,
+194,0,16,0,0,0,
+0,0,166,14,16,0,
+0,0,0,0,6,20,
+16,0,2,0,0,0,
+6,4,16,128,65,0,
+0,0,1,0,0,0,
+50,0,0,9,194,0,
+16,0,0,0,0,0,
+166,14,16,0,1,0,
+0,0,166,14,16,0,
+0,0,0,0,6,4,
+16,0,1,0,0,0,
+0,0,0,8,242,0,
+16,0,1,0,0,0,
+70,12,16,128,65,0,
+0,0,3,0,0,0,
+230,14,16,0,0,0,
+0,0,0,0,0,7,
+50,0,16,0,2,0,
+0,0,198,0,16,0,
+3,0,0,0,70,0,
+16,0,1,0,0,0,
+50,0,0,10,98,0,
+16,0,3,0,0,0,
+6,1,16,0,2,0,
+0,0,166,27,16,0,
+2,0,0,0,6,1,
+16,128,65,0,0,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,18,0,
+16,0,2,0,0,0,
+70,0,16,0,2,0,
+0,0,70,126,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+15,0,0,7,34,0,
+16,0,2,0,0,0,
+150,5,16,0,3,0,
+0,0,150,5,16,0,
+3,0,0,0,56,0,
+0,8,34,0,16,0,
+2,0,0,0,42,0,
+16,0,2,0,0,0,
+26,0,16,128,65,0,
 0,0,2,0,0,0,
+56,0,0,7,34,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+56,0,0,7,18,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,10,0,16,0,
+2,0,0,0,50,0,
+0,10,242,0,16,0,
+4,0,0,0,70,14,
+16,0,1,0,0,0,
+230,30,16,0,2,0,
+0,0,70,4,16,128,
+65,0,0,0,0,0,
+0,0,15,0,0,7,
+130,0,16,0,2,0,
+0,0,70,0,16,0,
+4,0,0,0,70,0,
+16,0,4,0,0,0,
+15,0,0,7,34,0,
+16,0,3,0,0,0,
+230,10,16,0,4,0,
+0,0,230,10,16,0,
+4,0,0,0,56,0,
+0,8,34,0,16,0,
+3,0,0,0,42,0,
+16,0,2,0,0,0,
+26,0,16,128,65,0,
+0,0,3,0,0,0,
+56,0,0,7,34,0,
+16,0,3,0,0,0,
+26,0,16,0,3,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,34,0,16,0,
+3,0,0,0,26,0,
+16,0,3,0,0,0,
+56,0,0,8,130,0,
+16,0,2,0,0,0,
+42,0,16,0,2,0,
+0,0,58,0,16,128,
+65,0,0,0,2,0,
+0,0,56,0,0,7,
+130,0,16,0,2,0,
+0,0,58,0,16,0,
+2,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,130,0,
+16,0,2,0,0,0,
+58,0,16,0,2,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+3,0,0,0,70,0,
+16,0,1,0,0,0,
+150,124,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,50,0,
+0,9,18,0,16,0,
+2,0,0,0,42,0,
+16,0,3,0,0,0,
+58,0,16,0,2,0,
+0,0,10,0,16,0,
+2,0,0,0,0,0,
+0,7,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+58,0,16,0,2,0,
+0,0,50,0,0,12,
+50,0,16,0,4,0,
+0,0,198,0,16,0,
+3,0,0,0,2,64,
+0,0,0,0,0,64,
+0,0,0,64,0,0,
 0,0,0,0,0,0,
+70,0,16,0,1,0,
+0,0,50,0,0,10,
+50,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,230,26,
+16,0,2,0,0,0,
+70,0,16,128,65,0,
+0,0,0,0,0,0,
+15,0,0,7,130,0,
+16,0,2,0,0,0,
+70,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,56,0,
+0,8,130,0,16,0,
+2,0,0,0,42,0,
+16,0,2,0,0,0,
+58,0,16,128,65,0,
 0,0,2,0,0,0,
+56,0,0,7,130,0,
+16,0,2,0,0,0,
+58,0,16,0,2,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,130,0,16,0,
+2,0,0,0,58,0,
+16,0,2,0,0,0,
+50,0,0,9,18,0,
+16,0,2,0,0,0,
+10,0,16,0,6,0,
+0,0,58,0,16,0,
+2,0,0,0,10,0,
+16,0,2,0,0,0,
+0,0,0,7,34,0,
+16,0,2,0,0,0,
+58,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,50,0,
+0,12,50,0,16,0,
+1,0,0,0,198,0,
+16,0,3,0,0,0,
+2,64,0,0,0,0,
+64,64,0,0,64,64,
 0,0,0,0,0,0,
-0,0,0,0,0,0,
+0,0,70,0,16,0,
+1,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,66,0,
+16,0,1,0,0,0,
+230,10,16,0,1,0,
+0,0,150,124,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+50,0,0,10,50,0,
+16,0,4,0,0,0,
+70,0,16,0,1,0,
+0,0,230,26,16,0,
+2,0,0,0,70,0,
+16,128,65,0,0,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,18,0,
+16,0,1,0,0,0,
+70,0,16,0,1,0,
+0,0,70,126,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+15,0,0,7,34,0,
+16,0,1,0,0,0,
+70,0,16,0,4,0,
+0,0,70,0,16,0,
+4,0,0,0,56,0,
+0,8,34,0,16,0,
+1,0,0,0,42,0,
+16,0,2,0,0,0,
+26,0,16,128,65,0,
+0,0,1,0,0,0,
+56,0,0,7,34,0,
+16,0,1,0,0,0,
+26,0,16,0,1,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,34,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+50,0,0,9,18,0,
+16,0,1,0,0,0,
+10,0,16,0,1,0,
+0,0,26,0,16,0,
+1,0,0,0,10,0,
+16,0,2,0,0,0,
+0,0,0,7,34,0,
+16,0,1,0,0,0,
+26,0,16,0,1,0,
+0,0,26,0,16,0,
+2,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,26,0,
+16,0,3,0,0,0,
+26,0,16,0,1,0,
+0,0,50,0,0,9,
+18,0,16,0,1,0,
+0,0,42,0,16,0,
+1,0,0,0,26,0,
+16,0,3,0,0,0,
+10,0,16,0,1,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+1,0,0,0,230,10,
+16,0,0,0,0,0,
+150,124,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,50,0,
+0,10,50,0,16,0,
+2,0,0,0,230,10,
+16,0,0,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,15,0,0,7,
+130,0,16,0,1,0,
+0,0,70,0,16,0,
+2,0,0,0,70,0,
+16,0,2,0,0,0,
+56,0,0,8,130,0,
+16,0,1,0,0,0,
+42,0,16,0,2,0,
+0,0,58,0,16,128,
+65,0,0,0,1,0,
+0,0,56,0,0,7,
+130,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,130,0,
+16,0,1,0,0,0,
+58,0,16,0,1,0,
+0,0,50,0,0,9,
+18,0,16,0,1,0,
+0,0,42,0,16,0,
+1,0,0,0,58,0,
+16,0,1,0,0,0,
+10,0,16,0,1,0,
+0,0,0,0,0,7,
+34,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+0,0,0,7,194,0,
+16,0,1,0,0,0,
+6,12,16,0,3,0,
+0,0,166,14,16,0,
+0,0,0,0,50,0,
+0,10,50,0,16,0,
+2,0,0,0,230,10,
+16,0,1,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+1,0,0,0,230,10,
+16,0,1,0,0,0,
+150,124,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,130,0,16,0,
+1,0,0,0,70,0,
+16,0,2,0,0,0,
+70,0,16,0,2,0,
+0,0,56,0,0,8,
+130,0,16,0,1,0,
+0,0,42,0,16,0,
+2,0,0,0,58,0,
+16,128,65,0,0,0,
+1,0,0,0,56,0,
+0,7,130,0,16,0,
+1,0,0,0,58,0,
+16,0,1,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+130,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,50,0,
+0,9,18,0,16,0,
+1,0,0,0,42,0,
+16,0,1,0,0,0,
+58,0,16,0,1,0,
+0,0,10,0,16,0,
 1,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,58,0,
+16,0,1,0,0,0,
+26,0,16,0,1,0,
+0,0,50,0,0,12,
+194,0,16,0,1,0,
+0,0,6,12,16,0,
+3,0,0,0,2,64,
 0,0,0,0,0,0,
 0,0,0,0,0,0,
+0,64,0,0,0,64,
+166,14,16,0,0,0,
+0,0,50,0,0,10,
+50,0,16,0,2,0,
+0,0,230,10,16,0,
+1,0,0,0,230,26,
+16,0,2,0,0,0,
+70,0,16,128,65,0,
 0,0,0,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+66,0,16,0,1,0,
+0,0,230,10,16,0,
+1,0,0,0,150,124,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,15,0,0,7,
+130,0,16,0,1,0,
+0,0,70,0,16,0,
+2,0,0,0,70,0,
+16,0,2,0,0,0,
+56,0,0,8,130,0,
+16,0,1,0,0,0,
+42,0,16,0,2,0,
+0,0,58,0,16,128,
+65,0,0,0,1,0,
+0,0,56,0,0,7,
+130,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,130,0,
+16,0,1,0,0,0,
+58,0,16,0,1,0,
+0,0,50,0,0,9,
+18,0,16,0,1,0,
+0,0,42,0,16,0,
+1,0,0,0,58,0,
+16,0,1,0,0,0,
+10,0,16,0,1,0,
+0,0,0,0,0,7,
+34,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+0,0,0,7,194,0,
+16,0,1,0,0,0,
+166,14,16,0,0,0,
+0,0,166,30,16,0,
+0,0,0,0,50,0,
+0,12,194,0,16,0,
+0,0,0,0,166,30,
+16,0,0,0,0,0,
+2,64,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,64,0,0,
+0,64,166,14,16,0,
+0,0,0,0,50,0,
+0,13,50,0,16,0,
+2,0,0,0,198,0,
+16,128,65,0,0,0,
+3,0,0,0,2,64,
+0,0,0,0,0,64,
+0,0,0,64,0,0,
+0,0,0,0,0,0,
+230,10,16,0,1,0,
+0,0,50,0,0,10,
+98,0,16,0,3,0,
+0,0,6,1,16,0,
+2,0,0,0,166,27,
+16,0,2,0,0,0,
+6,1,16,128,65,0,
+0,0,0,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+18,0,16,0,2,0,
+0,0,70,0,16,0,
+2,0,0,0,70,126,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,15,0,0,7,
+34,0,16,0,2,0,
+0,0,150,5,16,0,
+3,0,0,0,150,5,
+16,0,3,0,0,0,
+56,0,0,8,34,0,
+16,0,2,0,0,0,
+42,0,16,0,2,0,
+0,0,26,0,16,128,
+65,0,0,0,2,0,
+0,0,56,0,0,7,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,34,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,50,0,0,9,
+18,0,16,0,1,0,
+0,0,10,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+10,0,16,0,1,0,
+0,0,0,0,0,7,
+34,0,16,0,1,0,
+0,0,26,0,16,0,
+1,0,0,0,26,0,
+16,0,2,0,0,0,
+0,0,0,8,50,0,
+16,0,2,0,0,0,
+198,0,16,128,65,0,
+0,0,3,0,0,0,
+230,10,16,0,1,0,
+0,0,50,0,0,10,
+98,0,16,0,3,0,
+0,0,6,1,16,0,
+2,0,0,0,166,27,
+16,0,2,0,0,0,
+6,1,16,128,65,0,
+0,0,0,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+18,0,16,0,2,0,
+0,0,70,0,16,0,
+2,0,0,0,70,126,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,15,0,0,7,
+34,0,16,0,2,0,
+0,0,150,5,16,0,
+3,0,0,0,150,5,
+16,0,3,0,0,0,
+56,0,0,8,34,0,
+16,0,2,0,0,0,
+42,0,16,0,2,0,
+0,0,26,0,16,128,
+65,0,0,0,2,0,
+0,0,56,0,0,7,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,34,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,50,0,0,9,
+18,0,16,0,1,0,
+0,0,10,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+10,0,16,0,1,0,
+0,0,0,0,0,7,
+34,0,16,0,1,0,
+0,0,26,0,16,0,
+1,0,0,0,26,0,
+16,0,2,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+18,0,16,0,2,0,
+0,0,230,10,16,0,
+1,0,0,0,70,126,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,50,0,0,10,
+162,0,16,0,2,0,
+0,0,166,14,16,0,
+1,0,0,0,166,30,
+16,0,2,0,0,0,
+6,4,16,128,65,0,
+0,0,0,0,0,0,
+0,0,0,7,194,0,
+16,0,1,0,0,0,
+6,12,16,0,3,0,
+0,0,166,14,16,0,
+1,0,0,0,15,0,
+0,7,34,0,16,0,
+2,0,0,0,214,5,
+16,0,2,0,0,0,
+214,5,16,0,2,0,
+0,0,56,0,0,8,
+34,0,16,0,2,0,
+0,0,42,0,16,0,
+2,0,0,0,26,0,
+16,128,65,0,0,0,
+2,0,0,0,56,0,
+0,7,34,0,16,0,
+2,0,0,0,26,0,
+16,0,2,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+34,0,16,0,2,0,
+0,0,26,0,16,0,
+2,0,0,0,50,0,
+0,9,18,0,16,0,
+1,0,0,0,10,0,
+16,0,2,0,0,0,
+26,0,16,0,2,0,
+0,0,10,0,16,0,
+1,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+26,0,16,0,2,0,
+0,0,50,0,0,10,
+50,0,16,0,2,0,
+0,0,230,10,16,0,
+1,0,0,0,230,26,
+16,0,2,0,0,0,
+70,0,16,128,65,0,
+0,0,0,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+66,0,16,0,1,0,
+0,0,230,10,16,0,
+1,0,0,0,150,124,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,15,0,0,7,
+130,0,16,0,1,0,
+0,0,70,0,16,0,
+2,0,0,0,70,0,
+16,0,2,0,0,0,
+56,0,0,8,130,0,
+16,0,1,0,0,0,
+42,0,16,0,2,0,
+0,0,58,0,16,128,
+65,0,0,0,1,0,
+0,0,56,0,0,7,
+130,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,130,0,
+16,0,1,0,0,0,
+58,0,16,0,1,0,
+0,0,50,0,0,9,
+18,0,16,0,1,0,
+0,0,42,0,16,0,
+1,0,0,0,58,0,
+16,0,1,0,0,0,
+10,0,16,0,1,0,
+0,0,0,0,0,7,
+34,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+50,0,0,13,194,0,
+16,0,1,0,0,0,
+6,12,16,128,65,0,
+0,0,3,0,0,0,
+2,64,0,0,0,0,
+0,0,0,0,0,0,
+0,0,64,64,0,0,
+64,64,166,14,16,0,
+0,0,0,0,50,0,
+0,10,50,0,16,0,
+2,0,0,0,230,10,
+16,0,1,0,0,0,
+230,26,16,0,2,0,
+0,0,70,0,16,128,
+65,0,0,0,0,0,
+0,0,69,0,0,139,
+194,0,0,128,67,85,
+21,0,66,0,16,0,
+1,0,0,0,230,10,
+16,0,1,0,0,0,
+150,124,16,0,3,0,
+0,0,0,96,16,0,
+3,0,0,0,15,0,
+0,7,130,0,16,0,
+1,0,0,0,70,0,
+16,0,2,0,0,0,
+70,0,16,0,2,0,
+0,0,56,0,0,8,
+130,0,16,0,1,0,
+0,0,42,0,16,0,
+2,0,0,0,58,0,
+16,128,65,0,0,0,
+1,0,0,0,56,0,
+0,7,130,0,16,0,
+1,0,0,0,58,0,
+16,0,1,0,0,0,
+1,64,0,0,59,170,
+184,63,25,0,0,5,
+130,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,50,0,
+0,9,18,0,16,0,
+1,0,0,0,42,0,
+16,0,1,0,0,0,
+58,0,16,0,1,0,
+0,0,10,0,16,0,
+1,0,0,0,0,0,
+0,7,34,0,16,0,
+1,0,0,0,58,0,
+16,0,1,0,0,0,
+26,0,16,0,1,0,
+0,0,50,0,0,13,
+194,0,16,0,1,0,
+0,0,6,12,16,128,
+65,0,0,0,3,0,
+0,0,2,64,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,64,
+0,0,0,64,166,14,
+16,0,0,0,0,0,
+0,0,0,8,50,0,
+16,0,2,0,0,0,
+198,0,16,128,65,0,
+0,0,3,0,0,0,
+230,10,16,0,0,0,
+0,0,50,0,0,10,
+50,0,16,0,3,0,
+0,0,230,10,16,0,
+1,0,0,0,230,26,
+16,0,2,0,0,0,
+70,0,16,128,65,0,
+0,0,0,0,0,0,
+69,0,0,139,194,0,
+0,128,67,85,21,0,
+66,0,16,0,1,0,
+0,0,230,10,16,0,
+1,0,0,0,150,124,
+16,0,3,0,0,0,
+0,96,16,0,3,0,
+0,0,15,0,0,7,
+130,0,16,0,1,0,
+0,0,70,0,16,0,
+3,0,0,0,70,0,
+16,0,3,0,0,0,
+56,0,0,8,130,0,
+16,0,1,0,0,0,
+42,0,16,0,2,0,
+0,0,58,0,16,128,
+65,0,0,0,1,0,
+0,0,56,0,0,7,
+130,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,1,64,
+0,0,59,170,184,63,
+25,0,0,5,130,0,
+16,0,1,0,0,0,
+58,0,16,0,1,0,
+0,0,50,0,0,9,
+18,0,16,0,1,0,
+0,0,42,0,16,0,
+1,0,0,0,58,0,
+16,0,1,0,0,0,
+10,0,16,0,1,0,
+0,0,0,0,0,7,
+34,0,16,0,1,0,
+0,0,58,0,16,0,
+1,0,0,0,26,0,
+16,0,1,0,0,0,
+50,0,0,10,194,0,
+16,0,1,0,0,0,
+6,4,16,0,2,0,
+0,0,166,30,16,0,
+2,0,0,0,6,4,
+16,128,65,0,0,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,18,0,
+16,0,2,0,0,0,
+70,0,16,0,2,0,
+0,0,70,126,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+50,0,0,10,50,0,
+16,0,0,0,0,0,
+230,10,16,0,0,0,
+0,0,230,26,16,0,
+2,0,0,0,70,0,
+16,128,65,0,0,0,
+0,0,0,0,69,0,
+0,139,194,0,0,128,
+67,85,21,0,66,0,
+16,0,0,0,0,0,
+230,10,16,0,0,0,
+0,0,150,124,16,0,
+3,0,0,0,0,96,
+16,0,3,0,0,0,
+15,0,0,7,18,0,
+16,0,0,0,0,0,
+70,0,16,0,0,0,
+0,0,70,0,16,0,
+0,0,0,0,56,0,
+0,8,18,0,16,0,
+0,0,0,0,42,0,
+16,0,2,0,0,0,
+10,0,16,128,65,0,
+0,0,0,0,0,0,
+56,0,0,7,18,0,
+16,0,0,0,0,0,
+10,0,16,0,0,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,18,0,16,0,
+0,0,0,0,10,0,
+16,0,0,0,0,0,
+15,0,0,7,34,0,
+16,0,0,0,0,0,
+230,10,16,0,1,0,
+0,0,230,10,16,0,
+1,0,0,0,56,0,
+0,8,34,0,16,0,
+0,0,0,0,42,0,
+16,0,2,0,0,0,
+26,0,16,128,65,0,
+0,0,0,0,0,0,
+56,0,0,7,34,0,
+16,0,0,0,0,0,
+26,0,16,0,0,0,
+0,0,1,64,0,0,
+59,170,184,63,25,0,
+0,5,34,0,16,0,
+0,0,0,0,26,0,
+16,0,0,0,0,0,
+50,0,0,9,130,0,
+16,0,0,0,0,0,
+10,0,16,0,2,0,
+0,0,26,0,16,0,
+0,0,0,0,10,0,
+16,0,1,0,0,0,
+0,0,0,7,34,0,
+16,0,0,0,0,0,
+26,0,16,0,0,0,
+0,0,26,0,16,0,
+1,0,0,0,0,0,
+0,7,34,0,16,0,
+0,0,0,0,10,0,
+16,0,0,0,0,0,
+26,0,16,0,0,0,
+0,0,50,0,0,9,
+18,0,16,0,0,0,
+0,0,42,0,16,0,
+0,0,0,0,10,0,
+16,0,0,0,0,0,
+58,0,16,0,0,0,
+0,0,14,0,0,10,
+34,0,16,0,0,0,
+0,0,2,64,0,0,
+0,0,128,63,0,0,
+128,63,0,0,128,63,
+0,0,128,63,26,0,
+16,0,0,0,0,0,
+56,0,0,7,18,32,
+16,0,0,0,0,0,
+26,0,16,0,0,0,
+0,0,10,0,16,0,
+0,0,0,0,62,0,
+0,1,83,84,65,84,
+148,0,0,0,210,1,
+0,0,7,0,0,0,
+0,0,0,0,7,0,
+0,0,158,1,0,0,
 0,0,0,0,1,0,
+0,0,1,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+46,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,4,0,0,0,
+0,0,0,0,3,0,
 0,0,0,0,0,0,
 0,0,0,0,0,0,
 0,0,0,0,0,0,
@@ -8022,11 +10526,7 @@ static const BYTE sFragmentByteCode[] =
 0,0,0,0,0,0,
 0,0,0,0,0,0,
 0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,0,0,0,0,
-0,0,0,0,0,0
+0,0
 };
 
 }

@@ -1,20 +1,8 @@
 /*
 ShaderGlass shader scanlines-shaders\integer-scaling-scanlines imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/scanlines/shaders/integer-scaling-scanlines.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/scanlines/shaders/integer-scaling-scanlines.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Simple pixel perfect scanlines for use *only* with interger scaling mode.
-Perfect for low res output and low performance machines.
-Also great if you dont want any moire patterns pin sharp scanlines
-Use in combination with HDR mode in latest RetroArch and very bright
-HDR monitors to get 'glowing' scanlines much like the original CRT's but sharper
-
-Recommended setting for 720p 1 pixel width scalines at 2x or 3x scalings
-Recommended setting for 1080p 2 or 3 pixel width scalines at 4x or 5x scalings
-Recommended setting for 4K 4 or 5 pixel width scalines at 8x or 9x scalings
-
 
 */
 

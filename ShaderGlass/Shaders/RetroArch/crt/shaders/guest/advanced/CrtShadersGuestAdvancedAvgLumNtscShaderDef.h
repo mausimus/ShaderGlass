@@ -1,29 +1,8 @@
 /*
 ShaderGlass shader crt-shaders-guest-advanced\avg-lum-ntsc imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/6f921ee4815a7894a33855974285b04545a4fa42/crt/shaders/guest/advanced/avg-lum-ntsc.slang
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/guest/advanced/avg-lum-ntsc.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.
-
-
-Average Luminance Shader, Smart Edge Interpolation Coefficients Calculation
-
-Copyright (C) 2018-2022 guest(r) - guest.r@gmail.com
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-Thanks to HunterK for the mipmap hint. :D
 
 // Reference: http://www.compuphase.com/cmetric.htm
 // Reference: ScaleFX, author Sp00kyFox
