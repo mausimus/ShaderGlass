@@ -7,7 +7,7 @@
 #include "Texture.h"
 #include "WIC\WICTextureLoader11.h"
 
-Texture::Texture(TextureDef& textureDef) : m_textureDef(textureDef)
+Texture::Texture(TextureDef& textureDef) : m_linear(false), m_mipmap(false), m_repeat(false), m_clamp(false), m_mirror(false), m_textureDef(textureDef)
 {
     m_name = textureDef.PresetParams["name"];
     std::string value;
@@ -28,7 +28,18 @@ Texture::Texture(TextureDef& textureDef) : m_textureDef(textureDef)
 
 void Texture::Create(winrt::com_ptr<ID3D11Device> d3dDevice)
 {
-    DirectX::CreateWICTextureFromMemory(d3dDevice.get(), m_textureDef.Data, m_textureDef.DataLength, m_textureResource.put(), m_textureView.put(), 0);
+    auto hr = DirectX::CreateWICTextureFromMemoryEx(d3dDevice.get(),
+                                                    nullptr,
+                                                    m_textureDef.Data,
+                                                    m_textureDef.DataLength,
+                                                    0,
+                                                    D3D11_USAGE_DEFAULT,
+                                                    D3D11_BIND_SHADER_RESOURCE,
+                                                    0,
+                                                    0,
+                                                    DirectX::WIC_LOADER_IGNORE_SRGB | DirectX::WIC_LOADER_FORCE_RGBA32,
+                                                    m_textureResource.put(),
+                                                    m_textureView.put());
 }
 
 bool Texture::Get(const std::string& presetParam, std::string& value)
@@ -44,6 +55,6 @@ bool Texture::Get(const std::string& presetParam, std::string& value)
 
 Texture::~Texture()
 {
-    m_textureView = nullptr;
+    m_textureView     = nullptr;
     m_textureResource = nullptr;
 }

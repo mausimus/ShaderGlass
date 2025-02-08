@@ -5,17 +5,29 @@
 
 static HRESULT hr;
 
-ShaderPass::ShaderPass(Shader& shader, Preset& preset) : m_shader {shader}, m_preset {preset} { }
+ShaderPass::ShaderPass(Shader& shader, Preset& preset, bool preprocess) : m_shader {shader}, m_preset {preset}, m_preprocess {preprocess} { }
 
 ShaderPass::ShaderPass(Shader& shader, Preset& preset, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context) :
-    ShaderPass(shader, preset)
+    ShaderPass(shader, preset, false)
 {
     Initialize(device, context);
 }
 
-static float sVertexBuffer[] = {-1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,
-                                1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f,
-                                1.0f,  -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f};
+// clang-format off
+static float sVertexBuffer[] = 
+{
+    // Preprocess VB
+    -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+    -1.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,
+    1.0f,  -1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f,
+    // Shader VB
+    0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+    0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f
+};
+// clang-format on
 
 void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context)
 {
@@ -89,6 +101,12 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
             {
                 if(m_shader.m_filterLinear)
                     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+                if(m_shader.m_clamp)
+                {
+                    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+                    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+                    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+                }
             }
         }
 
@@ -129,21 +147,17 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
     }
 
     // create MVP
-    for(int i = 0; i < 4; i++)
-    {
-        for(int j = 0; j < 4; j++)
-        {
-            if(i == j)
-                m_modelViewProj.m[i][j] = 1.0f;
-            else
-                m_modelViewProj.m[i][j] = 0;
-        }
-    }
+    memset(&m_modelViewProj, 0, 16 * sizeof(float));
+    m_modelViewProj.m[0][0] = 2.0f;
+    m_modelViewProj.m[1][1] = 2.0f;
+    m_modelViewProj.m[3][0] = -1.0f;
+    m_modelViewProj.m[3][1] = -1.0f;
     m_modelViewProj.m[3][3] = 1.0f;
 }
 
 void ShaderPass::UpdateMVP(float sx, float sy, float tx, float ty)
 {
+    // has effect only on preprocess pass
     m_modelViewProj.m[0][0] = sx;
     m_modelViewProj.m[1][1] = sy;
     m_modelViewProj.m[3][0] = tx;
@@ -182,16 +196,19 @@ void ShaderPass::Resize(int sourceWidth, int sourceHeight, int destWidth, int de
     }
 }
 
-void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources)
+void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount)
 {
-    Render(m_sourceView, resources);
+    Render(m_sourceView, resources, frameCount);
 }
 
-void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources)
+void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount)
 {
-    params_FrameCount++;
-    if(params_FrameCount == m_shader.m_frameCountMod)
-        params_FrameCount = 0;
+    params_FrameCount += frameCount;
+    if(m_shader.m_frameCountMod > 0)
+    {
+        while(params_FrameCount >= m_shader.m_frameCountMod)
+            params_FrameCount -= m_shader.m_frameCountMod;
+    }
 
     m_shader.SetParam("FrameCount", &params_FrameCount);
     m_shader.SetParam("MVP", &m_modelViewProj);
@@ -218,7 +235,7 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
     ID3D11RenderTargetView* targets[1] = {m_targetView};
     m_context->OMSetRenderTargets(1, targets, NULL);
 
-    m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
     m_context->IASetInputLayout(m_inputLayout.get());
     ID3D11Buffer* vertexBuffer[1] = {m_vertexBuffer.get()};
     m_context->IASetVertexBuffers(0, 1, vertexBuffer, &s_vertexStride, &s_vertexOffset);
@@ -274,7 +291,14 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
         m_context->PSSetConstantBuffers(1, 1, buffer);
     }
 
-    m_context->Draw(s_vertexCount, 0);
+    if(strcmp(this->m_shader.m_shaderDef.Name, "preprocess") == 0)
+    {
+        m_context->Draw(s_vertexCount, 0);
+    }
+    else
+    {
+        m_context->Draw(s_vertexCount, 4);
+    }
 
     // unbind to allow rebinding as input/output
     for(auto& b : bindings)

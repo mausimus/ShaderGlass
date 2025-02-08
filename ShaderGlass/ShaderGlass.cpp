@@ -7,7 +7,7 @@ static HRESULT hr;
 
 ShaderGlass::ShaderGlass() :
     m_lastSize {}, m_lastPos {}, m_lastCaptureWindowPos {}, m_passthroughDef(), m_shaderPreset(new Preset(m_passthroughDef)), m_preprocessShader(m_preprocessShaderDef),
-    m_preprocessPreset(m_preprocessPresetDef), m_preprocessPass(m_preprocessShader, m_preprocessPreset)
+    m_preprocessPreset(m_preprocessPresetDef), m_preprocessPass(m_preprocessShader, m_preprocessPreset, true)
 { }
 
 ShaderGlass::~ShaderGlass()
@@ -362,7 +362,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     auto destWidth  = static_cast<long>(clientRect.right * m_outputScaleW);
     auto destHeight = static_cast<long>(clientRect.bottom * m_outputScaleH);
 
-    if(destWidth == 0 || destHeight == 0)
+    if(destWidth <= (int)m_inputScaleW || destHeight <= (int)m_inputScaleH)
         return;
 
     bool inputRescaled = m_inputRescaled;
@@ -667,18 +667,18 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     winrt::com_ptr<ID3D11ShaderResourceView> textureView;
     hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
     assert(SUCCEEDED(hr));
-    m_preprocessPass.Render(textureView.get(), m_passResources);
+    m_preprocessPass.Render(textureView.get(), m_passResources, m_frameSkip + 1);
 
     int p = 0;
     for(auto& shaderPass : m_shaderPasses)
     {
         if(p == 0)
         {
-            shaderPass.Render(m_originalView.get(), m_passResources);
+            shaderPass.Render(m_originalView.get(), m_passResources, m_frameSkip + 1);
         }
         else
         {
-            shaderPass.Render(m_passResources);
+            shaderPass.Render(m_passResources, m_frameSkip + 1);
         }
         p++;
     }

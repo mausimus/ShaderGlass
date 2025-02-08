@@ -121,7 +121,7 @@ static const std::map<UINT, FrameSkipInfo> frameSkips = {
 static const std::map<UINT, OutputScaleInfo> outputScales = {{WM_OUTPUT_SCALE(0), OutputScaleInfo(1.0f, L"100%", "100")},
                                                              {WM_OUTPUT_SCALE(1), OutputScaleInfo(1.5f, L"150%", "150")},
                                                              {WM_OUTPUT_SCALE(2), OutputScaleInfo(2.0f, L"200%", "200")},
-                                                             {WM_OUTPUT_SCALE(3), OutputScaleInfo(2.0f, L"250%", "250")},
+                                                             {WM_OUTPUT_SCALE(3), OutputScaleInfo(2.5f, L"250%", "250")},
                                                              {WM_OUTPUT_SCALE(4), OutputScaleInfo(3.0f, L"300%", "300")},
                                                              {WM_OUTPUT_SCALE(5), OutputScaleInfo(3.5f, L"350%", "350")},
                                                              {WM_OUTPUT_SCALE(6), OutputScaleInfo(4.0f, L"400%", "400")},

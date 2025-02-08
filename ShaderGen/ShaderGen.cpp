@@ -110,7 +110,7 @@ string fxc(const filesystem::path& shaderPath, const string& profile, const stri
     // 4000 - use of potentially uninitialized variable
     // 4008 - floating point division by zero
     auto fullSource = std::string("#pragma warning (disable : 3557)\r\n#pragma warning (disable : 3570)\r\n#pragma warning (disable : 3571)\r\n#pragma warning (disable : "
-                                  "4000)\r\n#pragma warning (disable : 4008)\r\n" +
+                                  "4000)\r\n#pragma warning (disable : 4008)\r\n#pragma warning (disable : 3556)\r\n" +
                                   source);
     saveSource(input, fullSource);
 
@@ -195,7 +195,7 @@ int getSize(const std::string& mtype)
     }
 }
 
-void mapType(vector<ShaderParam>& params, json type, int buffer)
+void addParams(vector<ShaderParam>& actualParams, const vector<ShaderParam>& declaredParams, json type, int buffer)
 {
     auto members = type.at("members");
     for(json::iterator mi = members.begin(); mi != members.end(); ++mi)
@@ -206,47 +206,36 @@ void mapType(vector<ShaderParam>& params, json type, int buffer)
         auto mtype   = (string)member.at("type");
 
         bool paramFound = false;
-        for(auto& p : params)
+        for(auto& p : declaredParams)
         {
             if(p.name == mname)
             {
-                if(paramFound)
-                {
-                    // duplicate param
-                    ShaderParam p2(p);
-                    p2.i      = 0;
-                    p2.buffer = buffer;
-                    p2.offset = moffset;
-                    p2.size   = getSize(mtype);
-                    params.emplace_back(p2);
-                    break;
-                }
-                else
-                {
-                    paramFound = true;
-
-                    p.i      = 0;
-                    p.buffer = buffer;
-                    p.offset = moffset;
-                    p.size   = getSize(mtype);
-                }
+                ShaderParam actualParam(p);
+                actualParam.i      = 0;
+                actualParam.buffer = buffer;
+                actualParam.offset = moffset;
+                actualParam.size   = getSize(mtype);
+                actualParams.emplace_back(actualParam);
+                paramFound = true;
             }
         }
-
+        
         if(!paramFound)
         {
             // alias/built-in param?
-            ShaderParam newParam(mname, getSize(mtype));
+            ShaderParam newParam(mname, getSize(mtype), 0);
             newParam.offset = moffset;
             newParam.buffer = buffer;
             newParam.i      = 0;
-            params.emplace_back(newParam);
+            actualParams.emplace_back(newParam);
         }
     }
 }
 
-void mapMetadata(vector<ShaderParam>& params, vector<ShaderSampler>& textures, const string& metadata)
+vector<ShaderParam> lookupParams(const vector<ShaderParam>& declaredParams, vector<ShaderSampler>& textures, const string& metadata)
 {
+    vector<ShaderParam> actualParams;
+
     auto j     = json::parse(metadata);
     auto types = j["types"];
     auto ubos  = j["ubos"];
@@ -256,7 +245,7 @@ void mapMetadata(vector<ShaderParam>& params, vector<ShaderSampler>& textures, c
         auto typeNo  = ubo.at("type");
         auto binding = (int)ubo.at("binding");
         auto type    = types.at((string)typeNo);
-        mapType(params, type, binding);
+        addParams(actualParams, declaredParams, type, binding);
     }
 
     auto pcs = j["push_constants"];
@@ -266,7 +255,7 @@ void mapMetadata(vector<ShaderParam>& params, vector<ShaderSampler>& textures, c
         auto pc     = *it;
         auto typeNo = pc.at("type");
         auto type   = types.at((string)typeNo);
-        mapType(params, type, ci--);
+        addParams(actualParams, declaredParams, type, ci--);
     }
 
     auto txs = j["textures"];
@@ -275,6 +264,8 @@ void mapMetadata(vector<ShaderParam>& params, vector<ShaderSampler>& textures, c
         auto tx = *it;
         textures.push_back(ShaderSampler((string)tx.at("name"), (int)tx.at("binding")));
     }
+
+    return actualParams;
 }
 
 void updateShaderList(const ShaderInfo& shaderInfo)
@@ -344,6 +335,7 @@ void populateShaderTemplate(ShaderDef def, ofstream& log)
     replace(bufferString, "%LIB_NAME%", _libName);
     replace(bufferString, "%CLASS_NAME%", info.className);
     replace(bufferString, "%SHADER_NAME%", info.shaderName);
+    replace(bufferString, "%SHADER_FORMAT%", def.format);
     replace(bufferString, "%SHADER_CATEGORY%", info.category);
     replace(bufferString, "%VERTEX_SOURCE%", splitCode(def.vertexSource));
     replace(bufferString, "%FRAGMENT_SOURCE%", splitCode(def.fragmentSource));
@@ -356,14 +348,14 @@ void populateShaderTemplate(ShaderDef def, ofstream& log)
     }
 
     // built-in parameters
-    def.params.push_back(ShaderParam("MVP", 16));
-    def.params.push_back(ShaderParam("SourceSize", 4));
-    def.params.push_back(ShaderParam("OriginalSize", 4));
-    def.params.push_back(ShaderParam("OutputSize", 4));
-    def.params.push_back(ShaderParam("FrameCount", 1));
+    def.params.push_back(ShaderParam("MVP", 16, 0));
+    def.params.push_back(ShaderParam("SourceSize", 4, 0));
+    def.params.push_back(ShaderParam("OriginalSize", 4, 0));
+    def.params.push_back(ShaderParam("OutputSize", 4, 0));
+    def.params.push_back(ShaderParam("FrameCount", 1, 0));
 
     std::vector<ShaderSampler> textures;
-    mapMetadata(def.params, textures, def.fragmentMetadata);
+    def.params = lookupParams(def.params, textures, def.fragmentMetadata);
 
     ofstream          outfile(info.outputPath);
     std::stringstream iss(bufferString);
@@ -581,7 +573,7 @@ void processShader(ShaderDef def, ofstream& log, bool& warn)
         auto trimLine = trim(line);
         if(line.starts_with("#pragma parameter"))
         {
-            def.params.push_back(ShaderParam(line, 1));
+            def.params.push_back(ShaderParam(line, 1, 0));
         }
         else if(line.starts_with("#pragma stage vertex"))
         {
@@ -595,9 +587,28 @@ void processShader(ShaderDef def, ofstream& log, bool& warn)
             isVertex   = false;
             inComment  = false;
         }
-        else if(trimLine.starts_with("#pragma format") && !trimLine.ends_with("R8G8B8A8_UNORM") && !trimLine.ends_with("R8G8B8A8_SRGB"))
+        else if(trimLine.starts_with("#pragma format"))
         {
-            throw std::runtime_error("Unsupported shader format");
+            if(trimLine.ends_with("R8G8B8A8_UNORM"))
+            {
+                def.format = "R8G8B8A8_UNORM";
+            }
+            else if (trimLine.ends_with("R8G8B8A8_SRGB"))
+            {
+                def.format = "R8G8B8A8_SRGB";
+            }
+            else if (trimLine.ends_with("R32G32B32A32_SFLOAT"))
+            {
+                def.format = "R32G32B32A32_SFLOAT";
+            }
+            else if (trimLine.ends_with("R16G16B16A16_SFLOAT"))
+            {
+                def.format = "R16G16B16A16_SFLOAT";
+            }
+            else
+            {
+                throw std::runtime_error("Unsupported shader format");
+            }
         }
         else if(trimLine.starts_with("//"))
         {
@@ -749,6 +760,46 @@ string getValue(const string& key, const string& suffix, const map<string, strin
     return string();
 }
 
+filesystem::path getKeyPath(const string& key, int shaderNo, const map<string, filesystem::path>& keyPaths)
+{
+    stringstream ss;
+    ss << key;
+    if(shaderNo >= 0)
+    {
+        ss << shaderNo;
+    }
+    if(keyPaths.find(ss.str()) != keyPaths.end())
+    {
+        return keyPaths.at(ss.str());
+    }
+    return filesystem::path();
+}
+
+filesystem::path getKeyPath(const string& key, const string& suffix, const map<string, filesystem::path>& keyPaths)
+{
+    stringstream ss;
+    ss << key << suffix;
+    if(keyPaths.find(ss.str()) != keyPaths.end())
+    {
+        return keyPaths.at(ss.str());
+    }
+    return filesystem::path();
+}
+
+filesystem::path getPath(const string& key, int shaderNo, const map<string, string>& keyValues, const map<string, filesystem::path>& keyPaths)
+{
+    auto valuePath = filesystem::path(getValue(key, shaderNo, keyValues));
+    auto keyPath = getKeyPath(key, shaderNo, keyPaths);
+    return keyPath / valuePath;
+}
+
+filesystem::path getPath(const string& key, const string& suffix, const map<string, string>& keyValues, const map<string, filesystem::path>& keyPaths)
+{
+    auto valuePath = filesystem::path(getValue(key, suffix, keyValues));
+    auto keyPath   = getKeyPath(key, suffix, keyPaths);
+    return keyPath / valuePath;
+}
+
 void setPresetParam(const string& paramName, ShaderDef& def, int i, const map<string, string>& keyValues)
 {
     const auto& value = getValue(paramName, i, keyValues);
@@ -777,6 +828,7 @@ void setPresetParams(ShaderDef& def, int i, const map<string, string>& keyValues
     setPresetParam("alias", def, i, keyValues);
     setPresetParam("mipmap_input", def, i, keyValues);
     setPresetParam("frame_count_mod", def, i, keyValues);
+    setPresetParam("wrap_mode", def, i, keyValues);
 }
 
 void setPresetParams(TextureDef& def, std::string name, const map<string, string>& keyValues)
@@ -786,31 +838,51 @@ void setPresetParams(TextureDef& def, std::string name, const map<string, string
     setPresetParam(name + "_", def, "mipmap", keyValues);
 }
 
-void processPreset(const filesystem::path& input, ofstream& log, bool& warn)
+void parsePreset(const filesystem::path& input, map<string, string>& keyValues, map<string, filesystem::path>& valuePaths)
 {
-    map<string, string> keyValues;
-
     fstream infile(input);
     string  line;
     while(getline(infile, line))
     {
-        if(line.starts_with("#"))
+        if(line.starts_with("#reference"))
+        {
+            istringstream iss(line);
+            string        incDirective, incFile;
+            iss >> incDirective;
+            iss >> quoted(incFile);
+            filesystem::path includePath(input);
+            includePath.remove_filename();
+            includePath /= filesystem::path(incFile);
+            parsePreset(includePath, keyValues, valuePaths);
+        }
+        else if(line.starts_with("#"))
         {
             continue;
         }
-        keyValues.insert(getKeyValue(line));
+        else
+        {
+            const auto& kv = getKeyValue(line);
+            keyValues[kv.first] = kv.second;
+            valuePaths[kv.first] = input.parent_path();
+        }
     }
     infile.close();
+}
+
+void processPreset(const filesystem::path& input, ofstream& log, bool& warn)
+{
+    map<string, string> keyValues;
+    map<string, filesystem::path> keyPaths;
+
+    parsePreset(input, keyValues, keyPaths);
 
     auto              numShaders = atoi(getValue("shaders", -1, keyValues).c_str());
     vector<ShaderDef> shaders;
     for(int i = 0; i < numShaders; i++)
     {
-        const auto& shaderRelativePath = filesystem::path(getValue("shader", i, keyValues));
-        auto        shaderFullPath     = input.parent_path();
-        shaderFullPath /= shaderRelativePath;
+        const auto& shaderRelativePath = getPath("shader", i, keyValues, keyPaths);
+        auto shaderFullPath = shaderRelativePath.lexically_normal();
         shaderFullPath.make_preferred();
-        shaderFullPath = shaderFullPath.lexically_normal();
         auto def       = ShaderDef(shaderFullPath);
         setPresetParams(def, i, keyValues);
         if(_force || !filesystem::exists(def.info.outputPath))
@@ -836,11 +908,9 @@ void processPreset(const filesystem::path& input, ofstream& log, bool& warn)
             textureName = textureList.substr(0, pos);
             if(textureName.size())
             {
-                const auto& textureRelativePath = filesystem::path(getValue(textureName, "", keyValues));
-                auto        textureFullPath     = input.parent_path();
-                textureFullPath /= textureRelativePath;
+                const auto& textureRelativePath = getPath(textureName, "", keyValues, keyPaths);
+                auto        textureFullPath     = textureRelativePath.lexically_normal();
                 textureFullPath.make_preferred();
-                textureFullPath = textureFullPath.lexically_normal();
 
                 auto def = TextureDef(textureFullPath);
                 def.presetParams.insert(make_pair("name", textureName));
@@ -974,8 +1044,7 @@ int main(int argc, char* argv[])
                         {
                             isExcluded |= filesystem::exists(excludePath / ".exclude");
                             excludePath = excludePath.parent_path();
-                        }
-                        while(!isExcluded && !excludePath.empty());
+                        } while(!isExcluded && !excludePath.empty());
 
                         if(!isExcluded)
                         {

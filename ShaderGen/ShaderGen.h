@@ -35,7 +35,7 @@ bool _force = false;
 
 struct ShaderParam
 {
-    ShaderParam(string s, int size) : i {-1}, buffer {}, size {size}, offset {}, name {}, desc {}, min {}, max {}, def {}, step {}
+    ShaderParam(string s, int size, int buffer) : i {-1}, buffer {buffer}, size {size}, offset {}, name {}, desc {}, min {}, max {}, def {}, step {}
     {
         istringstream iss(s);
 
@@ -169,7 +169,7 @@ ShaderInfo getShaderInfo(const filesystem::path& slangInput, const string& suffi
 
 struct ShaderDef
 {
-    ShaderDef(const filesystem::path& input) : input {input}, info {getShaderInfo(input, "ShaderDef")} { }
+    ShaderDef(const filesystem::path& input) : input {input}, info {getShaderInfo(input, "ShaderDef")}, format{} { }
 
     filesystem::path    input;
     string              vertexSource;
@@ -180,6 +180,7 @@ struct ShaderDef
     string              fragmentMetadata;
     vector<ShaderParam> params;
     ShaderInfo          info;
+    string              format;
     map<string, string> presetParams;
     vector<string>      comments;
 };

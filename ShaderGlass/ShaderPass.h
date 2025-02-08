@@ -8,13 +8,13 @@
 class ShaderPass
 {
 public:
-    ShaderPass(Shader& shader, Preset& preset);
+    ShaderPass(Shader& shader, Preset& preset, bool preprocess);
     ShaderPass(Shader& shader, Preset& preset, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context);
     ~ShaderPass();
 
     void Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context);
-    void Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources);
-    void Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources);
+    void Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount);
+    void Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount);
     void Resize(int sourceWidth, int sourceHeight, int destWidth, int destHeight, const std::map<std::string, float4>& textureSizes);
     void UpdateMVP(float sx, float sy, float tx, float ty);
     bool RequiresFeedback() const;
@@ -35,9 +35,10 @@ private:
     winrt::com_ptr<ID3D11Buffer>                      m_constantBuffer {nullptr};
     winrt::com_ptr<ID3D11Buffer>                      m_pushBuffer {nullptr};
     std::map<int, winrt::com_ptr<ID3D11SamplerState>> m_samplers;
+    bool                                              m_preprocess {false};
     const UINT                                        s_vertexStride {6 * sizeof(float)};
     const UINT                                        s_vertexOffset {0};
-    const UINT                                        s_vertexCount {6};
+    const UINT                                        s_vertexCount {4};
     float                                             params_SourceSize[4] {0, 0, 0, 0};
     float                                             params_OutputSize[4] {0, 0, 0, 0};
     int                                               params_FrameCount {0};

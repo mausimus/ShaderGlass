@@ -41,6 +41,7 @@ public:
     bool                               m_formatSRGB {false};
     bool                               m_formatFloat {false};
     bool                               m_filterLinear {false};
+    bool                               m_clamp {false};
     int                                m_frameCountMod {0};
 
     Shader(ShaderDef& shaderDef);

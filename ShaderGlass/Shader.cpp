@@ -66,6 +66,11 @@ Shader::Shader(ShaderDef& shaderDef) :
     {
         m_frameCountMod = static_cast<int>(atof(value.c_str()));
     }
+    if(Get("wrap_mode", value))
+    {
+        if(value == "clamp_to_edge")
+            m_clamp = true;
+    }
 }
 
 void Shader::Create(winrt::com_ptr<ID3D11Device> d3dDevice)
