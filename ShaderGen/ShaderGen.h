@@ -16,6 +16,7 @@
 #include <cctype>
 #include <locale>
 #include <map>
+#include <unordered_set>
 #include <filesystem>
 
 #include "include/json.hpp"
@@ -33,6 +34,23 @@ const char* _fxcPath    = "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.
 const char* _raUrl      = "https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/";
 bool _force = false;
 
+static inline void ltrim(std::string& s)
+{
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch) && ch != '\"'; }));
+}
+
+static inline void rtrim(std::string& s)
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch) && ch != '\"'; }).base(), s.end());
+}
+
+static inline string trim(std::string s)
+{
+    ltrim(s);
+    rtrim(s);
+    return s;
+}
+
 struct ShaderParam
 {
     ShaderParam(string s, int size, int buffer) : i {-1}, buffer {buffer}, size {size}, offset {}, name {}, desc {}, min {}, max {}, def {}, step {}
@@ -43,6 +61,7 @@ struct ShaderParam
         iss >> name;
         iss >> name;
         iss >> quoted(desc);
+        desc = trim(desc);
         iss >> def;
         iss >> min;
         iss >> max;
@@ -50,6 +69,11 @@ struct ShaderParam
             iss >> step;
         else
             step = 0;
+    }
+
+    ShaderParam(string s, float o) : ShaderParam(s, 4, 0)
+    {
+        def = o;
     }
 
     int    buffer; // -1 - push constant, 0 - first UBO, etc.

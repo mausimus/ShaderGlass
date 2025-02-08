@@ -12,23 +12,6 @@ filesystem::path reportPath;
 filesystem::path listPath(_outputPath);
 vector<string>   shaderList;
 
-static inline void ltrim(std::string& s)
-{
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch) && ch != '\"'; }));
-}
-
-static inline void rtrim(std::string& s)
-{
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch) && ch != '\"'; }).base(), s.end());
-}
-
-static inline string trim(std::string s)
-{
-    ltrim(s);
-    rtrim(s);
-    return s;
-}
-
 std::string exec(const char* cmd, ofstream& log)
 {
     std::array<char, 128> buffer;
@@ -219,7 +202,7 @@ void addParams(vector<ShaderParam>& actualParams, const vector<ShaderParam>& dec
                 paramFound = true;
             }
         }
-        
+
         if(!paramFound)
         {
             // alias/built-in param?
@@ -453,7 +436,8 @@ void populateTextureTemplate(TextureDef def, ofstream& log)
     log << "Generated TextureDef " << info.outputPath << endl;
 }
 
-void populatePresetTemplate(const filesystem::path& input, const vector<ShaderDef>& shaders, const vector<TextureDef>& textures, ofstream& log)
+void populatePresetTemplate(
+    const filesystem::path& input, const vector<ShaderDef>& shaders, const vector<TextureDef>& textures, const vector<ShaderParam>& overrides, ofstream& log)
 {
     const auto& info = getShaderInfo(input, "PresetDef");
 
@@ -516,6 +500,18 @@ void populatePresetTemplate(const filesystem::path& input, const vector<ShaderDe
                 }
                 replace(textureLine, "%TEXTURE_PARAMS%", paramsLines.str());
                 outfile << textureLine << endl;
+            }
+        }
+        else if(line.starts_with("%OVERRIDES%"))
+        {
+            replace(line, "%OVERRIDES%", "           ");
+
+            for(const auto& o : overrides)
+            {
+                string overrideLine(line);
+                replace(overrideLine, "%OVERRIDE_NAME%", o.name);
+                replace(overrideLine, "%OVERRIDE_VALUE%", to_string(o.def));
+                outfile << overrideLine << endl;
             }
         }
         else if(line.starts_with("%HEADER"))
@@ -593,15 +589,15 @@ void processShader(ShaderDef def, ofstream& log, bool& warn)
             {
                 def.format = "R8G8B8A8_UNORM";
             }
-            else if (trimLine.ends_with("R8G8B8A8_SRGB"))
+            else if(trimLine.ends_with("R8G8B8A8_SRGB"))
             {
                 def.format = "R8G8B8A8_SRGB";
             }
-            else if (trimLine.ends_with("R32G32B32A32_SFLOAT"))
+            else if(trimLine.ends_with("R32G32B32A32_SFLOAT"))
             {
                 def.format = "R32G32B32A32_SFLOAT";
             }
-            else if (trimLine.ends_with("R16G16B16A16_SFLOAT"))
+            else if(trimLine.ends_with("R16G16B16A16_SFLOAT"))
             {
                 def.format = "R16G16B16A16_SFLOAT";
             }
@@ -734,7 +730,7 @@ pair<string, string> getKeyValue(string input)
     return make_pair(key, value);
 }
 
-string getValue(const string& key, int shaderNo, const map<string, string>& keyValues)
+string getValue(const string& key, int shaderNo, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
 {
     stringstream ss;
     ss << key;
@@ -744,17 +740,19 @@ string getValue(const string& key, int shaderNo, const map<string, string>& keyV
     }
     if(keyValues.find(ss.str()) != keyValues.end())
     {
+        seenKeys.insert(ss.str());
         return keyValues.at(ss.str());
     }
     return string();
 }
 
-string getValue(const string& key, const string& suffix, const map<string, string>& keyValues)
+string getValue(const string& key, const string& suffix, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
 {
     stringstream ss;
     ss << key << suffix;
     if(keyValues.find(ss.str()) != keyValues.end())
     {
+        seenKeys.insert(ss.str());
         return keyValues.at(ss.str());
     }
     return string();
@@ -786,56 +784,57 @@ filesystem::path getKeyPath(const string& key, const string& suffix, const map<s
     return filesystem::path();
 }
 
-filesystem::path getPath(const string& key, int shaderNo, const map<string, string>& keyValues, const map<string, filesystem::path>& keyPaths)
+filesystem::path getPath(const string& key, int shaderNo, const map<string, string>& keyValues, const map<string, filesystem::path>& keyPaths, unordered_set<string>& seenKeys)
 {
-    auto valuePath = filesystem::path(getValue(key, shaderNo, keyValues));
-    auto keyPath = getKeyPath(key, shaderNo, keyPaths);
+    auto valuePath = filesystem::path(getValue(key, shaderNo, keyValues, seenKeys));
+    auto keyPath   = getKeyPath(key, shaderNo, keyPaths);
     return keyPath / valuePath;
 }
 
-filesystem::path getPath(const string& key, const string& suffix, const map<string, string>& keyValues, const map<string, filesystem::path>& keyPaths)
+filesystem::path
+getPath(const string& key, const string& suffix, const map<string, string>& keyValues, const map<string, filesystem::path>& keyPaths, unordered_set<string>& seenKeys)
 {
-    auto valuePath = filesystem::path(getValue(key, suffix, keyValues));
+    auto valuePath = filesystem::path(getValue(key, suffix, keyValues, seenKeys));
     auto keyPath   = getKeyPath(key, suffix, keyPaths);
     return keyPath / valuePath;
 }
 
-void setPresetParam(const string& paramName, ShaderDef& def, int i, const map<string, string>& keyValues)
+void setPresetParam(const string& paramName, ShaderDef& def, int i, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
 {
-    const auto& value = getValue(paramName, i, keyValues);
+    const auto& value = getValue(paramName, i, keyValues, seenKeys);
     if(!value.empty())
         def.presetParams.insert(make_pair(paramName, value));
 }
 
-void setPresetParam(const string& paramName, TextureDef& def, const string& suffix, const map<string, string>& keyValues)
+void setPresetParam(const string& paramName, TextureDef& def, const string& suffix, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
 {
-    const auto& value = getValue(paramName, suffix, keyValues);
+    const auto& value = getValue(paramName, suffix, keyValues, seenKeys);
     if(!value.empty())
         def.presetParams.insert(make_pair(suffix, value));
 }
 
-void setPresetParams(ShaderDef& def, int i, const map<string, string>& keyValues)
+void setPresetParams(ShaderDef& def, int i, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
 {
-    setPresetParam("filter_linear", def, i, keyValues);
-    setPresetParam("float_framebuffer", def, i, keyValues);
-    setPresetParam("srgb_framebuffer", def, i, keyValues);
-    setPresetParam("scale_type", def, i, keyValues);
-    setPresetParam("scale", def, i, keyValues);
-    setPresetParam("scale_type_x", def, i, keyValues);
-    setPresetParam("scale_x", def, i, keyValues);
-    setPresetParam("scale_type_y", def, i, keyValues);
-    setPresetParam("scale_y", def, i, keyValues);
-    setPresetParam("alias", def, i, keyValues);
-    setPresetParam("mipmap_input", def, i, keyValues);
-    setPresetParam("frame_count_mod", def, i, keyValues);
-    setPresetParam("wrap_mode", def, i, keyValues);
+    setPresetParam("filter_linear", def, i, keyValues, seenKeys);
+    setPresetParam("float_framebuffer", def, i, keyValues, seenKeys);
+    setPresetParam("srgb_framebuffer", def, i, keyValues, seenKeys);
+    setPresetParam("scale_type", def, i, keyValues, seenKeys);
+    setPresetParam("scale", def, i, keyValues, seenKeys);
+    setPresetParam("scale_type_x", def, i, keyValues, seenKeys);
+    setPresetParam("scale_x", def, i, keyValues, seenKeys);
+    setPresetParam("scale_type_y", def, i, keyValues, seenKeys);
+    setPresetParam("scale_y", def, i, keyValues, seenKeys);
+    setPresetParam("alias", def, i, keyValues, seenKeys);
+    setPresetParam("mipmap_input", def, i, keyValues, seenKeys);
+    setPresetParam("frame_count_mod", def, i, keyValues, seenKeys);
+    setPresetParam("wrap_mode", def, i, keyValues, seenKeys);
 }
 
-void setPresetParams(TextureDef& def, std::string name, const map<string, string>& keyValues)
+void setPresetParams(TextureDef& def, std::string name, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
 {
-    setPresetParam(name + "_", def, "linear", keyValues);
-    setPresetParam(name + "_", def, "wrap_mode", keyValues);
-    setPresetParam(name + "_", def, "mipmap", keyValues);
+    setPresetParam(name + "_", def, "linear", keyValues, seenKeys);
+    setPresetParam(name + "_", def, "wrap_mode", keyValues, seenKeys);
+    setPresetParam(name + "_", def, "mipmap", keyValues, seenKeys);
 }
 
 void parsePreset(const filesystem::path& input, map<string, string>& keyValues, map<string, filesystem::path>& valuePaths)
@@ -861,8 +860,8 @@ void parsePreset(const filesystem::path& input, map<string, string>& keyValues, 
         }
         else
         {
-            const auto& kv = getKeyValue(line);
-            keyValues[kv.first] = kv.second;
+            const auto& kv       = getKeyValue(line);
+            keyValues[kv.first]  = kv.second;
             valuePaths[kv.first] = input.parent_path();
         }
     }
@@ -871,20 +870,21 @@ void parsePreset(const filesystem::path& input, map<string, string>& keyValues, 
 
 void processPreset(const filesystem::path& input, ofstream& log, bool& warn)
 {
-    map<string, string> keyValues;
+    map<string, string>           keyValues;
     map<string, filesystem::path> keyPaths;
+    unordered_set<string>         seenKeys;
 
     parsePreset(input, keyValues, keyPaths);
 
-    auto              numShaders = atoi(getValue("shaders", -1, keyValues).c_str());
+    auto              numShaders = atoi(getValue("shaders", -1, keyValues, seenKeys).c_str());
     vector<ShaderDef> shaders;
     for(int i = 0; i < numShaders; i++)
     {
-        const auto& shaderRelativePath = getPath("shader", i, keyValues, keyPaths);
-        auto shaderFullPath = shaderRelativePath.lexically_normal();
+        const auto& shaderRelativePath = getPath("shader", i, keyValues, keyPaths, seenKeys);
+        auto        shaderFullPath     = shaderRelativePath.lexically_normal();
         shaderFullPath.make_preferred();
-        auto def       = ShaderDef(shaderFullPath);
-        setPresetParams(def, i, keyValues);
+        auto def = ShaderDef(shaderFullPath);
+        setPresetParams(def, i, keyValues, seenKeys);
         if(_force || !filesystem::exists(def.info.outputPath))
         {
             processShader(def, log, warn);
@@ -894,7 +894,7 @@ void processPreset(const filesystem::path& input, ofstream& log, bool& warn)
     }
     auto               pDef = getShaderInfo(input, "PresetDef");
     vector<TextureDef> textures;
-    auto               textureList = getValue("textures", -1, keyValues);
+    auto               textureList = getValue("textures", -1, keyValues, seenKeys);
     if(textureList.size())
     {
         textureList += ";";
@@ -908,13 +908,13 @@ void processPreset(const filesystem::path& input, ofstream& log, bool& warn)
             textureName = textureList.substr(0, pos);
             if(textureName.size())
             {
-                const auto& textureRelativePath = getPath(textureName, "", keyValues, keyPaths);
+                const auto& textureRelativePath = getPath(textureName, "", keyValues, keyPaths, seenKeys);
                 auto        textureFullPath     = textureRelativePath.lexically_normal();
                 textureFullPath.make_preferred();
 
                 auto def = TextureDef(textureFullPath);
                 def.presetParams.insert(make_pair("name", textureName));
-                setPresetParams(def, textureName, keyValues);
+                setPresetParams(def, textureName, keyValues, seenKeys);
                 if(_force || !filesystem::exists(def.info.outputPath))
                 {
                     processTexture(def, log);
@@ -926,9 +926,26 @@ void processPreset(const filesystem::path& input, ofstream& log, bool& warn)
             }
         }
     }
+    vector<ShaderParam> overrides;
+    for(const auto& kv : keyValues)
+    {
+        if(!seenKeys.contains(kv.first) && !kv.first.empty() && !kv.second.empty())
+        {
+            try
+            {
+                auto value = stof(kv.second);
+                overrides.emplace_back(kv.first, value);
+            }
+            catch(std::invalid_argument& e)
+            {
+                log << e.what() << " " << kv.first << " = " << kv.second << endl;
+                warn = true;
+            }
+        }
+    }
     if(_force || !filesystem::exists(pDef.outputPath))
     {
-        populatePresetTemplate(input, shaders, textures, log);
+        populatePresetTemplate(input, shaders, textures, overrides, log);
     }
     updatePresetList(getShaderInfo(input, "PresetDef"));
 }

@@ -19,6 +19,14 @@ struct ShaderParam
     std::string description;
 };
 
+struct ParamOverride
+{
+    ParamOverride(const char* name, float value) : name {name}, value {value} {}
+
+    std::string name;
+    float       value;
+};
+
 struct ShaderSampler
 {
     ShaderSampler(const char* name, int binding) : name {name}, binding {binding} { }

@@ -217,7 +217,23 @@ void ShaderGlass::ResetParams()
         for(auto& p : s.Params())
         {
             if(p->size == 4 && p->name != "FrameCount")
-                s.SetParam(p, &p->defaultValue);
+            {
+                // check for preset override
+                auto hasOverride = false;
+                for(auto& o: m_shaderPreset->m_presetDef.Overrides)
+                {
+                    if(o.name == p->name)
+                    {
+                        s.SetParam(p, &o.value);
+                        hasOverride = true;
+                        break;
+                    }
+                }
+                if(!hasOverride)
+                {
+                    s.SetParam(p, &p->defaultValue);
+                }
+            }
         }
 }
 
