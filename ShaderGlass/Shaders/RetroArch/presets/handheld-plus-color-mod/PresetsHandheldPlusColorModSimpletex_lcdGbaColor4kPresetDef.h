@@ -24,10 +24,17 @@ public:
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")
 .Param("scale_type", "viewport")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
             TextureDefs.push_back(HandheldShadersSimpletex_lcdPng4kTextured_paperTextureDef()
 .Param("linear", "false")
 .Param("name", "BACKGROUND"));
+            OverrideParam("BACKGROUND_INTENSITY", (float)1.000000);
+            OverrideParam("DARKEN_COLOUR", (float)0.050000);
+            OverrideParam("DARKEN_GRID", (float)0.000000);
+            OverrideParam("GRID_BIAS", (float)0.600000);
+            OverrideParam("GRID_INTENSITY", (float)0.650000);
+            OverrideParam("GRID_WIDTH", (float)0.650000);
 	}
 };
 }

@@ -25,6 +25,7 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.0")
 .Param("scale_y", "0.5"));
+            OverrideParam("feedback_pass", (float)0.000000);
 	}
 };
 }

@@ -559,13 +559,14 @@ public:
 		VertexLength = sizeof(RetroArchHandheldConsoleBorderShaderFilesGbPass5ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldConsoleBorderShaderFilesGbPass5ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldConsoleBorderShaderFilesGbPass5ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("video_scale", -1, 48, 4, 2.000000f, 20.000000f, 3.000000f, 1.000000f, "Video Scale"));
 		Params.push_back(ShaderParam("border_texture_scale", -1, 52, 4, 1.000000f, 20.000000f, 4.000000f, 0.005000f, "Border Scale"));
 		Params.push_back(ShaderParam("border_brightness", -1, 56, 4, 0.000000f, 1.000000f, 1.000000f, 0.010000f, "Border Brightness"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("BORDER", 3));
 /*

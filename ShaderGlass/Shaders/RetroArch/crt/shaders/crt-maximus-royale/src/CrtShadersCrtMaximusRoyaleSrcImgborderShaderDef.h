@@ -1457,6 +1457,10 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtMaximusRoyaleSrcImgborderShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtMaximusRoyaleSrcImgborderShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtMaximusRoyaleSrcImgborderShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", 0, 80, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("crtFrame", -1, 0, 4, 1.000000f, 4.000000f, 1.000000f, 1.000000f, "CRT Frame"));
 		Params.push_back(ShaderParam("bgMode", -1, 4, 4, 0.000000f, 3.000000f, 0.000000f, 1.000000f, "BG Mode"));
 		Params.push_back(ShaderParam("bgR", -1, 8, 4, 0.000000f, 100.000000f, 0.000000f, 1.000000f, "BG Red"));
@@ -1468,9 +1472,6 @@ public:
 		Params.push_back(ShaderParam("ledB", -1, 32, 4, 0.000000f, 100.000000f, 50.000000f, 1.000000f, "LED Blue"));
 		Params.push_back(ShaderParam("ledSpeed", -1, 36, 4, 1.000000f, 20.000000f, 1.000000f, 1.000000f, "LED Speed"));
 		Params.push_back(ShaderParam("ledBrightness", -1, 40, 4, 1.000000f, 100.000000f, 50.000000f, 1.000000f, "LED Brightness"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", 0, 80, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("LAST_PASS", 13));
 		Samplers.push_back(ShaderSampler("TVBORDER1", 3));
 		Samplers.push_back(ShaderSampler("BGPASS2", 2));

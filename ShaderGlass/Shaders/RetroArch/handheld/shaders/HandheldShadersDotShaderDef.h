@@ -1175,12 +1175,13 @@ public:
 		VertexLength = sizeof(RetroArchHandheldShadersDotShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldShadersDotShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldShadersDotShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("gamma", 0, 80, 4, 0.000000f, 5.000000f, 2.400000f, 0.050000f, "Dot Gamma"));
 		Params.push_back(ShaderParam("shine", 0, 84, 4, 0.000000f, 0.500000f, 0.050000f, 0.010000f, "Dot Shine"));
 		Params.push_back(ShaderParam("blend", 0, 88, 4, 0.000000f, 1.000000f, 0.650000f, 0.010000f, "Dot Blend"));
 		Params.push_back(ShaderParam("soft", 0, 92, 4, 0.000000f, 1.000000f, 0.000000f, 0.100000f, "Dot Soft"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

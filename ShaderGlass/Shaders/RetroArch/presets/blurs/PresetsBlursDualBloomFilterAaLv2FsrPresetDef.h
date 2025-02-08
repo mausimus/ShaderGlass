@@ -27,7 +27,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsample_bloomShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -36,7 +37,8 @@ public:
 .Param("scale_type_y", "viewport")
 .Param("scale_x", "0.700000")
 .Param("scale_y", "0.700000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterUpsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -45,7 +47,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -54,7 +57,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterUpsampleShaderDef()
 .Param("alias", "Scale1")
 .Param("filter_linear", "true")
@@ -64,7 +68,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -73,7 +78,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -82,7 +88,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterUpsampleShaderDef()
 .Param("alias", "Scale2")
 .Param("filter_linear", "true")
@@ -92,7 +99,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -101,7 +109,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -110,7 +119,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterUpsampleShaderDef()
 .Param("alias", "Scale3")
 .Param("filter_linear", "true")
@@ -120,7 +130,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -129,7 +140,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -138,7 +150,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterUpsampleShaderDef()
 .Param("alias", "Scale4")
 .Param("filter_linear", "true")
@@ -148,7 +161,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -157,7 +171,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -166,7 +181,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterUpsampleShaderDef()
 .Param("alias", "Scale5")
 .Param("filter_linear", "true")
@@ -176,7 +192,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -185,7 +202,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -194,7 +212,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.500000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterUpsampleShaderDef()
 .Param("alias", "Scale6")
 .Param("filter_linear", "true")
@@ -204,7 +223,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterNaive_resampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -213,7 +233,8 @@ public:
 .Param("scale_type_y", "absolute")
 .Param("scale_x", "128")
 .Param("scale_y", "128")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterMoving_avgShaderDef()
 .Param("alias", "MovingAverage")
 .Param("filter_linear", "true")
@@ -223,7 +244,8 @@ public:
 .Param("scale_type_y", "absolute")
 .Param("scale_x", "2")
 .Param("scale_y", "2")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(BlursShadersDual_filterBloom_blendShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -232,7 +254,8 @@ public:
 .Param("scale_type_y", "viewport")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(BlursShadersKawaseDelinearizeShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -241,7 +264,8 @@ public:
 .Param("scale_type_y", "viewport")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(AntiAliasingShadersAaShader40Level2AaShader40Level2Pass1ShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
@@ -250,7 +274,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(AntiAliasingShadersAaShader40Level2AaShader40Level2Pass2ShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
@@ -259,7 +284,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(EdgeSmoothingFsrShadersFsrPass0ShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "false")
@@ -268,7 +294,8 @@ public:
 .Param("scale_type_y", "viewport")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingFsrShadersFsrPass1ShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "false")
@@ -277,7 +304,11 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_edge"));
+            OverrideParam("BLUR_RADIUS", (float)2.000000);
+            OverrideParam("FSR_SHARPENING", (float)0.300000);
+            OverrideParam("feedback_pass", (float)0.000000);
 	}
 };
 }

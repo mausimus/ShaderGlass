@@ -59,6 +59,7 @@ public:
 .Param("srgb_framebuffer", "true"));
          	ShaderDefs.push_back(CrtShadersGlowResolveShaderDef()
 .Param("filter_linear", "true"));
+            OverrideParam("quality", (float)1.000000);
 	}
 };
 }

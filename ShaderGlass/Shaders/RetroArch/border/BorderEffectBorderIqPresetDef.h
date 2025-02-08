@@ -29,6 +29,7 @@ public:
 .Param("mipmap", "true")
 .Param("name", "iChannel0")
 .Param("wrap_mode", "repeat"));
+            OverrideParam("framecount_mod0", (float)10000.000000);
 	}
 };
 }

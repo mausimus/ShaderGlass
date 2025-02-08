@@ -27,6 +27,8 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
+            OverrideParam("ia_bright_boost", (float)0.150000);
+            OverrideParam("ia_luminance", (float)0.750000);
 	}
 };
 }

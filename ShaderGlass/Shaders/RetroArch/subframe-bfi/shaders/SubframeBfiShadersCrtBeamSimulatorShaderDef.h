@@ -1487,12 +1487,7 @@ public:
 		VertexLength = sizeof(RetroArchSubframeBfiShadersCrtBeamSimulatorShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchSubframeBfiShadersCrtBeamSimulatorShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchSubframeBfiShadersCrtBeamSimulatorShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("GAIN_VS_BLUR", -1, 60, 4, 0.010000f, 1.000000f, 0.700000f, 0.025000f, "Brightness vs Clarity"));
-		Params.push_back(ShaderParam("GAMMA", -1, 64, 4, 1.000000f, 5.000000f, 2.400000f, 0.010000f, "Gamma"));
-		Params.push_back(ShaderParam("FPS_DIVISOR", -1, 68, 4, 1.000000f, 10.000000f, 1.000000f, 1.000000f, "FPS Divisor (debug)"));
-		Params.push_back(ShaderParam("LCD_ANTI_RETENTION_TOGGLE", -1, 72, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "LCD Anti-Retention On/Off"));
-		Params.push_back(ShaderParam("LCD_INVERSION_COMPENSATION_SLEW", -1, 80, 4, 0.000000f, 150.000000f, 1.000000f, 10.000000f, "LCD Anti-Retention Slew Multiplier"));
-		Params.push_back(ShaderParam("POS_MOD", -1, 76, 4, -10.000000f, 10.000000f, 0.000000f, 0.010000f, "Raster Position Mod"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
@@ -1500,6 +1495,12 @@ public:
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("TotalSubFrames", -1, 52, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("CurrentSubFrame", -1, 56, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("GAIN_VS_BLUR", -1, 60, 4, 0.010000f, 1.000000f, 0.700000f, 0.025000f, "Brightness vs Clarity"));
+		Params.push_back(ShaderParam("GAMMA", -1, 64, 4, 1.000000f, 5.000000f, 2.400000f, 0.010000f, "Gamma"));
+		Params.push_back(ShaderParam("FPS_DIVISOR", -1, 68, 4, 1.000000f, 10.000000f, 1.000000f, 1.000000f, "FPS Divisor (debug)"));
+		Params.push_back(ShaderParam("LCD_ANTI_RETENTION_TOGGLE", -1, 72, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "LCD Anti-Retention On/Off"));
+		Params.push_back(ShaderParam("POS_MOD", -1, 76, 4, -10.000000f, 10.000000f, 0.000000f, 0.010000f, "Raster Position Mod"));
+		Params.push_back(ShaderParam("LCD_INVERSION_COMPENSATION_SLEW", -1, 80, 4, 0.000000f, 150.000000f, 1.000000f, 10.000000f, "LCD Anti-Retention Slew Multiplier"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

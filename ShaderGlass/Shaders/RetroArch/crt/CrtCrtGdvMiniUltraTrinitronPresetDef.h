@@ -26,7 +26,9 @@ public:
 .Param("scale_type_y", "viewport")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
+            OverrideParam("feedback_pass", (float)0.000000);
 	}
 };
 }

@@ -27,6 +27,8 @@ public:
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "viewport"));
+            OverrideParam("maskDark", (float)0.600000);
+            OverrideParam("maskLight", (float)1.400000);
 	}
 };
 }

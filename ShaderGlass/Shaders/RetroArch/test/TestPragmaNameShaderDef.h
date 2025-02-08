@@ -451,6 +451,7 @@ public:
 		VertexLength = sizeof(RetroArchTestPragmaNameShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchTestPragmaNameShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchTestPragmaNameShaderDefs::sFragmentByteCode);
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("MainPassFeedbackSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));

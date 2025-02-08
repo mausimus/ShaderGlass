@@ -22,7 +22,7 @@ public:
          	ShaderDefs.push_back(CrtShadersCrtSlangtestLinearizeShaderDef()
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
-.Param("scale_type", "source")
+.Param("scale_type", "viewport")
 .Param("srgb_framebuffer", "true"));
          	ShaderDefs.push_back(CrtShadersCrtSlangtestCubicShaderDef()
 .Param("filter_linear", "false")

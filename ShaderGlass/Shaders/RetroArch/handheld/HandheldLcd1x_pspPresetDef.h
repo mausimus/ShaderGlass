@@ -24,7 +24,8 @@ public:
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")
 .Param("scale_type", "viewport")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
 	}
 };
 }

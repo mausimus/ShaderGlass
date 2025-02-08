@@ -1599,13 +1599,14 @@ public:
 		VertexLength = sizeof(RetroArchPixelArtScalingShadersPixel_aaPixel_aa_single_passShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchPixelArtScalingShadersPixel_aaPixel_aa_single_passShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchPixelArtScalingShadersPixel_aaPixel_aa_single_passShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("PIX_AA_SHARP", -1, 36, 4, 0.000000f, 2.000000f, 1.500000f, 0.050000f, "Pixel AA sharpening amount"));
-		Params.push_back(ShaderParam("PIX_AA_SUBPX", -1, 40, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Enable subpixel AA"));
-		Params.push_back(ShaderParam("PIX_AA_SUBPX_ORIENTATION", -1, 44, 4, 0.000000f, 3.000000f, 0.000000f, 1.000000f, "Subpixel layout (0=RGB, 1=RGB vert., 2=BGR, 3=BGR vert.)"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("Rotation", -1, 32, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("PIX_AA_SHARP", -1, 36, 4, 0.000000f, 2.000000f, 1.500000f, 0.050000f, "Pixel AA sharpening amount"));
+		Params.push_back(ShaderParam("PIX_AA_SUBPX", -1, 40, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Enable subpixel AA"));
+		Params.push_back(ShaderParam("PIX_AA_SUBPX_ORIENTATION", -1, 44, 4, 0.000000f, 3.000000f, 0.000000f, 1.000000f, "Subpixel layout (0=RGB, 1=RGB vert., 2=BGR, 3=BGR vert.)"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

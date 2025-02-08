@@ -28,23 +28,28 @@ public:
          	ShaderDefs.push_back(BlursShadersKawaseKawase0ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersKawaseKawase1ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersKawaseKawase1ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersKawaseKawase2ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersKawaseKawase3ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersKawaseDelinearizeShaderDef()
 .Param("filter_linear", "true"));
          	ShaderDefs.push_back(BlursShadersKawaseScreen_combineShaderDef());

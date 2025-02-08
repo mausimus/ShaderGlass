@@ -37,6 +37,20 @@ public:
             TextureDefs.push_back(HandheldShadersColorLutGbamicroGreyTextureDef()
 .Param("linear", "true")
 .Param("name", "SamplerLUT2"));
+            OverrideParam("BGR", (float)0.000000);
+            OverrideParam("BSUBPIX_B", (float)1.000000);
+            OverrideParam("BSUBPIX_G", (float)0.000000);
+            OverrideParam("BSUBPIX_R", (float)0.000000);
+            OverrideParam("GSUBPIX_B", (float)0.000000);
+            OverrideParam("GSUBPIX_G", (float)1.000000);
+            OverrideParam("GSUBPIX_R", (float)0.000000);
+            OverrideParam("RSUBPIX_B", (float)0.000000);
+            OverrideParam("RSUBPIX_G", (float)0.000000);
+            OverrideParam("RSUBPIX_R", (float)1.000000);
+            OverrideParam("ambient", (float)0.000000);
+            OverrideParam("blacklevel", (float)0.000000);
+            OverrideParam("gain", (float)1.000000);
+            OverrideParam("gamma", (float)2.200000);
 	}
 };
 }

@@ -412,10 +412,11 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtMaximusRoyaleSrcResizeShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtMaximusRoyaleSrcResizeShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtMaximusRoyaleSrcResizeShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("Xscale", -1, 0, 4, 75.000000f, 150.000000f, 100.000000f, 0.100000f, "Horizontal Scale %"));
 		Params.push_back(ShaderParam("Yscale", -1, 4, 4, 75.000000f, 150.000000f, 100.000000f, 0.100000f, "Vertical Scale %"));
 		Params.push_back(ShaderParam("crtFrame", -1, 8, 4, 1.000000f, 4.000000f, 1.000000f, 1.000000f, "CRT Frame"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

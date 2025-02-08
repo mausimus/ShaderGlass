@@ -33,6 +33,18 @@ public:
 .Param("scale_type_y", "viewport")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000"));
+            OverrideParam("BLACK", (float)0.010000);
+            OverrideParam("BRIGHTNESS", (float)1.020000);
+            OverrideParam("DISTORTION", (float)0.100000);
+            OverrideParam("INPUTGAMMA", (float)2.000000);
+            OverrideParam("OUTPUTGAMMA", (float)2.000000);
+            OverrideParam("SAT", (float)1.080000);
+            OverrideParam("TEMP", (float)7079.000000);
+            OverrideParam("contrast", (float)1.020000);
+            OverrideParam("feedback_pass", (float)0.000000);
+            OverrideParam("gamma_out_green", (float)2.100000);
+            OverrideParam("gamma_out_red", (float)2.300000);
+            OverrideParam("postbr", (float)1.050000);
 	}
 };
 }

@@ -25,25 +25,29 @@ public:
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
-.Param("scale_y", "1.000000"));
+.Param("scale_y", "1.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNediShadersNediPass1ShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
-.Param("scale_y", "2.000000"));
+.Param("scale_y", "2.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNediShadersNediPass2ShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
-.Param("scale_y", "1.000000"));
+.Param("scale_y", "1.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNediShadersNediJincShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "clamp_to_edge"));
 	}
 };
 }

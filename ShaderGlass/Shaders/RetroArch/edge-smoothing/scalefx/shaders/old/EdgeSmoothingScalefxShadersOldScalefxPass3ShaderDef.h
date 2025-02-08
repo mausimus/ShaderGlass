@@ -635,6 +635,7 @@ public:
 		VertexLength = sizeof(RetroArchEdgeSmoothingScalefxShadersOldScalefxPass3ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchEdgeSmoothingScalefxShadersOldScalefxPass3ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchEdgeSmoothingScalefxShadersOldScalefxPass3ShaderDefs::sFragmentByteCode);
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 1));

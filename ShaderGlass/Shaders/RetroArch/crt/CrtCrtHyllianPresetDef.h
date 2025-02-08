@@ -44,7 +44,8 @@ public:
          	ShaderDefs.push_back(CrtShadersHyllianSupportGlowBlurGlowMaskGeomShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "viewport")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
             TextureDefs.push_back(ReshadeShadersLUTGradeRgbTextureDef()
 .Param("linear", "true")
 .Param("name", "SamplerLUT1"));

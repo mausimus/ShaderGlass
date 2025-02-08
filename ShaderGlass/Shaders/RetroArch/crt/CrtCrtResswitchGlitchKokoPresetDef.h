@@ -20,7 +20,9 @@ public:
 
 	virtual void Build() {
          	ShaderDefs.push_back(CrtShadersCrtResswitchGlitchKokoShaderDef()
-.Param("scale_type", "source"));
+.Param("scale_type", "source")
+.Param("wrap_mode", "clamp_to_border"));
+            OverrideParam("scale_0", (float)1.000000);
 	}
 };
 }

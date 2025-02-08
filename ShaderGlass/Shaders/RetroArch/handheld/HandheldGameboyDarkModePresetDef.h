@@ -51,6 +51,7 @@ public:
             TextureDefs.push_back(HandheldShadersGameboyResourcesSampleBgsPaperBgTextureDef()
 .Param("linear", "true")
 .Param("name", "BACKGROUND"));
+            OverrideParam("ia_invert", (float)1.000000);
 	}
 };
 }

@@ -23,6 +23,7 @@ public:
 .Param("filter_linear", "true")
 .Param("mipmap_input", "true")
 .Param("scale_type", "viewport"));
+            OverrideParam("RT_CURV_APPEND", (float)1.000000);
 	}
 };
 }

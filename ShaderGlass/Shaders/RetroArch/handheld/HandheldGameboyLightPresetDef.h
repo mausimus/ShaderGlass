@@ -50,6 +50,7 @@ public:
             TextureDefs.push_back(HandheldShadersGameboyResourcesSampleBgsPaperBgTextureDef()
 .Param("linear", "true")
 .Param("name", "BACKGROUND"));
+            OverrideParam("screen_light", (float)1.400000);
 	}
 };
 }

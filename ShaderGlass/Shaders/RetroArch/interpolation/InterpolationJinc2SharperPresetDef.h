@@ -22,6 +22,9 @@ public:
          	ShaderDefs.push_back(InterpolationShadersJinc2ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "viewport"));
+            OverrideParam("JINC2_AR_STRENGTH", (float)0.800000);
+            OverrideParam("JINC2_SINC", (float)0.920000);
+            OverrideParam("JINC2_WINDOW_SINC", (float)0.420000);
 	}
 };
 }

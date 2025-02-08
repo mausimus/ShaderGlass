@@ -605,14 +605,15 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestAdvancedGaussian_verticalShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestAdvancedGaussian_verticalShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestAdvancedGaussian_verticalShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SIZEV", -1, 52, 4, 1.000000f, 50.000000f, 6.000000f, 1.000000f, "          Vertical Glow Radius"));
-		Params.push_back(ShaderParam("SIGMA_V", -1, 56, 4, 0.200000f, 15.000000f, 1.200000f, 0.050000f, "          Vertical Glow Sigma"));
-		Params.push_back(ShaderParam("FINE_GLOW", -1, 60, 4, 1.000000f, 5.000000f, 1.000000f, 1.000000f, "          Fine Glow/M.Glow Sampling"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SIZEV", -1, 52, 4, 1.000000f, 50.000000f, 6.000000f, 1.000000f, "Vertical Glow Radius"));
+		Params.push_back(ShaderParam("SIGMA_V", -1, 56, 4, 0.200000f, 15.000000f, 1.200000f, 0.050000f, "Vertical Glow Sigma"));
+		Params.push_back(ShaderParam("FINE_GLOW", -1, 60, 4, 1.000000f, 5.000000f, 1.000000f, 1.000000f, "Fine Glow/M.Glow Sampling"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

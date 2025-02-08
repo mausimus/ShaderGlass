@@ -67,7 +67,8 @@ public:
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_edge"));
             TextureDefs.push_back(CrtShadersCrtRoyaleTileableLinearApertureGrille15Wide8And5d5SpacingResizeTo64BGRTextureDef()
 .Param("linear", "true")
 .Param("mipmap", "false")
@@ -83,6 +84,8 @@ public:
 .Param("mipmap", "false")
 .Param("name", "mask_shadow_texture_small")
 .Param("wrap_mode", "repeat"));
+            OverrideParam("mask_triad_size_desired", (float)3.000000);
+            OverrideParam("mask_type", (float)0.000000);
 	}
 };
 }

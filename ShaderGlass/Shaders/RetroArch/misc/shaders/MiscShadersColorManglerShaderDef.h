@@ -734,6 +734,11 @@ public:
 		VertexLength = sizeof(RetroArchMiscShadersColorManglerShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMiscShadersColorManglerShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMiscShadersColorManglerShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("gamma_boost_r", -1, 0, 4, -5.000000f, 5.000000f, 0.000000f, 0.100000f, "Gamma Mod Red Channel"));
 		Params.push_back(ShaderParam("gamma_boost_g", -1, 4, 4, -5.000000f, 5.000000f, 0.000000f, 0.100000f, "Gamma Mod Green Channel"));
 		Params.push_back(ShaderParam("gamma_boost_b", -1, 8, 4, -5.000000f, 5.000000f, 0.000000f, 0.100000f, "Gamma Mod Blue Channel"));
@@ -752,10 +757,6 @@ public:
 		Params.push_back(ShaderParam("blr", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 0.005000f, "Black-Red Tint"));
 		Params.push_back(ShaderParam("blg", -1, 64, 4, 0.000000f, 1.000000f, 0.000000f, 0.005000f, "Black-Green Tint"));
 		Params.push_back(ShaderParam("blb", -1, 68, 4, 0.000000f, 1.000000f, 0.000000f, 0.005000f, "Black-Blue Tint"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

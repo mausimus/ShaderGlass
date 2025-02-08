@@ -31,14 +31,16 @@ public:
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtRoyaleSrcCrtRoyaleScanlinesVerticalInterlacingShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.0")
 .Param("scale_y", "3.0")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtMaximusRoyaleSrcResizeShaderDef()
 .Param("alias", "VERTICAL_SCANLINES")
 .Param("filter_linear", "true")
@@ -53,7 +55,8 @@ public:
 .Param("scale_type_y", "absolute")
 .Param("scale_x", "320")
 .Param("scale_y", "240")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtMaximusRoyaleSrcResizeShaderDef()
 .Param("alias", "BLOOM_APPROX")
 .Param("filter_linear", "true")
@@ -64,20 +67,23 @@ public:
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(BlursShadersRoyaleBlur9fastHorizontalShaderDef()
 .Param("alias", "HALATION_BLUR")
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtRoyaleSrcCrtRoyaleMaskResizeVerticalShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type_x", "absolute")
 .Param("scale_type_y", "viewport")
 .Param("scale_x", "128")
 .Param("scale_y", "0.975")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtRoyaleSrcCrtRoyaleMaskResizeHorizontalShaderDef()
 .Param("alias", "MASK_RESIZE")
 .Param("filter_linear", "false")
@@ -85,29 +91,34 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.73125")
 .Param("scale_y", "1.0")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtRoyaleSrcCrtRoyaleScanlinesHorizontalApplyMaskShaderDef()
 .Param("alias", "MASKED_SCANLINES")
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(CrtShadersCrtRoyaleSrcCrtRoyaleBrightpassShaderDef()
 .Param("alias", "BRIGHTPASS")
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtRoyaleSrcCrtRoyaleBloomVerticalShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtRoyaleSrcCrtRoyaleBloomHorizontalReconstituteShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtRoyaleSrcCrtRoyaleGeometryAaLastPassShaderDef()
 .Param("alias", "LAST_PASS")
 .Param("filter_linear", "true")
@@ -122,7 +133,8 @@ public:
 .Param("scale_type_y", "absolute")
 .Param("scale_x", "160")
 .Param("scale_y", "120")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtMaximusRoyaleSrcBGcolor_pass1ShaderDef()
 .Param("alias", "BGPASS1")
 .Param("filter_linear", "false")
@@ -130,21 +142,25 @@ public:
 .Param("scale_type_y", "absolute")
 .Param("scale_x", "1.0")
 .Param("scale_y", "100.0")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtMaximusRoyaleSrcBGcolor_pass2ShaderDef()
 .Param("alias", "BGPASS2")
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type", "absolute")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtMaximusRoyaleSrcImgborderShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtMaximusRoyaleSrcTv_reflectionShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
-.Param("scale_type", "source"));
+.Param("scale_type", "source")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(StockStockShaderDef()
 .Param("scale_type", "viewport"));
             TextureDefs.push_back(CrtShadersCrtMaximusRoyaleTilePhosphorTexturesTilePhosphor128pxTextureDef()
@@ -203,6 +219,17 @@ public:
 .Param("name", "SHAPE1"));
             TextureDefs.push_back(CrtShadersCrtMaximusRoyaleFrameTextures16_9Frame_2_shapeTextureDef()
 .Param("name", "SHAPE2"));
+            OverrideParam("aa_cubic_c", (float)0.000000);
+            OverrideParam("beam_max_shape", (float)2.000000);
+            OverrideParam("beam_min_sigma", (float)0.100000);
+            OverrideParam("beam_spot_power", (float)0.220000);
+            OverrideParam("border_darkness", (float)0.000000);
+            OverrideParam("border_size", (float)0.000000);
+            OverrideParam("crt_gamma", (float)1.700000);
+            OverrideParam("diffusion_weight", (float)0.300000);
+            OverrideParam("geom_mode_runtime", (float)1.000000);
+            OverrideParam("lcd_gamma", (float)1.200000);
+            OverrideParam("mask_sample_mode_desired", (float)0.000000);
 	}
 };
 }

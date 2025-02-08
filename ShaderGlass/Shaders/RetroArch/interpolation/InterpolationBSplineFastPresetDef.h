@@ -23,9 +23,11 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type_x", "viewport")
-.Param("scale_type_y", "source"));
+.Param("scale_type_y", "source")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(InterpolationShadersBSplineYShaderDef()
-.Param("filter_linear", "false"));
+.Param("filter_linear", "false")
+.Param("wrap_mode", "clamp_to_edge"));
 	}
 };
 }

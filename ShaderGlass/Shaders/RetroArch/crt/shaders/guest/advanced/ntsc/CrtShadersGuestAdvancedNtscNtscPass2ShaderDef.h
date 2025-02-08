@@ -1448,17 +1448,18 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestAdvancedNtscNtscPass2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestAdvancedNtscNtscPass2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestAdvancedNtscNtscPass2ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("auto_res", -1, 72, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "          SNES/Amiga Hi-Res Auto Mode"));
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("ntsc_scale", -1, 48, 4, 0.200000f, 2.500000f, 1.000000f, 0.025000f, "NTSC Resolution Scaling"));
 		Params.push_back(ShaderParam("ntsc_phase", -1, 52, 4, 1.000000f, 4.000000f, 1.000000f, 1.000000f, "NTSC Phase: Auto | 2 phase | 3 phase | Mixed"));
-		Params.push_back(ShaderParam("ntsc_taps", -1, 68, 4, 6.000000f, 32.000000f, 32.000000f, 1.000000f, "NTSC # of Taps (Filter Width)"));
+		Params.push_back(ShaderParam("ntsc_ring", -1, 56, 4, 0.000000f, 1.000000f, 0.500000f, 0.100000f, "NTSC Anti-Ringing"));
 		Params.push_back(ShaderParam("ntsc_cscale", -1, 60, 4, 0.500000f, 4.000000f, 1.000000f, 0.050000f, "NTSC Chroma Scaling / Bleeding (2-phase)"));
 		Params.push_back(ShaderParam("ntsc_cscale1", -1, 64, 4, 0.200000f, 2.250000f, 1.000000f, 0.050000f, "NTSC Chroma Scaling / Bleeding (3-phase)"));
-		Params.push_back(ShaderParam("ntsc_ring", -1, 56, 4, 0.000000f, 1.000000f, 0.500000f, 0.100000f, "NTSC Anti-Ringing"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("ntsc_taps", -1, 68, 4, 6.000000f, 32.000000f, 32.000000f, 1.000000f, "NTSC # of Taps (Filter Width)"));
+		Params.push_back(ShaderParam("auto_res", -1, 72, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "SNES/Amiga Hi-Res Auto Mode"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("PrePass0", 3));
 /*

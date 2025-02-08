@@ -94,6 +94,7 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
+            OverrideParam("INTERNAL_RES", (float)6.000000);
 	}
 };
 }

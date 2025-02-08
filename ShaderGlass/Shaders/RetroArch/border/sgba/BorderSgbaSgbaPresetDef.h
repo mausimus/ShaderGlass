@@ -26,6 +26,9 @@ public:
 .Param("scale_y", "240"));
             TextureDefs.push_back(BorderSgbaSgbaTextureDef()
 .Param("name", "BORDER"));
+            OverrideParam("box_scale", (float)1.000000);
+            OverrideParam("in_res_x", (float)240.000000);
+            OverrideParam("in_res_y", (float)160.000000);
 	}
 };
 }

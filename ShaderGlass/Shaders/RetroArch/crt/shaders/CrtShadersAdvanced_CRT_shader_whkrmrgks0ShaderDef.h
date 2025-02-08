@@ -1297,6 +1297,10 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersAdvanced_CRT_shader_whkrmrgks0ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersAdvanced_CRT_shader_whkrmrgks0ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersAdvanced_CRT_shader_whkrmrgks0ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("cus", -1, 0, 4, 0.000000f, 1.000000f, 0.150000f, 0.010000f, "CRT curvature"));
 		Params.push_back(ShaderParam("vstr", -1, 4, 4, 0.000000f, 1.000000f, 0.050000f, 0.010000f, "Vignette strength"));
 		Params.push_back(ShaderParam("marginv", -1, 8, 4, 0.000000f, 0.100000f, 0.020000f, 0.005000f, "Display margin"));
@@ -1309,9 +1313,6 @@ public:
 		Params.push_back(ShaderParam("scl", -1, 36, 4, 0.000000f, 1080.000000f, 240.000000f, 1.000000f, "Scnaline count, set 0 to match with input"));
 		Params.push_back(ShaderParam("gma", -1, 40, 4, 0.100000f, 4.000000f, 1.000000f, 0.100000f, "Gamma correction"));
 		Params.push_back(ShaderParam("sling", -1, 44, 4, 1.000000f, 2.000000f, 2.000000f, 0.100000f, "line bleed"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 1));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

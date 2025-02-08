@@ -30,6 +30,9 @@ public:
 .Param("scale_y", "448"));
             TextureDefs.push_back(BorderGameboyPlayerGameboyPlayerTextureDef()
 .Param("name", "BORDER"));
+            OverrideParam("box_scale", (float)2.000000);
+            OverrideParam("in_res_x", (float)240.000000);
+            OverrideParam("in_res_y", (float)160.000000);
 	}
 };
 }

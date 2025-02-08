@@ -56,6 +56,8 @@ public:
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
+            OverrideParam("SFX_CLR", (float)0.600000);
+            OverrideParam("SFX_SAA", (float)0.000000);
 	}
 };
 }

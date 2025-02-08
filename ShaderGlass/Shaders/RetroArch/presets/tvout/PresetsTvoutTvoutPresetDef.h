@@ -25,6 +25,20 @@ public:
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000"));
          	ShaderDefs.push_back(MiscShadersImageAdjustmentShaderDef());
+            OverrideParam("B", (float)1.000000);
+            OverrideParam("G", (float)1.000000);
+            OverrideParam("R", (float)1.000000);
+            OverrideParam("TVOUT_COMPOSITE_CONNECTION", (float)0.000000);
+            OverrideParam("TVOUT_RESOLUTION", (float)320.000000);
+            OverrideParam("TVOUT_TV_COLOR_LEVELS", (float)1.000000);
+            OverrideParam("bright_boost", (float)0.000000);
+            OverrideParam("contrast", (float)1.000000);
+            OverrideParam("luminance", (float)1.000000);
+            OverrideParam("monitor_gamma", (float)2.200000);
+            OverrideParam("overscan_percent_x", (float)0.000000);
+            OverrideParam("overscan_percent_y", (float)0.000000);
+            OverrideParam("saturation", (float)1.000000);
+            OverrideParam("target_gamma", (float)2.400000);
 	}
 };
 }

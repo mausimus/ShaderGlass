@@ -1155,9 +1155,10 @@ public:
 		VertexLength = sizeof(RetroArchEdgeSmoothingScalefxShadersScalefxPass4HybridShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchEdgeSmoothingScalefxShadersScalefxPass4HybridShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchEdgeSmoothingScalefxShadersScalefxPass4HybridShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SFX_RAA", -1, 16, 4, 0.000000f, 10.000000f, 2.000000f, 0.050000f, "ScaleFX rAA Sharpness"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SFX_RAA", -1, 16, 4, 0.000000f, 10.000000f, 2.000000f, 0.050000f, "ScaleFX rAA Sharpness"));
 		Samplers.push_back(ShaderSampler("Source", 1));
 		Samplers.push_back(ShaderSampler("refpass", 2));
 /*

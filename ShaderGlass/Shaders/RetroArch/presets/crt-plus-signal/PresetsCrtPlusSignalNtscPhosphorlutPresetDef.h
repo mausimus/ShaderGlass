@@ -73,6 +73,9 @@ public:
 .Param("name", "aperture"));
             TextureDefs.push_back(CrtShadersPhosphorlutLutsSlotmaskTextureDef()
 .Param("name", "slot"));
+            OverrideParam("PHOSPHOR_SCALE_X", (float)4.000000);
+            OverrideParam("diffusion", (float)0.600000);
+            OverrideParam("quality", (float)1.000000);
 	}
 };
 }

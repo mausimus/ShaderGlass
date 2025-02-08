@@ -27,6 +27,10 @@ public:
          	ShaderDefs.push_back(HandheldShadersLcdCgwgLcdGridV2ShaderDef());
             TextureDefs.push_back(BorderHandheldNebulaHandheldNebulaGbaTextureDef()
 .Param("name", "BORDER"));
+            OverrideParam("box_scale", (float)1.000000);
+            OverrideParam("in_res_x", (float)240.000000);
+            OverrideParam("in_res_y", (float)160.000000);
+            OverrideParam("location", (float)0.500000);
 	}
 };
 }

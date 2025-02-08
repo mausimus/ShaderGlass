@@ -2669,15 +2669,16 @@ public:
 		VertexLength = sizeof(RetroArchEdgeSmoothingXbrShadersXbrLv3MultipassXbrLv3Pass0ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchEdgeSmoothingXbrShadersXbrLv3MultipassXbrLv3Pass0ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchEdgeSmoothingXbrShadersXbrLv3MultipassXbrLv3Pass0ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SMALL_DETAILS", -1, 0, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "XBR - MODE (VANILLA | SMALL DETAILS)"));
 		Params.push_back(ShaderParam("WP4", -1, 4, 4, 0.000000f, 1.000000f, 1.000000f, 0.200000f, "XBR - SMOOTHNESS LOCAL WEIGHT"));
 		Params.push_back(ShaderParam("KA", -1, 8, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "XBR - SMOOTHNESS THRESHOLD"));
 		Params.push_back(ShaderParam("XBR_EQ_THRESHOLD", -1, 12, 4, 0.000000f, 1.000000f, 0.260000f, 0.010000f, "XBR - COLOR DISTINCTION THRESHOLD"));
 		Params.push_back(ShaderParam("FD", -1, 16, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "XBR - DITHERING/SMOOTHNESS COMPROMISE (MEDIUM | HIGH)"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

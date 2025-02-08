@@ -1027,14 +1027,15 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersGuestAdvancedNtscNtscPass3ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersGuestAdvancedNtscNtscPass3ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersGuestAdvancedNtscNtscPass3ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("auto_res", -1, 48, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "          SNES/Amiga Hi-Res Auto Mode"));
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("auto_res", -1, 48, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "SNES/Amiga Hi-Res Auto Mode"));
 		Params.push_back(ShaderParam("ntsc_sharp", -1, 52, 4, -10.000000f, 10.000000f, 0.000000f, 0.500000f, "NTSC Sharpness (negative: Adaptive)"));
 		Params.push_back(ShaderParam("ntsc_shape", -1, 56, 4, 0.500000f, 1.000000f, 0.750000f, 0.050000f, "NTSC Sharpness Shape"));
 		Params.push_back(ShaderParam("ntsc_gamma", -1, 60, 4, 0.250000f, 2.500000f, 1.000000f, 0.025000f, "NTSC Filtering Gamma Correction"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("NPass1", 3));
 /*

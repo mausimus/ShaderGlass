@@ -858,17 +858,18 @@ public:
 		VertexLength = sizeof(RetroArchNtscShadersNtscSimpleNtscSimple2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchNtscShadersNtscSimpleNtscSimple2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchNtscShadersNtscSimpleNtscSimple2ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("anim_overr", -1, 20, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Force Animate Artifacts"));
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("system_choose", -1, 0, 4, 0.000000f, 6.000000f, 0.000000f, 1.000000f, "SYSTEM CHOOSE"));
 		Params.push_back(ShaderParam("bogus", -1, 4, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "[ 0:NINTENDO 1:GEN 2:PCE 3:MS-MD256 4:ZXSp 5:C=64 6:A26]"));
 		Params.push_back(ShaderParam("steps", -1, 8, 4, 1.000000f, 16.000000f, 4.000000f, 1.000000f, "Filter Size (faster)"));
 		Params.push_back(ShaderParam("ntsc_sharp", -1, 12, 4, 0.000000f, 1.000000f, 0.100000f, 0.010000f, "NTSC Sharpness"));
 		Params.push_back(ShaderParam("ntsc_sat", -1, 16, 4, 0.000000f, 4.000000f, 2.000000f, 0.050000f, "NTSC Saturation"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("anim_overr", -1, 20, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Force Animate Artifacts"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

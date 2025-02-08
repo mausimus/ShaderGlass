@@ -27,12 +27,14 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(InterpolationShadersSpline36YShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingFsrShadersFsrPass0ShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "false")
@@ -41,7 +43,8 @@ public:
 .Param("scale_type_y", "viewport")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingFsrShadersFsrPass1ShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "false")
@@ -50,7 +53,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(MiscShadersSsGammaRampShaderDef()
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")
@@ -58,7 +62,10 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
+            OverrideParam("FSR_SHARPENING", (float)0.300000);
+            OverrideParam("feedback_pass", (float)0.000000);
 	}
 };
 }

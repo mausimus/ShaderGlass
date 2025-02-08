@@ -5102,12 +5102,19 @@ public:
 		VertexLength = sizeof(RetroArchNtscShadersPatchyNtscPatchyColorShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchNtscShadersPatchyNtscPatchyColorShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchNtscShadersPatchyNtscPatchyColorShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("pc_unused1", 0, 64, 4, 0.000000f, 0.000000f, 0.000000f, 1.000000f, "===== Patchy Color Settings ====="));
 		Params.push_back(ShaderParam("pc_unused2", 0, 68, 4, 0.000000f, 0.000000f, 0.000000f, 1.000000f, "== Test patterns =="));
 		Params.push_back(ShaderParam("pc_testpattern", 0, 72, 4, 0.000000f, 5.000000f, 0.000000f, 1.000000f, "Test pattern selection (0 = off)"));
+		Params.push_back(ShaderParam("pc_expose_demod_clamp_max", 0, 76, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("pc_expose_demod_clamp_min", 0, 80, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("pc_unused3", 0, 84, 4, 0.000000f, 0.000000f, 0.000000f, 1.000000f, "== Console settings (Does work with test patterns) =="));
 		Params.push_back(ShaderParam("pc_console", 0, 88, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "Console: Other | Gen/MD | NES/FC (raw palette)"));
 		Params.push_back(ShaderParam("pc_nes_lut", 0, 92, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "NES: Use real capture (probably 2C02G) | Use formulas"));
+		Params.push_back(ShaderParam("pc_nes_lut_newyuv", 0, 96, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("pc_nes_fbxcol", 0, 100, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("pc_nes_fbxcol_sat", 0, 104, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("pc_nes_version", 0, 108, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "NES PPU formula: 2C02G (NTSC) | 2C02E (NTSC) | PAL"));
 		Params.push_back(ShaderParam("pc_genesis_needfix", 0, 112, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "MD emu: BlastEm (Leave as-is) | GenPlusGX (Apply correction)"));
 		Params.push_back(ShaderParam("pc_unused4", 0, 116, 4, 0.000000f, 0.000000f, 0.000000f, 1.000000f, "=== Composite video demodulation controls ==="));
@@ -5118,6 +5125,7 @@ public:
 		Params.push_back(ShaderParam("pc_g_off", 0, 136, 4, 200.000000f, 300.000000f, 235.000000f, 1.000000f, "Custom G-Y offset"));
 		Params.push_back(ShaderParam("pc_g_amp", 0, 140, 4, 0.000000f, 1.000000f, 0.330000f, 0.010000f, "Custom G-Y gain"));
 		Params.push_back(ShaderParam("pc_unused5", 0, 144, 4, 0.000000f, 0.000000f, 0.000000f, 1.000000f, "=== End-user color tuning knobs ==="));
+		Params.push_back(ShaderParam("pc_contrast_white_norm", 0, 148, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("pc_contrast", 0, 152, 4, 0.000000f, 2.000000f, 0.850000f, 0.025000f, "Contrast (Rec. about 0.8 to 0.9.)"));
 		Params.push_back(ShaderParam("pc_brightness", 0, 156, 4, -0.500000f, 0.500000f, -0.050000f, 0.010000f, "Brightness (Black level)"));
 		Params.push_back(ShaderParam("pc_color", 0, 160, 4, 0.000000f, 4.000000f, 1.000000f, 0.025000f, "Color (Saturation)"));
@@ -5126,17 +5134,10 @@ public:
 		Params.push_back(ShaderParam("pc_gamma_type", 0, 172, 4, 0.000000f, 3.000000f, 1.000000f, 1.000000f, "Gamma: BT.1886 + Grade black lift fix | BT.1886 | Power | sRGB"));
 		Params.push_back(ShaderParam("pc_g_CRT_l", 0, 176, 4, 2.300000f, 2.600000f, 2.500000f, 0.010000f, "Black lift fix approximate gamma"));
 		Params.push_back(ShaderParam("pc_power_gamma", 0, 180, 4, 2.200000f, 3.000000f, 2.400000f, 0.010000f, "Power gamma"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("pc_expose_demod_clamp_max", 0, 76, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("pc_expose_demod_clamp_min", 0, 80, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("pc_nes_lut_newyuv", 0, 96, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("pc_nes_fbxcol", 0, 100, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("pc_nes_fbxcol_sat", 0, 104, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("pc_contrast_white_norm", 0, 148, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FinalViewportSize", -1, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*

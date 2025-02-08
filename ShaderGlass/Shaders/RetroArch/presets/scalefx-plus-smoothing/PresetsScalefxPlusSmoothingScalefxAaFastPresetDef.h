@@ -57,6 +57,13 @@ public:
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "viewport"));
+            OverrideParam("AAOFFSET2", (float)0.400000);
+            OverrideParam("DEBLUR", (float)3.500000);
+            OverrideParam("OFFSET", (float)2.000000);
+            OverrideParam("SFX_CLR", (float)0.500000);
+            OverrideParam("SFX_SAA", (float)1.000000);
+            OverrideParam("SFX_SCN", (float)0.000000);
+            OverrideParam("SMART", (float)0.300000);
 	}
 };
 }

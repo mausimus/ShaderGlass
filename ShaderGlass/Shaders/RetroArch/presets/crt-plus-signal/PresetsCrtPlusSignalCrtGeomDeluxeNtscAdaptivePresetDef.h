@@ -49,6 +49,16 @@ public:
 .Param("name", "slot"));
             TextureDefs.push_back(CrtShadersGeomDeluxeMasksDelta_2_4x1_rgbTextureDef()
 .Param("name", "delta"));
+            OverrideParam("cornersmooth", (float)170.000000);
+            OverrideParam("curvature", (float)0.000000);
+            OverrideParam("cust_artifacting", (float)2.300000);
+            OverrideParam("cust_fringing", (float)1.000000);
+            OverrideParam("geom_lum", (float)0.250000);
+            OverrideParam("halation", (float)0.050000);
+            OverrideParam("ntsc_fields", (float)1.000000);
+            OverrideParam("ntsc_phase", (float)2.000000);
+            OverrideParam("quality", (float)-1.000000);
+            OverrideParam("scanline_weight", (float)0.400000);
 	}
 };
 }

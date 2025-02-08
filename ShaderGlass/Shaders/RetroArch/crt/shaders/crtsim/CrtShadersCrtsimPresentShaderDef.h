@@ -877,6 +877,12 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtsimPresentShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtsimPresentShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtsimPresentShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("BloomPower", 0, 116, 4, 0.000000f, 10.000000f, 1.000000f, 0.100000f, "Bloom Power"));
 		Params.push_back(ShaderParam("BloomScalar", 0, 120, 4, 0.000000f, 1.000000f, 0.100000f, 0.050000f, "Bloom Scalar"));
 		Params.push_back(ShaderParam("Tuning_Overscan", 0, 124, 4, 0.000000f, 1.000000f, 0.950000f, 0.050000f, "Overscan"));
@@ -886,11 +892,6 @@ public:
 		Params.push_back(ShaderParam("Tuning_Satur", -1, 4, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "Saturation"));
 		Params.push_back(ShaderParam("Tuning_Mask_Brightness", -1, 8, 4, 0.000000f, 1.000000f, 0.500000f, 0.050000f, "Mask Brightness"));
 		Params.push_back(ShaderParam("Tuning_Mask_Opacity", -1, 12, 4, 0.000000f, 1.000000f, 0.300000f, 0.050000f, "Mask Opacity"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("shadowMaskSampler", 4));
 		Samplers.push_back(ShaderSampler("CRTPASS", 3));
 		Samplers.push_back(ShaderSampler("Source", 2));

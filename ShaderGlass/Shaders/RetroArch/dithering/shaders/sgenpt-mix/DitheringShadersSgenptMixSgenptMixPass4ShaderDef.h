@@ -684,13 +684,14 @@ public:
 		VertexLength = sizeof(RetroArchDitheringShadersSgenptMixSgenptMixPass4ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchDitheringShadersSgenptMixSgenptMixPass4ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchDitheringShadersSgenptMixSgenptMixPass4ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SGPT_BLEND_OPTION", -1, 52, 4, 0.000000f, 3.000000f, 3.000000f, 1.000000f, "SGENPT-MIX: [ OFF | CB | VL | BOTH ]"));
-		Params.push_back(ShaderParam("VL_BLEND_LEVEL", -1, 56, 4, 0.000000f, 1.000000f, 0.800000f, 0.100000f, "    Vertical Lines Blend Level"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SGPT_BLEND_OPTION", -1, 52, 4, 0.000000f, 3.000000f, 3.000000f, 1.000000f, "SGENPT-MIX: [ OFF | CB | VL | BOTH ]"));
+		Params.push_back(ShaderParam("VL_BLEND_LEVEL", -1, 56, 4, 0.000000f, 1.000000f, 0.800000f, 0.100000f, "Vertical Lines Blend Level"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

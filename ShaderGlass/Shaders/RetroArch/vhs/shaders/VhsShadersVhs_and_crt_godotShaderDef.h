@@ -2068,9 +2068,12 @@ public:
 		VertexLength = sizeof(RetroArchVhsShadersVhs_and_crt_godotShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchVhsShadersVhs_and_crt_godotShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchVhsShadersVhs_and_crt_godotShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("godot_scanlines_opacity", 0, 64, 4, 0.000000f, 1.000000f, 0.400000f, 0.010000f, "Scanlines Opacity"));
 		Params.push_back(ShaderParam("godot_scanlines_width", 0, 68, 4, 0.000000f, 0.500000f, 0.250000f, 0.050000f, "Scanlines Width"));
 		Params.push_back(ShaderParam("godot_grille_opacity", 0, 72, 4, 0.000000f, 1.000000f, 0.300000f, 0.010000f, "Grille Opacity"));
+		Params.push_back(ShaderParam("godot_pixelate", 0, 76, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("godot_roll", 0, 80, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Roll Toggle"));
 		Params.push_back(ShaderParam("godot_roll_speed", 0, 84, 4, -20.000000f, 20.000000f, 8.000000f, 0.100000f, "Roll Speed"));
 		Params.push_back(ShaderParam("godot_roll_size", 0, 88, 4, 0.000000f, 100.000000f, 15.000000f, 1.000000f, "Roll Size"));
@@ -2087,12 +2090,10 @@ public:
 		Params.push_back(ShaderParam("godot_vignette_intensity", 0, 132, 4, 0.000000f, 1.000000f, 0.400000f, 0.010000f, "Vignette Intensity"));
 		Params.push_back(ShaderParam("godot_vignette_opacity", 0, 136, 4, 0.000000f, 1.000000f, 0.500000f, 0.010000f, "Vignette Opacity"));
 		Params.push_back(ShaderParam("godot_moire", 0, 140, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Warp Scanlines/Mask (Moire!)"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("godot_pixelate", 0, 76, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameDirection", -1, 52, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*

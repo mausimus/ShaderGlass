@@ -1013,15 +1013,16 @@ public:
 		VertexLength = sizeof(RetroArchDitheringShadersSgenptMixSgenptMixPass3ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchDitheringShadersSgenptMixSgenptMixPass3ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchDitheringShadersSgenptMixSgenptMixPass3ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("CB_MITIG_NEIGHBRS", -1, 52, 4, 0.000000f, 4.000000f, 1.000000f, 1.000000f, "        CB - Mitigate Errors (neighbors)"));
-		Params.push_back(ShaderParam("CB_MITIG_LINES", -1, 56, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "        CB - Mitigate Errors (regions)"));
-		Params.push_back(ShaderParam("CB_ADJUST_VIEW", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "        CB - Adjust View"));
-		Params.push_back(ShaderParam("UseGamma", -1, 64, 4, 0.000000f, 1.000000f, 1.000000f, 0.100000f, "    Gamma Slider"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("CB_MITIG_NEIGHBRS", -1, 52, 4, 0.000000f, 4.000000f, 1.000000f, 1.000000f, "CB - Mitigate Errors (neighbors)"));
+		Params.push_back(ShaderParam("CB_MITIG_LINES", -1, 56, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "CB - Mitigate Errors (regions)"));
+		Params.push_back(ShaderParam("CB_ADJUST_VIEW", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "CB - Adjust View"));
+		Params.push_back(ShaderParam("UseGamma", -1, 64, 4, 0.000000f, 1.000000f, 1.000000f, 0.100000f, "Gamma Slider"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("LinearGamma", 3));
 /*

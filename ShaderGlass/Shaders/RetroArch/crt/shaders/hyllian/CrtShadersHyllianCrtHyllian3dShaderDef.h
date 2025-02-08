@@ -1105,6 +1105,12 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersHyllianCrtHyllian3dShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersHyllianCrtHyllian3dShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersHyllianCrtHyllian3dShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("CRT_MULRES_X", -1, 52, 4, 1.000000f, 8.000000f, 2.000000f, 1.000000f, "CRT - Internal X Res Multiplier"));
 		Params.push_back(ShaderParam("CRT_MULRES_Y", -1, 56, 4, 1.000000f, 8.000000f, 2.000000f, 1.000000f, "CRT - Internal Y Res Multiplier"));
 		Params.push_back(ShaderParam("PHOSPHOR", -1, 60, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "CRT - Phosphor ON/OFF"));
@@ -1119,11 +1125,6 @@ public:
 		Params.push_back(ShaderParam("BEAM_MIN_WIDTH", -1, 96, 4, 0.000000f, 1.000000f, 0.860000f, 0.020000f, "CRT - Min Beam Width"));
 		Params.push_back(ShaderParam("BEAM_MAX_WIDTH", -1, 100, 4, 0.000000f, 1.000000f, 1.000000f, 0.020000f, "CRT - Max Beam Width"));
 		Params.push_back(ShaderParam("CRT_ANTI_RINGING", -1, 104, 4, 0.000000f, 1.000000f, 0.800000f, 0.100000f, "CRT - Anti-Ringing"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

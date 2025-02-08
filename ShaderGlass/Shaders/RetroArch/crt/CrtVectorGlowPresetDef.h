@@ -56,6 +56,13 @@ public:
          	ShaderDefs.push_back(CrtShadersGlowTrailsCombineShaderDef());
          	ShaderDefs.push_back(MiscShadersImageAdjustmentShaderDef()
 .Param("scale_type", "viewport"));
+            OverrideParam("bright", (float)1.000000);
+            OverrideParam("glowFactor", (float)0.100000);
+            OverrideParam("haze_strength", (float)0.250000);
+            OverrideParam("luminance", (float)1.500000);
+            OverrideParam("mixfactor", (float)0.180000);
+            OverrideParam("threshold", (float)0.900000);
+            OverrideParam("trail_bright", (float)0.300000);
 	}
 };
 }

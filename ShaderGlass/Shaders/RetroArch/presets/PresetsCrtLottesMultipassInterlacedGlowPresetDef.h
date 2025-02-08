@@ -59,6 +59,14 @@ public:
 .Param("filter_linear", "true"));
          	ShaderDefs.push_back(CrtShadersCrtLottesMultipassScanpassGlowShaderDef()
 .Param("filter_linear", "true"));
+            OverrideParam("DIFFUSION", (float)0.100000);
+            OverrideParam("glowFactor", (float)0.100000);
+            OverrideParam("maskDark", (float)1.100000);
+            OverrideParam("maskLight", (float)0.900000);
+            OverrideParam("mixfactor", (float)0.750000);
+            OverrideParam("threshold", (float)0.900000);
+            OverrideParam("trail_bright", (float)0.070000);
+            OverrideParam("warpX", (float)0.000000);
 	}
 };
 }

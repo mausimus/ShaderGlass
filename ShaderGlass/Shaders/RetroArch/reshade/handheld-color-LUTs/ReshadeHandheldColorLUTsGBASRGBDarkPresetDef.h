@@ -28,6 +28,7 @@ public:
             TextureDefs.push_back(ReshadeShadersLUTHandheldGBASRGBDarkTextureDef()
 .Param("linear", "true")
 .Param("name", "SamplerLUT"));
+            OverrideParam("LUT_Size", (float)32.000000);
 	}
 };
 }

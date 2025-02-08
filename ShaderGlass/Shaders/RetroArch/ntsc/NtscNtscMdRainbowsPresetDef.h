@@ -26,6 +26,15 @@ public:
          	ShaderDefs.push_back(CrtShadersMame_hlslShadersMame_ntsc_decodeShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "source"));
+            OverrideParam("avalue", (float)0.000000);
+            OverrideParam("bvalue", (float)0.000000);
+            OverrideParam("ifreqresponse", (float)1.750000);
+            OverrideParam("notch_width", (float)3.450001);
+            OverrideParam("ntscsignal", (float)1.000000);
+            OverrideParam("qfreqresponse", (float)1.450000);
+            OverrideParam("scale_1", (float)1.000000);
+            OverrideParam("scantime", (float)47.900070);
+            OverrideParam("shadowalpha", (float)0.100000);
 	}
 };
 }

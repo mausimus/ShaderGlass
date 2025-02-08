@@ -457,14 +457,15 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtSuperXbrCustomResolveShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtSuperXbrCustomResolveShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtSuperXbrCustomResolveShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("BLOOM_STRENGTH", -1, 52, 4, 0.000000f, 1.000000f, 0.100000f, 0.010000f, "Bloom Strength"));
-		Params.push_back(ShaderParam("SOURCE_BOOST", -1, 56, 4, 1.000000f, 2.000000f, 1.150000f, 0.050000f, "Bloom Color Boost"));
-		Params.push_back(ShaderParam("OUTPUT_GAMMA", -1, 60, 4, 1.000000f, 3.000000f, 2.200000f, 0.100000f, "OUTPUT GAMMA"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("BLOOM_STRENGTH", -1, 52, 4, 0.000000f, 1.000000f, 0.100000f, 0.010000f, "Bloom Strength"));
+		Params.push_back(ShaderParam("SOURCE_BOOST", -1, 56, 4, 1.000000f, 2.000000f, 1.150000f, 0.050000f, "Bloom Color Boost"));
+		Params.push_back(ShaderParam("OUTPUT_GAMMA", -1, 60, 4, 1.000000f, 3.000000f, 2.200000f, 0.100000f, "OUTPUT GAMMA"));
 		Samplers.push_back(ShaderSampler("CRT_PASS", 3));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*

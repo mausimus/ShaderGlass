@@ -2101,8 +2101,11 @@ public:
 		VertexLength = sizeof(RetroArchHandheldConsoleBorderShaderFilesLcdCgwgLcdGridV2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldConsoleBorderShaderFilesLcdCgwgLcdGridV2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldConsoleBorderShaderFilesLcdCgwgLcdGridV2ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("video_scale", -1, 56, 4, 2.000000f, 20.000000f, 3.000000f, 1.000000f, "Video Scale"));
-		Params.push_back(ShaderParam("PAR", -1, 60, 4, 0.000000f, 20.000000f, 1.000000f, 0.010000f, "Pixel Aspect Ratio"));
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("RSUBPIX_R", -1, 0, 4, 0.000000f, 1.000000f, 1.000000f, 0.010000f, "Colour of R subpixel: R"));
 		Params.push_back(ShaderParam("RSUBPIX_G", -1, 4, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "Colour of R subpixel: G"));
 		Params.push_back(ShaderParam("RSUBPIX_B", -1, 8, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "Colour of R subpixel: B"));
@@ -2117,10 +2120,8 @@ public:
 		Params.push_back(ShaderParam("blacklevel", -1, 44, 4, 0.000000f, 0.500000f, 0.050000f, 0.010000f, "Black level"));
 		Params.push_back(ShaderParam("ambient", -1, 48, 4, 0.000000f, 0.500000f, 0.000000f, 0.010000f, "Ambient"));
 		Params.push_back(ShaderParam("BGR", -1, 52, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "BGR"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("video_scale", -1, 56, 4, 2.000000f, 20.000000f, 3.000000f, 1.000000f, "Video Scale"));
+		Params.push_back(ShaderParam("PAR", -1, 60, 4, 0.000000f, 20.000000f, 1.000000f, 0.010000f, "Pixel Aspect Ratio"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

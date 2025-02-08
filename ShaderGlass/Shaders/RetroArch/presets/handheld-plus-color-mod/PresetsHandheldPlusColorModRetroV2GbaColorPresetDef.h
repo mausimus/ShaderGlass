@@ -25,6 +25,8 @@ public:
 .Param("scale_type", "source"));
          	ShaderDefs.push_back(HandheldShadersRetroV2ShaderDef()
 .Param("filter_linear", "false"));
+            OverrideParam("RETRO_PIXEL_SIZE", (float)0.840000);
+            OverrideParam("darken_screen", (float)1.000000);
 	}
 };
 }

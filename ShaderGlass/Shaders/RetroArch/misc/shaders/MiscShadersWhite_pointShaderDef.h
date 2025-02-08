@@ -803,16 +803,17 @@ public:
 		VertexLength = sizeof(RetroArchMiscShadersWhite_pointShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMiscShadersWhite_pointShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMiscShadersWhite_pointShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("temperature", -1, 52, 4, 1031.000000f, 12047.000000f, 9311.000000f, 72.000000f, "White Point"));
-		Params.push_back(ShaderParam("luma_preserve", -1, 56, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Preserve Luminance"));
-		Params.push_back(ShaderParam("wp_red", -1, 60, 4, -1.000000f, 1.000000f, 0.000000f, 0.010000f, "Red Shift"));
-		Params.push_back(ShaderParam("wp_green", -1, 64, 4, -1.000000f, 1.000000f, 0.000000f, 0.010000f, "Green Shift"));
-		Params.push_back(ShaderParam("wp_blue", -1, 68, 4, -1.000000f, 1.000000f, 0.000000f, 0.010000f, "Blue Shift"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("temperature", -1, 52, 4, 1031.000000f, 12047.000000f, 9311.000000f, 72.000000f, "White Point"));
+		Params.push_back(ShaderParam("luma_preserve", -1, 56, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Preserve Luminance"));
+		Params.push_back(ShaderParam("wp_red", -1, 60, 4, -1.000000f, 1.000000f, 0.000000f, 0.010000f, "Red Shift"));
+		Params.push_back(ShaderParam("wp_green", -1, 64, 4, -1.000000f, 1.000000f, 0.000000f, 0.010000f, "Green Shift"));
+		Params.push_back(ShaderParam("wp_blue", -1, 68, 4, -1.000000f, 1.000000f, 0.000000f, 0.010000f, "Blue Shift"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

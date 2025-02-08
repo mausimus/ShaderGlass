@@ -141,6 +141,7 @@ public:
 .Param("mipmap", "true")
 .Param("name", "mask_shadow_texture_large")
 .Param("wrap_mode", "repeat"));
+            OverrideParam("quality", (float)0.000000);
 	}
 };
 }

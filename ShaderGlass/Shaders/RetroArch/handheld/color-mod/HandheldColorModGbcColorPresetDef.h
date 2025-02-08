@@ -33,6 +33,7 @@ public:
             TextureDefs.push_back(HandheldShadersColorLutGbcGrey2TextureDef()
 .Param("linear", "true")
 .Param("name", "SamplerLUT2"));
+            OverrideParam("LUT_selector_param", (float)2.000000);
 	}
 };
 }

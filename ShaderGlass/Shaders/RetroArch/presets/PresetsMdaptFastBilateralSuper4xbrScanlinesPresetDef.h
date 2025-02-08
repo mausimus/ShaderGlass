@@ -51,44 +51,51 @@ public:
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
-.Param("scale_y", "1.000000"));
+.Param("scale_y", "1.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingXbrShadersSuperXbrSuperXbrPass0ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
-.Param("scale_y", "1.000000"));
+.Param("scale_y", "1.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingXbrShadersSuperXbrSuperXbrPass1ShaderDef()
 .Param("alias", "PassPrev2")
 .Param("filter_linear", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
-.Param("scale_y", "2.000000"));
+.Param("scale_y", "2.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingXbrShadersSuperXbrSuperXbrPass2ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
-.Param("scale_y", "1.000000"));
+.Param("scale_y", "1.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingXbrShadersSuperXbrSuperXbrPass0ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
-.Param("scale_y", "1.000000"));
+.Param("scale_y", "1.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingXbrShadersSuperXbrSuperXbrPass1bShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
-.Param("scale_y", "2.000000"));
+.Param("scale_y", "2.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingXbrShadersSuperXbrSuperXbrPass2ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type_x", "source")
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
-.Param("scale_y", "1.000000"));
+.Param("scale_y", "1.000000")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(StockStockShaderDef());
          	ShaderDefs.push_back(ScanlinesShadersScanlineShaderDef()
 .Param("filter_linear", "false")

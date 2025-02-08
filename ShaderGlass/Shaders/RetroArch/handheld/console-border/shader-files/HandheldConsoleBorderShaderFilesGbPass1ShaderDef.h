@@ -1170,13 +1170,14 @@ public:
 		VertexLength = sizeof(RetroArchHandheldConsoleBorderShaderFilesGbPass1ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldConsoleBorderShaderFilesGbPass1ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldConsoleBorderShaderFilesGbPass1ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("blending_mode", -1, 48, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Blending Mode"));
 		Params.push_back(ShaderParam("adjacent_texel_alpha_blending", -1, 52, 4, 0.000000f, 1.000000f, 0.760000f, 0.010000f, "Neighbor Blending"));
 		Params.push_back(ShaderParam("video_scale", -1, 56, 4, 2.000000f, 20.000000f, 3.000000f, 1.000000f, "Video Scale"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

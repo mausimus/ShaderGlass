@@ -1534,6 +1534,11 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtApertureShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtApertureShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtApertureShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 32, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SHARPNESS_IMAGE", -1, 36, 4, 1.000000f, 5.000000f, 1.000000f, 1.000000f, "Sharpness Image"));
 		Params.push_back(ShaderParam("SHARPNESS_EDGES", -1, 40, 4, 1.000000f, 5.000000f, 3.000000f, 1.000000f, "Sharpness Edges"));
 		Params.push_back(ShaderParam("GLOW_WIDTH", -1, 44, 4, 0.050000f, 0.650000f, 0.500000f, 0.050000f, "Glow Width"));
@@ -1550,10 +1555,6 @@ public:
 		Params.push_back(ShaderParam("GAMMA_INPUT", -1, 88, 4, 1.000000f, 5.000000f, 2.400000f, 0.100000f, "Gamma Input"));
 		Params.push_back(ShaderParam("GAMMA_OUTPUT", -1, 92, 4, 1.000000f, 5.000000f, 2.400000f, 0.100000f, "Gamma Output"));
 		Params.push_back(ShaderParam("BRIGHTNESS", -1, 96, 4, 0.000000f, 2.000000f, 1.500000f, 0.050000f, "Brightness"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", -1, 32, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

@@ -726,13 +726,14 @@ public:
 		VertexLength = sizeof(RetroArchMiscShadersBobDeinterlacingShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMiscShadersBobDeinterlacingShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMiscShadersBobDeinterlacingShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("scale", -1, 52, 4, 1.000000f, 16.000000f, 1.000000f, 1.000000f, "Deinterlacing Scale"));
-		Params.push_back(ShaderParam("ghost", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Blend Frames to Hide Bobbing"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("scale", -1, 52, 4, 1.000000f, 16.000000f, 1.000000f, 1.000000f, "Deinterlacing Scale"));
+		Params.push_back(ShaderParam("ghost", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Blend Frames to Hide Bobbing"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("OriginalHistory1", 3));
 /*

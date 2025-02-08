@@ -864,6 +864,12 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersZfast_crtZfast_crt_curvatureShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersZfast_crtZfast_crt_curvatureShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersZfast_crtZfast_crt_curvatureShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("BLURSCALEX", -1, 52, 4, 0.000000f, 1.000000f, 0.300000f, 0.050000f, "Blur Amount X-Axis"));
 		Params.push_back(ShaderParam("LOWLUMSCAN", -1, 56, 4, 0.000000f, 10.000000f, 6.000000f, 0.500000f, "Scanline Darkness - Low"));
 		Params.push_back(ShaderParam("HILUMSCAN", -1, 60, 4, 0.000000f, 50.000000f, 8.000000f, 1.000000f, "Scanline Darkness - High"));
@@ -872,11 +878,6 @@ public:
 		Params.push_back(ShaderParam("MASK_FADE", -1, 72, 4, 0.000000f, 1.000000f, 0.800000f, 0.050000f, "Mask/Scanline Fade"));
 		Params.push_back(ShaderParam("CURVE", -1, 76, 4, 0.000000f, 0.300000f, 0.030000f, 0.002000f, "Curvature"));
 		Params.push_back(ShaderParam("CORNER", -1, 80, 4, 0.000000f, 20.000000f, 0.300000f, 0.100000f, "Corner"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

@@ -44,7 +44,9 @@ public:
 .Param("scale_y", "1.0"));
          	ShaderDefs.push_back(CrtShadersVt220Vt220ShaderDef()
 .Param("mipmap_input", "true")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "mirrored_repeat"));
+            OverrideParam("quality", (float)1.000000);
 	}
 };
 }

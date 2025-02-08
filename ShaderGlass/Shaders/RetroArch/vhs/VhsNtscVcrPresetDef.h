@@ -42,6 +42,11 @@ public:
 .Param("scale_type", "source"));
             TextureDefs.push_back(VhsResourcesPlayTextureDef()
 .Param("name", "play"));
+            OverrideParam("GRAIN_STR", (float)6.000000);
+            OverrideParam("bright_boost", (float)0.100000);
+            OverrideParam("luminance", (float)1.100000);
+            OverrideParam("saturation", (float)0.700000);
+            OverrideParam("target_gamma", (float)3.500000);
 	}
 };
 }

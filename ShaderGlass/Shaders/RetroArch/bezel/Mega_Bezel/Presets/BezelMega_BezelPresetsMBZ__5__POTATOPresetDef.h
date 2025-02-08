@@ -1,6 +1,6 @@
 /*
-ShaderGlass preset bezel-Mega_Bezel-presets / MBZ__5__POTATO imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/presets/MBZ__5__POTATO.slangp
+ShaderGlass preset bezel-Mega_Bezel-Presets / MBZ__5__POTATO imported from RetroArch:
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/Presets/MBZ__5__POTATO.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -15,7 +15,7 @@ public:
 	BezelMega_BezelPresetsMBZ__5__POTATOPresetDef() : PresetDef{}
 	{
 		Name = "MBZ__5__POTATO";
-		Category = "bezel-Mega_Bezel-presets";
+		Category = "bezel-Mega_Bezel-Presets";
 	}
 
 	virtual void Build() {
@@ -99,6 +99,10 @@ public:
 .Param("linear", "true")
 .Param("mipmap", "1")
 .Param("name", "BackgroundVertImage"));
+            OverrideParam("HSM_ASPECT_RATIO_MODE", (float)1.000000);
+            OverrideParam("g_gamma_out", (float)2.450000);
+            OverrideParam("g_lum", (float)0.150000);
+            OverrideParam("g_sat", (float)0.250000);
 	}
 };
 }

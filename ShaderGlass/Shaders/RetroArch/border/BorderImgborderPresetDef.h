@@ -23,6 +23,7 @@ public:
 .Param("scale_type", "viewport"));
             TextureDefs.push_back(BorderTexturesPvmTextureDef()
 .Param("name", "BORDER"));
+            OverrideParam("border_on_top", (float)0.000000);
 	}
 };
 }

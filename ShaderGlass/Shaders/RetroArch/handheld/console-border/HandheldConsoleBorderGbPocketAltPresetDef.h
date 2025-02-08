@@ -52,6 +52,10 @@ public:
             TextureDefs.push_back(HandheldConsoleBorderResourcesPocketBorderSquare4xTextureDef()
 .Param("linear", "true")
 .Param("name", "BORDER"));
+            OverrideParam("blending_mode", (float)0.000000);
+            OverrideParam("grey_balance", (float)3.000000);
+            OverrideParam("response_time", (float)0.444000);
+            OverrideParam("video_scale", (float)4.000000);
 	}
 };
 }

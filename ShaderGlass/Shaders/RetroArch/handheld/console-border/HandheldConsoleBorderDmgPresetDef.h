@@ -55,6 +55,7 @@ public:
             TextureDefs.push_back(HandheldConsoleBorderResourcesDmgBorderSquare4xTextureDef()
 .Param("linear", "true")
 .Param("name", "BORDER"));
+            OverrideParam("video_scale", (float)4.000000);
 	}
 };
 }

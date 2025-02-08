@@ -36,6 +36,15 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type", "viewport"));
+            OverrideParam("INTERNAL_RES", (float)4.000000);
+            OverrideParam("InputGamma", (float)1.000000);
+            OverrideParam("KA", (float)0.950000);
+            OverrideParam("OutputGamma", (float)1.000000);
+            OverrideParam("SMALL_DETAILS", (float)0.000000);
+            OverrideParam("WP4", (float)0.800000);
+            OverrideParam("XBR_BLENDING", (float)0.000000);
+            OverrideParam("XBR_EQ_THRESHOLD", (float)0.450000);
+            OverrideParam("scale4", (float)1.000000);
 	}
 };
 }

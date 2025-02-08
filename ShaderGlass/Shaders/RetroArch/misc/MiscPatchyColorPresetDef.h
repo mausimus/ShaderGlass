@@ -27,7 +27,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(NtscShadersPatchyNtscTrilinearLUTSwitchableShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true")
@@ -36,7 +37,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(NtscShadersPatchyNtscLinearToSrgbShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true")
@@ -45,7 +47,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "false"));
+.Param("srgb_framebuffer", "false")
+.Param("wrap_mode", "clamp_to_border"));
             TextureDefs.push_back(NtscShadersPatchyNtscP22_80s_D65TextureDef()
 .Param("linear", "false")
 .Param("mipmap", "false")
@@ -76,6 +79,7 @@ public:
 .Param("mipmap", "false")
 .Param("name", "PhosphorSamplerLUT6")
 .Param("wrap_mode", "clamp_to_border"));
+            OverrideParam("feedback_pass", (float)0.000000);
 	}
 };
 }

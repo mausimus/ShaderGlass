@@ -2223,6 +2223,13 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtEasymodeHalationCrtEasymodeHalationShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtEasymodeHalationCrtEasymodeHalationShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtEasymodeHalationCrtEasymodeHalationShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", 0, 64, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("ORIG_LINEARIZEDSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("GAMMA_OUTPUT", -1, 32, 4, 0.100000f, 5.000000f, 2.200000f, 0.010000f, "Gamma Output"));
 		Params.push_back(ShaderParam("SHARPNESS_H", -1, 36, 4, 0.000000f, 1.000000f, 0.600000f, 0.050000f, "Sharpness Horizontal"));
 		Params.push_back(ShaderParam("SHARPNESS_V", -1, 40, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "Sharpness Vertical"));
@@ -2238,16 +2245,10 @@ public:
 		Params.push_back(ShaderParam("GEOM_WARP", -1, 80, 4, 0.000000f, 0.100000f, 0.000000f, 0.010000f, "Geom Warp"));
 		Params.push_back(ShaderParam("GEOM_CORNER_SIZE", -1, 84, 4, 0.000000f, 0.100000f, 0.000000f, 0.010000f, "Geom Corner Size"));
 		Params.push_back(ShaderParam("GEOM_CORNER_SMOOTH", -1, 88, 4, 50.000000f, 1000.000000f, 150.000000f, 25.000000f, "Geom Corner Smoothness"));
-		Params.push_back(ShaderParam("INTERLACING_TOGGLE", -1, 92, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Interlacing Toggle"));
+		Params.push_back(ShaderParam("INTERLACING_TOGGLE", -1, 92, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Interlacing Toggle"));
 		Params.push_back(ShaderParam("HALATION", -1, 96, 4, 0.000000f, 1.000000f, 0.030000f, 0.010000f, "Halation"));
 		Params.push_back(ShaderParam("DIFFUSION", -1, 100, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "Diffusion"));
 		Params.push_back(ShaderParam("BRIGHTNESS", -1, 104, 4, 0.000000f, 2.000000f, 1.000000f, 0.050000f, "Brightness"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", 0, 64, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("ORIG_LINEARIZEDSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("ORIG_LINEARIZED", 3));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*

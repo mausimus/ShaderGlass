@@ -1827,6 +1827,11 @@ public:
 		VertexLength = sizeof(RetroArchHandheldShadersLcdCgwgLcdGridV2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldShadersLcdCgwgLcdGridV2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldShadersLcdCgwgLcdGridV2ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("RSUBPIX_R", -1, 0, 4, 0.000000f, 1.000000f, 1.000000f, 0.010000f, "Colour of R subpixel: R"));
 		Params.push_back(ShaderParam("RSUBPIX_G", -1, 4, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "Colour of R subpixel: G"));
 		Params.push_back(ShaderParam("RSUBPIX_B", -1, 8, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "Colour of R subpixel: B"));
@@ -1841,10 +1846,6 @@ public:
 		Params.push_back(ShaderParam("blacklevel", -1, 44, 4, 0.000000f, 0.500000f, 0.050000f, 0.010000f, "Black level"));
 		Params.push_back(ShaderParam("ambient", -1, 48, 4, 0.000000f, 0.500000f, 0.000000f, 0.010000f, "Ambient"));
 		Params.push_back(ShaderParam("BGR", -1, 52, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "BGR"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

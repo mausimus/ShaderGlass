@@ -45,6 +45,9 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "1.000000")
 .Param("scale_type", "source"));
+            OverrideParam("KA", (float)0.350000);
+            OverrideParam("SMALL_DETAILS", (float)1.000000);
+            OverrideParam("WP4", (float)0.800000);
 	}
 };
 }

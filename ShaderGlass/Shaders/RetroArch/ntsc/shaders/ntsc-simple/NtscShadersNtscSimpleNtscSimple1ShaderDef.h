@@ -764,15 +764,16 @@ public:
 		VertexLength = sizeof(RetroArchNtscShadersNtscSimpleNtscSimple1ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchNtscShadersNtscSimpleNtscSimple1ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchNtscShadersNtscSimpleNtscSimple1ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("ntsc_U", -1, 0, 4, -6.000000f, 6.000000f, 0.800000f, 0.050000f, "U Hue (Purple to Yellow)"));
 		Params.push_back(ShaderParam("ntsc_V", -1, 4, 4, -6.000000f, 6.000000f, 1.000000f, 0.050000f, "V Hue (Red to Cyan)"));
-		Params.push_back(ShaderParam("anim_overr", -1, 12, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Force Animate Artifacts"));
 		Params.push_back(ShaderParam("system_choose", -1, 8, 4, 0.000000f, 6.000000f, 0.000000f, 1.000000f, "SYSTEM CHOOSE"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("anim_overr", -1, 12, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Force Animate Artifacts"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

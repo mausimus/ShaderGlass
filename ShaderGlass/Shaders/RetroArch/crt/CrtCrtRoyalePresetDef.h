@@ -89,7 +89,8 @@ public:
          	ShaderDefs.push_back(CrtShadersCrtRoyaleSrcCrtRoyaleGeometryAaLastPassShaderDef()
 .Param("filter_linear", "true")
 .Param("mipmap_input", "true")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "clamp_to_edge"));
             TextureDefs.push_back(CrtShadersCrtRoyaleTileableLinearApertureGrille15Wide8And5d5SpacingResizeTo64TextureDef()
 .Param("linear", "true")
 .Param("mipmap", "false")

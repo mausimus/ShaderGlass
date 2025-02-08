@@ -748,12 +748,13 @@ public:
 		VertexLength = sizeof(RetroArchInterpolationShadersLanczos3XShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchInterpolationShadersLanczos3XShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchInterpolationShadersLanczos3XShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("LANCZOS3_ANTI_RINGING", -1, 52, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Lanczos3 Anti-Ringing [ OFF | ON ]"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("LANCZOS3_ANTI_RINGING", -1, 52, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Lanczos3 Anti-Ringing [ OFF | ON ]"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

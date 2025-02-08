@@ -590,12 +590,13 @@ public:
 		VertexLength = sizeof(RetroArchPixelArtScalingShadersEdgeNpixelsShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchPixelArtScalingShadersEdgeNpixelsShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchPixelArtScalingShadersEdgeNpixelsShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("PixelCount", -1, 52, 4, 1.000000f, 8.000000f, 2.000000f, 1.000000f, "Pixel Count"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("PixelCount", -1, 52, 4, 1.000000f, 8.000000f, 2.000000f, 1.000000f, "Pixel Count"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

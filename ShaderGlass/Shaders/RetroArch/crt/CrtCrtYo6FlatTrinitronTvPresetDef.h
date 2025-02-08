@@ -21,7 +21,8 @@ public:
 	virtual void Build() {
          	ShaderDefs.push_back(CrtShadersCrtYo6CrtYo6FlatTrinitronTvShaderDef()
 .Param("filter_linear", "true")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "clamp_to_edge"));
             TextureDefs.push_back(CrtShadersCrtYo6PhosphorFlatTrinitronTvTextureDef()
 .Param("linear", "false")
 .Param("name", "TEX"));

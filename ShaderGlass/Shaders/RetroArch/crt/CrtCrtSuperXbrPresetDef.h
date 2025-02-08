@@ -28,7 +28,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrSuperXbrPass0ShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
@@ -37,7 +38,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrSuperXbrPass1ShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
@@ -46,7 +48,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "2.000000")
 .Param("scale_y", "2.000000")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrSuperXbrPass2ShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
@@ -55,7 +58,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrCustomBicubicXShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
@@ -64,7 +68,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrCustomBicubicYShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
@@ -73,7 +78,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "0.500000")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrCrtCustomShaderDef()
 .Param("alias", "CRT_PASS")
 .Param("filter_linear", "true")
@@ -83,7 +89,8 @@ public:
 .Param("scale_type_y", "viewport")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrThresholdShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "false")
@@ -92,7 +99,8 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.000000")
 .Param("scale_y", "1.000000")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrBlur_horizShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "false")
@@ -101,18 +109,21 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "0.200000")
 .Param("scale_y", "0.200000")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrBlur_vertShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(CrtShadersCrtSuperXbrCustomResolveShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "false")
 .Param("mipmap_input", "false")
 .Param("scale_type", "viewport")
-.Param("srgb_framebuffer", "true"));
+.Param("srgb_framebuffer", "true")
+.Param("wrap_mode", "clamp_to_border"));
 	}
 };
 }

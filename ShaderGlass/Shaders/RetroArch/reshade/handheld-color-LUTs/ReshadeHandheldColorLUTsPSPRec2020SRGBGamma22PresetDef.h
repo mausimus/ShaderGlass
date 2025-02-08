@@ -28,6 +28,7 @@ public:
             TextureDefs.push_back(ReshadeShadersLUTHandheldPSP2020PureGammaTextureDef()
 .Param("linear", "true")
 .Param("name", "SamplerLUT"));
+            OverrideParam("LUT_Size", (float)32.000000);
 	}
 };
 }

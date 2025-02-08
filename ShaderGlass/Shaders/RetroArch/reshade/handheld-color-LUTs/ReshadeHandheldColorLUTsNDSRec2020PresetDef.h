@@ -28,6 +28,7 @@ public:
             TextureDefs.push_back(ReshadeShadersLUTHandheldNDS2020TextureDef()
 .Param("linear", "true")
 .Param("name", "SamplerLUT"));
+            OverrideParam("LUT_Size", (float)32.000000);
 	}
 };
 }

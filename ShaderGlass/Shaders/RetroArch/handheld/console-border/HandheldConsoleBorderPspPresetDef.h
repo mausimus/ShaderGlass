@@ -29,6 +29,9 @@ public:
 .Param("mipmap", "true")
 .Param("name", "BORDER")
 .Param("wrap_mode", "clamp_to_border"));
+            OverrideParam("GRID_STRENGTH", (float)0.150000);
+            OverrideParam("border_texture_scale", (float)2.400000);
+            OverrideParam("video_scale", (float)4.000000);
 	}
 };
 }

@@ -1539,14 +1539,15 @@ public:
 		VertexLength = sizeof(RetroArchEdgeSmoothingNediShadersNediJincShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchEdgeSmoothingNediShadersNediJincShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchEdgeSmoothingNediShadersNediJincShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("NEDI_JINC2_WINDOW_SINC", -1, 52, 4, 0.000000f, 1.000000f, 0.460000f, 0.010000f, "Window Sinc Param"));
-		Params.push_back(ShaderParam("NEDI_JINC2_SINC", -1, 56, 4, 0.000000f, 1.000000f, 0.880000f, 0.010000f, "Sinc Param"));
-		Params.push_back(ShaderParam("NEDI_JINC2_AR_STRENGTH", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 0.100000f, "Anti-ringing Strength"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("NEDI_JINC2_WINDOW_SINC", -1, 52, 4, 0.000000f, 1.000000f, 0.460000f, 0.010000f, "Window Sinc Param"));
+		Params.push_back(ShaderParam("NEDI_JINC2_SINC", -1, 56, 4, 0.000000f, 1.000000f, 0.880000f, 0.010000f, "Sinc Param"));
+		Params.push_back(ShaderParam("NEDI_JINC2_AR_STRENGTH", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 0.100000f, "Anti-ringing Strength"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

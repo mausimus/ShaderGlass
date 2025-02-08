@@ -749,17 +749,18 @@ public:
 		VertexLength = sizeof(RetroArchScanlinesShadersScanlinesRereShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchScanlinesShadersScanlinesRereShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchScanlinesShadersScanlinesRereShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("thickness", -1, 52, 4, 0.000000f, 1.000000f, 0.500000f, 0.010000f, "Scanline thickness"));
-		Params.push_back(ShaderParam("glow", -1, 56, 4, 0.000000f, 1.000000f, 0.750000f, 0.010000f, "Scanline glow"));
-		Params.push_back(ShaderParam("highlights", -1, 68, 4, 0.000000f, 1.000000f, 0.750000f, 0.010000f, "Scanline highlights"));
-		Params.push_back(ShaderParam("boost", -1, 72, 4, 0.000000f, 1.000000f, 0.250000f, 0.010000f, "Luminance boost"));
-		Params.push_back(ShaderParam("sGamma", -1, 60, 4, 1.000000f, 3.000000f, 2.400000f, 0.010000f, "Source gamma"));
-		Params.push_back(ShaderParam("tGamma", -1, 64, 4, 1.000000f, 3.000000f, 2.200000f, 0.010000f, "Target gamma"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("thickness", -1, 52, 4, 0.000000f, 1.000000f, 0.500000f, 0.010000f, "Scanline thickness"));
+		Params.push_back(ShaderParam("glow", -1, 56, 4, 0.000000f, 1.000000f, 0.750000f, 0.010000f, "Scanline glow"));
+		Params.push_back(ShaderParam("sGamma", -1, 60, 4, 1.000000f, 3.000000f, 2.400000f, 0.010000f, "Source gamma"));
+		Params.push_back(ShaderParam("tGamma", -1, 64, 4, 1.000000f, 3.000000f, 2.200000f, 0.010000f, "Target gamma"));
+		Params.push_back(ShaderParam("highlights", -1, 68, 4, 0.000000f, 1.000000f, 0.750000f, 0.010000f, "Scanline highlights"));
+		Params.push_back(ShaderParam("boost", -1, 72, 4, 0.000000f, 1.000000f, 0.250000f, 0.010000f, "Luminance boost"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

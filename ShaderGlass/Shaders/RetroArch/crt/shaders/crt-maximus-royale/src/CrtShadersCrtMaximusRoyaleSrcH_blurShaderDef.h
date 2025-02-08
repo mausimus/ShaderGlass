@@ -409,8 +409,9 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtMaximusRoyaleSrcH_blurShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtMaximusRoyaleSrcH_blurShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtMaximusRoyaleSrcH_blurShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("Hsharpness", -1, 0, 4, 1.000000f, 20.000000f, 10.000000f, 0.500000f, "Horizontal Sharpness"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("Hsharpness", -1, 0, 4, 1.000000f, 20.000000f, 10.000000f, 0.500000f, "Horizontal Sharpness"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

@@ -21,10 +21,14 @@ public:
 	virtual void Build() {
          	ShaderDefs.push_back(CrtShadersCrtYo6CrtYo6FlatTrinitronTvShaderDef()
 .Param("filter_linear", "true")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "clamp_to_edge"));
             TextureDefs.push_back(CrtShadersCrtYo6PhosphorFlatTrinitronTvTextureDef()
 .Param("linear", "false")
 .Param("name", "TEX"));
+            OverrideParam("GAMMA", (float)2.200000);
+            OverrideParam("TVL", (float)487.000000);
+            OverrideParam("VSIZE", (float)240.000000);
 	}
 };
 }

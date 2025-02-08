@@ -22,6 +22,14 @@ public:
          	ShaderDefs.push_back(CrtShadersGizmoCrtShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "viewport"));
+            OverrideParam("BGR_LCD_PATTERN", (float)0.000000);
+            OverrideParam("BLUR_OFFSET", (float)0.500000);
+            OverrideParam("BRIGHTNESS", (float)0.500000);
+            OverrideParam("CURVATURE_X", (float)0.000000);
+            OverrideParam("CURVATURE_Y", (float)0.000000);
+            OverrideParam("HORIZONTAL_BLUR", (float)1.000000);
+            OverrideParam("SHRINK", (float)0.000000);
+            OverrideParam("VERTICAL_BLUR", (float)1.000000);
 	}
 };
 }

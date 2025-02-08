@@ -31,6 +31,22 @@ public:
             TextureDefs.push_back(HandheldConsoleBorderResourcesColorBorderSquare4xTextureDef()
 .Param("linear", "true")
 .Param("name", "BORDER"));
+            OverrideParam("BGR", (float)0.000000);
+            OverrideParam("BSUBPIX_B", (float)1.000000);
+            OverrideParam("BSUBPIX_G", (float)0.000000);
+            OverrideParam("BSUBPIX_R", (float)0.000000);
+            OverrideParam("GSUBPIX_B", (float)0.000000);
+            OverrideParam("GSUBPIX_G", (float)1.000000);
+            OverrideParam("GSUBPIX_R", (float)0.000000);
+            OverrideParam("RSUBPIX_B", (float)0.000000);
+            OverrideParam("RSUBPIX_G", (float)0.000000);
+            OverrideParam("RSUBPIX_R", (float)1.000000);
+            OverrideParam("ambient", (float)0.000000);
+            OverrideParam("blacklevel", (float)0.000000);
+            OverrideParam("gain", (float)1.000000);
+            OverrideParam("gamma", (float)1.600000);
+            OverrideParam("lighten_screen", (float)0.000000);
+            OverrideParam("video_scale", (float)4.000000);
 	}
 };
 }

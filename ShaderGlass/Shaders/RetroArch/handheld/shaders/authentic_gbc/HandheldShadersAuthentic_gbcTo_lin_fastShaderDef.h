@@ -301,6 +301,7 @@ public:
 		VertexLength = sizeof(RetroArchHandheldShadersAuthentic_gbcTo_lin_fastShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldShadersAuthentic_gbcTo_lin_fastShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldShadersAuthentic_gbcTo_lin_fastShaderDefs::sFragmentByteCode);
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*

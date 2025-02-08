@@ -24,6 +24,9 @@ public:
 .Param("scale_type", "viewport"));
             TextureDefs.push_back(DitheringShadersBlueNoiseLDR_RGB1_0TextureDef()
 .Param("name", "BlueNoiseTexture0"));
+            OverrideParam("COLOR_DEPTH", (float)4.000000);
+            OverrideParam("DITHER_TUNE", (float)0.000000);
+            OverrideParam("EGA_PALETTE", (float)0.000000);
 	}
 };
 }

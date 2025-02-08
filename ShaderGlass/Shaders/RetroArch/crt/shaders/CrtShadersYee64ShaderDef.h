@@ -1037,17 +1037,18 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersYee64ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersYee64ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersYee64ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FinalViewportSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("viewSizeHD", -1, 0, 4, 0.000000f, 2190.000000f, 720.000000f, 1.000000f, "Min Dimming Res"));
 		Params.push_back(ShaderParam("brightness", -1, 4, 4, 0.000000f, 5.000000f, 1.500000f, 0.100000f, "CRT Brightness"));
 		Params.push_back(ShaderParam("intensityR", -1, 8, 4, 0.000000f, 2.000000f, 1.200000f, 0.100000f, "Red Dimming Intensity"));
 		Params.push_back(ShaderParam("intensityG", -1, 12, 4, 0.000000f, 2.000000f, 0.900000f, 0.100000f, "Green Dimming Intensity"));
 		Params.push_back(ShaderParam("intensityB", -1, 16, 4, 0.000000f, 2.000000f, 0.900000f, 0.100000f, "Blue Dimming Intensity"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 48, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 80, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FinalViewportSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

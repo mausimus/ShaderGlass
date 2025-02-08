@@ -1019,11 +1019,12 @@ public:
 		VertexLength = sizeof(RetroArchEdgeSmoothingXsalShaders2xsalLevel2XbrShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchEdgeSmoothingXsalShaders2xsalLevel2XbrShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchEdgeSmoothingXsalShaders2xsalLevel2XbrShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("AAOFFSET", -1, 48, 4, 0.250000f, 2.000000f, 1.000000f, 0.125000f, "Filter width"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("AAOFFSET", -1, 48, 4, 0.250000f, 2.000000f, 1.000000f, 0.125000f, "Filter width"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

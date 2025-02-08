@@ -44,6 +44,15 @@ public:
             TextureDefs.push_back(ReshadeShadersBlendoverlayShadowmask4x4TextureDef()
 .Param("linear", "true")
 .Param("name", "overlay"));
+            OverrideParam("BrightenAmount", (float)0.100000);
+            OverrideParam("BrightenLevel", (float)2.000000);
+            OverrideParam("GlowLevel", (float)1.000000);
+            OverrideParam("GlowTightness", (float)0.800000);
+            OverrideParam("LUTHeight", (float)4.000000);
+            OverrideParam("LUTWidth", (float)4.000000);
+            OverrideParam("OverlayMix", (float)0.500000);
+            OverrideParam("ScanlineSize", (float)3.000000);
+            OverrideParam("YIQAmount", (float)0.350000);
 	}
 };
 }

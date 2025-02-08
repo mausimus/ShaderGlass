@@ -22,11 +22,13 @@ public:
          	ShaderDefs.push_back(BlursShadersGauss_4tapGauss_2tap_hShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
-.Param("scale_type", "source"));
+.Param("scale_type", "source")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersGauss_4tapGauss_2tap_vShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
-.Param("scale_type", "source"));
+.Param("scale_type", "source")
+.Param("wrap_mode", "mirrored_repeat"));
 	}
 };
 }

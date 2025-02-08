@@ -22,6 +22,7 @@ public:
          	ShaderDefs.push_back(PixelArtScalingShadersUniformNearestShaderDef()
 .Param("filter_linear", "true")
 .Param("scale_type", "viewport"));
+            OverrideParam("BGR_LCD_PATTERN", (float)0.000000);
 	}
 };
 }

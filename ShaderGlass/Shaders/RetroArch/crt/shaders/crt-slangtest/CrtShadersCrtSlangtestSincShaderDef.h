@@ -542,6 +542,7 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtSlangtestSincShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtSlangtestSincShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtSlangtestSincShaderDefs::sFragmentByteCode);
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OUT_GAMMA", -1, 16, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));

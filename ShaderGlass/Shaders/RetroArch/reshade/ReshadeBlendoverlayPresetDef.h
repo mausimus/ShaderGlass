@@ -23,6 +23,8 @@ public:
 .Param("scale_type", "viewport"));
             TextureDefs.push_back(ReshadeShadersBlendoverlayGrayscale_slotmaskTextureDef()
 .Param("name", "overlay"));
+            OverrideParam("LUTHeight", (float)4.000000);
+            OverrideParam("LUTWidth", (float)6.000000);
 	}
 };
 }

@@ -63,6 +63,11 @@ public:
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
+            OverrideParam("JINC2_AR_STRENGTH", (float)0.300000);
+            OverrideParam("JINC2_SINC", (float)0.950000);
+            OverrideParam("JINC2_WINDOW_SINC", (float)0.550000);
+            OverrideParam("SFX_CLR", (float)0.600000);
+            OverrideParam("SFX_SAA", (float)0.000000);
 	}
 };
 }

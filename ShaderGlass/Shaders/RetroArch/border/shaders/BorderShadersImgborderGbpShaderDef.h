@@ -831,6 +831,12 @@ public:
 		VertexLength = sizeof(RetroArchBorderShadersImgborderGbpShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchBorderShadersImgborderGbpShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchBorderShadersImgborderGbpShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("box_scale", -1, 52, 4, 1.000000f, 10.000000f, 2.000000f, 1.000000f, "Image Scale"));
 		Params.push_back(ShaderParam("location_x", -1, 56, 4, 0.000000f, 1.000000f, 0.500000f, 0.050000f, "Viewport X Pos."));
 		Params.push_back(ShaderParam("location_y", -1, 60, 4, 0.000000f, 1.000000f, 0.500000f, 0.050000f, "Viewport Y Pos."));
@@ -843,11 +849,6 @@ public:
 		Params.push_back(ShaderParam("OS_MASK_BOTTOM", -1, 88, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "OS Mask Bottom"));
 		Params.push_back(ShaderParam("OS_MASK_LEFT", -1, 92, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "OS Mask Left"));
 		Params.push_back(ShaderParam("OS_MASK_RIGHT", -1, 96, 4, 0.000000f, 1.000000f, 0.000000f, 0.010000f, "OS Mask Right"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("BORDER", 4));
 		Samplers.push_back(ShaderSampler("Original", 3));

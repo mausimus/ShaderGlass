@@ -1602,11 +1602,8 @@ public:
 		VertexLength = sizeof(RetroArchReshadeShadersBloomBloomPass4ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchReshadeShadersBloomBloomPass4ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchReshadeShadersBloomBloomPass4ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("bLensdirtEnable_toggle", 0, 92, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Lens Dirt Enable"));
-		Params.push_back(ShaderParam("bAnamFlareEnable_toggle", 0, 120, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Anam Flare Enable"));
-		Params.push_back(ShaderParam("bLenzEnable_toggle", 0, 152, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Lenz Enable"));
-		Params.push_back(ShaderParam("bChapFlareEnable_toggle", 0, 164, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Chap Flare Enable"));
-		Params.push_back(ShaderParam("bGodrayEnable_toggle", 0, 200, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Godray Enable"));
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("iBloomMixmode", 0, 64, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "Bloom Mix Mode"));
 		Params.push_back(ShaderParam("fBloomThreshold", 0, 68, 4, 0.100000f, 1.000000f, 0.800000f, 0.100000f, "Bloom Threshold"));
 		Params.push_back(ShaderParam("fBloomAmount", 0, 72, 4, 0.000000f, 20.000000f, 0.800000f, 0.100000f, "Bloom Amount"));
@@ -1614,12 +1611,14 @@ public:
 		Params.push_back(ShaderParam("fBloomTint_r", 0, 80, 4, 0.000000f, 1.000000f, 0.700000f, 0.050000f, "Bloom Tint R"));
 		Params.push_back(ShaderParam("fBloomTint_g", 0, 84, 4, 0.000000f, 1.000000f, 0.800000f, 0.050000f, "Bloom Tint G"));
 		Params.push_back(ShaderParam("fBloomTint_b", 0, 88, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "Bloom Tint B"));
+		Params.push_back(ShaderParam("bLensdirtEnable_toggle", 0, 92, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Lens Dirt Enable"));
 		Params.push_back(ShaderParam("iLensdirtMixmode", 0, 96, 4, 0.000000f, 3.000000f, 0.000000f, 1.000000f, "Lens Dirt Mix Mode"));
 		Params.push_back(ShaderParam("fLensdirtIntensity", 0, 100, 4, 0.000000f, 2.000000f, 0.400000f, 0.100000f, "Lens Dirt Intensity"));
 		Params.push_back(ShaderParam("fLensdirtSaturation", 0, 104, 4, 0.000000f, 2.000000f, 2.000000f, 0.100000f, "Lens Dirt Saturation"));
 		Params.push_back(ShaderParam("fLensdirtTint_r", 0, 108, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "Lens Dirt Tint R"));
 		Params.push_back(ShaderParam("fLensdirtTint_g", 0, 112, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "Lens Dirt Tint G"));
 		Params.push_back(ShaderParam("fLensdirtTint_b", 0, 116, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "Lens Dirt Tint B"));
+		Params.push_back(ShaderParam("bAnamFlareEnable_toggle", 0, 120, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Anam Flare Enable"));
 		Params.push_back(ShaderParam("fAnamFlareThreshold", 0, 124, 4, 0.100000f, 1.000000f, 0.900000f, 0.100000f, "Anam Flare Threshold"));
 		Params.push_back(ShaderParam("fAnamFlareWideness", 0, 128, 4, 1.000000f, 2.500000f, 2.400000f, 0.100000f, "Anam Flare Width"));
 		Params.push_back(ShaderParam("fAnamFlareAmount", 0, 132, 4, 1.000000f, 20.000000f, 14.500000f, 0.500000f, "Anam Flare Amt"));
@@ -1627,8 +1626,10 @@ public:
 		Params.push_back(ShaderParam("fAnamFlareColor_r", 0, 140, 4, 0.000000f, 1.000000f, 0.012000f, 0.010000f, "Anam Flare Col R"));
 		Params.push_back(ShaderParam("fAnamFlareColor_g", 0, 144, 4, 0.000000f, 1.000000f, 0.313000f, 0.010000f, "Anam Flare Col G"));
 		Params.push_back(ShaderParam("fAnamFlareColor_b", 0, 148, 4, 0.000000f, 1.000000f, 0.588000f, 0.010000f, "Anam Flare Col B"));
+		Params.push_back(ShaderParam("bLenzEnable_toggle", 0, 152, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Lenz Enable"));
 		Params.push_back(ShaderParam("fLenzIntensity", 0, 156, 4, 0.200000f, 3.000000f, 1.000000f, 0.100000f, "Lenz Intensity"));
 		Params.push_back(ShaderParam("fLenzThreshold", 0, 160, 4, 0.600000f, 1.000000f, 0.800000f, 0.100000f, "Lenz Threshold"));
+		Params.push_back(ShaderParam("bChapFlareEnable_toggle", 0, 164, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Chap Flare Enable"));
 		Params.push_back(ShaderParam("fChapFlareThreshold", 0, 168, 4, 0.700000f, 0.990000f, 0.900000f, 0.050000f, "Chap Flare Threshold"));
 		Params.push_back(ShaderParam("iChapFlareCount", 0, 172, 4, 1.000000f, 20.000000f, 15.000000f, 1.000000f, "Chap Flare Count"));
 		Params.push_back(ShaderParam("fChapFlareDispersal", 0, 176, 4, 0.250000f, 1.000000f, 0.250000f, 0.050000f, "Chap Flare Dispersal"));
@@ -1637,6 +1638,7 @@ public:
 		Params.push_back(ShaderParam("fChapFlareCA_g", 0, 188, 4, 0.000000f, 1.000000f, 0.010000f, 0.010000f, "Chap Flare CA G"));
 		Params.push_back(ShaderParam("fChapFlareCA_b", 0, 192, 4, 0.000000f, 1.000000f, 0.020000f, 0.010000f, "Chap Flare CA B"));
 		Params.push_back(ShaderParam("fChapFlareIntensity", 0, 196, 4, 5.000000f, 200.000000f, 100.000000f, 5.000000f, "Chap Flare Intensity"));
+		Params.push_back(ShaderParam("bGodrayEnable_toggle", 0, 200, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Godray Enable"));
 		Params.push_back(ShaderParam("fGodrayDecay", 0, 204, 4, 0.500000f, 0.999900f, 0.990000f, 0.050000f, "Godray Decay"));
 		Params.push_back(ShaderParam("fGodrayExposure", 0, 208, 4, 0.700000f, 1.500000f, 1.000000f, 0.050000f, "Godray Exposure"));
 		Params.push_back(ShaderParam("fGodrayWeight", 0, 212, 4, 0.800000f, 1.700000f, 1.250000f, 0.050000f, "Godray Weight"));
@@ -1649,7 +1651,6 @@ public:
 		Params.push_back(ShaderParam("fFlareTint_r", 0, 240, 4, 0.000000f, 1.000000f, 0.137000f, 0.050000f, "Flare Tint R"));
 		Params.push_back(ShaderParam("fFlareTint_g", 0, 244, 4, 0.000000f, 1.000000f, 0.216000f, 0.050000f, "Flare Tint G"));
 		Params.push_back(ShaderParam("fFlareTint_b", 0, 248, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "Flare Tint B"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));

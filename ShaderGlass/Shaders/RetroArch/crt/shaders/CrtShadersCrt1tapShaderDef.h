@@ -600,15 +600,16 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrt1tapShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrt1tapShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrt1tapShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("MIN_THICK", -1, 32, 4, 0.000000f, 1.400000f, 0.300000f, 0.050000f, "Scanline thickness of dark pixels"));
 		Params.push_back(ShaderParam("MAX_THICK", -1, 36, 4, 0.000000f, 1.400000f, 0.900000f, 0.050000f, "Scanline thickness of bright pixels"));
 		Params.push_back(ShaderParam("V_SHARP", -1, 40, 4, 0.000000f, 1.000000f, 0.500000f, 0.050000f, "Vertical sharpness of the scanline"));
 		Params.push_back(ShaderParam("H_SHARP", -1, 44, 4, 0.000000f, 1.000000f, 0.150000f, 0.050000f, "Horizontal sharpness of pixel transitions"));
 		Params.push_back(ShaderParam("SUBPX_POS", -1, 48, 4, -0.500000f, 0.500000f, 0.300000f, 0.010000f, "Scanline subpixel position"));
 		Params.push_back(ShaderParam("THICK_FALLOFF", -1, 52, 4, 0.200000f, 2.000000f, 0.650000f, 0.050000f, "Reduction / increase of thinner scanlines"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 1));
 		Samplers.push_back(ShaderSampler("Original", 2));
 /*

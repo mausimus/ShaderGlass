@@ -573,8 +573,7 @@ public:
 		VertexLength = sizeof(RetroArchBorderShadersLightgunBorderShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchBorderShadersLightgunBorderShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchBorderShadersLightgunBorderShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("bordersize", -1, 80, 4, 0.000000f, 1.000000f, 0.020000f, 0.010000f, "Border Thickness"));
-		Params.push_back(ShaderParam("bordercolor", -1, 84, 4, 1.000000f, 6.000000f, 1.000000f, 1.000000f, "Border Color"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
@@ -583,6 +582,8 @@ public:
 		Params.push_back(ShaderParam("TotalSubFrames", -1, 52, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("CurrentSubFrame", -1, 56, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FinalViewportSize", -1, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("bordersize", -1, 80, 4, 0.000000f, 1.000000f, 0.020000f, 0.010000f, "Border Thickness"));
+		Params.push_back(ShaderParam("bordercolor", -1, 84, 4, 1.000000f, 6.000000f, 1.000000f, 1.000000f, "Border Color"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

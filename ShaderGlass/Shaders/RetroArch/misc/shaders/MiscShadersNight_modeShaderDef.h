@@ -421,13 +421,15 @@ public:
 		VertexLength = sizeof(RetroArchMiscShadersNight_modeShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMiscShadersNight_modeShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMiscShadersNight_modeShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("WP", -1, 48, 4, 0.000000f, 0.250000f, 0.100000f, 0.010000f, "Color Temperature"));
-		Params.push_back(ShaderParam("strength", -1, 52, 4, 0.500000f, 1.000000f, 0.800000f, 0.050000f, "Night mode Strength"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FinalViewportSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FinalViewportSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("WP", -1, 48, 4, 0.000000f, 0.250000f, 0.100000f, 0.010000f, "Color Temperature"));
+		Params.push_back(ShaderParam("strength", -1, 52, 4, 0.500000f, 1.000000f, 0.800000f, 0.050000f, "Night mode Strength"));
 		Samplers.push_back(ShaderSampler("Source", 1));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

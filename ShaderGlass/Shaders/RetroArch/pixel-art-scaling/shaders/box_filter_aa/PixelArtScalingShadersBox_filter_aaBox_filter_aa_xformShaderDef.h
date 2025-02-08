@@ -1647,6 +1647,11 @@ public:
 		VertexLength = sizeof(RetroArchPixelArtScalingShadersBox_filter_aaBox_filter_aa_xformShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchPixelArtScalingShadersBox_filter_aaBox_filter_aa_xformShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchPixelArtScalingShadersBox_filter_aaBox_filter_aa_xformShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("Rotation", -1, 32, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FORCE_ASPECT_RATIO", -1, 36, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Force aspect ratio"));
 		Params.push_back(ShaderParam("ASPECT_H", -1, 40, 4, 0.000000f, 256.000000f, 0.000000f, 1.000000f, "Horizontal aspect ratio before crop (0 = unchanged)"));
 		Params.push_back(ShaderParam("ASPECT_V", -1, 44, 4, 0.000000f, 256.000000f, 0.000000f, 1.000000f, "Vertical aspect ratio before crop (0 = unchanged)"));
@@ -1660,10 +1665,6 @@ public:
 		Params.push_back(ShaderParam("SHIFT_H", -1, 76, 4, -2048.000000f, 2048.000000f, 0.000000f, 1.000000f, "Horizontal shift"));
 		Params.push_back(ShaderParam("SHIFT_V", -1, 80, 4, -2048.000000f, 2048.000000f, 0.000000f, 1.000000f, "Vertical shift"));
 		Params.push_back(ShaderParam("CENTER_AFTER_CROPPING", -1, 84, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Center cropped area"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("Rotation", -1, 32, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

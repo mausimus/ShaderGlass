@@ -44,6 +44,15 @@ public:
 .Param("name", "areaTex"));
             TextureDefs.push_back(AntiAliasingShadersSmaaSearchTexTextureDef()
 .Param("name", "searchTex"));
+            OverrideParam("CONTR", (float)0.000000);
+            OverrideParam("DETAILS", (float)0.200000);
+            OverrideParam("SHARPEN", (float)0.900000);
+            OverrideParam("SMAA_CORNER_ROUNDING", (float)50.000000);
+            OverrideParam("SMAA_EDT", (float)1.000000);
+            OverrideParam("SMAA_LOCAL_CONTRAST_ADAPTATION_FACTOR", (float)2.500000);
+            OverrideParam("SMAA_MAX_SEARCH_STEPS", (float)40.000000);
+            OverrideParam("SMAA_MAX_SEARCH_STEPS_DIAG", (float)20.000000);
+            OverrideParam("SMAA_THRESHOLD", (float)0.050000);
 	}
 };
 }

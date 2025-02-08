@@ -23,42 +23,50 @@ public:
 .Param("filter_linear", "false")
 .Param("scale_type", "source")
 .Param("scale_x", "1.0")
-.Param("scale_y", "1.0"));
+.Param("scale_y", "1.0")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNnedi3ShadersNnedi3Nns32Win8x4Pass1RgbShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "source")
 .Param("scale_x", "1.0")
-.Param("scale_y", "2.0"));
+.Param("scale_y", "2.0")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNnedi3ShadersNnedi3Nns32Win8x4Pass2RgbShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "source")
 .Param("scale_x", "2.0")
-.Param("scale_y", "1.0"));
+.Param("scale_y", "1.0")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNnedi3ShadersJinc2CshiftRgbShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "source")
 .Param("scale_x", "1.0")
-.Param("scale_y", "1.0"));
+.Param("scale_y", "1.0")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNnedi3ShadersNnedi3Nns32Win8x4Pass1LumaShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "source")
 .Param("scale_x", "1.0")
-.Param("scale_y", "2.0"));
+.Param("scale_y", "2.0")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNnedi3ShadersNnedi3Nns32Win8x4Pass2LumaShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "source")
 .Param("scale_x", "2.0")
-.Param("scale_y", "1.0"));
+.Param("scale_y", "1.0")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNnedi3ShadersJinc2CshiftLumaShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "source")
 .Param("scale_x", "1.0")
-.Param("scale_y", "1.0"));
+.Param("scale_y", "1.0")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNnedi3ShadersJinc2OnPassoutput3ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "source")
 .Param("scale_x", "1.0")
-.Param("scale_y", "1.0"));
+.Param("scale_y", "1.0")
+.Param("wrap_mode", "clamp_to_edge"));
          	ShaderDefs.push_back(EdgeSmoothingNnedi3ShadersYuvToRgb4xShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "source")

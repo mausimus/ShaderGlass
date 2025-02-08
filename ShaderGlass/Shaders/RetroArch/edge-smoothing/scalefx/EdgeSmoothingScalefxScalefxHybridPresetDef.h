@@ -45,6 +45,7 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "3.0")
 .Param("scale_type", "source"));
+            OverrideParam("SFX_SAA", (float)0.000000);
 	}
 };
 }

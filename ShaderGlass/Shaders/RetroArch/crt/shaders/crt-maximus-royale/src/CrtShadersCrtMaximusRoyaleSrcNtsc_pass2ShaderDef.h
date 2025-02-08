@@ -708,11 +708,12 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtMaximusRoyaleSrcNtsc_pass2ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtMaximusRoyaleSrcNtsc_pass2ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtMaximusRoyaleSrcNtsc_pass2ShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("h2x", -1, 4, 4, 0.000000f, 2.000000f, 2.000000f, 1.000000f, "Horizontal Scale"));
-		Params.push_back(ShaderParam("CVBS_SVIDEO_RGB", -1, 0, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "CVBS - SVIDEO - RGB"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("CVBS_SVIDEO_RGB", -1, 0, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "CVBS - SVIDEO - RGB"));
+		Params.push_back(ShaderParam("h2x", -1, 4, 4, 0.000000f, 2.000000f, 2.000000f, 1.000000f, "Horizontal Scale"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

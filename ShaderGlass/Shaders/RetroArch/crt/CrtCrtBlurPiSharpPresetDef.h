@@ -24,6 +24,8 @@ public:
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type", "viewport"));
+            OverrideParam("blurGain", (float)0.500000);
+            OverrideParam("blurRadius", (float)1.500000);
 	}
 };
 }

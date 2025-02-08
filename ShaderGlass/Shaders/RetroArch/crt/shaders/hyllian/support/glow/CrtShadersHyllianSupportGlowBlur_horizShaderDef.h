@@ -605,11 +605,12 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersHyllianSupportGlowBlur_horizShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersHyllianSupportGlowBlur_horizShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersHyllianSupportGlowBlur_horizShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("GLOW_RADIUS", -1, 0, 4, 2.000000f, 4.000000f, 4.000000f, 0.100000f, "Glow Radius"));
+		Format = "R8G8B8A8_SRGB";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("GLOW_RADIUS", -1, 0, 4, 2.000000f, 4.000000f, 4.000000f, 0.100000f, "Glow Radius"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

@@ -29,19 +29,22 @@ public:
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true")
 .Param("scale", "0.5")
-.Param("scale_type", "source"));
+.Param("scale_type", "source")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterDownsampleShaderDef()
 .Param("alias", "Downsample2")
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
 .Param("scale", "0.5")
-.Param("scale_type", "source"));
+.Param("scale_type", "source")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterUpsampleShaderDef()
 .Param("alias", "Upsample")
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
 .Param("scale", "2.0")
-.Param("scale_type", "source"));
+.Param("scale_type", "source")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterNaive_resampleShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
@@ -55,17 +58,20 @@ public:
 .Param("mipmap_input", "true")
 .Param("scale_type", "absolute")
 .Param("scale_x", "2")
-.Param("scale_y", "2"));
+.Param("scale_y", "2")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersDual_filterBloom_blend_fastestShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
 .Param("scale", "1.0")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BlursShadersKawaseDelinearizeShaderDef()
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "viewport"));
+            OverrideParam("MIN_EXP_INTENSITY", (float)0.450000);
 	}
 };
 }

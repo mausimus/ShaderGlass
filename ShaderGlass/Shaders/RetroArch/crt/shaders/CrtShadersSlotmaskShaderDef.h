@@ -1059,17 +1059,18 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersSlotmaskShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersSlotmaskShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersSlotmaskShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("msk_scale", -1, 20, 4, 3.000000f, 5.000000f, 4.000000f, 1.000000f, "Mask Scale, to be equal to OSSC LINES"));
-		Params.push_back(ShaderParam("MASK_INTENSITY", -1, 0, 4, 0.000000f, 1.000000f, 0.200000f, 0.050000f, "Mask Brightness"));
-		Params.push_back(ShaderParam("size", -1, 16, 4, 1.000000f, 8.000000f, 1.000000f, 1.000000f, "Mask Size"));
-		Params.push_back(ShaderParam("THRESH", -1, 12, 4, 0.000000f, 1.000000f, 0.300000f, 0.050000f, "Mask Threshold"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", 0, 112, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("MASK_INTENSITY", -1, 0, 4, 0.000000f, 1.000000f, 0.200000f, 0.050000f, "Mask Brightness"));
 		Params.push_back(ShaderParam("InputGamma", -1, 4, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputGamma", -1, 8, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("THRESH", -1, 12, 4, 0.000000f, 1.000000f, 0.300000f, 0.050000f, "Mask Threshold"));
+		Params.push_back(ShaderParam("size", -1, 16, 4, 1.000000f, 8.000000f, 1.000000f, 1.000000f, "Mask Size"));
+		Params.push_back(ShaderParam("msk_scale", -1, 20, 4, 3.000000f, 5.000000f, 4.000000f, 1.000000f, "Mask Scale, to be equal to OSSC LINES"));
 		Samplers.push_back(ShaderSampler("Source", 1));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

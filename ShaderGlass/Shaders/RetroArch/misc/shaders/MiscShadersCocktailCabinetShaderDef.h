@@ -468,14 +468,15 @@ public:
 		VertexLength = sizeof(RetroArchMiscShadersCocktailCabinetShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMiscShadersCocktailCabinetShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMiscShadersCocktailCabinetShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("height", -1, 52, 4, -3.000000f, 3.000000f, 1.000000f, 0.010000f, "CocktailTable Image Height"));
-		Params.push_back(ShaderParam("width", -1, 56, 4, -3.000000f, 3.000000f, 1.000000f, 0.050000f, "CocktailTable Image Width"));
-		Params.push_back(ShaderParam("location", -1, 60, 4, -2.000000f, 2.000000f, 0.000100f, 0.001000f, "CocktailTable Image Separation"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("height", -1, 52, 4, -3.000000f, 3.000000f, 1.000000f, 0.010000f, "CocktailTable Image Height"));
+		Params.push_back(ShaderParam("width", -1, 56, 4, -3.000000f, 3.000000f, 1.000000f, 0.050000f, "CocktailTable Image Width"));
+		Params.push_back(ShaderParam("location", -1, 60, 4, -2.000000f, 2.000000f, 0.000100f, 0.001000f, "CocktailTable Image Separation"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

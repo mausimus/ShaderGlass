@@ -39,6 +39,8 @@ public:
 .Param("linear", "true")
 .Param("name", "frametexture")
 .Param("wrap_mode", "clamp_to_border"));
+            OverrideParam("scale_1", (float)1.000000);
+            OverrideParam("scale_2", (float)1.000000);
 	}
 };
 }

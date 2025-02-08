@@ -1197,6 +1197,13 @@ public:
 		VertexLength = sizeof(RetroArchBlursShadersDual_filterBloom_blendShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchBlursShadersDual_filterBloom_blendShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchBlursShadersDual_filterBloom_blendShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("InputSize", -1, 48, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 64, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("MIN_EXP_INTENSITY", -1, 68, 4, 0.000000f, 2.000000f, 0.600000f, 0.050000f, "Bloom intensity"));
 		Params.push_back(ShaderParam("EYE_ADAPTION", -1, 72, 4, 0.000000f, 1.000000f, 0.800000f, 0.050000f, "Eye adaptation strength: Reduce bloom on bright screens"));
 		Params.push_back(ShaderParam("MIN_EXP", -1, 76, 4, 0.000000f, 0.950000f, 0.100000f, 0.010000f, "Minimum exposure value (where bloom is strongest)"));
@@ -1204,12 +1211,6 @@ public:
 		Params.push_back(ShaderParam("SCALE_EMPH", -1, 84, 4, 0.000000f, 5.000000f, 1.000000f, 0.100000f, "Bloom scale emphasis"));
 		Params.push_back(ShaderParam("SCALE_SPREAD", -1, 88, 4, 0.500000f, 15.000000f, 5.000000f, 0.500000f, "Bloom scale spread"));
 		Params.push_back(ShaderParam("DEBUG_EXPOSURE_GRAPH", -1, 92, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Debug overlay: Exposure graph"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", -1, 64, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("InputSize", -1, 48, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Scale1", 5));
 		Samplers.push_back(ShaderSampler("Scale2", 6));
 		Samplers.push_back(ShaderSampler("Scale3", 7));

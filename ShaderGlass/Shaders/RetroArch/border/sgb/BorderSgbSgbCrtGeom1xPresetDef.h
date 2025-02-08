@@ -28,6 +28,10 @@ public:
             TextureDefs.push_back(BorderSgbSgbTextureDef()
 .Param("linear", "true")
 .Param("name", "BORDER"));
+            OverrideParam("border_on_top", (float)0.000000);
+            OverrideParam("box_scale", (float)1.000000);
+            OverrideParam("in_res_x", (float)160.000000);
+            OverrideParam("in_res_y", (float)144.000000);
 	}
 };
 }

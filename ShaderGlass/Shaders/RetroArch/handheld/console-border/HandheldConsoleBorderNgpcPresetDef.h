@@ -29,6 +29,7 @@ public:
 .Param("mipmap", "false")
 .Param("name", "BORDER")
 .Param("wrap_mode", "clamp_to_border"));
+            OverrideParam("video_scale", (float)4.000000);
 	}
 };
 }

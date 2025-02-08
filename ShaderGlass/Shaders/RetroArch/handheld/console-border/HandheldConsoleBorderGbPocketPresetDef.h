@@ -55,6 +55,15 @@ public:
             TextureDefs.push_back(HandheldConsoleBorderResourcesPocketBorderSquare4xTextureDef()
 .Param("linear", "true")
 .Param("name", "BORDER"));
+            OverrideParam("adjacent_texel_alpha_blending", (float)0.600000);
+            OverrideParam("baseline_alpha", (float)0.030000);
+            OverrideParam("contrast", (float)0.850000);
+            OverrideParam("grey_balance", (float)3.500000);
+            OverrideParam("pixel_opacity", (float)0.950000);
+            OverrideParam("screen_light", (float)0.900000);
+            OverrideParam("shadow_offset_x", (float)-2.000000);
+            OverrideParam("shadow_opacity", (float)0.900000);
+            OverrideParam("video_scale", (float)4.000000);
 	}
 };
 }

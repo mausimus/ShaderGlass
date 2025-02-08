@@ -44,11 +44,13 @@ public:
          	ShaderDefs.push_back(CrtShadersCathodeRetroCathodeRetroCrtGenerateMasksShaderDef()
 .Param("alias", "g_maskTexture")
 .Param("mipmap_input", "true")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "repeat"));
          	ShaderDefs.push_back(CrtShadersCathodeRetroCathodeRetroCrtGenerateScreenTextureShaderDef()
 .Param("alias", "g_screenMaskTexture")
 .Param("filter_linear", "true")
-.Param("mipmap_input", "true"));
+.Param("mipmap_input", "true")
+.Param("wrap_mode", "clamp"));
          	ShaderDefs.push_back(CrtShadersCathodeRetroCathodeRetroCrtRgbToCrt_noSignalShaderDef()
 .Param("filter_linear", "true")
 .Param("mipmap_input", "true"));

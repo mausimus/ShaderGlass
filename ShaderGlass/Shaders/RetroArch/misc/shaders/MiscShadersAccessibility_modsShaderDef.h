@@ -611,17 +611,18 @@ public:
 		VertexLength = sizeof(RetroArchMiscShadersAccessibility_modsShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMiscShadersAccessibility_modsShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMiscShadersAccessibility_modsShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("D_factor", -1, 64, 4, 0.000000f, 1.000000f, 0.500000f, 0.050000f, "Accessibility Adjustment Strength"));
-		Params.push_back(ShaderParam("Protanopia", -1, 52, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Protanopia Correction Toggle"));
-		Params.push_back(ShaderParam("Deuteranopia", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Deuteranopia Correction Toggle"));
-		Params.push_back(ShaderParam("Tritanopia", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Tritanopia Correction Toggle"));
-		Params.push_back(ShaderParam("D_contrast", -1, 68, 4, 0.000000f, 1.000000f, 0.000000f, 0.050000f, "Contrast Adjustment"));
-		Params.push_back(ShaderParam("D_brightness", -1, 72, 4, -1.000000f, 1.000000f, 0.000000f, 0.050000f, "Brightness Adjustment"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("Protanopia", -1, 52, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Protanopia Correction Toggle"));
+		Params.push_back(ShaderParam("Deuteranopia", -1, 56, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Deuteranopia Correction Toggle"));
+		Params.push_back(ShaderParam("Tritanopia", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Tritanopia Correction Toggle"));
+		Params.push_back(ShaderParam("D_factor", -1, 64, 4, 0.000000f, 1.000000f, 0.500000f, 0.050000f, "Accessibility Adjustment Strength"));
+		Params.push_back(ShaderParam("D_contrast", -1, 68, 4, 0.000000f, 1.000000f, 0.000000f, 0.050000f, "Contrast Adjustment"));
+		Params.push_back(ShaderParam("D_brightness", -1, 72, 4, -1.000000f, 1.000000f, 0.000000f, 0.050000f, "Brightness Adjustment"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

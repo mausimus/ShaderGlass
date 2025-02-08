@@ -1443,6 +1443,12 @@ public:
 		VertexLength = sizeof(RetroArchMiscShadersImageAdjustmentShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMiscShadersImageAdjustmentShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMiscShadersImageAdjustmentShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("ia_FLIP_HORZ", 0, 64, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Flip Horiz Axis"));
+		Params.push_back(ShaderParam("ia_FLIP_VERT", 0, 68, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Flip Vert Axis"));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 16, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("ia_target_gamma", -1, 20, 4, 0.100000f, 5.000000f, 2.200000f, 0.100000f, "Target Gamma"));
 		Params.push_back(ShaderParam("ia_monitor_gamma", -1, 24, 4, 0.100000f, 5.000000f, 2.200000f, 0.100000f, "Monitor Gamma"));
 		Params.push_back(ShaderParam("ia_overscan_percent_x", -1, 28, 4, -25.000000f, 25.000000f, 0.000000f, 1.000000f, "Horizontal Overscan %"));
@@ -1465,11 +1471,6 @@ public:
 		Params.push_back(ShaderParam("ia_RMASK", -1, 96, 4, 0.000000f, 1.000000f, 0.000000f, 0.002500f, "Overscan Mask Right"));
 		Params.push_back(ShaderParam("ia_GRAIN_STR", -1, 100, 4, 0.000000f, 72.000000f, 0.000000f, 6.000000f, "Film Grain"));
 		Params.push_back(ShaderParam("ia_SHARPEN", -1, 104, 4, 0.000000f, 1.000000f, 0.000000f, 0.050000f, "Sharpen"));
-		Params.push_back(ShaderParam("ia_FLIP_HORZ", 0, 64, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Flip Horiz Axis"));
-		Params.push_back(ShaderParam("ia_FLIP_VERT", 0, 68, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Flip Vert Axis"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", -1, 16, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

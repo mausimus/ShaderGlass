@@ -43,6 +43,7 @@ public:
 .Param("name", "areaTex"));
             TextureDefs.push_back(AntiAliasingShadersSmaaSearchTexTextureDef()
 .Param("name", "searchTex"));
+            OverrideParam("SMAA_EDT", (float)0.000000);
 	}
 };
 }

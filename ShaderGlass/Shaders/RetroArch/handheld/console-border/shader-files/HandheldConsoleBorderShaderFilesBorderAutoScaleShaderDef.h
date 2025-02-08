@@ -555,12 +555,13 @@ public:
 		VertexLength = sizeof(RetroArchHandheldConsoleBorderShaderFilesBorderAutoScaleShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldConsoleBorderShaderFilesBorderAutoScaleShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldConsoleBorderShaderFilesBorderAutoScaleShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("border_texture_scale", -1, 48, 4, 1.000000f, 20.000000f, 4.000000f, 0.005000f, "Border Scale"));
-		Params.push_back(ShaderParam("border_brightness", -1, 52, 4, 0.000000f, 1.000000f, 1.000000f, 0.010000f, "Border Brightness"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("border_texture_scale", -1, 48, 4, 1.000000f, 20.000000f, 4.000000f, 0.005000f, "Border Scale"));
+		Params.push_back(ShaderParam("border_brightness", -1, 52, 4, 0.000000f, 1.000000f, 1.000000f, 0.010000f, "Border Brightness"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("BORDER", 3));
 /*

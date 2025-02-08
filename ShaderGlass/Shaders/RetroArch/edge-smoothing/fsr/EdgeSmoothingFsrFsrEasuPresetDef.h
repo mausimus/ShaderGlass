@@ -22,7 +22,8 @@ public:
          	ShaderDefs.push_back(EdgeSmoothingFsrShadersFsrPass0ShaderDef()
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "clamp_to_edge"));
 	}
 };
 }

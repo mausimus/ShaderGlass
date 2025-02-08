@@ -31,7 +31,8 @@ public:
 .Param("float_framebuffer", "true")
 .Param("scale_type", "absolute")
 .Param("scale_x", "512")
-.Param("scale_y", "64"));
+.Param("scale_y", "64")
+.Param("wrap_mode", "mirrored_repeat"));
          	ShaderDefs.push_back(BorderShadersAverage_fillCrop_and_sample_bottomShaderDef()
 .Param("alias", "Bottom")
 .Param("filter_linear", "true")

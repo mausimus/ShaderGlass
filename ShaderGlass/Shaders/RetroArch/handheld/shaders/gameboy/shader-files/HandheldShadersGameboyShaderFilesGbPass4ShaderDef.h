@@ -932,6 +932,12 @@ public:
 		VertexLength = sizeof(RetroArchHandheldShadersGameboyShaderFilesGbPass4ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldShadersGameboyShaderFilesGbPass4ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldShadersGameboyShaderFilesGbPass4ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("PassOutputSize1", -1, 48, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("contrast", -1, 64, 4, 0.000000f, 1.000000f, 0.950000f, 0.050000f, "Contrast"));
 		Params.push_back(ShaderParam("screen_light", -1, 68, 4, 0.000000f, 2.000000f, 1.000000f, 0.050000f, "Ambient Screen Light"));
 		Params.push_back(ShaderParam("pixel_opacity", -1, 72, 4, 0.010000f, 1.000000f, 1.000000f, 0.010000f, "Pixel Opacity"));
@@ -941,11 +947,6 @@ public:
 		Params.push_back(ShaderParam("shadow_offset_y", -1, 88, 4, -5.000000f, 5.000000f, 1.000000f, 0.500000f, "Shadow Offset Vert"));
 		Params.push_back(ShaderParam("screen_offset_x", -1, 92, 4, -5.000000f, 5.000000f, 0.000000f, 0.500000f, "Screen Offset Horiz"));
 		Params.push_back(ShaderParam("screen_offset_y", -1, 96, 4, -5.000000f, 5.000000f, 0.000000f, 0.500000f, "Screen Offset Vert"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("PassOutputSize1", -1, 48, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("PassOutput1", 2));
 		Samplers.push_back(ShaderSampler("BACKGROUND", 3));
 		Samplers.push_back(ShaderSampler("Source", 1));

@@ -970,15 +970,16 @@ public:
 		VertexLength = sizeof(RetroArchDitheringShadersSgenptMixShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchDitheringShadersSgenptMixShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchDitheringShadersSgenptMixShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SGPT_BLEND_OPTION", -1, 52, 4, 0.000000f, 3.000000f, 1.000000f, 1.000000f, "    0: OFF | 1: VL+CB | 2: VL | 3: CB"));
-		Params.push_back(ShaderParam("SGPT_BLEND_LEVEL", -1, 56, 4, 0.000000f, 1.000000f, 0.850000f, 0.050000f, "    Blend Level"));
-		Params.push_back(ShaderParam("SGPT_ADJUST_VIEW", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "    Adjust View"));
-		Params.push_back(ShaderParam("SGPT_LINEAR_GAMMA", -1, 64, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "    Use Linear Gamma"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SGPT_BLEND_OPTION", -1, 52, 4, 0.000000f, 3.000000f, 1.000000f, 1.000000f, "0: OFF | 1: VL+CB | 2: VL | 3: CB"));
+		Params.push_back(ShaderParam("SGPT_BLEND_LEVEL", -1, 56, 4, 0.000000f, 1.000000f, 0.850000f, 0.050000f, "Blend Level"));
+		Params.push_back(ShaderParam("SGPT_ADJUST_VIEW", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Adjust View"));
+		Params.push_back(ShaderParam("SGPT_LINEAR_GAMMA", -1, 64, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Use Linear Gamma"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

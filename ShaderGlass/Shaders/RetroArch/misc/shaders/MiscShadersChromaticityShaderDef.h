@@ -902,13 +902,14 @@ public:
 		VertexLength = sizeof(RetroArchMiscShadersChromaticityShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMiscShadersChromaticityShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMiscShadersChromaticityShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("COLOR_MODE", -1, 52, 4, 0.000000f, 6.000000f, 0.000000f, 1.000000f, "SRGB,SMPTE C,REC709,BT2020,SMPTE240,NTSC1953,EBU"));
-		Params.push_back(ShaderParam("Dx", -1, 56, 4, -1.000000f, 3.000000f, 2.000000f, 1.000000f, "Color Temp: D50, D55, D65, D75"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("COLOR_MODE", -1, 52, 4, 0.000000f, 6.000000f, 0.000000f, 1.000000f, "SRGB,SMPTE C,REC709,BT2020,SMPTE240,NTSC1953,EBU"));
+		Params.push_back(ShaderParam("Dx", -1, 56, 4, -1.000000f, 3.000000f, 2.000000f, 1.000000f, "Color Temp: D50, D55, D65, D75"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

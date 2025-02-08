@@ -1860,6 +1860,12 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtLottesFastShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtLottesFastShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtLottesFastShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("MASK", -1, 52, 4, 0.000000f, 3.000000f, 1.000000f, 1.000000f, "Mask Type"));
 		Params.push_back(ShaderParam("MASK_INTENSITY", -1, 56, 4, 0.000000f, 1.000000f, 0.500000f, 0.050000f, "Mask Intensity"));
 		Params.push_back(ShaderParam("SCANLINE_THINNESS", -1, 60, 4, 0.000000f, 1.000000f, 0.500000f, 0.100000f, "Scanline Intensity"));
@@ -1868,11 +1874,6 @@ public:
 		Params.push_back(ShaderParam("TRINITRON_CURVE", -1, 72, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Trinitron-style Curve"));
 		Params.push_back(ShaderParam("CORNER", -1, 76, 4, 0.000000f, 11.000000f, 3.000000f, 1.000000f, "Corner Round"));
 		Params.push_back(ShaderParam("CRT_GAMMA", -1, 80, 4, 0.000000f, 51.000000f, 2.400000f, 0.100000f, "CRT Gamma"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

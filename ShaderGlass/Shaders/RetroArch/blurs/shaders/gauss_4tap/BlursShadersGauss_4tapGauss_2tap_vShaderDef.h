@@ -417,9 +417,10 @@ public:
 		VertexLength = sizeof(RetroArchBlursShadersGauss_4tapGauss_2tap_vShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchBlursShadersGauss_4tapGauss_2tap_vShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchBlursShadersGauss_4tapGauss_2tap_vShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("SIGMA", -1, 16, 4, 0.000000f, 2.000000f, 1.000000f, 0.050000f, "Gaussian filtering sigma"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SIGMA", -1, 16, 4, 0.000000f, 2.000000f, 1.000000f, 0.050000f, "Gaussian filtering sigma"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

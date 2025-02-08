@@ -23,14 +23,16 @@ public:
 .Param("alias", "autocrop_precut")
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
-.Param("scale_type", "source"));
+.Param("scale_type", "source")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(BorderShadersAutocropKokoAutocrop1_computeShaderDef()
 .Param("alias", "autocrop_compute")
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true")
 .Param("mipmap_input", "true")
 .Param("scale", "1.0")
-.Param("scale_type", "source"));
+.Param("scale_type", "source")
+.Param("wrap_mode", "clamp_to_border"));
          	ShaderDefs.push_back(BorderShadersAutocropKokoAutocrop2_displayShaderDef()
 .Param("alias", "autocrop_display")
 .Param("filter_linear", "true")

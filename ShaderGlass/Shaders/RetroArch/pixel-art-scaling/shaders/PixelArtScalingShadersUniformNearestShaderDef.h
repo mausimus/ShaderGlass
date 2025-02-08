@@ -561,12 +561,13 @@ public:
 		VertexLength = sizeof(RetroArchPixelArtScalingShadersUniformNearestShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchPixelArtScalingShadersUniformNearestShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchPixelArtScalingShadersUniformNearestShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("BGR_LCD_PATTERN", -1, 52, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "BGR output pattern"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("BGR_LCD_PATTERN", -1, 52, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "BGR output pattern"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

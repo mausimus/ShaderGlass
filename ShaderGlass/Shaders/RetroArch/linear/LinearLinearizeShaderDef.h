@@ -299,6 +299,7 @@ public:
 		VertexLength = sizeof(RetroArchLinearLinearizeShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchLinearLinearizeShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchLinearLinearizeShaderDefs::sFragmentByteCode);
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*

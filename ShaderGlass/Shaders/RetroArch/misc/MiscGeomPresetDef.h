@@ -25,7 +25,8 @@ public:
          	ShaderDefs.push_back(MiscShadersGeomShaderDef()
 .Param("filter_linear", "true")
 .Param("mipmap_input", "true")
-.Param("scale_type", "viewport"));
+.Param("scale_type", "viewport")
+.Param("wrap_mode", "clamp_to_border"));
 	}
 };
 }

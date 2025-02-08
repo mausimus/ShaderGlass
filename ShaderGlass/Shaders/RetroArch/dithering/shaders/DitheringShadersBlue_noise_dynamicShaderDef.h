@@ -1516,15 +1516,16 @@ public:
 		VertexLength = sizeof(RetroArchDitheringShadersBlue_noise_dynamicShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchDitheringShadersBlue_noise_dynamicShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchDitheringShadersBlue_noise_dynamicShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("COLOR_DEPTH", -1, 52, 4, 1.000000f, 8.000000f, 1.000000f, 1.000000f, "Color depth in Bits"));
-		Params.push_back(ShaderParam("DITHER_TUNE", -1, 56, 4, -64.000000f, 64.000000f, 0.000000f, 1.000000f, "Tune dithering"));
-		Params.push_back(ShaderParam("MONOCHROME", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Monochrome"));
-		Params.push_back(ShaderParam("EGA_PALETTE", -1, 64, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "EGA palette"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("COLOR_DEPTH", -1, 52, 4, 1.000000f, 8.000000f, 1.000000f, 1.000000f, "Color depth in Bits"));
+		Params.push_back(ShaderParam("DITHER_TUNE", -1, 56, 4, -64.000000f, 64.000000f, 0.000000f, 1.000000f, "Tune dithering"));
+		Params.push_back(ShaderParam("MONOCHROME", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Monochrome"));
+		Params.push_back(ShaderParam("EGA_PALETTE", -1, 64, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "EGA palette"));
 		Samplers.push_back(ShaderSampler("BlueNoiseTexture0", 3));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*

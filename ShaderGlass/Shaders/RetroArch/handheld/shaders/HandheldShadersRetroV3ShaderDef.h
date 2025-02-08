@@ -646,14 +646,15 @@ public:
 		VertexLength = sizeof(RetroArchHandheldShadersRetroV3ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchHandheldShadersRetroV3ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchHandheldShadersRetroV3ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("RETRO_PIXEL_SIZE", -1, 0, 4, 0.000000f, 1.000000f, 0.500000f, 0.010000f, "Retro Pixel Size"));
 		Params.push_back(ShaderParam("RETRO_COLOR_BOOST", -1, 4, 4, 1.000000f, 2.000000f, 1.360000f, 0.010000f, "Retro Color Boost"));
 		Params.push_back(ShaderParam("RETRO_GAMMA_IN", -1, 8, 4, 1.000000f, 3.000000f, 2.200000f, 0.050000f, "Retro Gamma In"));
 		Params.push_back(ShaderParam("RETRO_GAMMA_OUT", -1, 12, 4, 1.000000f, 3.000000f, 2.200000f, 0.050000f, "Retro Gamma LCD"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

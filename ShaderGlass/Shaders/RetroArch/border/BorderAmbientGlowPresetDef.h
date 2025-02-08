@@ -25,6 +25,7 @@ public:
 .Param("filter_linear", "true")
 .Param("mipmap_input", "true")
 .Param("scale_type", "viewport"));
+            OverrideParam("mixfactor", (float)0.950000);
 	}
 };
 }

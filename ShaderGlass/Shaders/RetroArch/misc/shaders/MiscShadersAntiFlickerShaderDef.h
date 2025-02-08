@@ -611,12 +611,13 @@ public:
 		VertexLength = sizeof(RetroArchMiscShadersAntiFlickerShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchMiscShadersAntiFlickerShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchMiscShadersAntiFlickerShaderDefs::sFragmentByteCode);
-		Params.push_back(ShaderParam("THRESH", -1, 52, 4, 0.000000f, 1.000000f, 0.250000f, 0.050000f, "Luma Diff Threshold"));
+		Format = "";
 		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("SourceSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OriginalSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("OutputSize", -1, 32, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("FrameCount", -1, 48, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("THRESH", -1, 52, 4, 0.000000f, 1.000000f, 0.250000f, 0.050000f, "Luma Diff Threshold"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 		Samplers.push_back(ShaderSampler("OriginalHistory1", 3));
 		Samplers.push_back(ShaderSampler("OriginalHistory2", 4));

@@ -819,6 +819,11 @@ public:
 		VertexLength = sizeof(RetroArchCrtShadersCrtPiShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchCrtShadersCrtPiShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchCrtShadersCrtPiShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("CURVATURE_X", -1, 0, 4, 0.000000f, 1.000000f, 0.100000f, 0.010000f, "Screen curvature - horizontal"));
 		Params.push_back(ShaderParam("CURVATURE_Y", -1, 4, 4, 0.000000f, 1.000000f, 0.150000f, 0.010000f, "Screen curvature - vertical"));
 		Params.push_back(ShaderParam("MASK_BRIGHTNESS", -1, 8, 4, 0.000000f, 1.000000f, 0.700000f, 0.010000f, "Mask brightness"));
@@ -827,10 +832,6 @@ public:
 		Params.push_back(ShaderParam("BLOOM_FACTOR", -1, 20, 4, 0.000000f, 5.000000f, 1.500000f, 0.010000f, "Bloom factor"));
 		Params.push_back(ShaderParam("INPUT_GAMMA", -1, 24, 4, 0.000000f, 5.000000f, 2.400000f, 0.010000f, "Input gamma"));
 		Params.push_back(ShaderParam("OUTPUT_GAMMA", -1, 28, 4, 0.000000f, 5.000000f, 2.200000f, 0.010000f, "Output gamma"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("SourceSize", 0, 96, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OriginalSize", 0, 80, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", 0, 64, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

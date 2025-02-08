@@ -22,6 +22,9 @@ public:
          	ShaderDefs.push_back(DitheringShadersBayer_4x4ShaderDef()
 .Param("filter_linear", "false")
 .Param("scale_type", "viewport"));
+            OverrideParam("COLOR_DEPTH", (float)2.000000);
+            OverrideParam("DITHER_TUNE", (float)0.000000);
+            OverrideParam("EGA_PALETTE", (float)0.000000);
 	}
 };
 }

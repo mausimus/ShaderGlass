@@ -1635,12 +1635,13 @@ public:
 		VertexLength = sizeof(RetroArchEdgeSmoothingXbrzShadersXbrzFreescaleMultipassXbrzFreescalePass1ShaderDefs::sVertexByteCode);
 		FragmentByteCode = RetroArchEdgeSmoothingXbrzShadersXbrzFreescaleMultipassXbrzFreescalePass1ShaderDefs::sFragmentByteCode;
 		FragmentLength = sizeof(RetroArchEdgeSmoothingXbrzShadersXbrzFreescaleMultipassXbrzFreescalePass1ShaderDefs::sFragmentByteCode);
+		Format = "";
+		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("xbrz_fs_refpassSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
+		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("blend_none", -1, 32, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "Blend None"));
 		Params.push_back(ShaderParam("blend_normal", -1, 36, 4, 0.000000f, 2.000000f, 1.000000f, 1.000000f, "Blend Normal"));
 		Params.push_back(ShaderParam("blend_dominant", -1, 40, 4, 0.000000f, 2.000000f, 2.000000f, 1.000000f, "Blend Dominant"));
-		Params.push_back(ShaderParam("MVP", 0, 0, 64, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("OutputSize", -1, 16, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
-		Params.push_back(ShaderParam("xbrz_fs_refpassSize", -1, 0, 16, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Samplers.push_back(ShaderSampler("xbrz_fs_refpass", 3));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*

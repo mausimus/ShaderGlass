@@ -61,6 +61,18 @@ public:
 .Param("filter_linear", "true")
 .Param("scale", "1.0")
 .Param("scale_type", "viewport"));
+            OverrideParam("CONTR", (float)0.100000);
+            OverrideParam("CONTRAST", (float)3.000000);
+            OverrideParam("DEBLUR", (float)5.000000);
+            OverrideParam("DETAILS", (float)1.000000);
+            OverrideParam("OFFSET", (float)1.750000);
+            OverrideParam("RESOLUTION_X", (float)0.000000);
+            OverrideParam("RESOLUTION_Y", (float)0.000000);
+            OverrideParam("SFX_CLR", (float)0.600000);
+            OverrideParam("SFX_SAA", (float)1.000000);
+            OverrideParam("SFX_SCN", (float)0.000000);
+            OverrideParam("SHARPEN", (float)1.200000);
+            OverrideParam("SMART", (float)0.300000);
 	}
 };
 }

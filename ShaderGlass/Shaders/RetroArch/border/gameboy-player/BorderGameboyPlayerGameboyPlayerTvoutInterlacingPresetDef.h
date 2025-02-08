@@ -35,6 +35,15 @@ public:
 .Param("filter_linear", "false"));
             TextureDefs.push_back(BorderGameboyPlayerGameboyPlayerTextureDef()
 .Param("name", "BORDER"));
+            OverrideParam("TVOUT_COMPOSITE_CONNECTION", (float)0.000000);
+            OverrideParam("TVOUT_RESOLUTION", (float)512.000000);
+            OverrideParam("TVOUT_TV_COLOR_LEVELS", (float)1.000000);
+            OverrideParam("box_scale", (float)2.000000);
+            OverrideParam("enable_480i", (float)1.000000);
+            OverrideParam("in_res_x", (float)240.000000);
+            OverrideParam("in_res_y", (float)160.000000);
+            OverrideParam("location", (float)0.500000);
+            OverrideParam("top_field_first", (float)1.000000);
 	}
 };
 }
