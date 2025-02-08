@@ -755,6 +755,16 @@
 #include "RetroArch\vhs\shaders\vhs_mpalko\VhsShadersVhs_mpalkoVhs_mpalko_pass0ShaderDef.h"
 #include "RetroArch\vhs\shaders\vhs_mpalko\VhsShadersVhs_mpalkoVhs_mpalko_pass1ShaderDef.h"
 #include "RetroArch\warp\shaders\WarpShadersDilationShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\guest\extras\BezelMega_BezelShadersGuestExtrasHsmDrezNoneShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\base\BezelMega_BezelShadersBaseCacheInfoPotatoParamsShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\guest\extras\BezelMega_BezelShadersGuestExtrasHsmFetchDrezOutputShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\dogway\BezelMega_BezelShadersDogwayHsmGradeShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\base\BezelMega_BezelShadersBaseStockShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\guest\BezelMega_BezelShadersGuestHsmAvgLumShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\guest\BezelMega_BezelShadersGuestHsmInterlaceAndLinearizeShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\base\BezelMega_BezelShadersBaseDelinearizeShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\guest\BezelMega_BezelShadersGuestHsmCrtDariusgGdvMiniPotatoShaderDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\base\BezelMega_BezelShadersBasePostCrtPrepPotatoShaderDef.h"
 // %SHADER_INCLUDE%
 
 #include "RetroArch\anti-aliasing\shaders\smaa\AntiAliasingShadersSmaaAreaTexTextureDef.h"
@@ -959,6 +969,13 @@
 #include "RetroArch\subframe-bfi\shaders\motionblur_test\resources\SubframeBfiShadersMotionblur_testResources120TextureDef.h"
 #include "RetroArch\subframe-bfi\shaders\motionblur_test\resources\SubframeBfiShadersMotionblur_testResources180TextureDef.h"
 #include "RetroArch\subframe-bfi\shaders\motionblur_test\resources\SubframeBfiShadersMotionblur_testResources240TextureDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\guest\lut\BezelMega_BezelShadersGuestLutTrinitronLutTextureDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\guest\lut\BezelMega_BezelShadersGuestLutInvTrinitronLutTextureDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\guest\lut\BezelMega_BezelShadersGuestLutNecLutTextureDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\guest\lut\BezelMega_BezelShadersGuestLutNtscLutTextureDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\textures\BezelMega_BezelShadersTexturesPlaceholder_Transparent_16x16TextureDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\textures\BezelMega_BezelShadersTexturesBaked_Frame_Carbonfiber_BackgroundTextureDef.h"
+#include "RetroArch\bezel\Mega_Bezel\shaders\textures\BezelMega_BezelShadersTexturesBaked_Frame_Carbonfiber_Background_VertTextureDef.h"
 // %TEXTURE_INCLUDE%
 
 #include "RetroArch\anamorphic\AnamorphicAnamorphicPresetDef.h"
@@ -1784,6 +1801,8 @@
 #include "RetroArch\vhs\VhsVhs_and_crt_godotPresetDef.h"
 #include "RetroArch\vhs\VhsVhs_mpalkoPresetDef.h"
 #include "RetroArch\warp\WarpDilationPresetDef.h"
+#include "RetroArch\bezel\Mega_Bezel\Presets\BezelMega_BezelPresetsMBZ__5__POTATOPresetDef.h"
+#include "RetroArch\bezel\Mega_Bezel\presets\BezelMega_BezelPresetsMBZ__5__POTATOPresetDef.h"
 // %PRESET_INCLUDE%
 
 namespace RetroArch
@@ -2612,6 +2631,7 @@ new VhsVHSProPresetDef(),
 new VhsVhs_and_crt_godotPresetDef(),
 new VhsVhs_mpalkoPresetDef(),
 new WarpDilationPresetDef(),
+new BezelMega_BezelPresetsMBZ__5__POTATOPresetDef(),
 // %PRESET_CLASS%
 };
 }

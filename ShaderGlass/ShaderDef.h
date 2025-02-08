@@ -31,7 +31,7 @@ class ShaderDef
 public:
     ShaderDef() :
         Params {}, Samplers {}, VertexSource {}, FragmentSource {}, Name {}, VertexByteCode {}, FragmentByteCode {}, VertexLength {},
-        FragmentLength {}
+        FragmentLength {}, Format {}
     { }
 
     std::vector<ShaderParam> Params;
@@ -44,6 +44,7 @@ public:
     const BYTE* FragmentByteCode;
     SIZE_T VertexLength;
     SIZE_T FragmentLength;
+    const char* Format;
 
     size_t ParamsSize(int buffer)
     {

@@ -16,8 +16,8 @@ Shader::Shader(ShaderDef& shaderDef) :
     }
 
     m_filterLinear = IsTrue("filter_linear");
-    m_formatSRGB   = IsTrue("srgb_framebuffer");
-    m_formatFloat  = IsTrue("float_framebuffer");
+    m_formatSRGB   = IsTrue("srgb_framebuffer") || (shaderDef.Format != NULL && (strcmp(shaderDef.Format, "R8G8B8A8_SRGB") == 0));
+    m_formatFloat  = IsTrue("float_framebuffer") || (shaderDef.Format != NULL && (strcmp(shaderDef.Format, "R32G32B32A32_SFLOAT") == 0 || strcmp(shaderDef.Format, "R16G16B16A16_SFLOAT") == 0));
 
     std::string value;
 
