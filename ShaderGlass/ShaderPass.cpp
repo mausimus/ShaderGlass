@@ -173,7 +173,7 @@ ShaderPass::~ShaderPass()
     m_samplers.clear();
 }
 
-void ShaderPass::Resize(int sourceWidth, int sourceHeight, int destWidth, int destHeight, const std::map<std::string, float4>& textureSizes)
+void ShaderPass::Resize(int sourceWidth, int sourceHeight, int destWidth, int destHeight, const std::map<std::string, float4>& textureSizes, const std::vector<std::array<UINT, 4>>& passSizes)
 {
     m_destWidth  = destWidth;
     m_destHeight = destHeight;
@@ -193,6 +193,16 @@ void ShaderPass::Resize(int sourceWidth, int sourceHeight, int destWidth, int de
     {
         auto sizeParam = tx.first + "Size";
         m_shader.SetParam(sizeParam, (void*)&tx.second);
+    }
+    for(auto p = 0; p < passSizes.size(); p++)
+    {
+        const auto& passSize = passSizes.at(p);
+        if(passSize[2] != 0 && passSize[3] != 0)
+        {
+            auto sizeParam = "PassOutputSize" + std::to_string(p);
+            float passSizeF[4] = { passSize[2], passSize[3], 1.0f / passSize[2], 1.0f / passSize[3] };
+            m_shader.SetParam(sizeParam, passSizeF);
+        }
     }
 }
 

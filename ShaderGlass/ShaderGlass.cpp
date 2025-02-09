@@ -462,11 +462,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         m_textureSizes.insert(std::make_pair("FinalViewport", float4 {(float)viewportWidth, (float)viewportHeight, 1.0f / viewportWidth, 1.0f / viewportHeight}));
 
         // preprocess takes original texture full size
-        m_preprocessPass.Resize(capturedTextureDesc.Width, capturedTextureDesc.Height, originalWidth, originalHeight, m_textureSizes);
+        std::vector<std::array<UINT, 4>> passSizes;
+        m_preprocessPass.Resize(capturedTextureDesc.Width, capturedTextureDesc.Height, originalWidth, originalHeight, m_textureSizes, passSizes);
 
         UINT                             sourceWidth  = originalWidth;
-        UINT                             sourceHeight = originalHeight;
-        std::vector<std::array<UINT, 4>> passSizes;
+        UINT                             sourceHeight = originalHeight;        
         for(int p = 0; p < m_shaderPasses.size(); p++)
         {
             auto& shaderPass = m_shaderPasses[p];
@@ -502,7 +502,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         for(int p = 0; p < m_shaderPasses.size(); p++)
         {
             auto& shaderPass = m_shaderPasses[p];
-            shaderPass.Resize(passSizes[p][0], passSizes[p][1], passSizes[p][2], passSizes[p][3], m_textureSizes);
+            shaderPass.Resize(passSizes[p][0], passSizes[p][1], passSizes[p][2], passSizes[p][3], m_textureSizes, passSizes);
         }
     }
 
