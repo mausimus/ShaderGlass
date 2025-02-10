@@ -18,6 +18,7 @@ public:
     void Resize(int sourceWidth, int sourceHeight, int destWidth, int destHeight, const std::map<std::string, float4>& textureSizes, const std::vector<std::array<UINT, 4>>& passSizes);
     void UpdateMVP(float sx, float sy, float tx, float ty);
     bool RequiresFeedback() const;
+    int RequiresHistory() const;
 
     Shader&                   m_shader;
     Preset&                   m_preset;

@@ -268,7 +268,7 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
             auto it = resources.find(texture.name);
             if(it == resources.end() && texture.name.starts_with("OriginalHistory"))
             {
-                it = resources.find("Original"); // TODO - implement history
+                it = resources.find("Original"); // should only map 0 to Original
             }
             if(it != resources.end())
             {
@@ -330,4 +330,27 @@ bool ShaderPass::RequiresFeedback() const
         }
     }
     return false;
+}
+
+int ShaderPass::RequiresHistory() const
+{
+    int maxHistory = 0;
+    for(const auto& texture : m_shader.m_shaderDef.Samplers)
+    {
+        if(texture.name.starts_with("OriginalHistory"))
+        {
+            try
+            {
+                auto historyString = texture.name.substr(15);
+                auto historyNum    = std::stoi(historyString);
+                if(historyNum > 0 && historyNum < 100)
+                {
+                    maxHistory = max(maxHistory, historyNum);
+                }
+            }
+            catch(...)
+            { }
+        }
+    }
+    return maxHistory;
 }

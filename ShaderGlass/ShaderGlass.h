@@ -61,6 +61,7 @@ private:
     bool       m_image {false};
     int        m_frameCounter {0};
     bool       m_requiresFeedback {false};
+    int        m_requiresHistory {0};
     std::mutex m_mutex {};
 
     PassthroughPresetDef                              m_passthroughDef;

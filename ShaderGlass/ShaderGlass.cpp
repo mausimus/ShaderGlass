@@ -297,13 +297,18 @@ void ShaderGlass::DestroyPasses()
     m_passTextures.clear();
     m_passResources.clear();
     m_requiresFeedback = false;
+    m_requiresHistory  = 0;
 }
 
 void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 {
-    if(!m_running || (m_frameSkip != 0 && m_frameCounter++ % m_frameSkip != 0))
+    m_frameCounter++;
+    if(!m_running || (m_frameSkip != 0 && (m_frameCounter % (m_frameSkip + 1) != 0)))
     {
         // skip frame
+        DXGI_PRESENT_PARAMETERS presentParameters {};
+        m_swapChain->Present1(1, 0, &presentParameters);
+        PostMessage(m_outputWindow, WM_PAINT, 0, 0);
         return;
     }
 
@@ -531,6 +536,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             for(const auto& pass : m_shaderPasses)
             {
                 m_requiresFeedback |= pass.RequiresFeedback();
+                m_requiresHistory = max(m_requiresHistory, pass.RequiresHistory());
             }
 
             for(size_t p = 1; p < m_shaderPasses.size(); p++)
@@ -588,6 +594,35 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
                 m_shaderPasses[p].m_sourceView     = passResource.get();
             }
         }
+        else
+        {
+            m_requiresHistory = m_shaderPasses.begin()->RequiresHistory();
+        }
+
+        if(m_requiresHistory)
+        {
+            D3D11_TEXTURE2D_DESC desc2 = {};
+            texture->GetDesc(&desc2);
+            desc2.Usage          = D3D11_USAGE_DEFAULT;
+            desc2.BindFlags      = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+            desc2.CPUAccessFlags = 0;
+            desc2.MiscFlags      = 0;
+            desc2.Width          = originalWidth;
+            desc2.Height         = originalHeight;
+
+            for(int h = 0; h < m_requiresHistory; h++)
+            {
+                winrt::com_ptr<ID3D11Texture2D> historyTexture;
+                hr = m_device->CreateTexture2D(&desc2, nullptr, historyTexture.put());
+                assert(SUCCEEDED(hr));
+                m_passTextures.push_back(historyTexture);
+                winrt::com_ptr<ID3D11ShaderResourceView> historyResource;
+                hr = m_device->CreateShaderResourceView(historyTexture.get(), nullptr, historyResource.put());
+                assert(SUCCEEDED(hr));
+                m_passResources.insert(std::make_pair(std::string("OriginalHistory") + std::to_string(h + 1), historyResource));
+            }
+        }
+
         m_shaderPasses[m_shaderPasses.size() - 1].m_targetView = m_displayRenderTarget.get();
     }
 
@@ -699,6 +734,10 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         p++;
     }
 
+    DXGI_PRESENT_PARAMETERS presentParameters {};
+    m_swapChain->Present1(1, 0, &presentParameters);
+    PostMessage(m_outputWindow, WM_PAINT, 0, 0);
+
     if(m_requiresFeedback)
     {
         // copy output to feedback
@@ -714,9 +753,31 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         }
     }
 
-    DXGI_PRESENT_PARAMETERS presentParameters {};
-    m_swapChain->Present1(1, 0, &presentParameters);
-    PostMessage(m_outputWindow, WM_PAINT, 0, 0);
+    if(m_requiresHistory)
+    {
+        // lookup oldest History for reuse
+        const auto&                    lastHistory = m_passResources.find(std::string("OriginalHistory" + std::to_string(m_requiresHistory)));
+        auto                           lastHistoryView = lastHistory->second;
+        winrt::com_ptr<ID3D11Resource> lastHistoryResource;
+        lastHistoryView->GetResource(lastHistoryResource.put());
+
+        for(int h = m_requiresHistory; h > 1; h--)
+        {
+            // remap middle Histories one frame back
+            m_passResources[std::string("OriginalHistory" + std::to_string(h))] = m_passResources[std::string("OriginalHistory" + std::to_string(h - 1))];
+        }
+
+        // copy current Original to History1 for next pass
+        const auto&                    original = m_passResources.find("Original");
+        winrt::com_ptr<ID3D11Resource> originalResource;
+        original->second->GetResource(originalResource.put());
+
+        m_context->CopyResource(lastHistoryResource.get(), originalResource.get());
+        if(m_requiresHistory > 1)
+        {
+            m_passResources["OriginalHistory1"] = lastHistoryView;
+        }
+    }
 }
 
 winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
