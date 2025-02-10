@@ -553,6 +553,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
                 // use shader output size
                 desc2.Width  = pass.m_destWidth;
                 desc2.Height = pass.m_destHeight;
+                desc2.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 
                 winrt::com_ptr<ID3D11Texture2D> passTexture;
                 hr = m_device->CreateTexture2D(&desc2, nullptr, passTexture.put());
@@ -576,6 +577,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
                 // create feedback textures if needed
                 if(m_requiresFeedback)
                 {
+                    desc2.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
                     winrt::com_ptr<ID3D11Texture2D> feedbackTexture;
                     hr = m_device->CreateTexture2D(&desc2, nullptr, feedbackTexture.put());
                     assert(SUCCEEDED(hr));
@@ -604,7 +607,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             D3D11_TEXTURE2D_DESC desc2 = {};
             texture->GetDesc(&desc2);
             desc2.Usage          = D3D11_USAGE_DEFAULT;
-            desc2.BindFlags      = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+            desc2.BindFlags      = D3D11_BIND_SHADER_RESOURCE;
             desc2.CPUAccessFlags = 0;
             desc2.MiscFlags      = 0;
             desc2.Width          = originalWidth;
@@ -624,6 +627,35 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         }
 
         m_shaderPasses[m_shaderPasses.size() - 1].m_targetView = m_displayRenderTarget.get();
+
+        if(m_requiresFeedback)
+        {
+            // add feedback for last pass
+            D3D11_TEXTURE2D_DESC desc2 = {};
+            texture->GetDesc(&desc2);
+            desc2.Usage          = D3D11_USAGE_DEFAULT;
+            desc2.BindFlags      = D3D11_BIND_SHADER_RESOURCE;
+            desc2.CPUAccessFlags = 0;
+            desc2.MiscFlags      = 0;
+            desc2.Width          = destWidth;
+            desc2.Height         = destHeight;
+
+            int   p    = m_shaderPasses.size() - 1;
+            auto& pass = m_shaderPasses[p];
+
+            winrt::com_ptr<ID3D11Texture2D> feedbackTexture;
+            hr = m_device->CreateTexture2D(&desc2, nullptr, feedbackTexture.put());
+            assert(SUCCEEDED(hr));
+            m_passTextures.push_back(feedbackTexture);
+            winrt::com_ptr<ID3D11ShaderResourceView> feedbackResource;
+            hr = m_device->CreateShaderResourceView(feedbackTexture.get(), nullptr, feedbackResource.put());
+            assert(SUCCEEDED(hr));
+            m_passResources.insert(std::make_pair(std::string("PassFeedback") + std::to_string(p), feedbackResource));
+            if(!pass.m_shader.m_alias.empty())
+            {
+                m_passResources.insert(std::make_pair(pass.m_shader.m_alias + "Feedback", feedbackResource));
+            }
+        }
     }
 
     if(outputMoved || outputResized || (m_lastPos.x != topLeft.x || m_lastPos.y != topLeft.y) || m_lockedAreaUpdated)
@@ -751,6 +783,13 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             passFeedback->second->GetResource(feedbackResource.put());
             m_context->CopyResource(feedbackResource.get(), outputResource.get());
         }
+
+        // copy display texture as last pass feedback
+        int p = m_shaderPasses.size() - 1;
+        auto lastPassFeedback = m_passResources.find(std::string("PassFeedback") + std::to_string(p));
+        winrt::com_ptr<ID3D11Resource> lastPassFeedbackResource;
+        lastPassFeedback->second->GetResource(lastPassFeedbackResource.put());
+        m_context->CopyResource(lastPassFeedbackResource.get(), m_displayTexture.get());
     }
 
     if(m_requiresHistory)
