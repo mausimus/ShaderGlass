@@ -54,13 +54,19 @@ void CaptureSession::UpdateCursor(bool captureCursor)
 void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sender, winrt::IInspectable const&)
 {
     auto frame   = sender.TryGetNextFrame();
-    auto texture = GetDXGIInterfaceFromObject<ID3D11Texture2D>(frame.Surface());
-    m_shaderGlass.Process(texture);
+    m_inputFrame = GetDXGIInterfaceFromObject<ID3D11Texture2D>(frame.Surface());
 }
 
 void CaptureSession::ProcessInput()
 {
-    m_shaderGlass.Process(m_inputImage);
+    if(m_inputImage.get())
+    {
+        m_shaderGlass.Process(m_inputImage);
+    }
+    else
+    {
+        m_shaderGlass.Process(m_inputFrame);
+    }
 }
 
 void CaptureSession::Stop()

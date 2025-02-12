@@ -265,15 +265,17 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
         m_displayTexture      = nullptr;
         m_displayRenderTarget = nullptr;
 
-        hr = m_swapChain->ResizeBuffers(0, static_cast<UINT>(clientRect.right), static_cast<UINT>(clientRect.bottom), DXGI_FORMAT_UNKNOWN, 0);
-        assert(SUCCEEDED(hr));
+        if(clientRect.right > 0 && clientRect.bottom > 0)
+        {
+            hr = m_swapChain->ResizeBuffers(0, static_cast<UINT>(clientRect.right), static_cast<UINT>(clientRect.bottom), DXGI_FORMAT_UNKNOWN, 0);
+            assert(SUCCEEDED(hr));
 
-        hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_displayTexture.put());
-        assert(SUCCEEDED(hr));
+            hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_displayTexture.put());
+            assert(SUCCEEDED(hr));
 
-        hr = m_device->CreateRenderTargetView(m_displayTexture.get(), NULL, m_displayRenderTarget.put());
-        assert(SUCCEEDED(hr));
-
+            hr = m_device->CreateRenderTargetView(m_displayTexture.get(), NULL, m_displayRenderTarget.put());
+            assert(SUCCEEDED(hr));
+        }
         return true;
     }
     return false;
@@ -300,15 +302,30 @@ void ShaderGlass::DestroyPasses()
     m_requiresHistory  = 0;
 }
 
+void ShaderGlass::PresentFrame()
+{
+    DXGI_PRESENT_PARAMETERS presentParameters {};
+    m_swapChain->Present1(1, 0, &presentParameters);
+    PostMessage(m_outputWindow, WM_PAINT, 0, 0); // necessary for click-through
+}
+
 void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 {
     m_frameCounter++;
-    if(!m_running || (m_frameSkip != 0 && (m_frameCounter % (m_frameSkip + 1) != 0)))
+
+#ifdef _DEBUG
+    if(m_frameCounter % 60 == 0)
+    {
+        char frameCount[20];
+        snprintf(frameCount, 20, "%d\n", m_frameCounter);
+        OutputDebugStringA(frameCount);
+    }
+#endif
+
+    if(!m_running || !texture || (m_frameSkip != 0 && (m_frameCounter % (m_frameSkip + 1) != 0)))
     {
         // skip frame
-        DXGI_PRESENT_PARAMETERS presentParameters {};
-        m_swapChain->Present1(1, 0, &presentParameters);
-        PostMessage(m_outputWindow, WM_PAINT, 0, 0);
+        PresentFrame();
         return;
     }
 
@@ -375,6 +392,13 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
     auto outputResized = false;
     outputResized      = TryResizeSwapChain(clientRect, m_outputRescaled);
+
+    if(clientRect.right <= 0 || clientRect.bottom <= 0)
+    {
+        // skip
+        PresentFrame();
+        return;
+    }
 
     // final window/viewport size
     const UINT viewportWidth  = static_cast<UINT>(clientRect.right);
@@ -766,10 +790,6 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         p++;
     }
 
-    DXGI_PRESENT_PARAMETERS presentParameters {};
-    m_swapChain->Present1(1, 0, &presentParameters);
-    PostMessage(m_outputWindow, WM_PAINT, 0, 0);
-
     if(m_requiresFeedback)
     {
         // copy output to feedback
@@ -785,11 +805,15 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         }
 
         // copy display texture as last pass feedback
-        int p = m_shaderPasses.size() - 1;
-        auto lastPassFeedback = m_passResources.find(std::string("PassFeedback") + std::to_string(p));
-        winrt::com_ptr<ID3D11Resource> lastPassFeedbackResource;
-        lastPassFeedback->second->GetResource(lastPassFeedbackResource.put());
-        m_context->CopyResource(lastPassFeedbackResource.get(), m_displayTexture.get());
+        auto displayTexture = m_displayTexture;
+        if(displayTexture)
+        {
+            int p = m_shaderPasses.size() - 1;
+            auto lastPassFeedback = m_passResources.find(std::string("PassFeedback") + std::to_string(p));
+            winrt::com_ptr<ID3D11Resource> lastPassFeedbackResource;
+            lastPassFeedback->second->GetResource(lastPassFeedbackResource.put());
+            m_context->CopyResource(lastPassFeedbackResource.get(), displayTexture.get());
+        }
     }
 
     if(m_requiresHistory)
@@ -817,25 +841,28 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             m_passResources["OriginalHistory1"] = lastHistoryView;
         }
     }
+
+    PresentFrame();
 }
 
 winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
 {
-    if(!m_displayTexture)
-        return nullptr;
-
+    auto                            displayTexture = m_displayTexture;
     winrt::com_ptr<ID3D11Texture2D> outputTexture;
 
-    D3D11_TEXTURE2D_DESC desc2 = {};
-    m_displayTexture->GetDesc(&desc2);
-    desc2.Usage          = D3D11_USAGE_DEFAULT;
-    desc2.CPUAccessFlags = 0;
-    desc2.MiscFlags      = 0;
+    if(displayTexture)
+    {
+        D3D11_TEXTURE2D_DESC desc2 = {};
+        displayTexture->GetDesc(&desc2);
+        desc2.Usage          = D3D11_USAGE_DEFAULT;
+        desc2.CPUAccessFlags = 0;
+        desc2.MiscFlags      = 0;
 
-    hr = m_device->CreateTexture2D(&desc2, nullptr, outputTexture.put());
-    assert(SUCCEEDED(hr));
+        hr = m_device->CreateTexture2D(&desc2, nullptr, outputTexture.put());
+        assert(SUCCEEDED(hr));
 
-    m_context->CopyResource(outputTexture.get(), m_displayTexture.get());
+        m_context->CopyResource(outputTexture.get(), displayTexture.get());
+    }
     return outputTexture;
 }
 

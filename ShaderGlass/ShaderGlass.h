@@ -33,6 +33,7 @@ private:
     void DestroyPasses();
     void DestroyTargets();
     void RebuildShaders();
+    void PresentFrame();
 
     POINT                                    m_lastSize;
     POINT                                    m_lastPos;

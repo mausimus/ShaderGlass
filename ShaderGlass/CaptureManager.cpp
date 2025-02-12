@@ -14,9 +14,7 @@ using namespace std;
 using namespace util;
 using namespace util::uwp;
 
-class CaptureManager* CaptureManager::s_this {nullptr};
-
-CaptureManager::CaptureManager() : m_options(), m_timer(0), m_lastPreset(-1) { }
+CaptureManager::CaptureManager() : m_options(), m_lastPreset(-1) { }
 
 bool CaptureManager::Initialize()
 {
@@ -45,6 +43,12 @@ void CaptureManager::UpdateInput()
         StopSession();
         StartSession();
     }
+}
+
+DWORD WINAPI ThreadFuncProxy(LPVOID lpParam) 
+{
+    ((CaptureManager*)lpParam)->ThreadFunc();
+    return 0;
 }
 
 void CaptureManager::StartSession()
@@ -88,17 +92,6 @@ void CaptureManager::StartSession()
         m_options.imageHeight = desc.Height;
 
         m_session = make_unique<CaptureSession>(device, inputTexture, *m_shaderGlass);
-
-        int frameInterval = 1000 / 60; // set to 60fps if we fail to retrieve refresh rate
-
-        DEVMODE devmode;
-        devmode.dmSize = sizeof(DEVMODE);
-        if(EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode) && devmode.dmDisplayFrequency != 0)
-        {
-            frameInterval = 1000 / devmode.dmDisplayFrequency;
-        }
-        s_this  = this; // horrible hack
-        m_timer = SetTimer(NULL, 0, frameInterval, CaptureManager::TimerFuncProxy);
     }
     else
     {
@@ -106,6 +99,10 @@ void CaptureManager::StartSession()
 
         m_session = make_unique<CaptureSession>(device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass);
     }
+
+    m_active = true;
+    CreateThread(NULL, 0, ThreadFuncProxy, this, 0, NULL);
+
     UpdateCursor();
 }
 
@@ -132,7 +129,7 @@ bool CaptureManager::IsActive()
     return m_session.get();
 }
 
-void CaptureManager::ForceProcess()
+void CaptureManager::ProcessFrame()
 {
     if(m_session.get())
     {
@@ -156,11 +153,7 @@ void CaptureManager::Exit()
 {
     if(m_session.get())
     {
-        if(m_timer)
-        {
-            KillTimer(NULL, m_timer);
-            m_timer = 0;
-        }
+        m_active = false;
 
         m_session->Stop();
         delete m_session.release();
@@ -265,11 +258,12 @@ void CaptureManager::ResetParams()
     }
 }
 
-void CaptureManager::TimerFuncProxy(_In_ HWND hwnd, _In_ UINT param2, _In_ UINT_PTR param3, _In_ DWORD param4)
+void CaptureManager::ThreadFunc()
 {
-    if(s_this)
+    while(m_active)
     {
-        s_this->ForceProcess();
+        ProcessFrame();
+        Sleep(1);
     }
 }
 

@@ -30,6 +30,7 @@ private:
     winrt::Windows::Graphics::Capture::GraphicsCaptureSession      m_session {nullptr};
     winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice m_device {nullptr};
     winrt::com_ptr<ID3D11Texture2D>                                m_inputImage {nullptr};
+    winrt::com_ptr<ID3D11Texture2D>                                m_inputFrame {nullptr};
 
     ShaderGlass& m_shaderGlass;
 };

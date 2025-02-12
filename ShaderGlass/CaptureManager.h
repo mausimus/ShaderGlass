@@ -58,13 +58,12 @@ public:
     void SetLastPreset(unsigned presetNo);
     void ForgetLastPreset();
     void SaveOutput(LPWSTR fileName);
-    void ForceProcess();
+    void ProcessFrame();
+    void ThreadFunc();
     void Exit();
 
 private:
-    static class CaptureManager*                      s_this;
-    UINT_PTR                                          m_timer {0};
-    static void CALLBACK                              TimerFuncProxy(_In_ HWND hwnd, _In_ UINT param2, _In_ UINT_PTR param3, _In_ DWORD param4);
+    volatile bool                                     m_active {false};
     winrt::com_ptr<ID3D11Device>                      m_d3dDevice {nullptr};
     winrt::com_ptr<ID3D11DeviceContext>               m_context {nullptr};
     winrt::com_ptr<ID3D11Debug>                       m_debug {nullptr};
