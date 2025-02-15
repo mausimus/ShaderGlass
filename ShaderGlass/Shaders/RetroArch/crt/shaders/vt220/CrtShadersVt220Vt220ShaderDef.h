@@ -1,5 +1,5 @@
 /*
-ShaderGlass shader crt-shaders-vt220\vt220 imported from RetroArch:
+ShaderGlass shader crt/shaders/vt220\vt220 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/vt220/vt220.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.

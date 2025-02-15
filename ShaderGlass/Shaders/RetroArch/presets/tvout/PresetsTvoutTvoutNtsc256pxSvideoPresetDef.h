@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-tvout / tvout+ntsc-256px-svideo imported from RetroArch:
+ShaderGlass preset presets/tvout / tvout+ntsc-256px-svideo imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/tvout/tvout+ntsc-256px-svideo.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsTvoutTvoutNtsc256pxSvideoPresetDef() : PresetDef{}
 	{
 		Name = "tvout+ntsc-256px-svideo";
-		Category = "presets-tvout";
+		Category = "presets/tvout";
 	}
 
 	virtual void Build() {

@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-crt-plus-signal / crtglow_gauss_ntsc imported from RetroArch:
+ShaderGlass preset presets/crt-plus-signal / crtglow_gauss_ntsc imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/crt-plus-signal/crtglow_gauss_ntsc.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsCrtPlusSignalCrtglow_gauss_ntscPresetDef() : PresetDef{}
 	{
 		Name = "crtglow_gauss_ntsc";
-		Category = "presets-crt-plus-signal";
+		Category = "presets/crt-plus-signal";
 	}
 
 	virtual void Build() {

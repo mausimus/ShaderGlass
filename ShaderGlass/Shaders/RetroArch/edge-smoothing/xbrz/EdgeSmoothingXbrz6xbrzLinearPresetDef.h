@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset edge-smoothing-xbrz / 6xbrz-linear imported from RetroArch:
+ShaderGlass preset edge-smoothing/xbrz / 6xbrz-linear imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/xbrz/6xbrz-linear.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	EdgeSmoothingXbrz6xbrzLinearPresetDef() : PresetDef{}
 	{
 		Name = "6xbrz-linear";
-		Category = "edge-smoothing-xbrz";
+		Category = "edge-smoothing/xbrz";
 	}
 
 	virtual void Build() {

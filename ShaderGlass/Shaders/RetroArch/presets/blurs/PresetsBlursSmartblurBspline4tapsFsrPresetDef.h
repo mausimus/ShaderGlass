@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-blurs / smartblur-bspline-4taps-fsr imported from RetroArch:
+ShaderGlass preset presets/blurs / smartblur-bspline-4taps-fsr imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/blurs/smartblur-bspline-4taps-fsr.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsBlursSmartblurBspline4tapsFsrPresetDef() : PresetDef{}
 	{
 		Name = "smartblur-bspline-4taps-fsr";
-		Category = "presets-blurs";
+		Category = "presets/blurs";
 	}
 
 	virtual void Build() {

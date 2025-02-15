@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-handheld-plus-color-mod / simpletex_lcd+gba-color-4k imported from RetroArch:
+ShaderGlass preset presets/handheld-plus-color-mod / simpletex_lcd+gba-color-4k imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/handheld-plus-color-mod/simpletex_lcd+gba-color-4k.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsHandheldPlusColorModSimpletex_lcdGbaColor4kPresetDef() : PresetDef{}
 	{
 		Name = "simpletex_lcd+gba-color-4k";
-		Category = "presets-handheld-plus-color-mod";
+		Category = "presets/handheld-plus-color-mod";
 	}
 
 	virtual void Build() {

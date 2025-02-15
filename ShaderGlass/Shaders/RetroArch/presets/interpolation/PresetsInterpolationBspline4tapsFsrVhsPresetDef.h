@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-interpolation / bspline-4taps-fsr-vhs imported from RetroArch:
+ShaderGlass preset presets/interpolation / bspline-4taps-fsr-vhs imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/interpolation/bspline-4taps-fsr-vhs.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsInterpolationBspline4tapsFsrVhsPresetDef() : PresetDef{}
 	{
 		Name = "bspline-4taps-fsr-vhs";
-		Category = "presets-interpolation";
+		Category = "presets/interpolation";
 	}
 
 	virtual void Build() {

@@ -1,5 +1,5 @@
 /*
-ShaderGlass texture crt-shaders-hyllian-support-LUT / some-grade imported from RetroArch:
+ShaderGlass texture crt/shaders/hyllian/support/LUT / some-grade imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/hyllian/support/LUT/some-grade.png
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.

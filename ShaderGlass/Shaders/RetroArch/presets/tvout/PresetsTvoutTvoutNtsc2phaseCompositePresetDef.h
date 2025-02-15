@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-tvout / tvout+ntsc-2phase-composite imported from RetroArch:
+ShaderGlass preset presets/tvout / tvout+ntsc-2phase-composite imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/tvout/tvout+ntsc-2phase-composite.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsTvoutTvoutNtsc2phaseCompositePresetDef() : PresetDef{}
 	{
 		Name = "tvout+ntsc-2phase-composite";
-		Category = "presets-tvout";
+		Category = "presets/tvout";
 	}
 
 	virtual void Build() {

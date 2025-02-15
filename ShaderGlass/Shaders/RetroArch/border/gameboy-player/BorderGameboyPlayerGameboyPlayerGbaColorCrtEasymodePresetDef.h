@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset border-gameboy-player / gameboy-player-gba-color+crt-easymode imported from RetroArch:
+ShaderGlass preset border/gameboy-player / gameboy-player-gba-color+crt-easymode imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/border/gameboy-player/gameboy-player-gba-color+crt-easymode.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	BorderGameboyPlayerGameboyPlayerGbaColorCrtEasymodePresetDef() : PresetDef{}
 	{
 		Name = "gameboy-player-gba-color+crt-easymode";
-		Category = "border-gameboy-player";
+		Category = "border/gameboy-player";
 	}
 
 	virtual void Build() {

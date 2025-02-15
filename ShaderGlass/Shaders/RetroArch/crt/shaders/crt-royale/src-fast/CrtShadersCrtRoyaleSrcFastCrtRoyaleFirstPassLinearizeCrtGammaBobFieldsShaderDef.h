@@ -1,5 +1,5 @@
 /*
-ShaderGlass shader crt-shaders-crt-royale-src-fast\crt-royale-first-pass-linearize-crt-gamma-bob-fields imported from RetroArch:
+ShaderGlass shader crt/shaders/crt-royale/src-fast\crt-royale-first-pass-linearize-crt-gamma-bob-fields imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-royale/src-fast/crt-royale-first-pass-linearize-crt-gamma-bob-fields.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.

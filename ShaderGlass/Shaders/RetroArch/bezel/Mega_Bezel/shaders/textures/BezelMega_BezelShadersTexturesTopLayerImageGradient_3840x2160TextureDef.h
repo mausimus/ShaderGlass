@@ -1,5 +1,5 @@
 /*
-ShaderGlass texture bezel-Mega_Bezel-shaders-textures / TopLayerImageGradient_3840x2160 imported from RetroArch:
+ShaderGlass texture bezel/Mega_Bezel/shaders/textures / TopLayerImageGradient_3840x2160 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/shaders/textures/TopLayerImageGradient_3840x2160.png
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.

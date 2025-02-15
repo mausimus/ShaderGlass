@@ -1,5 +1,5 @@
 /*
-ShaderGlass shader edge-smoothing-eagle-shaders\supereagle imported from RetroArch:
+ShaderGlass shader edge-smoothing/eagle/shaders\supereagle imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/eagle/shaders/supereagle.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.

@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset edge-smoothing-hqx / hq3x imported from RetroArch:
+ShaderGlass preset edge-smoothing/hqx / hq3x imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/hqx/hq3x.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	EdgeSmoothingHqxHq3xPresetDef() : PresetDef{}
 	{
 		Name = "hq3x";
-		Category = "edge-smoothing-hqx";
+		Category = "edge-smoothing/hqx";
 	}
 
 	virtual void Build() {

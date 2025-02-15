@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-tvout / tvout+ntsc-nes imported from RetroArch:
+ShaderGlass preset presets/tvout / tvout+ntsc-nes imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/tvout/tvout+ntsc-nes.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsTvoutTvoutNtscNesPresetDef() : PresetDef{}
 	{
 		Name = "tvout+ntsc-nes";
-		Category = "presets-tvout";
+		Category = "presets/tvout";
 	}
 
 	virtual void Build() {

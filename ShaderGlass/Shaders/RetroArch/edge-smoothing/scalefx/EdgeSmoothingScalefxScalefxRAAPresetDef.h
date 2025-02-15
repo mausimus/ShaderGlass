@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset edge-smoothing-scalefx / scalefx+rAA imported from RetroArch:
+ShaderGlass preset edge-smoothing/scalefx / scalefx+rAA imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/scalefx/scalefx+rAA.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	EdgeSmoothingScalefxScalefxRAAPresetDef() : PresetDef{}
 	{
 		Name = "scalefx+rAA";
-		Category = "edge-smoothing-scalefx";
+		Category = "edge-smoothing/scalefx";
 	}
 
 	virtual void Build() {

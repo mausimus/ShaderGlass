@@ -1,5 +1,5 @@
 /*
-ShaderGlass shader anti-aliasing-shaders\reverse-aa imported from RetroArch:
+ShaderGlass shader anti-aliasing/shaders\reverse-aa imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/anti-aliasing/shaders/reverse-aa.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.

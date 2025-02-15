@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset reshade-handheld-color-LUTs / GBA-P3-dark imported from RetroArch:
+ShaderGlass preset reshade/handheld-color-LUTs / GBA-P3-dark imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/reshade/handheld-color-LUTs/GBA-P3-dark.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	ReshadeHandheldColorLUTsGBAP3DarkPresetDef() : PresetDef{}
 	{
 		Name = "GBA-P3-dark";
-		Category = "reshade-handheld-color-LUTs";
+		Category = "reshade/handheld-color-LUTs";
 	}
 
 	virtual void Build() {

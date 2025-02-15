@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-scalefx-plus-smoothing / scalefx9-aa-blur-hazy-ntsc-sh1nra358 imported from RetroArch:
+ShaderGlass preset presets/scalefx-plus-smoothing / scalefx9-aa-blur-hazy-ntsc-sh1nra358 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/scalefx-plus-smoothing/scalefx9-aa-blur-hazy-ntsc-sh1nra358.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsScalefxPlusSmoothingScalefx9AaBlurHazyNtscSh1nra358PresetDef() : PresetDef{}
 	{
 		Name = "scalefx9-aa-blur-hazy-ntsc-sh1nra358";
-		Category = "presets-scalefx-plus-smoothing";
+		Category = "presets/scalefx-plus-smoothing";
 	}
 
 	virtual void Build() {

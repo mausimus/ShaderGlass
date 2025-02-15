@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset edge-smoothing-nnedi3 / nnedi3-nns16-2x-luma imported from RetroArch:
+ShaderGlass preset edge-smoothing/nnedi3 / nnedi3-nns16-2x-luma imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/nnedi3/nnedi3-nns16-2x-luma.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	EdgeSmoothingNnedi3Nnedi3Nns162xLumaPresetDef() : PresetDef{}
 	{
 		Name = "nnedi3-nns16-2x-luma";
-		Category = "edge-smoothing-nnedi3";
+		Category = "edge-smoothing/nnedi3";
 	}
 
 	virtual void Build() {

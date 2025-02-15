@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset edge-smoothing-xsal / 2xsal-level2-crt imported from RetroArch:
+ShaderGlass preset edge-smoothing/xsal / 2xsal-level2-crt imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/xsal/2xsal-level2-crt.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	EdgeSmoothingXsal2xsalLevel2CrtPresetDef() : PresetDef{}
 	{
 		Name = "2xsal-level2-crt";
-		Category = "edge-smoothing-xsal";
+		Category = "edge-smoothing/xsal";
 	}
 
 	virtual void Build() {

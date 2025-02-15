@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset edge-smoothing-xbr / xbr-lv2 imported from RetroArch:
+ShaderGlass preset edge-smoothing/xbr / xbr-lv2 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/xbr/xbr-lv2.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	EdgeSmoothingXbrXbrLv2PresetDef() : PresetDef{}
 	{
 		Name = "xbr-lv2";
-		Category = "edge-smoothing-xbr";
+		Category = "edge-smoothing/xbr";
 	}
 
 	virtual void Build() {

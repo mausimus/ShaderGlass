@@ -1,5 +1,5 @@
 /*
-ShaderGlass texture handheld-shaders-color-lut / gbamicro-grey imported from RetroArch:
+ShaderGlass texture handheld/shaders/color/lut / gbamicro-grey imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/handheld/shaders/color/lut/gbamicro-grey.png
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.

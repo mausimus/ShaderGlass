@@ -1,5 +1,5 @@
 /*
-ShaderGlass texture crt-shaders-crt-royale / TileableLinearSlotMaskTall15Wide9And4d5Horizontal9d14VerticalSpacingResizeTo64 imported from RetroArch:
+ShaderGlass texture crt/shaders/crt-royale / TileableLinearSlotMaskTall15Wide9And4d5Horizontal9d14VerticalSpacingResizeTo64 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/crt/shaders/crt-royale/TileableLinearSlotMaskTall15Wide9And4d5Horizontal9d14VerticalSpacingResizeTo64.png
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.

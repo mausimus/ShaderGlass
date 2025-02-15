@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset bezel-Mega_Bezel-Presets / MegaBezel_SMOOTH-ADV-GLASS imported from RetroArch:
+ShaderGlass preset bezel/Mega_Bezel/Presets / MegaBezel_SMOOTH-ADV-GLASS imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/Presets/MegaBezel_SMOOTH-ADV-GLASS.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	BezelMega_BezelPresetsMegaBezel_SMOOTHADVGLASSPresetDef() : PresetDef{}
 	{
 		Name = "MegaBezel_SMOOTH-ADV-GLASS";
-		Category = "bezel-Mega_Bezel-Presets";
+		Category = "bezel/Mega_Bezel/Presets";
 	}
 
 	virtual void Build() {

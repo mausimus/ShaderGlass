@@ -1,5 +1,5 @@
 /*
-ShaderGlass texture border-sgba / sgba imported from RetroArch:
+ShaderGlass texture border/sgba / sgba imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/border/sgba/sgba.png
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.

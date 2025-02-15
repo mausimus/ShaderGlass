@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset handheld-console-border / gba-lcd-grid-v2 imported from RetroArch:
+ShaderGlass preset handheld/console-border / gba-lcd-grid-v2 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/handheld/console-border/gba-lcd-grid-v2.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	HandheldConsoleBorderGbaLcdGridV2PresetDef() : PresetDef{}
 	{
 		Name = "gba-lcd-grid-v2";
-		Category = "handheld-console-border";
+		Category = "handheld/console-border";
 	}
 
 	virtual void Build() {

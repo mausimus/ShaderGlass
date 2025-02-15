@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-handheld-plus-color-mod / lcd-grid-v2-gba-color imported from RetroArch:
+ShaderGlass preset presets/handheld-plus-color-mod / lcd-grid-v2-gba-color imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/handheld-plus-color-mod/lcd-grid-v2-gba-color.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsHandheldPlusColorModLcdGridV2GbaColorPresetDef() : PresetDef{}
 	{
 		Name = "lcd-grid-v2-gba-color";
-		Category = "presets-handheld-plus-color-mod";
+		Category = "presets/handheld-plus-color-mod";
 	}
 
 	virtual void Build() {

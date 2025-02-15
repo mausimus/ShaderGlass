@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-scalefx-plus-smoothing / scalefx-aa imported from RetroArch:
+ShaderGlass preset presets/scalefx-plus-smoothing / scalefx-aa imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/scalefx-plus-smoothing/scalefx-aa.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsScalefxPlusSmoothingScalefxAaPresetDef() : PresetDef{}
 	{
 		Name = "scalefx-aa";
-		Category = "presets-scalefx-plus-smoothing";
+		Category = "presets/scalefx-plus-smoothing";
 	}
 
 	virtual void Build() {

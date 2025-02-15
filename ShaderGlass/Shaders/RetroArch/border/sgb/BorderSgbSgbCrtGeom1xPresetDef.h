@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset border-sgb / sgb-crt-geom-1x imported from RetroArch:
+ShaderGlass preset border/sgb / sgb-crt-geom-1x imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/border/sgb/sgb-crt-geom-1x.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	BorderSgbSgbCrtGeom1xPresetDef() : PresetDef{}
 	{
 		Name = "sgb-crt-geom-1x";
-		Category = "border-sgb";
+		Category = "border/sgb";
 	}
 
 	virtual void Build() {

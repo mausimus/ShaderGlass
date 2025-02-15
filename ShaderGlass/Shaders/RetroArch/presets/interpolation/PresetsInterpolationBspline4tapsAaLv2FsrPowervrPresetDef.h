@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-interpolation / bspline-4taps-aa-lv2-fsr-powervr imported from RetroArch:
+ShaderGlass preset presets/interpolation / bspline-4taps-aa-lv2-fsr-powervr imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/interpolation/bspline-4taps-aa-lv2-fsr-powervr.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsInterpolationBspline4tapsAaLv2FsrPowervrPresetDef() : PresetDef{}
 	{
 		Name = "bspline-4taps-aa-lv2-fsr-powervr";
-		Category = "presets-interpolation";
+		Category = "presets/interpolation";
 	}
 
 	virtual void Build() {

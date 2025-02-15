@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset border-sgba / sgba-tvout-gba-color+interlacing imported from RetroArch:
+ShaderGlass preset border/sgba / sgba-tvout-gba-color+interlacing imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/border/sgba/sgba-tvout-gba-color+interlacing.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	BorderSgbaSgbaTvoutGbaColorInterlacingPresetDef() : PresetDef{}
 	{
 		Name = "sgba-tvout-gba-color+interlacing";
-		Category = "border-sgba";
+		Category = "border/sgba";
 	}
 
 	virtual void Build() {

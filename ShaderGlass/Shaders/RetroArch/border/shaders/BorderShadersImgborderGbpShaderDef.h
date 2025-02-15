@@ -1,5 +1,5 @@
 /*
-ShaderGlass shader border-shaders\imgborder-gbp imported from RetroArch:
+ShaderGlass shader border/shaders\imgborder-gbp imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/border/shaders/imgborder-gbp.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.

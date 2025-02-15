@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-downsample / drez-8x-fsr-aa-lv2-bspline-4taps imported from RetroArch:
+ShaderGlass preset presets/downsample / drez-8x-fsr-aa-lv2-bspline-4taps imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/downsample/drez-8x-fsr-aa-lv2-bspline-4taps.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsDownsampleDrez8xFsrAaLv2Bspline4tapsPresetDef() : PresetDef{}
 	{
 		Name = "drez-8x-fsr-aa-lv2-bspline-4taps";
-		Category = "presets-downsample";
+		Category = "presets/downsample";
 	}
 
 	virtual void Build() {

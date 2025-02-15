@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-crt-royale-fast / crt-royale-fast-ntsc-composite-aperture-snes imported from RetroArch:
+ShaderGlass preset presets/crt-royale-fast / crt-royale-fast-ntsc-composite-aperture-snes imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/crt-royale-fast/crt-royale-fast-ntsc-composite-aperture-snes.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsCrtRoyaleFastCrtRoyaleFastNtscCompositeApertureSnesPresetDef() : PresetDef{}
 	{
 		Name = "crt-royale-fast-ntsc-composite-aperture-snes";
-		Category = "presets-crt-royale-fast";
+		Category = "presets/crt-royale-fast";
 	}
 
 	virtual void Build() {

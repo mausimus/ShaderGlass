@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-crt-ntsc-sharp / tate-composite imported from RetroArch:
+ShaderGlass preset presets/crt-ntsc-sharp / tate-composite imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/crt-ntsc-sharp/tate-composite.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsCrtNtscSharpTateCompositePresetDef() : PresetDef{}
 	{
 		Name = "tate-composite";
-		Category = "presets-crt-ntsc-sharp";
+		Category = "presets/crt-ntsc-sharp";
 	}
 
 	virtual void Build() {

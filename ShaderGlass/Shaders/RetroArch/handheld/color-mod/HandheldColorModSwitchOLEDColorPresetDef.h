@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset handheld-color-mod / SwitchOLED-color imported from RetroArch:
+ShaderGlass preset handheld/color-mod / SwitchOLED-color imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/handheld/color-mod/SwitchOLED-color.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	HandheldColorModSwitchOLEDColorPresetDef() : PresetDef{}
 	{
 		Name = "SwitchOLED-color";
-		Category = "handheld-color-mod";
+		Category = "handheld/color-mod";
 	}
 
 	virtual void Build() {

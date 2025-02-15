@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-fsr / fsr-aa-lv2-bspline-4taps-ntsc-colors imported from RetroArch:
+ShaderGlass preset presets/fsr / fsr-aa-lv2-bspline-4taps-ntsc-colors imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/fsr/fsr-aa-lv2-bspline-4taps-ntsc-colors.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsFsrFsrAaLv2Bspline4tapsNtscColorsPresetDef() : PresetDef{}
 	{
 		Name = "fsr-aa-lv2-bspline-4taps-ntsc-colors";
-		Category = "presets-fsr";
+		Category = "presets/fsr";
 	}
 
 	virtual void Build() {

@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-tvout-interlacing / tvout+interlacing imported from RetroArch:
+ShaderGlass preset presets/tvout-interlacing / tvout+interlacing imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/tvout+interlacing/tvout+interlacing.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsTvoutInterlacingTvoutInterlacingPresetDef() : PresetDef{}
 	{
 		Name = "tvout+interlacing";
-		Category = "presets-tvout-interlacing";
+		Category = "presets/tvout-interlacing";
 	}
 
 	virtual void Build() {

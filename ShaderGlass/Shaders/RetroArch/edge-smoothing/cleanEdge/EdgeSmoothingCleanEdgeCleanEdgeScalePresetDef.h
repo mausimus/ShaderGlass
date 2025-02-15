@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset edge-smoothing-cleanEdge / cleanEdge-scale imported from RetroArch:
+ShaderGlass preset edge-smoothing/cleanEdge / cleanEdge-scale imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/cleanEdge/cleanEdge-scale.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	EdgeSmoothingCleanEdgeCleanEdgeScalePresetDef() : PresetDef{}
 	{
 		Name = "cleanEdge-scale";
-		Category = "edge-smoothing-cleanEdge";
+		Category = "edge-smoothing/cleanEdge";
 	}
 
 	virtual void Build() {

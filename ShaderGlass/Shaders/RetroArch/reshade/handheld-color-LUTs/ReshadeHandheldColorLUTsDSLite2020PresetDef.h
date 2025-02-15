@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset reshade-handheld-color-LUTs / DSLite-2020 imported from RetroArch:
+ShaderGlass preset reshade/handheld-color-LUTs / DSLite-2020 imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/reshade/handheld-color-LUTs/DSLite-2020.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	ReshadeHandheldColorLUTsDSLite2020PresetDef() : PresetDef{}
 	{
 		Name = "DSLite-2020";
-		Category = "reshade-handheld-color-LUTs";
+		Category = "reshade/handheld-color-LUTs";
 	}
 
 	virtual void Build() {

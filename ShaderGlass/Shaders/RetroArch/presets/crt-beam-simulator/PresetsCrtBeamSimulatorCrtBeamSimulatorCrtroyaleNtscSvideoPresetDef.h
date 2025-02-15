@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-crt-beam-simulator / crt-beam-simulator-crtroyale-ntsc-svideo imported from RetroArch:
+ShaderGlass preset presets/crt-beam-simulator / crt-beam-simulator-crtroyale-ntsc-svideo imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/crt-beam-simulator/crt-beam-simulator-crtroyale-ntsc-svideo.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsCrtBeamSimulatorCrtBeamSimulatorCrtroyaleNtscSvideoPresetDef() : PresetDef{}
 	{
 		Name = "crt-beam-simulator-crtroyale-ntsc-svideo";
-		Category = "presets-crt-beam-simulator";
+		Category = "presets/crt-beam-simulator";
 	}
 
 	virtual void Build() {

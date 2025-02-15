@@ -1,5 +1,5 @@
 /*
-ShaderGlass shader nes_raw_palette-shaders\nes-color-decoder imported from RetroArch:
+ShaderGlass shader nes_raw_palette/shaders\nes-color-decoder imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/nes_raw_palette/shaders/nes-color-decoder.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.

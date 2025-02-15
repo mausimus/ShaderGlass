@@ -1,5 +1,5 @@
 /*
-ShaderGlass shader edge-smoothing-xsal-shaders\2xsal-level2-hq imported from RetroArch:
+ShaderGlass shader edge-smoothing/xsal/shaders\2xsal-level2-hq imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/xsal/shaders/2xsal-level2-hq.slang
 See original file for full credits and usage license with excerpts below. 
 This file is auto-generated, do not modify directly.

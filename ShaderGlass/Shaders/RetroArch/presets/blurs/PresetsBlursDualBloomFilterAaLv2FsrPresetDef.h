@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-blurs / dual-bloom-filter-aa-lv2-fsr imported from RetroArch:
+ShaderGlass preset presets/blurs / dual-bloom-filter-aa-lv2-fsr imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/blurs/dual-bloom-filter-aa-lv2-fsr.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsBlursDualBloomFilterAaLv2FsrPresetDef() : PresetDef{}
 	{
 		Name = "dual-bloom-filter-aa-lv2-fsr";
-		Category = "presets-blurs";
+		Category = "presets/blurs";
 	}
 
 	virtual void Build() {

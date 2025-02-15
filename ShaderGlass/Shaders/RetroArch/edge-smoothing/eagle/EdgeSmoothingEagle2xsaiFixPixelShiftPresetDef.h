@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset edge-smoothing-eagle / 2xsai-fix-pixel-shift imported from RetroArch:
+ShaderGlass preset edge-smoothing/eagle / 2xsai-fix-pixel-shift imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/eagle/2xsai-fix-pixel-shift.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	EdgeSmoothingEagle2xsaiFixPixelShiftPresetDef() : PresetDef{}
 	{
 		Name = "2xsai-fix-pixel-shift";
-		Category = "edge-smoothing-eagle";
+		Category = "edge-smoothing/eagle";
 	}
 
 	virtual void Build() {

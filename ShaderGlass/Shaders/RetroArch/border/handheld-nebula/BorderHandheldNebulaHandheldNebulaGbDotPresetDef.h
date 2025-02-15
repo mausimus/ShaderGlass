@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset border-handheld-nebula / handheld-nebula-gb+dot imported from RetroArch:
+ShaderGlass preset border/handheld-nebula / handheld-nebula-gb+dot imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/border/handheld-nebula/handheld-nebula-gb+dot.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	BorderHandheldNebulaHandheldNebulaGbDotPresetDef() : PresetDef{}
 	{
 		Name = "handheld-nebula-gb+dot";
-		Category = "border-handheld-nebula";
+		Category = "border/handheld-nebula";
 	}
 
 	virtual void Build() {

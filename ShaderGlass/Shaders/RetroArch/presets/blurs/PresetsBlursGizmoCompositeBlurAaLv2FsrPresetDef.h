@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-blurs / gizmo-composite-blur-aa-lv2-fsr imported from RetroArch:
+ShaderGlass preset presets/blurs / gizmo-composite-blur-aa-lv2-fsr imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/blurs/gizmo-composite-blur-aa-lv2-fsr.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsBlursGizmoCompositeBlurAaLv2FsrPresetDef() : PresetDef{}
 	{
 		Name = "gizmo-composite-blur-aa-lv2-fsr";
-		Category = "presets-blurs";
+		Category = "presets/blurs";
 	}
 
 	virtual void Build() {

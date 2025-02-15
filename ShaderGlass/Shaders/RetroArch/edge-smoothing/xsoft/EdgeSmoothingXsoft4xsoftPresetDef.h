@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset edge-smoothing-xsoft / 4xsoft imported from RetroArch:
+ShaderGlass preset edge-smoothing/xsoft / 4xsoft imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/edge-smoothing/xsoft/4xsoft.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	EdgeSmoothingXsoft4xsoftPresetDef() : PresetDef{}
 	{
 		Name = "4xsoft";
-		Category = "edge-smoothing-xsoft";
+		Category = "edge-smoothing/xsoft";
 	}
 
 	virtual void Build() {

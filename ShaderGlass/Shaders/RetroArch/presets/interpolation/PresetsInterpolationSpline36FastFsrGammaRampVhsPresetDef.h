@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-interpolation / spline36-fast-fsr-gamma-ramp-vhs imported from RetroArch:
+ShaderGlass preset presets/interpolation / spline36-fast-fsr-gamma-ramp-vhs imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/interpolation/spline36-fast-fsr-gamma-ramp-vhs.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsInterpolationSpline36FastFsrGammaRampVhsPresetDef() : PresetDef{}
 	{
 		Name = "spline36-fast-fsr-gamma-ramp-vhs";
-		Category = "presets-interpolation";
+		Category = "presets/interpolation";
 	}
 
 	virtual void Build() {

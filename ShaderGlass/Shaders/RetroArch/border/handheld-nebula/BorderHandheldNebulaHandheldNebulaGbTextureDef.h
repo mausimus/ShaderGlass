@@ -1,5 +1,5 @@
 /*
-ShaderGlass texture border-handheld-nebula / handheld-nebula-gb imported from RetroArch:
+ShaderGlass texture border/handheld-nebula / handheld-nebula-gb imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/border/handheld-nebula/handheld-nebula-gb.png
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.

@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset presets-handheld-plus-color-mod / retro-v2+gbc-color imported from RetroArch:
+ShaderGlass preset presets/handheld-plus-color-mod / retro-v2+gbc-color imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/presets/handheld-plus-color-mod/retro-v2+gbc-color.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	PresetsHandheldPlusColorModRetroV2GbcColorPresetDef() : PresetDef{}
 	{
 		Name = "retro-v2+gbc-color";
-		Category = "presets-handheld-plus-color-mod";
+		Category = "presets/handheld-plus-color-mod";
 	}
 
 	virtual void Build() {
