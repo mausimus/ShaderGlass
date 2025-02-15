@@ -92,6 +92,7 @@ void CaptureManager::StartSession()
         m_options.imageHeight = desc.Height;
 
         m_session = make_unique<CaptureSession>(device, inputTexture, *m_shaderGlass);
+        UpdatePixelSize();
     }
     else
     {

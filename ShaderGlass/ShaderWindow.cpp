@@ -338,14 +338,23 @@ void ShaderWindow::LoadImage()
         m_captureManager.UpdateInput();
         EnableMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_BYCOMMAND | MF_ENABLED);
 
-        // if we are *switching* to file mode, default pixel size and scale to 1->00%
+        // if we are *switching* to file mode, default pixel size and freescale
         if(setDefaults)
         {
+            // set starting scale to fit within current window size
+            RECT r;
+            GetClientRect(m_mainWindow, &r);
+            int defaultScale = 1;
+            if(m_captureOptions.imageWidth > 0 && m_captureOptions.imageHeight > 0)
+            {
+                defaultScale = max(1, min(r.right / m_captureOptions.imageWidth, r.bottom / m_captureOptions.imageHeight));
+            }
+
+            m_captureOptions.outputScale = defaultScale;
             SendMessage(m_mainWindow, WM_COMMAND, WM_PIXEL_SIZE(0), 0);
             CheckMenuRadioItem(m_outputScaleMenu, WM_OUTPUT_SCALE(0), WM_OUTPUT_SCALE(static_cast<UINT>(outputScales.size() - 1)), 0, MF_BYCOMMAND);
             CheckMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_CHECKED | MF_BYCOMMAND);
-            m_captureOptions.freeScale   = true;
-            m_captureOptions.outputScale = 1.0f;
+            m_captureOptions.freeScale = true;
             m_captureManager.UpdateOutputSize();
         }
 
@@ -809,7 +818,8 @@ void ShaderWindow::UpdateWindowState()
         }
 
         char title[200];
-        snprintf(title, 200, "ShaderGlass (%s%s, x%s, %s%%, ~%s)", windowName, shader->Name, pixelSize.mnemonic, outputScale.mnemonic, aspectRatio.mnemonic);
+        const char* scaleString = m_captureOptions.freeScale ? "Free" : outputScale.mnemonic;
+        snprintf(title, 200, "ShaderGlass (%s%s, x%s, %s%%, ~%s)", windowName, shader->Name, pixelSize.mnemonic, scaleString, aspectRatio.mnemonic);
         SetWindowTextA(m_mainWindow, title);
     }
     else
@@ -1171,6 +1181,17 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     m_captureOptions.monitor       = m_captureDisplays.at(wmId - WM_CAPTURE_DISPLAY(0)).monitor;
                     m_captureOptions.clone         = false;
                     m_captureOptions.transparent   = true;
+                    if(m_captureOptions.freeScale)
+                    {
+                        CheckMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_UNCHECKED | MF_BYCOMMAND);
+                        m_captureOptions.freeScale = false;
+                        m_captureOptions.outputScale = 1.0f;
+                        for(const auto& p : outputScales)
+                        {
+                            if(m_captureOptions.outputScale == p.second.s)
+                                CheckMenuItem(m_outputScaleMenu, p.first, MF_CHECKED | MF_BYCOMMAND);
+                        }
+                    }
                     CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
                     CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
                     CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);

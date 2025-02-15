@@ -206,12 +206,12 @@ void ShaderPass::Resize(int sourceWidth, int sourceHeight, int destWidth, int de
     }
 }
 
-void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount)
+void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount, float boxX, float boxY)
 {
-    Render(m_sourceView, resources, frameCount);
+    Render(m_sourceView, resources, frameCount, boxX, boxY);
 }
 
-void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount)
+void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount, float boxX, float boxY)
 {
     params_FrameCount += frameCount;
     if(m_shader.m_frameCountMod > 0)
@@ -239,7 +239,7 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
         m_context->Unmap(m_pushBuffer.get(), 0);
     }
 
-    D3D11_VIEWPORT viewport = {0.0f, 0.0f, static_cast<float>(m_destWidth), static_cast<float>(m_destHeight), 0.0f, 1.0f};
+    D3D11_VIEWPORT viewport = {boxX, boxY, static_cast<float>(m_destWidth), static_cast<float>(m_destHeight), 0.0f, 1.0f};
     m_context->RSSetViewports(1, &viewport);
 
     ID3D11RenderTargetView* targets[1] = {m_targetView};

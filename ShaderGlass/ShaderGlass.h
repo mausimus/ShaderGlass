@@ -64,6 +64,8 @@ private:
     bool       m_requiresFeedback {false};
     int        m_requiresHistory {0};
     std::mutex m_mutex {};
+    float      m_boxX {0};
+    float      m_boxY {0};
 
     PassthroughPresetDef                              m_passthroughDef;
     PreprocessShaderDef                               m_preprocessShaderDef;
