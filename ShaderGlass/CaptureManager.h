@@ -61,6 +61,7 @@ public:
     void ProcessFrame();
     void ThreadFunc();
     void Exit();
+    float FPS();
 
 private:
     volatile bool                                     m_active {false};

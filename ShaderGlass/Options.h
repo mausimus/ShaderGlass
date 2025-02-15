@@ -101,21 +101,21 @@ static std::map<UINT, AspectRatioInfo> aspectRatios = {
 };
 
 static const std::map<UINT, FrameSkipInfo> frameSkips = {
-    {WM_FRAME_SKIP(0), FrameSkipInfo(0, L"none", "1")},
-    {WM_FRAME_SKIP(1), FrameSkipInfo(1, L"/2", "2")},
-    {WM_FRAME_SKIP(2), FrameSkipInfo(2, L"/3", "3")},
-    {WM_FRAME_SKIP(3), FrameSkipInfo(3, L"/4", "4")},
-    {WM_FRAME_SKIP(4), FrameSkipInfo(4, L"/5", "5")},
-    {WM_FRAME_SKIP(5), FrameSkipInfo(5, L"/6", "6")},
-    {WM_FRAME_SKIP(6), FrameSkipInfo(6, L"/7", "7")},
-    {WM_FRAME_SKIP(7), FrameSkipInfo(7, L"/8", "8")},
-    {WM_FRAME_SKIP(8), FrameSkipInfo(8, L"/9", "9")},
-    {WM_FRAME_SKIP(9), FrameSkipInfo(9, L"/10", "10")},
-    {WM_FRAME_SKIP(10), FrameSkipInfo(11, L"/12", "12")},
-    {WM_FRAME_SKIP(11), FrameSkipInfo(13, L"/14", "14")},
-    {WM_FRAME_SKIP(12), FrameSkipInfo(15, L"/16", "16")},
-    {WM_FRAME_SKIP(13), FrameSkipInfo(17, L"/18", "18")},
-    {WM_FRAME_SKIP(14), FrameSkipInfo(19, L"/20", "20")}
+    {WM_FRAME_SKIP(0), FrameSkipInfo(0, L"100% (VSync)", "1")},
+    {WM_FRAME_SKIP(1), FrameSkipInfo(1, L"1 / 2", "2")},
+    {WM_FRAME_SKIP(2), FrameSkipInfo(2, L"1 / 3", "3")},
+    {WM_FRAME_SKIP(3), FrameSkipInfo(3, L"1 / 4", "4")},
+    {WM_FRAME_SKIP(4), FrameSkipInfo(4, L"1 / 5", "5")},
+    {WM_FRAME_SKIP(5), FrameSkipInfo(5, L"1 / 6", "6")},
+    {WM_FRAME_SKIP(6), FrameSkipInfo(6, L"1 / 7", "7")},
+    {WM_FRAME_SKIP(7), FrameSkipInfo(7, L"1 / 8", "8")},
+    {WM_FRAME_SKIP(8), FrameSkipInfo(8, L"1 / 9", "9")},
+    {WM_FRAME_SKIP(9), FrameSkipInfo(9, L"1 / 10", "10")},
+    {WM_FRAME_SKIP(10), FrameSkipInfo(11, L"1 / 12", "12")},
+    {WM_FRAME_SKIP(11), FrameSkipInfo(13, L"1 / 14", "14")},
+    {WM_FRAME_SKIP(12), FrameSkipInfo(15, L"1 / 16", "16")},
+    {WM_FRAME_SKIP(13), FrameSkipInfo(17, L"1 / 18", "18")},
+    {WM_FRAME_SKIP(14), FrameSkipInfo(19, L"1 / 20", "20")}
 };
 
 static const std::map<UINT, OutputScaleInfo> outputScales = {{WM_OUTPUT_SCALE(0), OutputScaleInfo(1.0f, L"100%", "100")},

@@ -587,7 +587,7 @@ void ShaderWindow::BuildOutputMenu()
     {
         AppendMenu(m_frameSkipMenu, MF_STRING, fs.first, fs.second.text);
     }
-    InsertMenu(sMenu, 5, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_frameSkipMenu, L"Frame Skip");
+    InsertMenu(sMenu, 5, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_frameSkipMenu, L"FPS");
 
     InsertMenu(sMenu, 6, MF_BYPOSITION | MF_STRING, ID_PROCESSING_FULLSCREEN, L"Fullscreen\tCtrl+Shift+G");
 }
@@ -789,6 +789,13 @@ void ShaderWindow::UpdateWindowState()
         //SetWindowDisplayAffinity(m_paramsWindow, WDA_NONE);
     }
 
+    UpdateTitle();
+
+    AdjustWindowSize(m_mainWindow);
+}
+
+void ShaderWindow::UpdateTitle()
+{
     // update title
     if(m_captureManager.IsActive())
     {
@@ -817,17 +824,16 @@ void ShaderWindow::UpdateWindowState()
             }
         }
 
-        char title[200];
-        const char* scaleString = m_captureOptions.freeScale ? "Free" : outputScale.mnemonic;
-        snprintf(title, 200, "ShaderGlass (%s%s, x%s, %s%%, ~%s)", windowName, shader->Name, pixelSize.mnemonic, scaleString, aspectRatio.mnemonic);
+        char        title[200];
+        const char* scaleString = m_captureOptions.freeScale ? "free" : outputScale.mnemonic;
+        const auto fps = (int)roundf(m_captureManager.FPS());
+        snprintf(title, 200, "ShaderGlass (%s%s, %spx, %s%%, ~%s, %dfps)", windowName, shader->Name, pixelSize.mnemonic, scaleString, aspectRatio.mnemonic, fps);
         SetWindowTextA(m_mainWindow, title);
     }
     else
     {
         SetWindowTextA(m_mainWindow, "ShaderGlass");
     }
-
-    AdjustWindowSize(m_mainWindow);
 }
 
 LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -1366,6 +1372,9 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             KillTimer(m_mainWindow, ID_PROCESSING_SCREENSHOT);
             Screenshot();
             return 0;
+        case 0:
+            UpdateTitle();
+            return 0;
         }
         break;
     case WM_DESTROY:
@@ -1620,4 +1629,6 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
     {
         SendMessage(m_mainWindow, WM_COMMAND, ID_PROCESSING_FULLSCREEN, 0);
     }
+
+    SetTimer(m_mainWindow, 0, 1000, NULL);
 }

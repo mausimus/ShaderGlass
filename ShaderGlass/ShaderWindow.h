@@ -73,6 +73,7 @@ private:
     void Stop();
     void Screenshot();
     void LoadImage();
+    void UpdateTitle();
     void RegisterHotkeys();
     void UnregisterHotkeys();
     void SaveHotkeyState(bool state);

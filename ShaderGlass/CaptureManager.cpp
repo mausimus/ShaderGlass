@@ -130,6 +130,15 @@ bool CaptureManager::IsActive()
     return m_session.get();
 }
 
+float CaptureManager::FPS()
+{
+    if(m_shaderGlass)
+    {
+        return m_shaderGlass->FPS();
+    }
+    return 0.f;
+}
+
 void CaptureManager::ProcessFrame()
 {
     if(m_session.get())

@@ -60,6 +60,8 @@ void ShaderGlass::Initialize(
     m_lastSize.x = clientRect.right;
     m_lastSize.y = clientRect.bottom;
 
+    m_prevTicks = GetTickCount64();
+
     // create swapchain
     {
         winrt::com_ptr<IDXGIFactory2> dxgiFactory;
@@ -910,6 +912,17 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     }
 
     PresentFrame();
+
+    m_renderCounter++;
+    auto ticks = GetTickCount64();
+    if(ticks - m_prevTicks > 1000)
+    {
+        auto deltaTicks     = ticks - m_prevTicks;
+        auto deltaFrames    = m_renderCounter - m_prevRenderCounter;
+        m_fps               = deltaFrames * 1000.0f / deltaTicks;
+        m_prevRenderCounter = m_renderCounter;
+        m_prevTicks         = ticks;
+    }
 }
 
 winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()

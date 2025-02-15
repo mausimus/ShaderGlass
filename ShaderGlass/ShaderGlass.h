@@ -20,6 +20,7 @@ public:
     void SetFrameSkip(int s);
     void SetLockedArea(RECT area);
     void SetFreeScale(bool freeScale);
+    float FPS() { return m_fps; }
     winrt::com_ptr<ID3D11Texture2D>            GrabOutput();
     std::vector<std::tuple<int, ShaderParam*>> Params();
     void                                       UpdateParams();
@@ -61,6 +62,10 @@ private:
     bool       m_clone {false};
     bool       m_image {false};
     int        m_frameCounter {0};
+    int        m_renderCounter {0};
+    int        m_prevRenderCounter {0};
+    ULONGLONG  m_prevTicks {0};
+    float      m_fps {0};
     bool       m_requiresFeedback {false};
     int        m_requiresHistory {0};
     std::mutex m_mutex {};
