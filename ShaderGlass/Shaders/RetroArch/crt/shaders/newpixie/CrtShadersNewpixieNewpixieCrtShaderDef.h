@@ -1687,7 +1687,7 @@ public:
 		Params.push_back(ShaderParam("curvature", -1, 40, 4, 0.000100f, 4.000000f, 2.000000f, 0.250000f, "Curvature"));
 		Params.push_back(ShaderParam("wiggle_toggle", -1, 44, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Interference"));
 		Params.push_back(ShaderParam("scanroll", -1, 48, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Rolling Scanlines"));
-		Params.push_back(ShaderParam("vignette", -1, 52, 4, 0.000000f, 1.000000f, 1.000000f, 0.050000f, "Vignette"));
+		Params.push_back(ShaderParam("vignette", -1, 52, 4, 0.000000f, 1.000000f, 0.500000f, 0.050000f, "Vignette"));
 		Params.push_back(ShaderParam("ghosting", -1, 56, 4, 0.000000f, 2.000000f, 1.000000f, 0.100000f, "Ghosting"));
 		Samplers.push_back(ShaderSampler("accum1", 3));
 		Samplers.push_back(ShaderSampler("blur2", 4));
