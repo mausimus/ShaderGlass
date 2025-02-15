@@ -409,8 +409,14 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     float boxX = 0, boxY = 0;
     if(m_captureWindow || m_image)
     {
-        const auto captureW = (captureRect.right - captureRect.left);
-        const auto captureH = (captureRect.bottom - captureRect.top);
+        const auto captureW = (captureClient.right - captureClient.left);
+        const auto captureH = (captureClient.bottom - captureClient.top);
+
+        if(!m_freeScale)
+        {
+            clientWidth = captureW / m_outputScaleW;
+            clientHeight = captureH / m_outputScaleH;
+        }
 
         // box if needed
         if(captureW != 0 && captureH != 0)
@@ -431,14 +437,21 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
                 boxY           = (clientHeight - newHeight) / 2.0f;
                 clientHeight = newHeight;
             }
+
+            // center (fullscreen?)
+            if(!m_freeScale)
+            {
+                boxX += (clientRect.right - (captureW / m_outputScaleW)) / 2.0f;
+                boxY += (clientRect.bottom - (captureH / m_outputScaleH)) / 2.0f;
+            }
         }
     }
-    m_boxX = boxX;
-    m_boxY = boxY;
+    m_boxX = static_cast<int>(boxX);
+    m_boxY = static_cast<int>(boxY);
 
     // final window/viewport size
-    const UINT viewportWidth  = static_cast<UINT>(clientWidth);
-    const UINT viewportHeight = static_cast<UINT>(clientHeight);
+    UINT viewportWidth  = static_cast<UINT>(clientWidth);
+    UINT viewportHeight = static_cast<UINT>(clientHeight);
 
     auto destWidth  = static_cast<long>(clientWidth * m_outputScaleW);
     auto destHeight = static_cast<long>(clientHeight * m_outputScaleH);
@@ -808,8 +821,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
         }
 
         // offset to move away from edges
-        tx += 0.0001f;
-        ty += 0.0001f;
+        //tx += 0.0001f;
+        //ty += 0.0001f;
 
         m_preprocessPass.UpdateMVP(sx, sy, tx, ty);
         m_lastPos.x = topLeft.x;
@@ -870,9 +883,9 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             if(m_boxX != 0 || m_boxY != 0)
             {
                 D3D11_BOX srcBox;
-                srcBox.left = (UINT)m_boxX;
+                srcBox.left = m_boxX;
                 srcBox.right = srcBox.left + lastPass.m_destWidth;
-                srcBox.top = (UINT)m_boxY;
+                srcBox.top = m_boxY;
                 srcBox.bottom = srcBox.top + lastPass.m_destHeight;
                 srcBox.back = 1;
                 srcBox.front = 0;
@@ -937,6 +950,8 @@ winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
         desc2.Usage          = D3D11_USAGE_DEFAULT;
         desc2.CPUAccessFlags = 0;
         desc2.MiscFlags      = 0;
+        auto displayWidth = desc2.Width;
+        auto displayHeight = desc2.Height;
 
         if(m_shaderPasses.size() && (m_boxX != 0 || m_boxY != 0))
         {
@@ -947,12 +962,25 @@ winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
             assert(SUCCEEDED(hr));
 
             D3D11_BOX srcBox;
-            srcBox.left   = (UINT)m_boxX;
+            srcBox.left   = m_boxX;
             srcBox.right  = srcBox.left + lastPass->m_destWidth;
-            srcBox.top    = (UINT)m_boxY;
+            srcBox.top    = m_boxY;
             srcBox.bottom = srcBox.top + lastPass->m_destHeight;
             srcBox.back   = 1;
             srcBox.front  = 0;
+            // fractions :/
+            if(srcBox.right > displayWidth)
+            {
+                auto adj = srcBox.right - displayWidth;
+                srcBox.left -= adj;
+                srcBox.right -= adj;
+            }
+            if(srcBox.bottom > displayHeight)
+            {
+                auto adj = srcBox.bottom - displayHeight;
+                srcBox.top -= adj;
+                srcBox.bottom -= adj;
+            }
             m_context->CopySubresourceRegion(outputTexture.get(), 0, 0, 0, 0, displayTexture.get(), 0, &srcBox);
         }
         else

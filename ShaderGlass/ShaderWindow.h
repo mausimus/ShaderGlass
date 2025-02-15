@@ -74,6 +74,7 @@ private:
     void Screenshot();
     void LoadImage();
     void UpdateTitle();
+    void SetFreeScale();
     void RegisterHotkeys();
     void UnregisterHotkeys();
     void SaveHotkeyState(bool state);

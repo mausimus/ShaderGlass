@@ -302,6 +302,14 @@ void ShaderWindow::LoadProfile()
     }
 }
 
+void ShaderWindow::SetFreeScale()
+{
+    CheckMenuRadioItem(m_outputScaleMenu, WM_OUTPUT_SCALE(0), WM_OUTPUT_SCALE(static_cast<UINT>(outputScales.size() - 1)), 0, MF_BYCOMMAND);
+    CheckMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_CHECKED | MF_BYCOMMAND);
+    m_captureOptions.freeScale = true;
+    m_captureManager.UpdateOutputSize();
+}
+
 void ShaderWindow::LoadImage()
 {
     OPENFILENAMEW ofn;
@@ -352,10 +360,7 @@ void ShaderWindow::LoadImage()
 
             m_captureOptions.outputScale = defaultScale;
             SendMessage(m_mainWindow, WM_COMMAND, WM_PIXEL_SIZE(0), 0);
-            CheckMenuRadioItem(m_outputScaleMenu, WM_OUTPUT_SCALE(0), WM_OUTPUT_SCALE(static_cast<UINT>(outputScales.size() - 1)), 0, MF_BYCOMMAND);
-            CheckMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_CHECKED | MF_BYCOMMAND);
-            m_captureOptions.freeScale = true;
-            m_captureManager.UpdateOutputSize();
+            SetFreeScale();
         }
 
         UpdateWindowState();
@@ -696,6 +701,9 @@ void ShaderWindow::SetTransparent(bool transparent)
 
 void ShaderWindow::AdjustWindowSize(HWND hWnd)
 {
+    if(m_isBorderless)
+        return;
+
     // resize client area to captured window/file x scale
     if(m_captureManager.IsActive() && !m_captureOptions.freeScale && ((m_captureOptions.captureWindow && m_captureOptions.clone) || !m_captureOptions.imageFile.empty()))
     {
@@ -1177,6 +1185,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     m_captureOptions.imageFile.clear();
                     m_captureManager.UpdateInput();
                     UpdateWindowState();
+                    SetFreeScale();
                     break;
                 }
                 if(wmId >= WM_CAPTURE_DISPLAY(0) && wmId < WM_CAPTURE_DISPLAY(MAX_CAPTURE_DISPLAYS))
