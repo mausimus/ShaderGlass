@@ -1,6 +1,6 @@
 /*
-ShaderGlass preset bezel-Mega_Bezel-Presets / MBZ__4__STD-NO-REFLECT imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/Presets/MBZ__4__STD-NO-REFLECT.slangp
+ShaderGlass preset bezel-Mega_Bezel-Presets / MegaBezel_STD imported from RetroArch:
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/Presets/MegaBezel_STD.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -9,12 +9,12 @@ This file is auto-generated, do not modify directly.
 
 namespace RetroArch
 {
-class BezelMega_BezelPresetsMBZ__4__STDNOREFLECTPresetDef : public PresetDef
+class BezelMega_BezelPresetsMegaBezel_STDPresetDef : public PresetDef
 {
 public:
-	BezelMega_BezelPresetsMBZ__4__STDNOREFLECTPresetDef() : PresetDef{}
+	BezelMega_BezelPresetsMegaBezel_STDPresetDef() : PresetDef{}
 	{
-		Name = "MBZ__4__STD-NO-REFLECT";
+		Name = "MegaBezel_STD";
 		Category = "bezel-Mega_Bezel-Presets";
 	}
 
@@ -26,12 +26,12 @@ public:
 .Param("scale_x", "1")
 .Param("scale_y", "1")
 .Param("srgb_framebuffer", "true"));
-         	ShaderDefs.push_back(BezelMega_BezelShadersBaseCacheInfoNoReflectParamsShaderDef()
+         	ShaderDefs.push_back(BezelMega_BezelShadersBaseCacheInfoAllParamsShaderDef()
 .Param("alias", "InfoCachePass")
 .Param("filter_linear", "false")
 .Param("scale", "1.0")
 .Param("scale_type", "source"));
-         	ShaderDefs.push_back(BezelMega_BezelShadersBaseTextStdNoReflectShaderDef()
+         	ShaderDefs.push_back(BezelMega_BezelShadersBaseTextStdShaderDef()
 .Param("alias", "TextPass")
 .Param("filter_linear", "false")
 .Param("float_framebuffer", "true")
@@ -123,20 +123,20 @@ public:
 .Param("scale_type_y", "source")
 .Param("scale_x", "1.0")
 .Param("scale_y", "1.0"));
-         	ShaderDefs.push_back(BezelMega_BezelShadersGuestHsmCrtGuestAdvancedNoReflectShaderDef()
+         	ShaderDefs.push_back(BezelMega_BezelShadersGuestHsmCrtGuestAdvancedShaderDef()
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
 .Param("scale_type", "viewport")
 .Param("scale_x", "1.0")
 .Param("scale_y", "1.0"));
-         	ShaderDefs.push_back(BezelMega_BezelShadersGuestHsmDeconvergenceNoReflectShaderDef()
+         	ShaderDefs.push_back(BezelMega_BezelShadersGuestHsmDeconvergenceShaderDef()
 .Param("alias", "CRTPass")
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
 .Param("scale_type", "viewport")
 .Param("scale_x", "1.0")
 .Param("scale_y", "1.0"));
-         	ShaderDefs.push_back(BezelMega_BezelShadersBasePostCrtPrepNoReflectShaderDef()
+         	ShaderDefs.push_back(BezelMega_BezelShadersBasePostCrtPrepImageLayersShaderDef()
 .Param("alias", "PostCRTPass")
 .Param("float_framebuffer", "true")
 .Param("mipmap_input", "true")
@@ -151,7 +151,42 @@ public:
 .Param("filter_linear", "true")
 .Param("float_framebuffer", "true")
 .Param("scale_type", "viewport"));
-         	ShaderDefs.push_back(BezelMega_BezelShadersBaseCombinePassesNoReflectShaderDef()
+         	ShaderDefs.push_back(BezelMega_BezelShadersBaseLinearizeCrtShaderDef()
+.Param("alias", "BR_MirrorLowResPass")
+.Param("filter_linear", "true")
+.Param("float_framebuffer", "true")
+.Param("mipmap_input", "true")
+.Param("scale_type", "absolute")
+.Param("scale_x", "800")
+.Param("scale_y", "600"));
+         	ShaderDefs.push_back(BezelMega_BezelShadersBaseBlurOutsideScreenHorizShaderDef()
+.Param("filter_linear", "true")
+.Param("float_framebuffer", "true")
+.Param("mipmap_input", "true"));
+         	ShaderDefs.push_back(BezelMega_BezelShadersBaseBlurOutsideScreenVertShaderDef()
+.Param("alias", "BR_MirrorBlurredPass")
+.Param("filter_linear", "true")
+.Param("float_framebuffer", "true"));
+         	ShaderDefs.push_back(BlursShadersRoyaleBlur9x9ShaderDef()
+.Param("alias", "BR_MirrorReflectionDiffusedPass")
+.Param("filter_linear", "true")
+.Param("float_framebuffer", "true")
+.Param("mipmap_input", "true")
+.Param("scale_type", "absolute")
+.Param("scale_x", "128")
+.Param("scale_y", "128"));
+         	ShaderDefs.push_back(BlursShadersRoyaleBlur9x9ShaderDef()
+.Param("alias", "BR_MirrorFullscreenGlowPass")
+.Param("filter_linear", "true")
+.Param("float_framebuffer", "true")
+.Param("mipmap_input", "true")
+.Param("scale_type", "absolute")
+.Param("scale_x", "12")
+.Param("scale_y", "12"));
+         	ShaderDefs.push_back(BezelMega_BezelShadersBaseReflectionShaderDef()
+.Param("alias", "ReflectionPass")
+.Param("scale_type", "viewport"));
+         	ShaderDefs.push_back(BezelMega_BezelShadersBaseCombinePassesShaderDef()
 .Param("alias", "CombinePass"));
             TextureDefs.push_back(BezelMega_BezelShadersGuestLutTrinitronLutTextureDef()
 .Param("linear", "true")

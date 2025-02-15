@@ -1,6 +1,6 @@
 /*
-ShaderGlass preset bezel-Mega_Bezel-Presets / MBZ__5__POTATO imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/Presets/MBZ__5__POTATO.slangp
+ShaderGlass preset bezel-Mega_Bezel-Presets / MegaBezel_POTATO imported from RetroArch:
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/Presets/MegaBezel_POTATO.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -9,12 +9,12 @@ This file is auto-generated, do not modify directly.
 
 namespace RetroArch
 {
-class BezelMega_BezelPresetsMBZ__5__POTATOPresetDef : public PresetDef
+class BezelMega_BezelPresetsMegaBezel_POTATOPresetDef : public PresetDef
 {
 public:
-	BezelMega_BezelPresetsMBZ__5__POTATOPresetDef() : PresetDef{}
+	BezelMega_BezelPresetsMegaBezel_POTATOPresetDef() : PresetDef{}
 	{
-		Name = "MBZ__5__POTATO";
+		Name = "MegaBezel_POTATO";
 		Category = "bezel-Mega_Bezel-Presets";
 	}
 

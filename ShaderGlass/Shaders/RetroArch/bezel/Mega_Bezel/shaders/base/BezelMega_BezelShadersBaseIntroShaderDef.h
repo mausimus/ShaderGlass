@@ -18844,7 +18844,7 @@ public:
 		Params.push_back(ShaderParam("HSM_FLIP_CORE_HORIZONTAL", 0, 364, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Flip Core Image Horizontal"));
 		Params.push_back(ShaderParam("HSM_ROTATE_CORE_IMAGE", 0, 368, 4, -1.000000f, 1.000000f, 0.000000f, 1.000000f, "Rotate CRT Tube --  -1:270 | 0 | 1:90"));
 		Params.push_back(ShaderParam("HSM_ASPECT_RATIO_ORIENTATION", 0, 372, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "Orientation - Auto | Horizontal | Vertical"));
-		Params.push_back(ShaderParam("HSM_ASPECT_RATIO_MODE", 0, 376, 4, 0.000000f, 6.000000f, 0.000000f, 1.000000f, "Type - Auto | Explicit | 4:3 | 3:2 | 16:9 | PAR | Full"));
+		Params.push_back(ShaderParam("HSM_ASPECT_RATIO_MODE", 0, 376, 4, 0.000000f, 6.000000f, 5.000000f, 1.000000f, "Type - Auto | Explicit | 4:3 | 3:2 | 16:9 | PAR | Full"));
 		Params.push_back(ShaderParam("HSM_ASPECT_RATIO_EXPLICIT", 0, 380, 4, 0.000000f, 8.000000f, 1.333300f, 0.002000f, "Explicit Aspect Ratio (Also Auto Ratio Fallback)"));
 		Params.push_back(ShaderParam("HSM_INT_SCALE_MODE", 0, 384, 4, 0.000000f, 2.000000f, 0.000000f, 1.000000f, "Integer Scale Mode - OFF | ShortAxis | BothAxes"));
 		Params.push_back(ShaderParam("HSM_INT_SCALE_MULTIPLE_OFFSET", 0, 388, 4, -20.000000f, 20.000000f, 0.000000f, 1.000000f, "Integer Scale Multiple Offset"));
@@ -19328,7 +19328,7 @@ public:
 		Params.push_back(ShaderParam("HSM_INTRO_LOGO_HEIGHT", 0, 2300, 4, 0.000000f, 100.000000f, 42.860001f, 1.000000f, "Logo Height (0 for exact resolution)"));
 		Params.push_back(ShaderParam("HSM_INTRO_LOGO_POS_X", 0, 2304, 4, -100.000000f, 100.000000f, 0.000000f, 0.500000f, "Logo Pos X"));
 		Params.push_back(ShaderParam("HSM_INTRO_LOGO_POS_Y", 0, 2308, 4, -100.000000f, 100.000000f, 2.000000f, 0.500000f, "Logo Pos Y"));
-		Params.push_back(ShaderParam("HSM_INTRO_WHEN_TO_SHOW", 0, 2312, 4, 0.000000f, 3.000000f, 1.000000f, 1.000000f, "When to Show Intro - OFF|Game Load|Shader Load|Repeat"));
+		Params.push_back(ShaderParam("HSM_INTRO_WHEN_TO_SHOW", 0, 2312, 4, 0.000000f, 3.000000f, 0.000000f, 1.000000f, "When to Show Intro - OFF|Game Load|Shader Load|Repeat"));
 		Params.push_back(ShaderParam("HSM_INTRO_SPEED", 0, 2316, 4, 1.000000f, 500.000000f, 100.000000f, 5.000000f, "Speed"));
 		Params.push_back(ShaderParam("HSM_INTRO_LOGO_WAIT", 0, 2320, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));
 		Params.push_back(ShaderParam("HSM_INTRO_LOGO_FADE_IN", 0, 2324, 4, 0.000000f, 0.000000f, 0.000000f, 0.000000f, ""));

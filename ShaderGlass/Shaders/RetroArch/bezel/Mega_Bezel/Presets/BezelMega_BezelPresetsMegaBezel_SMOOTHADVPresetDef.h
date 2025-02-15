@@ -1,6 +1,6 @@
 /*
-ShaderGlass preset bezel-Mega_Bezel-Presets / MBZ__0__SMOOTH-ADV imported from RetroArch:
-https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/Presets/MBZ__0__SMOOTH-ADV.slangp
+ShaderGlass preset bezel-Mega_Bezel-Presets / MegaBezel_SMOOTH-ADV imported from RetroArch:
+https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/Presets/MegaBezel_SMOOTH-ADV.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
 */
@@ -9,12 +9,12 @@ This file is auto-generated, do not modify directly.
 
 namespace RetroArch
 {
-class BezelMega_BezelPresetsMBZ__0__SMOOTHADVPresetDef : public PresetDef
+class BezelMega_BezelPresetsMegaBezel_SMOOTHADVPresetDef : public PresetDef
 {
 public:
-	BezelMega_BezelPresetsMBZ__0__SMOOTHADVPresetDef() : PresetDef{}
+	BezelMega_BezelPresetsMegaBezel_SMOOTHADVPresetDef() : PresetDef{}
 	{
-		Name = "MBZ__0__SMOOTH-ADV";
+		Name = "MegaBezel_SMOOTH-ADV";
 		Category = "bezel-Mega_Bezel-Presets";
 	}
 
