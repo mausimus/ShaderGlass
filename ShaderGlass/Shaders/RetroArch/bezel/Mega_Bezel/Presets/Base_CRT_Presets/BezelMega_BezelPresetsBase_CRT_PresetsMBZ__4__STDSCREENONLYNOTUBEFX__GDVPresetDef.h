@@ -1,5 +1,5 @@
 /*
-ShaderGlass preset bezel/Mega_Bezel/Presets/Base_CRT_Presets / MBZ__4__STD-SCREEN-ONLY-NO-TUBE-FX__GDV imported from RetroArch:
+ShaderGlass preset bezel/Mega_Bezel_Base / MBZ__4__STD-SCREEN-ONLY-NO-TUBE-FX__GDV imported from RetroArch:
 https://github.com/libretro/slang-shaders/blob/23046258f7fd02242cc6dd4c08c997a8ddb84935/bezel/Mega_Bezel/Presets/Base_CRT_Presets/MBZ__4__STD-SCREEN-ONLY-NO-TUBE-FX__GDV.slangp
 See original file for credits and usage license. 
 This file is auto-generated, do not modify directly.
@@ -15,7 +15,7 @@ public:
 	BezelMega_BezelPresetsBase_CRT_PresetsMBZ__4__STDSCREENONLYNOTUBEFX__GDVPresetDef() : PresetDef{}
 	{
 		Name = "MBZ__4__STD-SCREEN-ONLY-NO-TUBE-FX__GDV";
-		Category = "bezel/Mega_Bezel/Presets/Base_CRT_Presets";
+		Category = "bezel/Mega_Bezel_Base";
 	}
 
 	virtual void Build() {

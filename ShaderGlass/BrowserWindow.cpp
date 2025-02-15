@@ -138,6 +138,7 @@ HTREEITEM BrowserWindow::AddItemToTree(HWND hwndTV, LPTSTR lpszItem, LPARAM lPar
     static HTREEITEM hPrev         = (HTREEITEM)TVI_FIRST;
     static HTREEITEM hPrevRootItem = NULL;
     static HTREEITEM hPrevLev2Item = NULL;
+    static HTREEITEM hPrevLev3Item = NULL;
     HTREEITEM        hti;
 
     tvi.mask = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
@@ -162,8 +163,10 @@ HTREEITEM BrowserWindow::AddItemToTree(HWND hwndTV, LPTSTR lpszItem, LPARAM lPar
         tvins.hParent = TVI_ROOT;
     else if(nLevel == 2)
         tvins.hParent = hPrevRootItem;
-    else
+    else if(nLevel == 3)
         tvins.hParent = hPrevLev2Item;
+    else if(nLevel == 4)
+        tvins.hParent = hPrevLev3Item;
 
     // Add the item to the tree-view control.
     hPrev = (HTREEITEM)SendMessage(hwndTV, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
@@ -176,6 +179,8 @@ HTREEITEM BrowserWindow::AddItemToTree(HWND hwndTV, LPTSTR lpszItem, LPARAM lPar
         hPrevRootItem = hPrev;
     else if(nLevel == 2)
         hPrevLev2Item = hPrev;
+    else if(nLevel == 3)
+        hPrevLev3Item = hPrev;
 
     // The new item is a child item. Give the parent item a
     // closed folder bitmap to indicate it now has child items.
@@ -211,7 +216,16 @@ void BrowserWindow::Build()
 
     CreateImageList(m_treeControl);
 
-    std::map<std::string, std::vector<std::pair<const char*, UINT>>> m_categoryMenus;
+    auto categoryComp = [](const std::string& c1, const std::string& c2) {
+        if(c1 == c2)
+            return false;
+        if(c1.starts_with(c2))
+            return true;
+        if(c2.starts_with(c1))
+            return false;
+        return c1 < c2;
+        };
+    std::map<std::string, std::vector<std::pair<const char*, UINT>>, decltype(categoryComp)> categoryMenus;
 
     int i = 0;
     for(const auto& sp : m_captureManager.Presets())
@@ -223,32 +237,81 @@ void BrowserWindow::Build()
             m_items[id] = item;
             continue;
         }
-        if(m_categoryMenus.find(sp->Category) == m_categoryMenus.end())
+        if(categoryMenus.find(sp->Category) == categoryMenus.end())
         {
-            m_categoryMenus.insert(std::make_pair(sp->Category, std::vector<std::pair<const char*, UINT>>()));
+            categoryMenus.insert(std::make_pair(sp->Category, std::vector<std::pair<const char*, UINT>>()));
         }
-        auto& menu = m_categoryMenus.find(sp->Category)->second;
+        auto& menu = categoryMenus.find(sp->Category)->second;
         menu.push_back(std::make_pair(sp->Name, WM_SHADER(i++)));
     }
 
-    AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("RetroArch"), -1, 1);
+    AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("Favorites"), -1, 1);
 
-    for(auto m : m_categoryMenus)
+    for(int fp = 0; fp < sizeof(favoritePresets) / sizeof(const char*); fp++)
     {
-        AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(m.first.c_str()), -1, 2);
+        auto p = m_captureManager.FindByName(favoritePresets[fp]);
+        if(p != -1)
+        {
+            m_favorites[WM_SHADER(p)] = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(favoritePresets[fp]), WM_SHADER(p), 2);
+        }
+    }
+
+    AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("RetroArch Library"), -1, 1);
+
+    std::string parentCategory("");
+    int level = 2;
+    for(auto m : categoryMenus)
+    {
+        auto slash = m.first.find('/');
+        if(slash != std::string::npos)
+        {
+            // has a parent category
+            auto thisParent = m.first.substr(0, slash);
+            if(thisParent != parentCategory)
+            {
+                // add new parent
+                parentCategory = thisParent;
+                AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(parentCategory.c_str()), -1, 2);
+            }
+            level = 3;
+            AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(m.first.substr(slash + 1).c_str()), -1, level);
+        }
+        else if(m.first == parentCategory)
+        {
+            // loose presents in this category
+            level = 2;
+        }
+        else
+        {
+            // back to root
+            if(parentCategory.size())
+            {
+                parentCategory = "";
+            }
+            level = 2;
+            AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(m.first.c_str()), -1, level);
+        }
         for(auto p : m.second)
         {
-            auto item         = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(p.first), p.second, 3);
+            auto item         = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(p.first), p.second, level + 1);
             m_items[p.second] = item;
         }
     }
 
     if(m_captureOptions.presetNo)
     {
-        auto item = m_items.find(WM_SHADER(m_captureOptions.presetNo));
-        if(item != m_items.end())
+        auto favorite = m_favorites.find(WM_SHADER(m_captureOptions.presetNo));
+        if(favorite != m_favorites.end())
         {
-            SendMessage(m_treeControl, TVM_SELECTITEM, TVGN_CARET, (LPARAM)item->second);
+            SendMessage(m_treeControl, TVM_SELECTITEM, TVGN_CARET, (LPARAM)favorite->second);
+        }
+        else
+        {
+            auto item = m_items.find(WM_SHADER(m_captureOptions.presetNo));
+            if(item != m_items.end())
+            {
+                SendMessage(m_treeControl, TVM_SELECTITEM, TVGN_CARET, (LPARAM)item->second);
+            }
         }
     }
 
@@ -306,6 +369,17 @@ LRESULT CALLBACK BrowserWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, 
         {
         case WM_USER: {
             // sync shader
+            auto favorite = m_favorites.find(lParam);
+            if(favorite != m_favorites.end())
+            {
+                // check if already selected
+                auto selected = TreeView_GetSelection(m_treeControl);
+                if(selected == favorite->second)
+                {
+                    // selected from fav - do nothing
+                    return 0;
+                }
+            }
             auto item = m_items.find(lParam);
             if(item != m_items.end())
             {

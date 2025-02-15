@@ -183,10 +183,12 @@ ShaderInfo getShaderInfo(const filesystem::path& slangInput, const string& suffi
     info.outputPath   = filesystem::path(string(_outputPath) + info.relativePath.string()).lexically_normal();
     filesystem::create_directories(info.outputPath.parent_path());
 
-    replace(info.category, "\\", "-");
-    replace(info.category, "/", "-");
+    replace(info.category, "\\", "/");
+    //replace(info.category, "/", "-");
     replace(info.category, " ", "-");
     replace(info.category, "+", "-");
+    replace(info.category, "/Mega_Bezel/Presets", "");
+    replace(info.category, "Base_CRT_Presets", "Mega_Bezel_Base");
 
     return info;
 }

@@ -62,6 +62,7 @@ public:
     void ThreadFunc();
     void Exit();
     float FPS();
+    int FindByName(const char* presetName);
 
 private:
     volatile bool                                     m_active {false};

@@ -30,6 +30,7 @@ private:
     int                       g_nClosed;
     int                       g_nDocument;
     std::map<UINT, HTREEITEM> m_items;
+    std::map<UINT, HTREEITEM> m_favorites;
 
     void Resize();
     void Build();

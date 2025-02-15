@@ -45,7 +45,7 @@ void CaptureManager::UpdateInput()
     }
 }
 
-DWORD WINAPI ThreadFuncProxy(LPVOID lpParam) 
+DWORD WINAPI ThreadFuncProxy(LPVOID lpParam)
 {
     ((CaptureManager*)lpParam)->ThreadFunc();
     return 0;
@@ -79,10 +79,16 @@ void CaptureManager::StartSession()
     {
         winrt::com_ptr<ID3D11Texture2D>          inputTexture;
         winrt::com_ptr<ID3D11ShaderResourceView> inputTextureView;
-        auto hr = DirectX::CreateWICTextureFromFileEx(m_d3dDevice.get(), m_options.imageFile.c_str(),
-            0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
-            DirectX::WIC_LOADER_IGNORE_SRGB, // "If the sRGB chunk is found, it is assumed to be gamma 2.2"
-            (ID3D11Resource**)(inputTexture.put()), inputTextureView.put());
+        auto                                     hr = DirectX::CreateWICTextureFromFileEx(m_d3dDevice.get(),
+                                                      m_options.imageFile.c_str(),
+                                                      0,
+                                                      D3D11_USAGE_DEFAULT,
+                                                      D3D11_BIND_SHADER_RESOURCE,
+                                                      0,
+                                                      0,
+                                                      DirectX::WIC_LOADER_IGNORE_SRGB, // "If the sRGB chunk is found, it is assumed to be gamma 2.2"
+                                                      (ID3D11Resource**)(inputTexture.put()),
+                                                      inputTextureView.put());
         assert(SUCCEEDED(hr));
 
         // retrieve input image size
@@ -285,7 +291,7 @@ void CaptureManager::RememberLastPreset()
         m_lastParams.clear();
         for(const auto& param : params)
         {
-            const auto pass = std::get<0>(param);
+            const auto pass        = std::get<0>(param);
             const auto shaderParam = std::get<1>(param);
             m_lastParams.push_back(std::make_tuple(pass, shaderParam->name, shaderParam->currentValue));
         }
@@ -301,4 +307,18 @@ void CaptureManager::ForgetLastPreset()
 {
     m_lastParams.clear();
     m_lastPreset = -1;
+}
+
+int CaptureManager::FindByName(const char* presetName)
+{
+    int p = 0;
+    while(p < m_presetList.size())
+    {
+        if(strcmp(m_presetList[p]->Name, presetName) == 0)
+        {
+            return p;
+        }
+        p++;
+    }
+    return -1;
 }

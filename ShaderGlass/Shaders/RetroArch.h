@@ -850,6 +850,11 @@
 #include "RetroArch\vhs\shaders\vhs_mpalko\VhsShadersVhs_mpalkoVhs_mpalko_pass0ShaderDef.h"
 #include "RetroArch\vhs\shaders\vhs_mpalko\VhsShadersVhs_mpalkoVhs_mpalko_pass1ShaderDef.h"
 #include "RetroArch\warp\shaders\WarpShadersDilationShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscEncodeYCShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscCombineYCShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscNoiseShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscSeparateYCShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscDecodeYRmyBmyShaderDef.h"
 // %SHADER_INCLUDE%
 
 #include "RetroArch\anti-aliasing\shaders\smaa\AntiAliasingShadersSmaaAreaTexTextureDef.h"

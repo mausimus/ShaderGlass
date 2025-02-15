@@ -1550,7 +1550,11 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     // set defaults
     SendMessage(m_mainWindow, WM_COMMAND, WM_PIXEL_SIZE(2), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_ASPECT_RATIO(0), 0);
-    SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(163), 0);
+    auto defaultNo = m_captureManager.FindByName(defaultPreset);
+    if(defaultNo != -1)
+    {
+        SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(defaultNo), 0);
+    }
     SendMessage(m_mainWindow, WM_COMMAND, WM_FRAME_SKIP(1), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_OUTPUT_SCALE(0), 0);
     SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_DISPLAY(0), 0);

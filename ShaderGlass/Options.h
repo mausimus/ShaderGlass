@@ -131,3 +131,28 @@ static const std::map<UINT, OutputScaleInfo> outputScales = {{WM_OUTPUT_SCALE(0)
                                                              {WM_OUTPUT_SCALE(10), OutputScaleInfo(8.0f, L"800%", "800")},
                                                              {WM_OUTPUT_SCALE(11), OutputScaleInfo(9.0f, L"900%", "900")},
                                                              {WM_OUTPUT_SCALE(12), OutputScaleInfo(10.0f, L"1000%", "1000")}};
+
+static const char* defaultPreset = "newpixie-crt";
+static const char* favoritePresets[] = {
+    "bayer_4x4",
+    "crt-geom",
+    "crt-guest-advanced-ntsc",
+    "crt-mattias",
+    "crt-royale",
+    "ega",
+    "fxaa",
+    "gb-pocket",
+    "gtu-v050",
+    "kawase_glow",
+    "MegaBezel_STD",
+    "MMJ_Cel_Shader",
+    "newpixie-crt",
+    "ntsc-vcr",
+    "pal-r57shell",
+    "scalefx",
+    "scanline",
+    "supereagle",
+    "technicolor",
+    "uborder-bezel-reflections",
+    "vhs"
+};
