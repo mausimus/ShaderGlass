@@ -34,6 +34,12 @@ https://github.com/mausimus/ShaderGlass/releases/download/v0.9/ShaderGlass-0.9-w
 
 <br/>
 
+Betas available here (latest v0.94, 16 Feb 2025):
+
+https://github.com/mausimus/ShaderGlass/releases
+
+<br/>
+
 Follow [ShaderGlass on itch.io](https://mausimus.itch.io/shaderglass) for latest updates.
 
 <br/>
