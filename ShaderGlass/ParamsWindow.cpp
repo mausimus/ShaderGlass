@@ -4,7 +4,7 @@
 #include "ParamsWindow.h"
 
 constexpr int STATIC_WIDTH  = 230;
-constexpr int STATIC_HEIGHT = 20;
+constexpr int STATIC_HEIGHT = 40;
 constexpr int BUTTON_WIDTH  = 100;
 constexpr int BUTTON_HEIGHT = 25;
 constexpr int BUTTON_TOP    = 20;
@@ -416,9 +416,9 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
                                        L"STATIC",
                                        convertCharArrayToLPCWSTR(label),
                                        SS_RIGHT | SS_NOTIFY | WS_CHILD | WS_VISIBLE,
+                                       2,
                                        0,
-                                       0,
-                                       m_dpiScale * STATIC_WIDTH,
+                                       m_dpiScale * STATIC_WIDTH - 2,
                                        m_dpiScale * STATIC_HEIGHT,
                                        m_mainWindow,
                                        NULL,
