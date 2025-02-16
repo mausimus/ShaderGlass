@@ -37,6 +37,7 @@ private:
     HMENU                        m_displayMenu {nullptr};
     HMENU                        m_outputWindowMenu {nullptr};
     HMENU                        m_inputMenu {nullptr};
+    HMENU                        m_recentMenu {nullptr};
     std::vector<CaptureWindow>   m_captureWindows;
     std::vector<CaptureDisplay>  m_captureDisplays;
     CaptureManager&              m_captureManager;
@@ -55,13 +56,15 @@ private:
     std::unique_ptr<InputDialog> m_inputDialog;
     bool                         m_toggledNone;
     unsigned                     m_toggledPresetNo;
+    std::vector<std::wstring>    m_recentProfiles;
 
-    void LoadProfile(const std::string& fileName);
+    bool LoadProfile(const std::wstring& fileName);
     void LoadProfile();
-    void SaveProfile(const std::string& fileName);
+    void SaveProfile(const std::wstring& fileName);
     void SaveProfile();
     void ScanWindows();
     void ScanDisplays();
+    void BuildProgramMenu();
     void BuildInputMenu();
     void BuildOutputMenu();
     void BuildShaderMenu();
@@ -79,6 +82,10 @@ private:
     void UnregisterHotkeys();
     void SaveHotkeyState(bool state);
     bool GetHotkeyState();
+    void SaveRecentProfiles();
+    void LoadRecentProfiles();
+    void AddRecentProfile(const std::wstring& path);
+    void RemoveRecentProfile(const std::wstring& path);
 
     static BOOL CALLBACK    EnumWindowsProcProxy(_In_ HWND hwnd, _In_ LPARAM lParam);
     static BOOL CALLBACK    EnumDisplayMonitorsProcProxy(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam);

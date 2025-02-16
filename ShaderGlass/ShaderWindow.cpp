@@ -5,7 +5,7 @@
 
 ShaderWindow::ShaderWindow(CaptureManager& captureManager) : m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass(), m_toggledNone(false) { }
 
-void ShaderWindow::LoadProfile(const std::string& fileName)
+bool ShaderWindow::LoadProfile(const std::wstring& fileName)
 {
     try
     {
@@ -18,9 +18,10 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
         std::ifstream infile(fileName);
         if(!infile.good())
         {
-            MessageBox(NULL, convertCharArrayToLPCWSTR((std::string("Unable to find profile ") + fileName).c_str()), L"ShaderGlass", MB_OK | MB_ICONERROR);
+            auto message = std::wstring(TEXT("Unable to find profile ")) + fileName;
+            MessageBox(NULL, message.data(), L"ShaderGlass", MB_OK | MB_ICONERROR);
 
-            return;
+            return false;
         }
 
         std::string                                       shaderCategory;
@@ -39,7 +40,7 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
             if(key == "ProfileVersion")
             {
                 if(!value.starts_with("1."))
-                    return;
+                    return true;
             }
             else if(key == "CaptureWindow")
             {
@@ -275,11 +276,15 @@ void ShaderWindow::LoadProfile(const std::string& fileName)
 
         if(paused)
             SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
+
+        AddRecentProfile(fileName);
     }
     catch(std::exception& e)
     {
         MessageBox(NULL, convertCharArrayToLPCWSTR((std::string("Error loading profile: ") + std::string(e.what())).c_str()), L"ShaderGlass", MB_OK | MB_ICONERROR);
     }
+
+    return true;
 }
 
 void ShaderWindow::LoadProfile()
@@ -298,7 +303,7 @@ void ShaderWindow::LoadProfile()
     if(GetOpenFileName(&ofn))
     {
         std::wstring ws(ofn.lpstrFile);
-        LoadProfile(std::string(ws.begin(), ws.end()));
+        LoadProfile(ws);
     }
 }
 
@@ -333,7 +338,7 @@ void ShaderWindow::LoadImage()
         // update input checkboxes
         CheckMenuRadioItem(m_windowMenu, WM_CAPTURE_WINDOW(0), WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())), 0, MF_BYCOMMAND);
         CheckMenuRadioItem(m_displayMenu, WM_CAPTURE_DISPLAY(0), WM_CAPTURE_DISPLAY(static_cast<UINT>(m_captureDisplays.size())), 0, MF_BYCOMMAND);
-        auto prevState = CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_CHECKED | MF_BYCOMMAND);
+        auto prevState   = CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_CHECKED | MF_BYCOMMAND);
         auto setDefaults = prevState != MF_CHECKED;
 
         // default to solid clone
@@ -367,7 +372,7 @@ void ShaderWindow::LoadImage()
     }
 }
 
-void ShaderWindow::SaveProfile(const std::string& fileName)
+void ShaderWindow::SaveProfile(const std::wstring& fileName)
 {
     const auto& pixelSize   = pixelSizes.at(WM_PIXEL_SIZE(m_selectedPixelSize));
     const auto& outputScale = outputScales.at(WM_OUTPUT_SCALE(m_selectedOutputScale));
@@ -414,6 +419,8 @@ void ShaderWindow::SaveProfile(const std::string& fileName)
         }
     }
     outfile.close();
+
+    AddRecentProfile(fileName);
 }
 
 void ShaderWindow::SaveProfile()
@@ -432,7 +439,7 @@ void ShaderWindow::SaveProfile()
     if(GetSaveFileName(&ofn))
     {
         std::wstring ws(ofn.lpstrFile);
-        SaveProfile(std::string(ws.begin(), ws.end()));
+        SaveProfile(ws);
     }
 }
 
@@ -531,6 +538,13 @@ void ShaderWindow::ScanDisplays()
         if(m_captureOptions.monitor == w.monitor)
             CheckMenuItem(m_displayMenu, WM_CAPTURE_DISPLAY(i - 1), MF_CHECKED | MF_BYCOMMAND);
     }
+}
+
+void ShaderWindow::BuildProgramMenu()
+{
+    m_recentMenu = CreatePopupMenu();
+    InsertMenu(m_programMenu, 9, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_recentMenu, L"Recent profiles");
+    LoadRecentProfiles();
 }
 
 void ShaderWindow::BuildInputMenu()
@@ -1199,7 +1213,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     if(m_captureOptions.freeScale)
                     {
                         CheckMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_UNCHECKED | MF_BYCOMMAND);
-                        m_captureOptions.freeScale = false;
+                        m_captureOptions.freeScale   = false;
                         m_captureOptions.outputScale = 1.0f;
                         for(const auto& p : outputScales)
                         {
@@ -1275,6 +1289,19 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     CheckMenuRadioItem(m_frameSkipMenu, 0, static_cast<UINT>(frameSkips.size()), wmId - WM_FRAME_SKIP(0), MF_BYPOSITION);
                     m_captureOptions.frameSkip = frameSkip->second.s;
                     m_captureManager.UpdateFrameSkip();
+                    break;
+                }
+                if(wmId >= WM_RECENT_PROFILE(0) && wmId < WM_RECENT_PROFILE(MAX_RECENT_PROFILES))
+                {
+                    auto profileId = wmId - WM_RECENT_PROFILE(0);
+                    if(profileId < m_recentProfiles.size())
+                    {
+                        auto path = m_recentProfiles.at(profileId);
+                        if(!LoadProfile(path))
+                        {
+                            RemoveRecentProfile(path);
+                        }
+                    }
                     break;
                 }
             }
@@ -1510,7 +1537,8 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     m_mainMenu = LoadMenu(hInstance, MAKEINTRESOURCEW(IDC_SHADERGLASS));
 
     m_programMenu = GetSubMenu(m_mainMenu, 0);
-    m_shaderMenu = GetSubMenu(m_mainMenu, 3);
+    m_shaderMenu  = GetSubMenu(m_mainMenu, 3);
+    BuildProgramMenu();
     BuildInputMenu();
     BuildOutputMenu();
     BuildShaderMenu();
@@ -1569,7 +1597,7 @@ void ShaderWindow::SaveHotkeyState(bool state)
     DWORD dwDisposition;
     if(RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\ShaderGlass"), 0, NULL, 0, KEY_WRITE | KEY_SET_VALUE, NULL, &hkey, &dwDisposition) == ERROR_SUCCESS)
     {
-        DWORD size = sizeof(DWORD);
+        DWORD size  = sizeof(DWORD);
         DWORD value = state ? 1 : 0;
         RegSetValueEx(hkey, TEXT("Global Hotkeys"), 0, REG_DWORD, (PBYTE)&value, size);
         RegCloseKey(hkey);
@@ -1582,11 +1610,103 @@ bool ShaderWindow::GetHotkeyState()
     if(RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Software\\ShaderGlass"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
     {
         DWORD value = 1;
-        DWORD size = sizeof(DWORD);
+        DWORD size  = sizeof(DWORD);
         RegGetValue(hKey, NULL, TEXT("Global Hotkeys"), RRF_RT_REG_DWORD, NULL, &value, &size);
         return value == 1;
     }
+
     return true;
+}
+
+void ShaderWindow::LoadRecentProfiles()
+{
+    m_recentProfiles.clear();
+
+    HKEY hKey;
+    if(RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Software\\ShaderGlass\\Recent"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
+    {
+        for(int p = 0; p < MAX_RECENT_PROFILES; p++)
+        {
+            auto value = std::to_wstring(p);
+
+            wchar_t path[MAX_PATH + 1];
+            DWORD   size = MAX_PATH * sizeof(wchar_t);
+            if(RegGetValue(hKey, NULL, value.data(), RRF_RT_REG_SZ, NULL, path, &size) == ERROR_SUCCESS)
+            {
+                if(lstrlen(path) > 0)
+                    m_recentProfiles.push_back(path);
+            }
+        }
+    }
+
+    // update menu
+    for(UINT i = 0; i < MAX_RECENT_PROFILES; i++)
+    {
+        RemoveMenu(m_recentMenu, WM_RECENT_PROFILE(i), MF_BYCOMMAND);
+    }
+    for(int p = 0; p < m_recentProfiles.size(); p++)
+    {
+        const auto& profile = m_recentProfiles.at(p);
+        InsertMenu(m_recentMenu, p, MF_STRING, WM_RECENT_PROFILE(p), profile.data());
+    }
+}
+
+void ShaderWindow::SaveRecentProfiles()
+{
+    HKEY  hkey;
+    DWORD dwDisposition;
+    if(RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\ShaderGlass\\Recent"), 0, NULL, 0, KEY_WRITE | KEY_SET_VALUE, NULL, &hkey, &dwDisposition) == ERROR_SUCCESS)
+    {
+        for(int p = 0; p < MAX_RECENT_PROFILES; p++)
+        {
+            auto value = std::to_wstring(p);
+            if(p < m_recentProfiles.size())
+            {
+                // update value
+                const auto& path = m_recentProfiles.at(p);
+                RegSetValueEx(hkey, value.data(), 0, REG_SZ, (PBYTE)path.data(), path.size() * sizeof(wchar_t));
+            }
+            else
+            {
+                // blank
+                RegSetValueEx(hkey, value.data(), 0, REG_SZ, (PBYTE)TEXT(""), sizeof(wchar_t));
+            }
+        }
+        RegCloseKey(hkey);
+    }
+    
+    LoadRecentProfiles(); // rebuild menu
+}
+
+void ShaderWindow::AddRecentProfile(const std::wstring& path)
+{
+    auto existingPos = std::find(m_recentProfiles.begin(), m_recentProfiles.end(), path);
+    if(existingPos != m_recentProfiles.end())
+    {
+        // already first one
+        if(*m_recentProfiles.begin() == path)
+            return;
+
+        // remove from the middle
+        m_recentProfiles.erase(existingPos);        
+    }
+    // add to front
+    m_recentProfiles.insert(m_recentProfiles.begin(), path);
+    if(m_recentProfiles.size() > MAX_RECENT_PROFILES)
+    {
+        m_recentProfiles.resize(MAX_RECENT_PROFILES);
+    }
+    SaveRecentProfiles();
+}
+
+void ShaderWindow::RemoveRecentProfile(const std::wstring& path)
+{
+    auto existingPos = std::find(m_recentProfiles.begin(), m_recentProfiles.end(), path);
+    if(existingPos != m_recentProfiles.end())
+    {
+        m_recentProfiles.erase(existingPos);
+        SaveRecentProfiles();
+    }
 }
 
 void ShaderWindow::RegisterHotkeys()
@@ -1614,7 +1734,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
         auto cmdLine = GetCommandLineW();
         auto args    = CommandLineToArgvW(cmdLine, &numArgs);
 
-        for(int a = 0; a < numArgs; a++)
+        for(int a = 1; a < numArgs; a++)
         {
             if(wcscmp(args[a], L"-paused") == 0 || wcscmp(args[a], L"-p") == 0)
                 autoStart = false;
@@ -1624,12 +1744,12 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
             {
                 std::wstring ws(args[a]);
                 if(ws.size())
-                    LoadProfile(std::string(ws.begin(), ws.end()));
+                    LoadProfile(ws);
             }
         }
     }
 
-    m_paramsWindow = paramsWindow;
+    m_paramsWindow  = paramsWindow;
     m_browserWindow = browserWindow;
     m_inputDialog.reset(new InputDialog(m_instance, m_mainWindow));
 
