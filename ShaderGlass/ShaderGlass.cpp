@@ -414,8 +414,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
         if(!m_freeScale)
         {
-            clientWidth = captureW / m_outputScaleW;
-            clientHeight = captureH / m_outputScaleH;
+            clientWidth = roundf(captureW / m_outputScaleW);
+            clientHeight = roundf(captureH / m_outputScaleH);
         }
 
         // box if needed
@@ -430,7 +430,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
                 boxX          = (clientWidth - newWidth) / 2.0f;
                 clientWidth = newWidth;
             }
-            else
+            else if(outputAspectRatio < inputAspectRatio)
             {
                 // output is narrower
                 auto newHeight = (LONG)roundf(clientWidth * (m_outputScaleW / m_outputScaleH) / inputAspectRatio);
@@ -514,8 +514,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
     if(m_captureWindow || m_image)
     {
-        const auto captureW = (captureRect.right - captureRect.left);
-        const auto captureH = (captureRect.bottom - captureRect.top);
+        const auto captureW = captureClient.right;
+        const auto captureH = captureClient.bottom;
         originalWidth       = static_cast<UINT>(captureW / m_inputScaleW);
         originalHeight      = static_cast<UINT>(captureH / m_inputScaleH);
     }
@@ -820,9 +820,9 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
             ty *= -1.0f;
         }
 
-        // offset to move away from edges
-        //tx += 0.0001f;
-        //ty += 0.0001f;
+        // offset to move away from edges; needed for SG to consistently pick up n-th input pixel if asked to, but I should find a formula to calculate this
+        tx += 0.0001f;
+        ty += 0.0001f;
 
         m_preprocessPass.UpdateMVP(sx, sy, tx, ty);
         m_lastPos.x = topLeft.x;
