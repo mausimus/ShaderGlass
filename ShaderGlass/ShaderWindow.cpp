@@ -1680,6 +1680,9 @@ void ShaderWindow::SaveRecentProfiles()
 
 void ShaderWindow::AddRecentProfile(const std::wstring& path)
 {
+    if(path.find(L":") == std::wstring::npos) // don't store relative paths
+        return;
+
     auto existingPos = std::find(m_recentProfiles.begin(), m_recentProfiles.end(), path);
     if(existingPos != m_recentProfiles.end())
     {
