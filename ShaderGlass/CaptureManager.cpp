@@ -322,3 +322,75 @@ int CaptureManager::FindByName(const char* presetName)
     }
     return -1;
 }
+
+/*
+bool ScalesToViewport(const std::vector<Shader>& shaders)
+{
+    // check if preset scales to viewport
+    float viewportX = 1, viewportY = 1;
+    for(int p = 0; p < shaders.size(); p++)
+    {
+        auto& shaderPass   = shaders[p];
+        if(shaderPass.m_scaleViewportX)
+            viewportX = shaderPass.m_scaleX;
+        else if(shaderPass.m_scaleAbsoluteX)
+            viewportX = 0;
+
+        if(shaderPass.m_scaleViewportY)
+            viewportY = shaderPass.m_scaleY;
+        else if(shaderPass.m_scaleAbsoluteY)
+            viewportY = 0;
+    }
+    return viewportX == 1 && viewportY == 1;
+}
+
+ 
+    std::ofstream logFile("c:\\temp\\scale3.txt");
+    
+    for(auto p : RetroArchPresetList)
+    {
+        if(p->Name == "artifact-colors")
+        {
+            int z = 0; z++;
+        }
+        p->Build();
+
+        std::vector<Shader> shaders;
+        shaders.reserve(p->ShaderDefs.size());
+        for(auto& sd: p->ShaderDefs)
+        {
+            shaders.emplace_back(sd);
+        }
+
+        if(!ScalesToViewport(shaders))
+        {
+            logFile << p->Name << endl;
+            int u = 0; u++;
+        }
+    }
+    logFile.close();
+    */
+
+/*
+    std::ofstream logFile("c:\\temp\\scale.txt");
+    
+    for(auto p : RetroArchPresetList)
+    {
+        if(p->Name == "artifact-colors")
+        {
+            int z = 0; z++;
+        }
+        p->Build();
+        const auto& lastDef = p->ShaderDefs[p->ShaderDefs.size() - 1];
+        for(const auto &pp : lastDef.PresetParams)
+        {
+            if(pp.first.starts_with("scale_type") && !(pp.first == "scale_type" && pp.second == "viewport") && !(pp.first == "scale_type_x" && pp.second == "viewport") &&
+               !(pp.first == "scale_type_y" && pp.second == "viewport"))
+            {
+                logFile << p->Name << endl;
+                //int y = 4; y++;
+            }
+        }
+
+    }
+    logFile.close();*/

@@ -30,6 +30,7 @@ public:
 
 private:
     bool TryResizeSwapChain(const RECT& clientRect, bool force);
+    bool ScalesToViewport();
     void DestroyShaders();
     void DestroyPasses();
     void DestroyTargets();
@@ -73,6 +74,8 @@ private:
     int        m_boxY {0};
 
     PassthroughPresetDef                              m_passthroughDef;
+    PassthroughShaderDef                              m_passthroughShaderDef;
+    Shader                                            m_passthroughShader;
     PreprocessShaderDef                               m_preprocessShaderDef;
     PresetDef                                         m_preprocessPresetDef;
     Preset                                            m_preprocessPreset;

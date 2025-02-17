@@ -7,8 +7,8 @@ static HRESULT hr;
 static const float background_colour[4] = {0, 0, 0, 1.0f};
 
 ShaderGlass::ShaderGlass() :
-    m_lastSize {}, m_lastPos {}, m_lastCaptureWindowPos {}, m_passthroughDef(), m_shaderPreset(new Preset(m_passthroughDef)), m_preprocessShader(m_preprocessShaderDef),
-    m_preprocessPreset(m_preprocessPresetDef), m_preprocessPass(m_preprocessShader, m_preprocessPreset, true)
+    m_lastSize {}, m_lastPos {}, m_lastCaptureWindowPos {}, m_passthroughDef(), m_passthroughShader(m_passthroughShaderDef), m_shaderPreset(new Preset(m_passthroughDef)),
+    m_preprocessShader(m_preprocessShaderDef), m_preprocessPreset(m_preprocessPresetDef), m_preprocessPass(m_preprocessShader, m_preprocessPreset, true)
 { }
 
 ShaderGlass::~ShaderGlass()
@@ -123,6 +123,7 @@ void ShaderGlass::Initialize(
 
     m_preprocessShader.Create(m_device);
     m_preprocessPass.Initialize(m_device, m_context);
+    m_passthroughShader.Create(m_device);
     RebuildShaders();
 
     m_running = true;
@@ -137,6 +138,12 @@ void ShaderGlass::RebuildShaders()
         m_shaderPasses.emplace_back(shader, *m_shaderPreset, m_device, m_context);
     }
 
+    if(!ScalesToViewport())
+    {
+        // add dummy pass to scale to viewport
+        m_shaderPasses.emplace_back(m_passthroughShader, *m_shaderPreset, m_device, m_context);
+    }
+
     m_presetTextures.clear();
     for(auto& texture : m_shaderPreset->m_textures)
     {
@@ -144,6 +151,26 @@ void ShaderGlass::RebuildShaders()
     }
 
     ResetParams();
+}
+
+bool ShaderGlass::ScalesToViewport()
+{
+    // check if preset scales to viewport
+    float viewportX = 0, viewportY = 0;
+    for(int p = 0; p < m_shaderPasses.size(); p++)
+    {
+        auto& shaderPass   = m_shaderPasses[p];
+        if(shaderPass.m_shader.m_scaleViewportX)
+            viewportX = shaderPass.m_shader.m_scaleX;
+        else if(shaderPass.m_shader.m_scaleAbsoluteX)
+            viewportX = 0;
+
+        if(shaderPass.m_shader.m_scaleViewportY)
+            viewportY = shaderPass.m_shader.m_scaleY;
+        else if(shaderPass.m_shader.m_scaleAbsoluteY)
+            viewportY = 0;
+    }
+    return viewportX == 1 && viewportY == 1;
 }
 
 void ShaderGlass::SetInputScale(float w, float h)
