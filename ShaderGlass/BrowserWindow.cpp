@@ -227,14 +227,16 @@ void BrowserWindow::Build()
         };
     std::map<std::string, std::vector<std::pair<const char*, UINT>>, decltype(categoryComp)> categoryMenus;
 
+    HTREEITEM noneItem = nullptr;
+
     int i = 0;
     for(const auto& sp : m_captureManager.Presets())
     {
         if(strcmp(sp->Category, "general") == 0)
         {
             auto id     = WM_SHADER(i++);
-            auto item   = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(sp->Name), id, 1);
-            m_items[id] = item;
+            noneItem    = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(sp->Name), id, 1);
+            m_items[id] = noneItem;
             continue;
         }
         if(categoryMenus.find(sp->Category) == categoryMenus.end())
@@ -256,7 +258,7 @@ void BrowserWindow::Build()
         }
     }
 
-    AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("RetroArch Library"), -1, 1);
+    auto raItem = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("RetroArch Library"), -1, 1);
 
     std::string parentCategory("");
     int level = 2;
@@ -298,12 +300,16 @@ void BrowserWindow::Build()
         }
     }
 
+    TreeView_Expand(m_treeControl, raItem, TVE_EXPAND);
+
     if(m_captureOptions.presetNo)
     {
         auto favorite = m_favorites.find(WM_SHADER(m_captureOptions.presetNo));
         if(favorite != m_favorites.end())
         {
             SendMessage(m_treeControl, TVM_SELECTITEM, TVGN_CARET, (LPARAM)favorite->second);
+            if(noneItem != nullptr)
+                TreeView_SelectSetFirstVisible(m_treeControl, noneItem);
         }
         else
         {
