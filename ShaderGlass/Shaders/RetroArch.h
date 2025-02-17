@@ -685,8 +685,6 @@
 #include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyColorShaderDef.h"
 #include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscTrilinearLUTSwitchableShaderDef.h"
 #include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscLinearToSrgbShaderDef.h"
-#include "RetroArch\misc\shaders\print-resolution\MiscShadersPrintResolutionPrintResolutionGenerateAndCacheShaderDef.h"
-#include "RetroArch\misc\shaders\print-resolution\MiscShadersPrintResolutionPrintResolutionApplyShaderDef.h"
 #include "RetroArch\misc\shaders\MiscShadersReliefShaderDef.h"
 #include "RetroArch\misc\shaders\MiscShadersRetroPalettesShaderDef.h"
 #include "RetroArch\misc\shaders\MiscShadersSimple_color_controlsShaderDef.h"
@@ -716,6 +714,11 @@
 #include "RetroArch\ntsc\shaders\maister\NtscShadersMaisterNtscPass1Composite3phaseShaderDef.h"
 #include "RetroArch\ntsc\shaders\maister\NtscShadersMaisterNtscPass23phaseShaderDef.h"
 #include "RetroArch\pal\shaders\PalShadersPalR57shellShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscEncodeYCShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscCombineYCShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscNoiseShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscSeparateYCShaderDef.h"
+#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscDecodeYRmyBmyShaderDef.h"
 #include "RetroArch\ntsc\shaders\artifact-colors\NtscShadersArtifactColorsArtifactColors0ShaderDef.h"
 #include "RetroArch\ntsc\shaders\artifact-colors\NtscShadersArtifactColorsArtifactColors1ShaderDef.h"
 #include "RetroArch\ntsc\shaders\artifact-colors\NtscShadersArtifactColorsArtifactColors2ShaderDef.h"
@@ -829,11 +832,6 @@
 #include "RetroArch\stereoscopic-3d\shaders\Stereoscopic3dShadersSideBySideSimpleShaderDef.h"
 #include "RetroArch\stereoscopic-3d\shaders\Stereoscopic3dShadersSbsToInterlacedShaderDef.h"
 #include "RetroArch\stereoscopic-3d\shaders\Stereoscopic3dShadersSbsToShutterShaderDef.h"
-#include "RetroArch\test\TestFeedbackNoncausalShaderDef.h"
-#include "RetroArch\test\TestFeedbackShaderDef.h"
-#include "RetroArch\test\TestFrame_countShaderDef.h"
-#include "RetroArch\test\TestHistoryShaderDef.h"
-#include "RetroArch\test\TestPragmaNameShaderDef.h"
 #include "RetroArch\vhs\shaders\gristleVHS\VhsShadersGristleVHSHorizontalSoftenShaderDef.h"
 #include "RetroArch\blurs\shaders\sunset_gaussian\BlursShadersSunset_gaussianSunset_horzShaderDef.h"
 #include "RetroArch\vhs\shaders\gristleVHS\VhsShadersGristleVHSVHSShaderDef.h"
@@ -850,11 +848,6 @@
 #include "RetroArch\vhs\shaders\vhs_mpalko\VhsShadersVhs_mpalkoVhs_mpalko_pass0ShaderDef.h"
 #include "RetroArch\vhs\shaders\vhs_mpalko\VhsShadersVhs_mpalkoVhs_mpalko_pass1ShaderDef.h"
 #include "RetroArch\warp\shaders\WarpShadersDilationShaderDef.h"
-#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscEncodeYCShaderDef.h"
-#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscCombineYCShaderDef.h"
-#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscNoiseShaderDef.h"
-#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscSeparateYCShaderDef.h"
-#include "RetroArch\ntsc\shaders\patchy-ntsc\NtscShadersPatchyNtscPatchyNtscDecodeYRmyBmyShaderDef.h"
 // %SHADER_INCLUDE%
 
 #include "RetroArch\anti-aliasing\shaders\smaa\AntiAliasingShadersSmaaAreaTexTextureDef.h"
@@ -1410,8 +1403,6 @@
 #include "RetroArch\edge-smoothing\scalefx\EdgeSmoothingScalefxScalefx9xPresetDef.h"
 #include "RetroArch\edge-smoothing\scalefx\EdgeSmoothingScalefxScalefxHybridPresetDef.h"
 #include "RetroArch\edge-smoothing\scalefx\EdgeSmoothingScalefxScalefxPresetDef.h"
-#include "RetroArch\edge-smoothing\scalefx\shaders\old\EdgeSmoothingScalefxShadersOldScalefx9xPresetDef.h"
-#include "RetroArch\edge-smoothing\scalefx\shaders\old\EdgeSmoothingScalefxShadersOldScalefxPresetDef.h"
 #include "RetroArch\edge-smoothing\scalehq\EdgeSmoothingScalehq2xScaleHQPresetDef.h"
 #include "RetroArch\edge-smoothing\scalehq\EdgeSmoothingScalehq4xScaleHQPresetDef.h"
 #include "RetroArch\edge-smoothing\scalenx\EdgeSmoothingScalenxEpxPresetDef.h"
@@ -1557,7 +1548,6 @@
 #include "RetroArch\misc\MiscNightModePresetDef.h"
 #include "RetroArch\misc\MiscNtscColorsPresetDef.h"
 #include "RetroArch\misc\MiscPatchyColorPresetDef.h"
-#include "RetroArch\misc\MiscPrintResolutionPresetDef.h"
 #include "RetroArch\misc\MiscReliefPresetDef.h"
 #include "RetroArch\misc\MiscRetroPalettesPresetDef.h"
 #include "RetroArch\misc\MiscSimple_color_controlsPresetDef.h"
@@ -1920,11 +1910,6 @@
 #include "RetroArch\stereoscopic-3d\Stereoscopic3dSideBySideSimplePresetDef.h"
 #include "RetroArch\stereoscopic-3d\Stereoscopic3dSideBySideToInterlacedPresetDef.h"
 #include "RetroArch\stereoscopic-3d\Stereoscopic3dSideBySideToShutterPresetDef.h"
-#include "RetroArch\test\TestFeedbackNoncausalPresetDef.h"
-#include "RetroArch\test\TestFeedbackPresetDef.h"
-#include "RetroArch\test\TestFrame_countPresetDef.h"
-#include "RetroArch\test\TestHistoryPresetDef.h"
-#include "RetroArch\test\TestPragmaNamePresetDef.h"
 #include "RetroArch\vhs\VhsGristleVHSPresetDef.h"
 #include "RetroArch\vhs\VhsMudlordPalVhsPresetDef.h"
 #include "RetroArch\vhs\VhsNtscVcrPresetDef.h"
@@ -2270,8 +2255,6 @@ new EdgeSmoothingScalefxScalefxRAAPresetDef(),
 new EdgeSmoothingScalefxScalefx9xPresetDef(),
 new EdgeSmoothingScalefxScalefxHybridPresetDef(),
 new EdgeSmoothingScalefxScalefxPresetDef(),
-new EdgeSmoothingScalefxShadersOldScalefx9xPresetDef(),
-new EdgeSmoothingScalefxShadersOldScalefxPresetDef(),
 new EdgeSmoothingScalehq2xScaleHQPresetDef(),
 new EdgeSmoothingScalehq4xScaleHQPresetDef(),
 new EdgeSmoothingScalenxEpxPresetDef(),
@@ -2417,7 +2400,6 @@ new MiscNaturalVisionPresetDef(),
 new MiscNightModePresetDef(),
 new MiscNtscColorsPresetDef(),
 new MiscPatchyColorPresetDef(),
-new MiscPrintResolutionPresetDef(),
 new MiscReliefPresetDef(),
 new MiscRetroPalettesPresetDef(),
 new MiscSimple_color_controlsPresetDef(),
@@ -2780,11 +2762,6 @@ new Stereoscopic3dShutterToSideBySidePresetDef(),
 new Stereoscopic3dSideBySideSimplePresetDef(),
 new Stereoscopic3dSideBySideToInterlacedPresetDef(),
 new Stereoscopic3dSideBySideToShutterPresetDef(),
-new TestFeedbackNoncausalPresetDef(),
-new TestFeedbackPresetDef(),
-new TestFrame_countPresetDef(),
-new TestHistoryPresetDef(),
-new TestPragmaNamePresetDef(),
 new VhsGristleVHSPresetDef(),
 new VhsMudlordPalVhsPresetDef(),
 new VhsNtscVcrPresetDef(),
