@@ -36,13 +36,14 @@ vector<tuple<int, ShaderParam*>> CaptureManager::Params()
     return vector<tuple<int, ShaderParam*>>();
 }
 
-void CaptureManager::UpdateInput()
+bool CaptureManager::UpdateInput()
 {
     if(IsActive())
     {
         StopSession();
-        StartSession();
+        return StartSession();
     }
+    return true;
 }
 
 DWORD WINAPI ThreadFuncProxy(LPVOID lpParam)
@@ -51,7 +52,7 @@ DWORD WINAPI ThreadFuncProxy(LPVOID lpParam)
     return 0;
 }
 
-void CaptureManager::StartSession()
+bool CaptureManager::StartSession()
 {
     if(!m_d3dDevice)
     {
@@ -65,6 +66,20 @@ void CaptureManager::StartSession()
 #ifdef _DEBUG
     m_d3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(m_debug.put()));
 #endif
+     
+    winrt::Windows::Graphics::Capture::GraphicsCaptureItem captureItem {nullptr};
+    if(!m_options.imageFile.size())
+    {
+        try
+        {
+            captureItem = m_options.captureWindow ? CreateCaptureItemForWindow(m_options.captureWindow) : CreateCaptureItemForMonitor(m_options.monitor);
+        }
+        catch(winrt::hresult_error const& error)
+        {
+            MessageBox(m_options.outputWindow, error.message().c_str(), L"ShaderGlass", MB_OK | MB_ICONERROR);
+            return false;
+        }
+    }
 
     m_shaderGlass = make_unique<ShaderGlass>();
     m_shaderGlass->Initialize(m_options.outputWindow, m_options.captureWindow, m_options.monitor, m_options.clone, !m_options.imageFile.empty(), m_d3dDevice, m_context);
@@ -102,8 +117,6 @@ void CaptureManager::StartSession()
     }
     else
     {
-        auto captureItem = m_options.captureWindow ? CreateCaptureItemForWindow(m_options.captureWindow) : CreateCaptureItemForMonitor(m_options.monitor);
-
         m_session = make_unique<CaptureSession>(device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass);
     }
 
@@ -111,6 +124,7 @@ void CaptureManager::StartSession()
     CreateThread(NULL, 0, ThreadFuncProxy, this, 0, NULL);
 
     UpdateCursor();
+    return true;
 }
 
 void CaptureManager::SetParams(const std::vector<std::tuple<int, std::string, double>>& params)

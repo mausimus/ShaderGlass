@@ -39,7 +39,7 @@ public:
 
     bool Initialize();
     bool IsActive();
-    void StartSession();
+    bool StartSession();
     void StopSession();
     void Debug();
     void UpdatePixelSize();
@@ -47,7 +47,7 @@ public:
     void UpdateOutputFlip();
     void UpdateShaderPreset();
     void UpdateFrameSkip();
-    void UpdateInput();
+    bool UpdateInput();
     void UpdateCursor();
     void UpdateLockedArea();
     void GrabOutput();

@@ -348,7 +348,7 @@ void ShaderWindow::LoadImage()
         m_captureOptions.transparent = false;
         CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
         CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
-        m_captureManager.UpdateInput();
+        TryUpdateInput();
         EnableMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_BYCOMMAND | MF_ENABLED);
 
         // if we are *switching* to file mode, default pixel size and freescale
@@ -854,7 +854,7 @@ void ShaderWindow::UpdateTitle()
     }
     else
     {
-        SetWindowTextA(m_mainWindow, "ShaderGlass");
+        SetWindowTextA(m_mainWindow, "ShaderGlass (stopped)");
     }
 }
 
@@ -1071,7 +1071,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             m_captureOptions.transparent = true;
             CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
             CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
-            m_captureManager.UpdateInput();
+            TryUpdateInput();
             UpdateWindowState();
             break;
         case IDM_MODE_CLONE:
@@ -1081,7 +1081,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             m_captureOptions.transparent = false;
             CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
             CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
-            m_captureManager.UpdateInput();
+            TryUpdateInput();
             UpdateWindowState();
             break;
         case IDM_WINDOW_SCAN:
@@ -1197,7 +1197,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_UNCHECKED | MF_BYCOMMAND);
                     EnableMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_BYCOMMAND | MF_ENABLED);
                     m_captureOptions.imageFile.clear();
-                    m_captureManager.UpdateInput();
+                    TryUpdateInput();
                     UpdateWindowState();
                     SetFreeScale();
                     break;
@@ -1228,7 +1228,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_UNCHECKED | MF_BYCOMMAND);
                     EnableMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_BYCOMMAND | MF_DISABLED);
                     m_captureOptions.imageFile.clear();
-                    m_captureManager.UpdateInput();
+                    TryUpdateInput();
                     UpdateWindowState();
                     break;
                 }
@@ -1354,8 +1354,10 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case SIZE_RESTORED:
             if(m_captureOptions.paused)
             {
-                m_captureManager.StartSession();
-                m_captureOptions.paused = false;
+                if(m_captureManager.StartSession())
+                {
+                    m_captureOptions.paused = false;
+                }
             }
             break;
         }
@@ -1431,9 +1433,16 @@ bool ShaderWindow::Start()
     if(m_captureManager.IsActive())
         return false;
 
-    m_captureManager.StartSession();
-    EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_DISABLED);
-    EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_ENABLED);
+    if(m_captureManager.StartSession())
+    {
+        EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_DISABLED);
+        EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_ENABLED);
+    }
+    else
+    {
+        EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_ENABLED);
+        EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_DISABLED);
+    }
     UpdateWindowState();
 
     return true;
@@ -1449,6 +1458,15 @@ void ShaderWindow::Stop()
     EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_ENABLED);
     UpdateWindowState();
     SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
+}
+
+void ShaderWindow::TryUpdateInput()
+{
+    if(!m_captureManager.UpdateInput())
+    {
+        EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_ENABLED);
+        EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_DISABLED);
+    }
 }
 
 void ShaderWindow::Screenshot()

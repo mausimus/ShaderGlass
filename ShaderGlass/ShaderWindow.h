@@ -74,6 +74,7 @@ private:
     void ToggleBorderless(HWND hWnd);
     bool Start();
     void Stop();
+    void TryUpdateInput();
     void Screenshot();
     void LoadImage();
     void UpdateTitle();
