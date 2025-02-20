@@ -35823,7 +35823,6 @@ public:
 		Params.push_back(ShaderParam("iscans", 0, 524, 4, 0.000000f, 1.000000f, 0.250000f, 0.050000f, "Interlace (Scanline) Saturation"));
 		Params.push_back(ShaderParam("vga_mode", 0, 528, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "VGA Single/Double Scan mode"));
 		Params.push_back(ShaderParam("hiscan", 0, 532, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "High Resolution Scanlines (ScaleFx or XBR Only)"));
-		Params.push_back(ShaderParam("hiscan", 0, 532, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "High Resolution Scanlines (ScaleFx or XBR Only)"));
 		Params.push_back(ShaderParam("HSM_FAKE_SCANLINE_MODE", 0, 536, 4, 0.000000f, 2.000000f, 2.000000f, 1.000000f, "Show Fake Scanlines - OFF | ON | USE TRIGGER RES"));
 		Params.push_back(ShaderParam("HSM_FAKE_SCANLINE_OPACITY", 0, 540, 4, 0.000000f, 100.000000f, 0.000000f, 5.000000f, "Opacity - Def 70"));
 		Params.push_back(ShaderParam("HSM_FAKE_SCANLINE_RES_MODE", 0, 544, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Scan Resolution Mode: AUTO (CORE RES) : EXPLICIT"));

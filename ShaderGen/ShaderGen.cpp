@@ -569,7 +569,19 @@ void processShader(ShaderDef def, ofstream& log, bool& warn)
         auto trimLine = trim(line);
         if(line.starts_with("#pragma parameter"))
         {
-            def.params.push_back(ShaderParam(line, 1, 0));
+            // de-duping as workaround for repeated includes
+            auto param = ShaderParam(line, 1, 0);
+            bool dupe = false;
+            for(const auto& p : def.params)
+            {
+                if(p.name == param.name)
+                {
+                    dupe = true;
+                    break;
+                }
+            }
+            if(!dupe)
+                def.params.push_back(param);
         }
         else if(line.starts_with("#pragma stage vertex"))
         {

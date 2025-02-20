@@ -777,7 +777,6 @@ public:
 		Params.push_back(ShaderParam("signalResolutionI", -1, 52, 4, 1.000000f, 350.000000f, 83.000000f, 2.000000f, "Signal Resolution I"));
 		Params.push_back(ShaderParam("signalResolutionQ", -1, 56, 4, 1.000000f, 350.000000f, 25.000000f, 2.000000f, "Signal Resolution Q"));
 		Params.push_back(ShaderParam("compositeConnection", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Composite Connection Enable"));
-		Params.push_back(ShaderParam("compositeConnection", -1, 60, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Composite Connection Enable"));
 		Samplers.push_back(ShaderSampler("Source", 2));
 /*
 VertexSource = %*VERTEX_SOURCE*%;

@@ -43625,16 +43625,10 @@ public:
 		Params.push_back(ShaderParam("HSM_REFLECT_BLUR_MIN", 0, 1356, 4, 0.000000f, 100.000000f, 0.000000f, 1.000000f, "Min Blur"));
 		Params.push_back(ShaderParam("HSM_REFLECT_BLUR_MAX", 0, 1360, 4, 0.000000f, 100.000000f, 95.000000f, 1.000000f, "Max Blur"));
 		Params.push_back(ShaderParam("HSM_REFLECT_MASK_IMAGE_AMOUNT", 0, 1364, 4, 0.000000f, 100.000000f, 0.000000f, 1.000000f, "Reflection Image Mask Amount"));
-		Params.push_back(ShaderParam("HSM_REFLECT_MASK_IMAGE_AMOUNT", 0, 1364, 4, 0.000000f, 100.000000f, 0.000000f, 1.000000f, "Reflection Image Mask Amount"));
-		Params.push_back(ShaderParam("HSM_REFLECT_MASK_FOLLOW_LAYER", 0, 1368, 4, 0.000000f, 7.000000f, 4.000000f, 1.000000f, "Follow Layer - FULL | TUBE | BEZEL |BG|DEVICE|DECAL|CAB|TOP"));
 		Params.push_back(ShaderParam("HSM_REFLECT_MASK_FOLLOW_LAYER", 0, 1368, 4, 0.000000f, 7.000000f, 4.000000f, 1.000000f, "Follow Layer - FULL | TUBE | BEZEL |BG|DEVICE|DECAL|CAB|TOP"));
 		Params.push_back(ShaderParam("HSM_REFLECT_MASK_FOLLOW_MODE", 0, 1372, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Follow Mode - FOLLOW SCALE & POS | FOLLOW EXACTLY"));
-		Params.push_back(ShaderParam("HSM_REFLECT_MASK_FOLLOW_MODE", 0, 1372, 4, 0.000000f, 1.000000f, 1.000000f, 1.000000f, "Follow Mode - FOLLOW SCALE & POS | FOLLOW EXACTLY"));
-		Params.push_back(ShaderParam("HSM_REFLECT_MASK_BRIGHTNESS", 0, 1376, 4, 0.000000f, 200.000000f, 100.000000f, 1.000000f, "Mask Brightness"));
 		Params.push_back(ShaderParam("HSM_REFLECT_MASK_BRIGHTNESS", 0, 1376, 4, 0.000000f, 200.000000f, 100.000000f, 1.000000f, "Mask Brightness"));
 		Params.push_back(ShaderParam("HSM_REFLECT_MASK_BLACK_LEVEL", 0, 1380, 4, -100.000000f, 100.000000f, 0.000000f, 0.500000f, "Mask Black Level"));
-		Params.push_back(ShaderParam("HSM_REFLECT_MASK_BLACK_LEVEL", 0, 1380, 4, -100.000000f, 100.000000f, 0.000000f, 0.500000f, "Mask Black Level"));
-		Params.push_back(ShaderParam("HSM_REFLECT_MASK_MIPMAPPING_BLEND_BIAS", 0, 1384, 4, -5.000000f, 5.000000f, 0.000000f, 0.100000f, "Mipmapping Blend Bias (Affects Sharpness)"));
 		Params.push_back(ShaderParam("HSM_REFLECT_MASK_MIPMAPPING_BLEND_BIAS", 0, 1384, 4, -5.000000f, 5.000000f, 0.000000f, 0.100000f, "Mipmapping Blend Bias (Affects Sharpness)"));
 		Params.push_back(ShaderParam("HSM_GLASS_BORDER_ON", 0, 1388, 4, 0.000000f, 1.000000f, 0.000000f, 1.000000f, "Glass Border ON (For Glass Preset)"));
 		Params.push_back(ShaderParam("HSM_REFLECT_VIGNETTE_AMOUNT", 0, 1392, 4, 0.000000f, 100.000000f, 0.000000f, 0.500000f, "Glass Reflection Vignette"));
