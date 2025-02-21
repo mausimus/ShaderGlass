@@ -25,18 +25,16 @@ Overlay for running GPU shaders on top of Windows desktop.
 
 ### Download
 
-Latest release (v0.9, 10 Aug 2023):
+Latest release (v1.0, 21 Feb 2025):
 * refresh of RetroArch shader library
-* new Shader Browser window
+* back-end extensions to support more complex shaders (MegaBezel)
+* improved fullscreen with letterboxing and aspect ratio preservation
+* quick access to Recent Profiles from menu
+* FPS display in title bar
+* selection of best shaders in Browser window
 * bug fixes
 
-https://github.com/mausimus/ShaderGlass/releases/download/v0.9/ShaderGlass-0.9-win-x64.zip
-
-<br/>
-
-Betas available here (latest v0.94, 16 Feb 2025):
-
-https://github.com/mausimus/ShaderGlass/releases
+https://github.com/mausimus/ShaderGlass/releases/download/v1.0/ShaderGlass-1.0-win-x64.zip
 
 <br/>
 
@@ -61,7 +59,7 @@ ShaderGlass running over multiple applications on Windows 11 desktop.
 
 ![screenshot](images/screen7.png)
 
-[Demonstration video (YouTube)](https://www.youtube.com/watch?v=5WLit0TBYIw "ShaderGlass")
+[Demonstration video (YouTube)](https://www.youtube.com/watch?v=gWOcucS9_mg "ShaderGlass")
 
 ##### Desktop Glass mode
 
@@ -93,8 +91,8 @@ running in Altirra with a TV-OUT simulation shader.
 
 ###### Adventure Game Studio
 
-[The Crimson Diamond (2020)](https://store.steampowered.com/app/1242790/The_Crimson_Diamond_Chapter_1/),
-a modern AGS game softened using crt-fast-bilateral-super-xbr shader.
+[The Crimson Diamond (2024)](https://store.steampowered.com/app/1098770/The_Crimson_Diamond/),
+a modern AGS game using HSM MegaBezel STD shader.
 
 ![screenshot](images/screen3.png)
 
@@ -156,7 +154,7 @@ Currently supported options are:
   * If you select _Custom_ you can enter your own correction ratio expressed as pixel height (1.0 being square pixel). For example,
   in MS-DOS era a picture of 320x200 resolution (16:10) was displayed on a 4:3 screen meaning each pixel was 1.2x tall on screen, 1.2 = (16/10) / (4/3)
 
-* _Output -> Frame Skip_ - in order to improve performance divide frame rate by n (capture is done at VSync rate)
+* _Output -> FPS_ - by default ShaderGlass runs at V-Sync, but in order to reduce GPU load you can divide the frame rate by n (for pixel art etc.)
 
 * _Output -> Take Snapshot_ - export current picture in .png format
 
@@ -187,6 +185,8 @@ ShaderGlass.exe [-p|--paused] [-f|--fullscreen] [profile.sgp]
 ```
 
 You can pass profile filename as a command-line parameter to ShaderGlass.exe and it will be auto-loaded.
+
+If your profile file name contains spaces please put it in quotes.
 
 In addition -p will launch in paused mode, and -f will launch in fullscreen mode.
 
@@ -242,7 +242,7 @@ See FAQ [here](FAQ.md).
 
 ### Code
 
-Built using Visual Studio 2022 using ISO C++ 20, Windows SDK 10.0.22000, Windows Capture API and DirectX 11.
+Built using Visual Studio 2022 using ISO C++ 20, Windows SDK 10.0.26100, Windows Capture API and DirectX 11.
 
 ShaderGlass includes a limited implementation of RetroArch shader back-end.
 [ShaderGen](ShaderGen) is a command-line tool for converting Slang shaders 
@@ -264,4 +264,4 @@ Please refer to copyright notes within shader code for detailed copyright and li
 
 * Big kudos to RetroArch team, emulator developers and the wide retro community!
 
-* Thanks to @lonestarr for PRs :thumbsup:
+* Thanks to @lonestarr for PRs and everyone for feedback and testing :thumbsup:

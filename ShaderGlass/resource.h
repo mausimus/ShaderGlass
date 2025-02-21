@@ -147,6 +147,7 @@
 #define ID_PROCESSING_RECENTPROFILES    32899
 #define ID_RECENTPROFILES_FDS           32900
 #define ID_PROCESSING_RECENT            32901
+#define ID_HELP_README                  32902
 #define IDC_STATIC                      -1
 #define IDC_STATIC_LABEL                -1
 
@@ -156,7 +157,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        137
-#define _APS_NEXT_COMMAND_VALUE         32902
+#define _APS_NEXT_COMMAND_VALUE         32903
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           115
 #endif
