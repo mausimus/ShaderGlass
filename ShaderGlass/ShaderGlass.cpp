@@ -200,7 +200,6 @@ void ShaderGlass::DestroyTargets()
         m_preprocessedRenderTarget = nullptr;
         m_originalView             = nullptr;
         m_preprocessedTexture      = nullptr;
-        m_displayTexture           = nullptr;
     }
 }
 
