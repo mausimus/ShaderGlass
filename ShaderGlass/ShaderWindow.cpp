@@ -318,7 +318,7 @@ void ShaderWindow::SetFreeScale()
 void ShaderWindow::LoadImage()
 {
     OPENFILENAMEW ofn;
-    char          szFileName[MAX_PATH] = "";
+    wchar_t       szFileName[MAX_PATH] = L"";
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner   = NULL;
