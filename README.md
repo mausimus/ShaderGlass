@@ -38,6 +38,10 @@ https://github.com/mausimus/ShaderGlass/releases/download/v1.0/ShaderGlass-1.0-w
 
 <br/>
 
+[Betas available here](https://github.com/mausimus/ShaderGlass/releases)
+
+<br/>
+
 Follow [ShaderGlass on itch.io](https://mausimus.itch.io/shaderglass) for latest updates.
 
 <br/>
