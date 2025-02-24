@@ -290,7 +290,7 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
 void ShaderWindow::LoadProfile()
 {
     OPENFILENAMEW ofn;
-    char          szFileName[MAX_PATH] = "";
+    wchar_t       szFileName[MAX_PATH] = L"";
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner   = NULL;
@@ -426,7 +426,7 @@ void ShaderWindow::SaveProfile(const std::wstring& fileName)
 void ShaderWindow::SaveProfile()
 {
     OPENFILENAMEW ofn;
-    char          szFileName[MAX_PATH] = "";
+    wchar_t       szFileName[MAX_PATH] = L"";
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner   = NULL;
@@ -1477,13 +1477,13 @@ void ShaderWindow::Screenshot()
     m_captureManager.GrabOutput();
 
     OPENFILENAME ofn;
-    TCHAR        szFile[260] = {0};
+    wchar_t      szFile[MAX_PATH] = L"";
 
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize     = sizeof(ofn);
     ofn.hwndOwner       = m_mainWindow;
     ofn.lpstrFile       = szFile;
-    ofn.nMaxFile        = sizeof(szFile);
+    ofn.nMaxFile        = MAX_PATH;
     ofn.lpstrFilter     = _T("PNG\0*.png\0");
     ofn.lpstrDefExt     = _T("png");
     ofn.nFilterIndex    = 1;
