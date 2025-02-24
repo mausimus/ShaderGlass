@@ -26,7 +26,7 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
 
         std::string                                       shaderCategory;
         std::string                                       shaderName;
-        std::optional<std::string>                        windowName;
+        std::optional<std::wstring>                       windowName;
         std::optional<std::string>                        desktopName;
         std::optional<bool>                               transparent;
         std::optional<bool>                               clone;
@@ -43,8 +43,10 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
                     return true;
             }
             else if(key == "CaptureWindow")
-            {
-                windowName = value;
+            { 
+                wchar_t wideName[MAX_WINDOW_TITLE];
+                MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, wideName, MAX_WINDOW_TITLE);
+                windowName = std::wstring(wideName);
             }
             else if(key == "CaptureDesktop")
             {
@@ -400,7 +402,12 @@ void ShaderWindow::SaveProfile(const std::wstring& fileName)
     outfile << "InputArea \"" << std::to_string(m_captureOptions.inputArea.left) << " " << std::to_string(m_captureOptions.inputArea.top) << " "
             << std::to_string(m_captureOptions.inputArea.right) << " " << std::to_string(m_captureOptions.inputArea.bottom) << "\"" << std::endl;
     if(m_captureOptions.captureWindow)
-        outfile << "CaptureWindow " << std::quoted(GetWindowStringText(m_captureOptions.captureWindow)) << std::endl;
+    {
+        auto windowTitle = GetWindowStringText(m_captureOptions.captureWindow);
+        char utfName[MAX_WINDOW_TITLE];
+        WideCharToMultiByte(CP_UTF8, 0, windowTitle.c_str(), -1, utfName, MAX_WINDOW_TITLE, NULL, NULL);
+        outfile << "CaptureWindow " << std::quoted(utfName) << std::endl;
+    }
     else if(m_captureOptions.monitor)
     {
         MONITORINFOEX info;
@@ -504,7 +511,7 @@ void ShaderWindow::ScanWindows()
     UINT i = 0;
     for(const auto& w : m_captureWindows)
     {
-        AppendMenu(m_windowMenu, MF_STRING, WM_CAPTURE_WINDOW(i++), convertCharArrayToLPCWSTR(w.name.c_str()));
+        AppendMenu(m_windowMenu, MF_STRING, WM_CAPTURE_WINDOW(i++), w.name.c_str());
         if(m_captureOptions.captureWindow == w.hwnd)
             CheckMenuItem(m_windowMenu, WM_CAPTURE_WINDOW(i - 1), MF_CHECKED | MF_BYCOMMAND);
     }
@@ -826,7 +833,7 @@ void ShaderWindow::UpdateTitle()
         const auto& aspectRatio = aspectRatios.at(WM_ASPECT_RATIO(m_selectedAspectRatio));
         const auto& shader      = m_captureManager.Presets().at(m_captureOptions.presetNo);
 
-        char windowName[26];
+        wchar_t windowName[26];
         windowName[0] = 0;
         if(m_captureOptions.captureWindow)
         {
@@ -839,22 +846,22 @@ void ShaderWindow::UpdateTitle()
                 }
                 if(captureTitle.size() > 20)
                 {
-                    captureTitle = captureTitle.substr(0, 20) + "...";
+                    captureTitle = captureTitle.substr(0, 20) + _T("...");
                 }
-                captureTitle += ", ";
-                strncpy_s(windowName, captureTitle.c_str(), 26);
+                captureTitle += _T(", ");
+                wcsncpy_s(windowName, captureTitle.c_str(), 26);
             }
         }
 
-        char        title[200];
+        wchar_t     title[200];
         const char* scaleString = m_captureOptions.freeScale ? "free" : outputScale.mnemonic;
         const auto fps = (int)roundf(m_captureManager.FPS());
-        snprintf(title, 200, "ShaderGlass (%s%s, %spx, %s%%, ~%s, %dfps)", windowName, shader->Name, pixelSize.mnemonic, scaleString, aspectRatio.mnemonic, fps);
-        SetWindowTextA(m_mainWindow, title);
+        _snwprintf_s(title, 200, _T("ShaderGlass (%s%S, %Spx, %S%%, ~%S, %dfps)"), windowName, shader->Name, pixelSize.mnemonic, scaleString, aspectRatio.mnemonic, fps);
+        SetWindowTextW(m_mainWindow, title);
     }
     else
     {
-        SetWindowTextA(m_mainWindow, "ShaderGlass (stopped)");
+        SetWindowTextW(m_mainWindow, _T("ShaderGlass (stopped)"));
     }
 }
 

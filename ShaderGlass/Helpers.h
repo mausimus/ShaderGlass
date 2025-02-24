@@ -1,5 +1,7 @@
 #pragma once
 
+#define MAX_WINDOW_TITLE 200
+
 inline wchar_t* convertCharArrayToLPCWSTR(const char* charArray)
 {
     wchar_t* wString = new wchar_t[4096];
@@ -24,14 +26,11 @@ inline BOOL IsAltTabWindow(HWND hwnd)
     return hwndWalk == hwnd;
 }
 
-inline std::string GetWindowStringText(HWND hwnd)
+inline std::wstring GetWindowStringText(HWND hwnd)
 {
-    int                  len = GetWindowTextLength(hwnd) + 1;
-    std::vector<wchar_t> buf(len);
-    GetWindowText(hwnd, &buf[0], len);
-    std::wstring wide = &buf[0];
-    std::string  s(wide.begin(), wide.end());
-    return s;
+    wchar_t title[MAX_WINDOW_TITLE];
+    GetWindowText(hwnd, title, MAX_WINDOW_TITLE);
+    return std::wstring(title);
 }
 
 inline bool Is1903()

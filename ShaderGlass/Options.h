@@ -62,9 +62,9 @@ struct OutputScaleInfo
 
 struct CaptureWindow
 {
-    CaptureWindow(HWND hwnd, const std::string& name) : hwnd {hwnd}, name {name} { }
-    HWND        hwnd;
-    std::string name;
+    CaptureWindow(HWND hwnd, const std::wstring& name) : hwnd {hwnd}, name {name} { }
+    HWND         hwnd;
+    std::wstring name;
 };
 
 struct CaptureDisplay
