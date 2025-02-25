@@ -8,6 +8,12 @@ Make sure you're using __Windows 10, version 2004__ (build 19041) or __Windows 1
 
 ---
 
+### > Can I use it with Reshade?
+
+While there is no special support for it, you can inject Reshade into ShaderGlass just like into any other DirectX 11 app and stack Reshade shaders on top.
+
+---
+
 ### > I see yellow border around captured screen/window
 
 It's possible to disable yellow border but only on Windows 11. If you are using Windows 11 and still seeing the border,
