@@ -25,7 +25,7 @@ Overlay for running GPU shaders on top of Windows desktop.
 
 ### Download
 
-Latest release (v1.0, 21 Feb 2025):
+Latest release (v1.0.2, 25 Feb 2025):
 * refresh of RetroArch shader library
 * back-end extensions to support more complex shaders (MegaBezel)
 * improved fullscreen with letterboxing and aspect ratio preservation
