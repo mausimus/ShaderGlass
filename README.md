@@ -34,7 +34,7 @@ Latest release (v1.0, 21 Feb 2025):
 * selection of best shaders in Browser window
 * bug fixes
 
-https://github.com/mausimus/ShaderGlass/releases/download/v1.0/ShaderGlass-1.0-win-x64.zip
+https://github.com/mausimus/ShaderGlass/releases/download/v1.0.2/ShaderGlass-1.0.2-win-x64.zip
 
 <br/>
 
