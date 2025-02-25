@@ -38,7 +38,7 @@ https://github.com/mausimus/ShaderGlass/releases/download/v1.0.2/ShaderGlass-1.0
 
 <br/>
 
-[Betas available here](https://github.com/mausimus/ShaderGlass/releases)
+[Betas and older versions available here](https://github.com/mausimus/ShaderGlass/releases)
 
 <br/>
 
