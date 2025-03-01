@@ -50,7 +50,7 @@ Follow [ShaderGlass on itch.io](https://mausimus.itch.io/shaderglass) for latest
 
 * __Windows 10, version 2004__ (build 19041) or __Windows 11__
   * will work on version 1903 but in limited capacity (no Desktop Glass mode)
-  * Windows 11 allows the __removal of yellow border__ around capture
+  * Windows 11 allows the __removal of yellow border__ (see [FAQ](FAQ.md#windows-10) for tips on avoiding it on Windows 10)
 * DirectX 11-capable GPU
 
 If the app reports missing libraries please install [Visual C++ Redistributable 2019](https://aka.ms/vs/16/release/vc_redist.x64.exe)
