@@ -16,6 +16,16 @@ While there is no special support for it, you can inject Reshade into ShaderGlas
 
 ### > I see yellow border around captured screen/window
 
+#### Windows 10
+
+Unfortunately yellow border is enforced on Windows 10 and there's no way to remove it. There are some ways to avoid it, for example:
+* start up your game in Windowed mode
+* in ShaderGlass choose Input -> Window -> choose your game's window
+* click onto your game window to give it focus
+* press Ctrl+Shift+G to make ShaderGlass fullscreen
+
+#### Windows 11
+
 It's possible to disable yellow border but only on Windows 11. If you are using Windows 11 and still seeing the border,
 open Windows Settings app and search for "screenshot borders". Make sure all the options and ShaderGlass are allowed to
 remove the border per below:
