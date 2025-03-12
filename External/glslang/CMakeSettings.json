@@ -1,0 +1,90 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "BUILD_EXTERNAL",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENABLE_OPT",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENABLE_SPVREMAPPER",
+          "value": "False",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "x64-Release",
+      "generator": "Ninja",
+      "configurationType": "MinSizeRel",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": [
+        {
+          "name": "ENABLE_HLSL",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "GLSLANG_TESTS",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENABLE_SPVREMAPPER",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "GLSLANG_ENABLE_INSTALL",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENABLE_OPT",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "BUILD_EXTERNAL",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENABLE_PCH",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENABLE_GLSLANG_BINARIES",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENABLE_EXCEPTIONS",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
+    }
+  ]
+}

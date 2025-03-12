@@ -6,6 +6,14 @@ GNU General Public License v3.0
 
 #include "ShaderGen.h"
 
+#ifdef USE_GLSL_LIB
+#include "GLSL.h"
+#endif
+
+#ifdef USE_SPIRV_LIB
+#include "SPIRV.h"
+#endif
+
 filesystem::path startupPath;
 filesystem::path templatePath;
 filesystem::path toolsPath;
@@ -58,6 +66,22 @@ filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, c
 
     saveSource(input, source);
 
+#ifdef USE_GLSL_LIB
+    std::string a;
+    for(const auto& s : source)
+    {
+        a.append(s);
+        a.append("\n");
+    }
+
+    auto bin = GLSL::GenerateSPIRV(a.c_str(), stage == "frag");
+    if(bin.empty())
+        throw std::runtime_error("SPIR-V conversion error");
+
+    ofstream out(output, ios::binary | ios::trunc);
+    out.write((const char *)bin.data(), bin.size() * sizeof(uint32_t));
+    out.close();
+#else
     stringstream cmd;
     cmd << "\"" << toolsPath.string() << _glslExe << "\" "
         << "-V --quiet -S " << stage << " -o " << output.string() << " " << input.string() << "";
@@ -68,11 +92,22 @@ filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, c
         log << result << endl;
     if(result.contains("error") || result.contains("ERROR"))
         throw std::runtime_error("SPIR-V conversion error");
+#endif
     return output;
 }
 
 pair<string, string> spirv(const filesystem::path& input, ofstream& log)
 {
+#ifdef USE_SPIRV_LIB
+    ifstream inf(input, ios::binary | ios::ate);
+    int      size = inf.tellg();
+    inf.seekg(0, ios::beg);
+    vector<uint32_t> buffer;
+    buffer.resize(size / sizeof(uint32_t));
+    inf.read((char *)buffer.data(), size);
+    inf.close();
+    return SPIRV::GenerateHLSL(buffer, false);
+#else
     stringstream cmd1, cmd2;
     cmd1 << "\"" << toolsPath.string() << _spirvExe << "\" "
          << " --hlsl --shader-model 50 " << input.string() << "";
@@ -80,6 +115,7 @@ pair<string, string> spirv(const filesystem::path& input, ofstream& log)
     cmd2 << "\"" << toolsPath.string() << _spirvExe << "\" " << input.string() << " --reflect";
     const auto& metadata = exec(cmd2.str().c_str(), log);
     return make_pair(code, metadata);
+#endif
 }
 
 string fxc(const filesystem::path& shaderPath, const string& profile, const string& source, ofstream& log, bool& warn)
