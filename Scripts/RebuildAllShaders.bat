@@ -10,4 +10,4 @@ pause
 del /q ..\ShaderGlass\Shaders\RetroArch.h
 rmdir /s /q ..\ShaderGlass\Shaders\RetroArch
 rmdir /s /q temp
-..\x64\Debug\ShaderGen.exe *
+..\x64\Release\ShaderGen.exe *

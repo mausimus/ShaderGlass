@@ -6,13 +6,9 @@ GNU General Public License v3.0
 
 #include "ShaderGen.h"
 
-#ifdef USE_GLSL_LIB
 #include "GLSL.h"
-#endif
-
-#ifdef USE_SPIRV_LIB
 #include "SPIRV.h"
-#endif
+#include "HLSL.h"
 
 filesystem::path startupPath;
 filesystem::path templatePath;
@@ -79,7 +75,7 @@ filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, c
         throw std::runtime_error("SPIR-V conversion error");
 
     ofstream out(output, ios::binary | ios::trunc);
-    out.write((const char *)bin.data(), bin.size() * sizeof(uint32_t));
+    out.write((const char*)bin.data(), bin.size() * sizeof(uint32_t));
     out.close();
 #else
     stringstream cmd;
@@ -104,7 +100,7 @@ pair<string, string> spirv(const filesystem::path& input, ofstream& log)
     inf.seekg(0, ios::beg);
     vector<uint32_t> buffer;
     buffer.resize(size / sizeof(uint32_t));
-    inf.read((char *)buffer.data(), size);
+    inf.read((char*)buffer.data(), size);
     inf.close();
     return SPIRV::GenerateHLSL(buffer, false);
 #else
@@ -135,6 +131,34 @@ string fxc(const filesystem::path& shaderPath, const string& profile, const stri
                                   source);
     saveSource(input, fullSource);
 
+#ifdef USE_D3DC
+
+    auto bin = HLSL::CompileHLSL(fullSource.c_str(), fullSource.size(), profile.c_str());
+
+    ostringstream sbuf;
+    sbuf << "{" << endl;
+    int nl = 0;
+    for(auto b : bin)
+    {
+        sbuf << (int)b;
+        if(nl < bin.size() - 1)
+        {
+            sbuf << ",";
+            if(++nl % 6 == 0)
+                sbuf << endl;
+        }
+    }
+    sbuf << endl << "};" << endl;
+
+    auto str = sbuf.str();
+
+    ofstream outf(output);
+    outf << str;
+    outf.close();
+
+    return str;
+
+#else
     stringstream cmd;
     cmd << "\"" << _fxcPath << "\" "
         << " /nologo /O3 /E main /T " << profile << " /Fh " << output.string() << " " << input.string() << " 2>&1";
@@ -167,6 +191,7 @@ string fxc(const filesystem::path& shaderPath, const string& profile, const stri
         }
     }
     return outs.str();
+#endif
 }
 
 string splitCode(const string& input)
@@ -609,7 +634,7 @@ void processShader(ShaderDef def, ofstream& log, bool& warn)
         {
             // de-duping as workaround for repeated includes
             auto param = ShaderParam(line, 1, 0);
-            bool dupe = false;
+            bool dupe  = false;
             for(const auto& p : def.params)
             {
                 if(p.name == param.name)
@@ -1086,10 +1111,10 @@ int main(int argc, char* argv[])
     startupPath = filesystem::current_path();
     filesystem::create_directory(_tempPath);
     templatePath = (startupPath / filesystem::path(_templatePath)).lexically_normal();
-    tempPath = (startupPath / filesystem::path(_tempPath)).lexically_normal();
-    toolsPath = (startupPath / filesystem::path(_toolsPath)).lexically_normal();
-    listPath = (startupPath / filesystem::path(_outputPath)).lexically_normal();
-    outputPath = (startupPath / filesystem::path(_outputPath)).lexically_normal();
+    tempPath     = (startupPath / filesystem::path(_tempPath)).lexically_normal();
+    toolsPath    = (startupPath / filesystem::path(_toolsPath)).lexically_normal();
+    listPath     = (startupPath / filesystem::path(_outputPath)).lexically_normal();
+    outputPath   = (startupPath / filesystem::path(_outputPath)).lexically_normal();
 
     if(!filesystem::exists(_fxcPath))
     {

@@ -133,7 +133,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>USE_GLSL_LIB;USE_SPIRV_LIB;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_GLSL_LIB;USE_SPIRV_LIB;USE_D3DC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GLSL.cpp" />
+    <ClCompile Include="HLSL.cpp" />
     <ClCompile Include="ShaderGen.cpp" />
     <ClCompile Include="SPIRV.cpp" />
   </ItemGroup>
@@ -160,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLSL.h" />
+    <ClInclude Include="HLSL.h" />
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="ShaderGen.h" />
     <ClInclude Include="SPIRV.h" />

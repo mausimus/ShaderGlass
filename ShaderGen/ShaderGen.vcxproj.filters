@@ -24,6 +24,9 @@
     <ClCompile Include="SPIRV.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HLSL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader.template" />
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SPIRV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HLSL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
