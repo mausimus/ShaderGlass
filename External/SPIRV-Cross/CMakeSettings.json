@@ -14,7 +14,7 @@
     {
       "name": "x64-Release",
       "generator": "Ninja",
-      "configurationType": "RelWithDebInfo",
+      "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
@@ -51,6 +51,11 @@
           "name": "SPIRV_CROSS_ENABLE_TESTS",
           "value": "False",
           "type": "BOOL"
+        },
+        {
+          "name": "CMAKE_CXX_FLAGS_RELEASE",
+          "value": "/MT /O2 /Ob2 /DNDEBUG",
+          "type": "STRING"
         }
       ]
     }

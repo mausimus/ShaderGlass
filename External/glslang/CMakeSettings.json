@@ -31,7 +31,7 @@
     {
       "name": "x64-Release",
       "generator": "Ninja",
-      "configurationType": "MinSizeRel",
+      "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
@@ -83,6 +83,11 @@
           "name": "ENABLE_EXCEPTIONS",
           "value": "True",
           "type": "BOOL"
+        },
+        {
+          "name": "CMAKE_MSVC_RUNTIME_LIBRARY",
+          "value": "MultiThreaded",
+          "type": "STRING"
         }
       ]
     }
