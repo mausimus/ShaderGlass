@@ -374,6 +374,8 @@ LRESULT CALLBACK BrowserWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, 
         switch(wmId)
         {
         case WM_USER: {
+            if(HIWORD(wParam)) // quick toggle
+                return 0;
             // sync shader
             auto favorite = m_favorites.find(lParam);
             if(favorite != m_favorites.end())

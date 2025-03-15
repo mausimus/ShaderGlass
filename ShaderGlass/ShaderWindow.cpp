@@ -1145,7 +1145,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     m_toggledNone     = true;
                     m_toggledPresetNo = m_captureOptions.presetNo;
                     m_captureManager.RememberLastPreset();
-                    SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_numPresets - 1), 0);
+                    SendMessage(hWnd, WM_COMMAND, WM_SHADER(0), 1);
                     CheckMenuItem(m_shaderMenu, ID_QUICK_TOGGLE, MF_UNCHECKED | MF_BYCOMMAND);
                 }
             }
@@ -1155,7 +1155,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 {
                     m_toggledNone = false;
                     m_captureManager.SetLastPreset(m_toggledPresetNo);
-                    SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_toggledPresetNo), 0);
+                    SendMessage(hWnd, WM_COMMAND, WM_SHADER(m_toggledPresetNo), 1);
                     CheckMenuItem(m_shaderMenu, ID_QUICK_TOGGLE, MF_CHECKED | MF_BYCOMMAND);
                 }
             }
@@ -1181,11 +1181,11 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             {
                 if(wmId >= WM_SHADER(0) && wmId < WM_SHADER(MAX_SHADERS))
                 {
-                    PostMessage(m_browserWindow, WM_COMMAND, WM_USER, wmId);
+                    PostMessage(m_browserWindow, WM_COMMAND, WM_USER, wmId + (lParam << 16));
                     m_captureOptions.presetNo = wmId - WM_SHADER(0);
                     m_captureManager.UpdateShaderPreset();
                     UpdateWindowState();
-                    if(wmId != WM_SHADER(m_numPresets - 1) && m_toggledNone)
+                    if(wmId != WM_SHADER(0) && m_toggledNone)
                     {
                         m_toggledNone = false;
                         CheckMenuItem(m_shaderMenu, ID_QUICK_TOGGLE, MF_CHECKED | MF_BYCOMMAND);

@@ -19,7 +19,7 @@ CaptureManager::CaptureManager() : m_options(), m_lastPreset(-1) { }
 bool CaptureManager::Initialize()
 {
     m_presetList.push_back(make_unique<PassthroughPresetDef>());
-    m_presetList.insert(m_presetList.begin(), RetroArchPresetList.begin(), RetroArchPresetList.end());
+    m_presetList.insert(m_presetList.end(), RetroArchPresetList.begin(), RetroArchPresetList.end());
     return false;
 }
 
