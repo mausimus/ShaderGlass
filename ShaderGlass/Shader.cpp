@@ -199,7 +199,7 @@ bool Shader::Get(const std::string& presetParam, std::string& value)
 
 Shader::Shader(Shader&& shader) : m_shaderDef(shader.m_shaderDef)
 {
-    throw new std::runtime_error("This shouldn't happen");
+    throw std::runtime_error("This shouldn't happen");
 }
 
 Shader::~Shader()

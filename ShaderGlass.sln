@@ -4,22 +4,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShaderGlass", "ShaderGlass\ShaderGlass.vcxproj", "{D3CA23C5-8AB7-454F-8461-ACDBA8FB7289}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510} = {A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShaderGen", "ShaderGen\ShaderGen.vcxproj", "{0AC8C8E0-010B-4829-9282-060EAB89D5D0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510} = {A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B5AD96E-AB36-49F5-8BBD-29308CFBA704}"
 	ProjectSection(SolutionItems) = preProject
-		Scripts\DownloadShaders.bat = Scripts\DownloadShaders.bat
 		Scripts\DeleteBuiltShaders.bat = Scripts\DeleteBuiltShaders.bat
+		Scripts\DownloadShaders.bat = Scripts\DownloadShaders.bat
 		FAQ.md = FAQ.md
 		Tools\glslangValidator.exe = Tools\glslangValidator.exe
 		LICENSE = LICENSE
 		README.md = README.md
 		Scripts\README.md = Scripts\README.md
-		Tools\spirv-cross.exe = Tools\spirv-cross.exe
-		Scripts\RebuildShader.bat = Scripts\RebuildShader.bat
 		Scripts\RebuildAllShaders.bat = Scripts\RebuildAllShaders.bat
+		Scripts\RebuildShader.bat = Scripts\RebuildShader.bat
+		Tools\spirv-cross.exe = Tools\spirv-cross.exe
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShaderGC", "ShaderGC\ShaderGC.vcxproj", "{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +53,14 @@ Global
 		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Release|x64.Build.0 = Release|x64
 		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Release|x86.ActiveCfg = Release|Win32
 		{0AC8C8E0-010B-4829-9282-060EAB89D5D0}.Release|x86.Build.0 = Release|Win32
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}.Debug|x64.ActiveCfg = Debug|x64
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}.Debug|x64.Build.0 = Debug|x64
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}.Debug|x86.ActiveCfg = Debug|Win32
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}.Debug|x86.Build.0 = Debug|Win32
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}.Release|x64.ActiveCfg = Release|x64
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}.Release|x64.Build.0 = Release|x64
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}.Release|x86.ActiveCfg = Release|Win32
+		{A52BAF17-AD46-4C51-8AEC-E70F3B6C0510}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

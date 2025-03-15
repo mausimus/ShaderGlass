@@ -18,15 +18,6 @@
     <ClCompile Include="ShaderGen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GLSL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SPIRV.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HLSL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader.template" />
@@ -35,19 +26,7 @@
     <None Include="List.template" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\json.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderGen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GLSL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SPIRV.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HLSL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

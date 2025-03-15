@@ -6,6 +6,7 @@ GNU General Public License v3.0
 
 #include "ShaderGen.h"
 
+#include "ShaderGC.h"
 #include "GLSL.h"
 #include "SPIRV.h"
 #include "HLSL.h"
@@ -52,7 +53,7 @@ void saveSource(const filesystem::path& fileName, const string& source)
     outfile.close();
 }
 
-filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, const vector<string> source, ofstream& log)
+filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, const string& source, ofstream& log, bool& warn)
 {
     filesystem::path input = tempPath / shaderPath;
     input.replace_extension("." + stage + ".glsl");
@@ -62,56 +63,59 @@ filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, c
 
     saveSource(input, source);
 
-#ifdef USE_GLSL_LIB
-    std::string a;
-    for(const auto& s : source)
+    if(_tools)
     {
-        a.append(s);
-        a.append("\n");
+        stringstream cmd;
+        cmd << "\"" << toolsPath.string() << _glslExe << "\" "
+            << "-V --quiet -S " << stage << " -o " << output.string() << " " << input.string() << "";
+        auto        cmds      = cmd.str();
+        auto        cmdstring = cmds.c_str();
+        const auto& result    = exec(cmdstring, log);
+        if(result.length() > 0)
+            log << result << endl;
+        if(result.contains("error") || result.contains("ERROR"))
+            throw std::runtime_error("SPIR-V conversion error");
     }
+    else
+    {
+        auto bin = GLSL::GenerateSPIRV(source.c_str(), stage == "frag", log, warn);
+        if(bin.empty())
+            throw std::runtime_error("SPIR-V conversion error");
 
-    auto bin = GLSL::GenerateSPIRV(a.c_str(), stage == "frag");
-    if(bin.empty())
-        throw std::runtime_error("SPIR-V conversion error");
-
-    ofstream out(output, ios::binary | ios::trunc);
-    out.write((const char*)bin.data(), bin.size() * sizeof(uint32_t));
-    out.close();
-#else
-    stringstream cmd;
-    cmd << "\"" << toolsPath.string() << _glslExe << "\" "
-        << "-V --quiet -S " << stage << " -o " << output.string() << " " << input.string() << "";
-    auto        cmds      = cmd.str();
-    auto        cmdstring = cmds.c_str();
-    const auto& result    = exec(cmdstring, log);
-    if(result.length() > 0)
-        log << result << endl;
-    if(result.contains("error") || result.contains("ERROR"))
-        throw std::runtime_error("SPIR-V conversion error");
-#endif
+        ofstream out(output, ios::binary | ios::trunc);
+        out.write((const char*)bin.data(), bin.size() * sizeof(uint32_t));
+        out.close();
+    }
     return output;
 }
 
-pair<string, string> spirv(const filesystem::path& input, ofstream& log)
+pair<string, string> spirv(const filesystem::path& input, const std::string& stage, ofstream& log, bool& warn)
 {
-#ifdef USE_SPIRV_LIB
-    ifstream inf(input, ios::binary | ios::ate);
-    int      size = inf.tellg();
-    inf.seekg(0, ios::beg);
-    vector<uint32_t> buffer;
-    buffer.resize(size / sizeof(uint32_t));
-    inf.read((char*)buffer.data(), size);
-    inf.close();
-    return SPIRV::GenerateHLSL(buffer, false);
-#else
-    stringstream cmd1, cmd2;
-    cmd1 << "\"" << toolsPath.string() << _spirvExe << "\" "
-         << " --hlsl --shader-model 50 " << input.string() << "";
-    const auto& code = exec(cmd1.str().c_str(), log);
-    cmd2 << "\"" << toolsPath.string() << _spirvExe << "\" " << input.string() << " --reflect";
-    const auto& metadata = exec(cmd2.str().c_str(), log);
-    return make_pair(code, metadata);
-#endif
+    if(_tools)
+    {
+        stringstream cmd1, cmd2;
+        cmd1 << "\"" << toolsPath.string() << _spirvExe << "\" "
+             << " --hlsl --shader-model 50 " << input.string() << "";
+        const auto& code = exec(cmd1.str().c_str(), log);
+        std::string metadata;
+        if(stage == "frag")
+        {
+            cmd2 << "\"" << toolsPath.string() << _spirvExe << "\" " << input.string() << " --reflect";
+            metadata = exec(cmd2.str().c_str(), log);
+        }
+        return make_pair(code, metadata);
+    }
+    else
+    {
+        ifstream inf(input, ios::binary | ios::ate);
+        int      size = inf.tellg();
+        inf.seekg(0, ios::beg);
+        vector<uint32_t> buffer;
+        buffer.resize(size / sizeof(uint32_t));
+        inf.read((char*)buffer.data(), size);
+        inf.close();
+        return SPIRV::GenerateHLSL(buffer, stage == "frag", log, warn);
+    }
 }
 
 string fxc(const filesystem::path& shaderPath, const string& profile, const string& source, ofstream& log, bool& warn)
@@ -131,67 +135,68 @@ string fxc(const filesystem::path& shaderPath, const string& profile, const stri
                                   source);
     saveSource(input, fullSource);
 
-#ifdef USE_D3DC
-
-    auto bin = HLSL::CompileHLSL(fullSource.c_str(), fullSource.size(), profile.c_str());
-
-    ostringstream sbuf;
-    sbuf << "{" << endl;
-    int nl = 0;
-    for(auto b : bin)
+    if(_tools)
     {
-        sbuf << (int)b;
-        if(nl < bin.size() - 1)
+        stringstream cmd;
+        cmd << "\"" << _fxcPath << "\" "
+            << " /nologo /O3 /E main /T " << profile << " /Fh " << output.string() << " " << input.string() << " 2>&1";
+        const auto& result = exec(cmd.str().c_str(), log);
+        if(result.length() > 0)
+            log << result << endl;
+        if(result.contains("error") || result.contains("ERROR"))
+            throw std::runtime_error("FXC compilation error");
+        if(result.contains("warn"))
+            warn = true;
+
+        fstream      infile(output.string());
+        stringstream outs;
+        string       line;
+        bool         active = false;
+        while(getline(infile, line))
         {
-            sbuf << ",";
-            if(++nl % 6 == 0)
-                sbuf << endl;
-        }
-    }
-    sbuf << endl << "};" << endl;
-
-    auto str = sbuf.str();
-
-    ofstream outf(output);
-    outf << str;
-    outf.close();
-
-    return str;
-
-#else
-    stringstream cmd;
-    cmd << "\"" << _fxcPath << "\" "
-        << " /nologo /O3 /E main /T " << profile << " /Fh " << output.string() << " " << input.string() << " 2>&1";
-    const auto& result = exec(cmd.str().c_str(), log);
-    if(result.length() > 0)
-        log << result << endl;
-    if(result.contains("error") || result.contains("ERROR"))
-        throw std::runtime_error("FXC compilation error");
-    if(result.contains("warn"))
-        warn = true;
-
-    fstream      infile(output.string());
-    stringstream outs;
-    string       line;
-    bool         active = false;
-    while(getline(infile, line))
-    {
-        if(line.starts_with("const BYTE g_main[] ="))
-        {
-            active = true;
-        }
-        else if(active)
-        {
-            if(line.starts_with("};"))
+            if(line.starts_with("const BYTE g_main[] ="))
             {
-                outs << "};" << endl;
-                break;
+                active = true;
             }
-            outs << line << endl;
+            else if(active)
+            {
+                if(line.starts_with("};"))
+                {
+                    outs << "};" << endl;
+                    break;
+                }
+                outs << line << endl;
+            }
         }
+        return outs.str();
     }
-    return outs.str();
-#endif
+    else
+    {
+        auto bin = HLSL::CompileHLSL(fullSource.c_str(), fullSource.size(), profile.c_str(), log, warn);
+
+        ostringstream sbuf;
+        sbuf << "{" << endl;
+        int nl = 0;
+        for(auto b : bin)
+        {
+            sbuf << (int)b;
+            if(nl < bin.size() - 1)
+            {
+                sbuf << ",";
+                if(++nl % 6 == 0)
+                    sbuf << endl;
+            }
+        }
+        sbuf << endl << "};" << endl;
+
+        auto str = sbuf.str();
+
+        ofstream outf(output);
+        outf << str;
+        outf.close();
+
+        return str;
+    }
 }
 
 string splitCode(const string& input)
@@ -213,108 +218,7 @@ string splitCode(const string& input)
     return split.str();
 }
 
-int getSize(const std::string& mtype)
-{
-    if(mtype == "float" || mtype == "uint" || mtype == "int")
-    {
-        return 4;
-    }
-    else if(mtype == "vec2")
-    {
-        return 8;
-    }
-    else if(mtype == "vec3")
-    {
-        return 12;
-    }
-    else if(mtype == "vec4")
-    {
-        return 16;
-    }
-    else if(mtype == "mat4")
-    {
-        return 64;
-    }
-    else
-    {
-        throw std::runtime_error("Unknown type");
-    }
-}
-
-void addParams(vector<ShaderParam>& actualParams, const vector<ShaderParam>& declaredParams, json type, int buffer)
-{
-    auto members = type.at("members");
-    for(json::iterator mi = members.begin(); mi != members.end(); ++mi)
-    {
-        auto member  = *mi;
-        auto mname   = (string)member.at("name");
-        auto moffset = (int)member.at("offset");
-        auto mtype   = (string)member.at("type");
-
-        bool paramFound = false;
-        for(auto& p : declaredParams)
-        {
-            if(p.name == mname)
-            {
-                ShaderParam actualParam(p);
-                actualParam.i      = 0;
-                actualParam.buffer = buffer;
-                actualParam.offset = moffset;
-                actualParam.size   = getSize(mtype);
-                actualParams.emplace_back(actualParam);
-                paramFound = true;
-            }
-        }
-
-        if(!paramFound)
-        {
-            // alias/built-in param?
-            ShaderParam newParam(mname, getSize(mtype), 0);
-            newParam.offset = moffset;
-            newParam.buffer = buffer;
-            newParam.i      = 0;
-            actualParams.emplace_back(newParam);
-        }
-    }
-}
-
-vector<ShaderParam> lookupParams(const vector<ShaderParam>& declaredParams, vector<ShaderSampler>& textures, const string& metadata)
-{
-    vector<ShaderParam> actualParams;
-
-    auto j     = json::parse(metadata);
-    auto types = j["types"];
-    auto ubos  = j["ubos"];
-    for(json::iterator it = ubos.begin(); it != ubos.end(); ++it)
-    {
-        auto ubo     = *it;
-        auto typeNo  = ubo.at("type");
-        auto binding = (int)ubo.at("binding");
-        auto type    = types.at((string)typeNo);
-        addParams(actualParams, declaredParams, type, binding);
-    }
-
-    auto pcs = j["push_constants"];
-    int  ci  = -1;
-    for(json::iterator it = pcs.begin(); it != pcs.end(); ++it)
-    {
-        auto pc     = *it;
-        auto typeNo = pc.at("type");
-        auto type   = types.at((string)typeNo);
-        addParams(actualParams, declaredParams, type, ci--);
-    }
-
-    auto txs = j["textures"];
-    for(json::iterator it = txs.begin(); it != txs.end(); ++it)
-    {
-        auto tx = *it;
-        textures.push_back(ShaderSampler((string)tx.at("name"), (int)tx.at("binding")));
-    }
-
-    return actualParams;
-}
-
-void updateShaderList(const ShaderInfo& shaderInfo)
+void updateShaderList(const SourceShaderInfo& shaderInfo)
 {
     ostringstream oss;
     oss << "#include \"" << shaderInfo.relativePath.string() << "\"";
@@ -327,7 +231,7 @@ void updateShaderList(const ShaderInfo& shaderInfo)
     }
 }
 
-void updateTextureList(const ShaderInfo& textureInfo)
+void updateTextureList(const SourceShaderInfo& textureInfo)
 {
     ostringstream oss;
     oss << "#include \"" << textureInfo.relativePath.string() << "\"";
@@ -340,7 +244,7 @@ void updateTextureList(const ShaderInfo& textureInfo)
     }
 }
 
-void updatePresetList(const ShaderInfo& shaderInfo)
+void updatePresetList(const SourceShaderInfo& shaderInfo)
 {
     ostringstream oss;
     oss << "#include \"" << shaderInfo.relativePath.string() << "\"";
@@ -370,7 +274,7 @@ void updatePresetList(const ShaderInfo& shaderInfo)
         saveSource(listPath, shaderList);
 }
 
-void populateShaderTemplate(ShaderDef def, ofstream& log)
+void populateShaderTemplate(SourceShaderDef def, ofstream& log)
 {
     const auto& info = def.info;
 
@@ -393,15 +297,8 @@ void populateShaderTemplate(ShaderDef def, ofstream& log)
         throw std::runtime_error("Shader compilation failed");
     }
 
-    // built-in parameters
-    def.params.push_back(ShaderParam("MVP", 16, 0));
-    def.params.push_back(ShaderParam("SourceSize", 4, 0));
-    def.params.push_back(ShaderParam("OriginalSize", 4, 0));
-    def.params.push_back(ShaderParam("OutputSize", 4, 0));
-    def.params.push_back(ShaderParam("FrameCount", 1, 0));
-
-    std::vector<ShaderSampler> textures;
-    def.params = lookupParams(def.params, textures, def.fragmentMetadata);
+    std::vector<SourceShaderSampler> textures;
+    def.params = ShaderGC::LookupParams(def.params, textures, def.fragmentMetadata);
 
     ofstream          outfile(info.outputPath);
     std::stringstream iss(bufferString);
@@ -464,7 +361,7 @@ void populateShaderTemplate(ShaderDef def, ofstream& log)
     log << "Generated ShaderDef " << info.outputPath << endl;
 }
 
-void populateTextureTemplate(TextureDef def, ofstream& log)
+void populateTextureTemplate(SourceTextureDef def, ofstream& log)
 {
     const auto& info = def.info;
 
@@ -500,7 +397,7 @@ void populateTextureTemplate(TextureDef def, ofstream& log)
 }
 
 void populatePresetTemplate(
-    const filesystem::path& input, const vector<ShaderDef>& shaders, const vector<TextureDef>& textures, const vector<ShaderParam>& overrides, ofstream& log)
+    const filesystem::path& input, const vector<SourceShaderDef>& shaders, const vector<SourceTextureDef>& textures, const vector<SourceShaderParam>& overrides, ofstream& log)
 {
     const auto& info = getShaderInfo(input, "PresetDef");
 
@@ -591,168 +488,36 @@ void populatePresetTemplate(
     log << "Generated PresetDef " << info.outputPath << endl;
 }
 
-vector<string> loadSource(const filesystem::path& input, bool followIncludes)
+void processShader(SourceShaderDef def, ofstream& log, bool& warn)
 {
-    vector<string> lines;
-
-    fstream infile(input);
-    string  line;
-    while(getline(infile, line))
+    try
     {
-        if(followIncludes && line.starts_with("#include"))
-        {
-            istringstream iss(line);
-            string        incDirective, incFile;
-            iss >> incDirective;
-            iss >> quoted(incFile);
-            filesystem::path includePath(input);
-            includePath.remove_filename();
-            includePath /= filesystem::path(incFile);
-            const auto& includeLines = loadSource(includePath.lexically_normal(), true);
-            lines.insert(lines.end(), includeLines.begin(), includeLines.end());
-        }
-        else
-            lines.push_back(line);
+        ShaderGC::ProcessSourceShader(def, log, warn);
+
+        const auto& vertexOutput   = spirv(glsl(def.input, "vert", def.vertexSource, log, warn), "vert", log, warn);
+        const auto& fragmentOutput = spirv(glsl(def.input, "frag", def.fragmentSource, log, warn), "frag", log, warn);
+        def.vertexSource           = vertexOutput.first;
+        def.vertexMetadata         = vertexOutput.second;
+        def.fragmentSource         = fragmentOutput.first;
+        def.fragmentMetadata       = fragmentOutput.second;
+
+        filesystem::path metaOutput(tempPath / def.input);
+        metaOutput.replace_extension(".meta");
+        saveSource(metaOutput, fragmentOutput.second);
+
+        def.vertexByteCode   = fxc(def.input, "vs_5_0", vertexOutput.first, log, warn);
+        def.fragmentByteCode = fxc(def.input, "ps_5_0", fragmentOutput.first, log, warn);
+
+        replace(def.vertexByteCode, " ", "");
+        replace(def.fragmentByteCode, " ", "");
+
+        populateShaderTemplate(def, log);
     }
-    infile.close();
-
-    return lines;
-}
-
-void processShader(ShaderDef def, ofstream& log, bool& warn)
-{
-    vector<string> vertexSource;
-    vector<string> fragmentSource;
-
-    bool        isVertex = true, isFragment = true;
-    const auto& source    = loadSource(def.input, true);
-    bool        inComment = false;
-    for(const auto& line : source)
+    catch(std::runtime_error& ex)
     {
-        auto trimLine = trim(line);
-        if(line.starts_with("#pragma parameter"))
-        {
-            // de-duping as workaround for repeated includes
-            auto param = ShaderParam(line, 1, 0);
-            bool dupe  = false;
-            for(const auto& p : def.params)
-            {
-                if(p.name == param.name)
-                {
-                    dupe = true;
-                    break;
-                }
-            }
-            if(!dupe)
-                def.params.push_back(param);
-        }
-        else if(line.starts_with("#pragma stage vertex"))
-        {
-            isFragment = false;
-            isVertex   = true;
-            inComment  = false;
-        }
-        else if(line.starts_with("#pragma stage fragment"))
-        {
-            isFragment = true;
-            isVertex   = false;
-            inComment  = false;
-        }
-        else if(trimLine.starts_with("#pragma format"))
-        {
-            if(trimLine.ends_with("R8G8B8A8_UNORM"))
-            {
-                def.format = "R8G8B8A8_UNORM";
-            }
-            else if(trimLine.ends_with("R8G8B8A8_SRGB"))
-            {
-                def.format = "R8G8B8A8_SRGB";
-            }
-            else if(trimLine.ends_with("R32G32B32A32_SFLOAT"))
-            {
-                def.format = "R32G32B32A32_SFLOAT";
-            }
-            else if(trimLine.ends_with("R16G16B16A16_SFLOAT"))
-            {
-                def.format = "R16G16B16A16_SFLOAT";
-            }
-            else
-            {
-                throw std::runtime_error("Unsupported shader format");
-            }
-        }
-        else if(trimLine.starts_with("//"))
-        {
-            if(trimLine.ends_with("*/"))
-            {
-                //def.comments.push_back(trimLine.substr(0, trimLine.length() - 2));
-                inComment = false;
-            }
-            else
-            {
-                def.comments.push_back(trimLine);
-            }
-        }
-        else if(trimLine.starts_with("/*"))
-        {
-            if(trimLine.ends_with("*/"))
-            {
-                def.comments.push_back(trimLine.substr(2, trimLine.length() - 4));
-            }
-            else if(trimLine.find_first_of("*/") == string::npos)
-            {
-                def.comments.push_back(trimLine.substr(2));
-                inComment = true;
-            }
-            else
-            {
-                // comment within line
-                if(isFragment)
-                    fragmentSource.push_back(line);
-                if(isVertex)
-                    vertexSource.push_back(line);
-            }
-        }
-        else if(inComment && trimLine.ends_with("*/"))
-        {
-            def.comments.push_back(trimLine.substr(0, trimLine.length() - 2));
-            inComment = false;
-        }
-        else if(inComment && trimLine.starts_with("*/"))
-        {
-            inComment = false;
-        }
-        else if(inComment)
-        {
-            def.comments.push_back(trimLine);
-        }
-        else
-        {
-            if(isFragment)
-                fragmentSource.push_back(line);
-            if(isVertex)
-                vertexSource.push_back(line);
-        }
+        log << def.input << endl;
+        throw ex;
     }
-
-    const auto& vertexOutput   = spirv(glsl(def.input, "vert", vertexSource, log), log);
-    const auto& fragmentOutput = spirv(glsl(def.input, "frag", fragmentSource, log), log);
-    def.vertexSource           = vertexOutput.first;
-    def.vertexMetadata         = vertexOutput.second;
-    def.fragmentSource         = fragmentOutput.first;
-    def.fragmentMetadata       = fragmentOutput.second;
-
-    filesystem::path metaOutput(tempPath / def.input);
-    metaOutput.replace_extension(".meta");
-    saveSource(metaOutput, fragmentOutput.second);
-
-    def.vertexByteCode   = fxc(def.input, "vs_5_0", vertexOutput.first, log, warn);
-    def.fragmentByteCode = fxc(def.input, "ps_5_0", fragmentOutput.first, log, warn);
-
-    replace(def.vertexByteCode, " ", "");
-    replace(def.fragmentByteCode, " ", "");
-
-    populateShaderTemplate(def, log);
 }
 
 string bin2string(filesystem::path input)
@@ -788,241 +553,42 @@ string bin2string(filesystem::path input)
     return oss.str();
 }
 
-void processTexture(TextureDef def, ofstream& log)
+void processTexture(SourceTextureDef def, ofstream& log)
 {
     def.data = bin2string(def.input);
     populateTextureTemplate(def, log);
 }
 
-pair<string, string> getKeyValue(string input)
+void processPreset(SourcePresetDef& def, ofstream& log, bool& warn)
 {
-    auto key   = trim(input.substr(0, input.find("=")));
-    auto value = trim(input.substr(input.find("=") + 1));
-    if(value.find("\"") != string::npos)
+    ShaderGC::ProcessSourcePreset(def, log, warn);
+
+    for(auto& s : def.shaders)
     {
-        value = value.substr(0, value.find("\"")); // strip anything beyond quote (comment)
-    }
-    return make_pair(key, value);
-}
-
-string getValue(const string& key, int shaderNo, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
-{
-    stringstream ss;
-    ss << key;
-    if(shaderNo >= 0)
-    {
-        ss << shaderNo;
-    }
-    if(keyValues.find(ss.str()) != keyValues.end())
-    {
-        seenKeys.insert(ss.str());
-        return keyValues.at(ss.str());
-    }
-    return string();
-}
-
-string getValue(const string& key, const string& suffix, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
-{
-    stringstream ss;
-    ss << key << suffix;
-    if(keyValues.find(ss.str()) != keyValues.end())
-    {
-        seenKeys.insert(ss.str());
-        return keyValues.at(ss.str());
-    }
-    return string();
-}
-
-filesystem::path getKeyPath(const string& key, int shaderNo, const map<string, filesystem::path>& keyPaths)
-{
-    stringstream ss;
-    ss << key;
-    if(shaderNo >= 0)
-    {
-        ss << shaderNo;
-    }
-    if(keyPaths.find(ss.str()) != keyPaths.end())
-    {
-        return keyPaths.at(ss.str());
-    }
-    return filesystem::path();
-}
-
-filesystem::path getKeyPath(const string& key, const string& suffix, const map<string, filesystem::path>& keyPaths)
-{
-    stringstream ss;
-    ss << key << suffix;
-    if(keyPaths.find(ss.str()) != keyPaths.end())
-    {
-        return keyPaths.at(ss.str());
-    }
-    return filesystem::path();
-}
-
-filesystem::path getPath(const string& key, int shaderNo, const map<string, string>& keyValues, const map<string, filesystem::path>& keyPaths, unordered_set<string>& seenKeys)
-{
-    auto valuePath = filesystem::path(getValue(key, shaderNo, keyValues, seenKeys));
-    auto keyPath   = getKeyPath(key, shaderNo, keyPaths);
-    return keyPath / valuePath;
-}
-
-filesystem::path
-getPath(const string& key, const string& suffix, const map<string, string>& keyValues, const map<string, filesystem::path>& keyPaths, unordered_set<string>& seenKeys)
-{
-    auto valuePath = filesystem::path(getValue(key, suffix, keyValues, seenKeys));
-    auto keyPath   = getKeyPath(key, suffix, keyPaths);
-    return keyPath / valuePath;
-}
-
-void setPresetParam(const string& paramName, ShaderDef& def, int i, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
-{
-    const auto& value = getValue(paramName, i, keyValues, seenKeys);
-    if(!value.empty())
-        def.presetParams.insert(make_pair(paramName, value));
-}
-
-void setPresetParam(const string& paramName, TextureDef& def, const string& suffix, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
-{
-    const auto& value = getValue(paramName, suffix, keyValues, seenKeys);
-    if(!value.empty())
-        def.presetParams.insert(make_pair(suffix, value));
-}
-
-void setPresetParams(ShaderDef& def, int i, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
-{
-    setPresetParam("filter_linear", def, i, keyValues, seenKeys);
-    setPresetParam("float_framebuffer", def, i, keyValues, seenKeys);
-    setPresetParam("srgb_framebuffer", def, i, keyValues, seenKeys);
-    setPresetParam("scale_type", def, i, keyValues, seenKeys);
-    setPresetParam("scale", def, i, keyValues, seenKeys);
-    setPresetParam("scale_type_x", def, i, keyValues, seenKeys);
-    setPresetParam("scale_x", def, i, keyValues, seenKeys);
-    setPresetParam("scale_type_y", def, i, keyValues, seenKeys);
-    setPresetParam("scale_y", def, i, keyValues, seenKeys);
-    setPresetParam("alias", def, i, keyValues, seenKeys);
-    setPresetParam("mipmap_input", def, i, keyValues, seenKeys);
-    setPresetParam("frame_count_mod", def, i, keyValues, seenKeys);
-    setPresetParam("wrap_mode", def, i, keyValues, seenKeys);
-}
-
-void setPresetParams(TextureDef& def, std::string name, const map<string, string>& keyValues, unordered_set<string>& seenKeys)
-{
-    setPresetParam(name + "_", def, "linear", keyValues, seenKeys);
-    setPresetParam(name + "_", def, "wrap_mode", keyValues, seenKeys);
-    setPresetParam(name + "_", def, "mipmap", keyValues, seenKeys);
-}
-
-void parsePreset(const filesystem::path& input, map<string, string>& keyValues, map<string, filesystem::path>& valuePaths)
-{
-    fstream infile(input);
-    string  line;
-    while(getline(infile, line))
-    {
-        if(line.starts_with("#reference"))
+        s.info = getShaderInfo(s.input, "ShaderDef");
+        if(_force || !filesystem::exists(s.info.outputPath))
         {
-            istringstream iss(line);
-            string        incDirective, incFile;
-            iss >> incDirective;
-            iss >> quoted(incFile);
-            filesystem::path includePath(input);
-            includePath.remove_filename();
-            includePath /= filesystem::path(incFile);
-            parsePreset(includePath, keyValues, valuePaths);
+            processShader(s, log, warn);
         }
-        else if(line.starts_with("#"))
-        {
-            continue;
-        }
-        else
-        {
-            const auto& kv       = getKeyValue(line);
-            keyValues[kv.first]  = kv.second;
-            valuePaths[kv.first] = input.parent_path();
-        }
+        updateShaderList(s.info);
     }
-    infile.close();
-}
 
-void processPreset(const filesystem::path& input, ofstream& log, bool& warn)
-{
-    map<string, string>           keyValues;
-    map<string, filesystem::path> keyPaths;
-    unordered_set<string>         seenKeys;
-
-    parsePreset(input, keyValues, keyPaths);
-
-    auto              numShaders = atoi(getValue("shaders", -1, keyValues, seenKeys).c_str());
-    vector<ShaderDef> shaders;
-    for(int i = 0; i < numShaders; i++)
+    for(auto& t : def.textures)
     {
-        const auto& shaderRelativePath = getPath("shader", i, keyValues, keyPaths, seenKeys);
-        auto        shaderFullPath     = shaderRelativePath.lexically_normal();
-        shaderFullPath.make_preferred();
-        auto def = ShaderDef(shaderFullPath);
-        setPresetParams(def, i, keyValues, seenKeys);
-        if(_force || !filesystem::exists(def.info.outputPath))
+        t.info = getShaderInfo(t.input, "TextureDef");
+        if(_force || !filesystem::exists(t.info.outputPath))
         {
-            processShader(def, log, warn);
+            processTexture(t, log);
         }
-        updateShaderList(def.info);
-        shaders.push_back(def);
+        updateTextureList(t.info);
     }
-    auto               pDef = getShaderInfo(input, "PresetDef");
-    vector<TextureDef> textures;
-    auto               textureList = getValue("textures", -1, keyValues, seenKeys);
-    if(textureList.size())
-    {
-        textureList += ";";
-        size_t pos = 0;
-        string textureName;
-        while((pos = textureList.find(';')) != string::npos)
-        {
-            if(textureList == ";")
-                break;
 
-            textureName = textureList.substr(0, pos);
-            if(textureName.size())
-            {
-                const auto& textureRelativePath = getPath(textureName, "", keyValues, keyPaths, seenKeys);
-                auto        textureFullPath     = textureRelativePath.lexically_normal();
-                textureFullPath.make_preferred();
-
-                auto def = TextureDef(textureFullPath);
-                def.presetParams.insert(make_pair("name", textureName));
-                setPresetParams(def, textureName, keyValues, seenKeys);
-                if(_force || !filesystem::exists(def.info.outputPath))
-                {
-                    processTexture(def, log);
-                }
-                updateTextureList(def.info);
-                textures.push_back(def);
-
-                textureList.erase(0, pos + 1);
-            }
-        }
-    }
-    vector<ShaderParam> overrides;
-    for(const auto& kv : keyValues)
+    def.info = getShaderInfo(def.input, "PresetDef");
+    if(_force || !filesystem::exists(def.info.outputPath))
     {
-        if(!seenKeys.contains(kv.first) && !kv.first.empty() && !kv.second.empty())
-        {
-            try
-            {
-                auto value = stof(kv.second);
-                overrides.emplace_back(kv.first, value);
-            }
-            catch(std::invalid_argument& e)
-            {
-                log << e.what() << " " << kv.first << " = " << kv.second << endl;
-                warn = true;
-            }
-        }
+        populatePresetTemplate(def.input, def.shaders, def.textures, def.overrides, log);
     }
-    if(_force || !filesystem::exists(pDef.outputPath))
-    {
-        populatePresetTemplate(input, shaders, textures, overrides, log);
-    }
-    updatePresetList(getShaderInfo(input, "PresetDef"));
+    updatePresetList(def.info);
 }
 
 void processFile(const filesystem::path& input, ofstream& reportStream)
@@ -1051,9 +617,15 @@ void processFile(const filesystem::path& input, ofstream& reportStream)
     {
         std::cout << input << " ...";
         if(input.extension() == ".slang")
-            processShader(input, log, warn);
+        {
+            SourceShaderDef sd(input, getShaderInfo(input, "ShaderDef"));
+            processShader(sd, log, warn);
+        }
         else if(input.extension() == ".slangp")
-            processPreset(input, log, warn);
+        {
+            SourcePresetDef sd(input, getShaderInfo(input, "PresetDef"));
+            processPreset(sd, log, warn);
+        }
 
         log << "OK" << endl;
     }
@@ -1103,7 +675,7 @@ void processListTemplate()
         outfile.close();
         std::cout << "Generated list " << listPath.string() << endl;
     }
-    shaderList = loadSource(listPath, false);
+    shaderList = ShaderGC::LoadSource(listPath, false);
 }
 
 int main(int argc, char* argv[])
@@ -1115,13 +687,6 @@ int main(int argc, char* argv[])
     toolsPath    = (startupPath / filesystem::path(_toolsPath)).lexically_normal();
     listPath     = (startupPath / filesystem::path(_outputPath)).lexically_normal();
     outputPath   = (startupPath / filesystem::path(_outputPath)).lexically_normal();
-
-    if(!filesystem::exists(_fxcPath))
-    {
-        cout << "Cannot find fxc.exe! Make sure you have the necessary Window 10 SDK version installed" << endl;
-        cout << _fxcPath << endl;
-        return -1;
-    }
 
     filesystem::current_path(_inputPath);
     reportPath = tempPath / (std::format("{:%Y%m%d_%H%M%S}", std::chrono::system_clock::now()) + ".log");
@@ -1135,9 +700,21 @@ int main(int argc, char* argv[])
         for(int i = 1; i < argc; i++)
         {
             string input(argv[i]);
-            if(input == "force")
+            if(input == "-force")
             {
                 _force = true;
+                continue;
+            }
+            if(input == "-tools")
+            {
+                if(!filesystem::exists(_fxcPath))
+                {
+                    cout << "Cannot find fxc.exe! Make sure you have the necessary Window 10 SDK version installed" << endl;
+                    cout << _fxcPath << endl;
+                    return -1;
+                }
+
+                _tools = true;
                 continue;
             }
             if(input == "*")
