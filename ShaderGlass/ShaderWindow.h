@@ -62,6 +62,8 @@ private:
     void LoadProfile();
     void SaveProfile(const std::wstring& fileName);
     void SaveProfile();
+    void ImportShader();
+    bool ImportShader(const std::wstring& fileName);
     void ScanWindows();
     void ScanDisplays();
     void BuildProgramMenu();

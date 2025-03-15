@@ -149,8 +149,16 @@ HTREEITEM BrowserWindow::AddItemToTree(HWND hwndTV, LPTSTR lpszItem, LPARAM lPar
 
     // Assume the item is not a parent item, so give it a
     // document image.
-    tvi.iImage         = g_nDocument;
-    tvi.iSelectedImage = g_nDocument;
+    if(nLevel == 1)
+    {
+        tvi.iImage         = g_nClosed;
+        tvi.iSelectedImage = g_nClosed;
+    }
+    else
+    {
+        tvi.iImage         = g_nDocument;
+        tvi.iSelectedImage = g_nDocument;
+    }
 
     // Save the heading level in the item's application-defined
     // data area.
@@ -224,7 +232,7 @@ void BrowserWindow::Build()
         if(c2.starts_with(c1))
             return false;
         return c1 < c2;
-        };
+    };
     std::map<std::string, std::vector<std::pair<const char*, UINT>>, decltype(categoryComp)> categoryMenus;
 
     HTREEITEM noneItem = nullptr;
@@ -258,10 +266,12 @@ void BrowserWindow::Build()
         }
     }
 
+    m_imported = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("Imported"), -1, 1);
+
     auto raItem = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("RetroArch Library"), -1, 1);
 
     std::string parentCategory("");
-    int level = 2;
+    int         level = 2;
     for(auto m : categoryMenus)
     {
         auto slash = m.first.find('/');
@@ -394,6 +404,24 @@ LRESULT CALLBACK BrowserWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, 
                 PostMessage(m_treeControl, TVM_SELECTITEM, TVGN_CARET, (LPARAM)item->second);
             }
 
+            return 0;
+        }
+        case WM_USER + 1: {
+            int            id = WM_SHADER(lParam);
+
+            if(m_items.contains(id)) // in-place update
+                return 0;
+
+            TVINSERTSTRUCT is;
+            is.hParent             = m_imported;
+            is.hInsertAfter        = TVI_LAST;
+            is.item.mask           = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
+            is.item.pszText        = convertCharArrayToLPCWSTR(m_captureManager.Presets().at(lParam)->Name.c_str());
+            is.item.cchTextMax     = sizeof(is.item.pszText) / sizeof(is.item.pszText[0]);
+            is.item.iImage         = g_nDocument;
+            is.item.iSelectedImage = g_nDocument;
+            is.item.lParam         = id;
+            m_items[id]            = TreeView_InsertItem(m_treeControl, &is);
             return 0;
         }
         }

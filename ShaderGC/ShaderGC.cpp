@@ -54,7 +54,6 @@ ShaderDef ShaderGC::CompileSourceShader(SourceShaderDef& def, ostream& log, bool
     sd.FragmentSource   = nullptr;
     sd.FragmentByteCode = CopyVector(fragmentDXBC);
     sd.FragmentLength   = fragmentDXBC.size();
-    sd.Dynamic          = true;
     sd.Name             = def.input.filename().string();
 
     for(const auto& p : def.params)
@@ -482,14 +481,14 @@ void ShaderGC::ParsePreset(const std::filesystem::path& input, std::map<std::str
     infile.close();
 }
 
-PresetDef ShaderGC::CompilePreset(std::filesystem::path input, ostream& log, bool& warn)
+PresetDef* ShaderGC::CompilePreset(std::filesystem::path input, ostream& log, bool& warn)
 {
     SourcePresetDef sp(input, SourceShaderInfo());
     ProcessSourcePreset(sp, log, warn);
 
-    PresetDef def;
-    def.Name     = input.filename().string();
-    def.Category = "Imported";
+    PresetDef* def = new PresetDef();
+    def->Name     = input.filename().string();
+    def->Category = "Imported";
 
     for(auto& s : sp.shaders)
     {
@@ -499,7 +498,7 @@ PresetDef ShaderGC::CompilePreset(std::filesystem::path input, ostream& log, boo
         {
             sd.Param(pp.first, pp.second);
         }
-        def.ShaderDefs.push_back(sd);
+        def->ShaderDefs.push_back(sd);
     }
 
     for(auto& t : sp.textures)
@@ -509,12 +508,12 @@ PresetDef ShaderGC::CompilePreset(std::filesystem::path input, ostream& log, boo
         {
             td.Param(pp.first, pp.second);
         }
-        def.TextureDefs.push_back(td);
+        def->TextureDefs.push_back(td);
     }
 
     for(auto& o : sp.overrides)
     {
-        def.OverrideParam(CopyString(o.name), o.def);
+        def->OverrideParam(CopyString(o.name), o.def);
     }
 
     return def;
@@ -597,7 +596,6 @@ TextureDef ShaderGC::CompileTexture(std::filesystem::path source, std::ostream& 
     def.Data       = new uint8_t[size];
     def.DataLength = size;
     def.Name       = source.filename().string();
-    def.Dynamic    = true;
     inf.read((char*)def.Data, size);
     inf.close();
 

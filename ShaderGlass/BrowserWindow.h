@@ -31,6 +31,7 @@ private:
     int                       g_nDocument;
     std::map<UINT, HTREEITEM> m_items;
     std::map<UINT, HTREEITEM> m_favorites;
+    HTREEITEM                 m_imported;
 
     void Resize();
     void Build();

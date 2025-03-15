@@ -6,7 +6,7 @@
 class ShaderGC
 {
 public:
-    static PresetDef CompilePreset(std::filesystem::path source, std::ostream& log, bool& warn);
+    static PresetDef* CompilePreset(std::filesystem::path source, std::ostream& log, bool& warn);
     static ShaderDef CompileShader(std::filesystem::path source, std::ostream& log, bool& warn);
     static TextureDef CompileTexture(std::filesystem::path source, std::ostream& log, bool& warn);
 

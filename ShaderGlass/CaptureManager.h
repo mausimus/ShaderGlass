@@ -42,6 +42,7 @@ public:
     bool StartSession();
     void StopSession();
     void Debug();
+    int AddPreset(PresetDef* preset);
     void UpdatePixelSize();
     void UpdateOutputSize();
     void UpdateOutputFlip();

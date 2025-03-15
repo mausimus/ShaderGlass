@@ -16,6 +16,14 @@ public:
         Overrides.emplace_back(name, value);
     }
 
+    void MakeDynamic()
+    {
+        for(auto& s : ShaderDefs)
+            s.Dynamic = true;
+        for(auto& t : TextureDefs)
+            t.Dynamic = true;
+    }
+
     std::vector<ShaderDef>     ShaderDefs;
     std::vector<TextureDef>    TextureDefs;
     std::vector<ParamOverride> Overrides;
