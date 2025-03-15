@@ -319,7 +319,7 @@ void ShaderWindow::ImportShader()
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner   = NULL;
-    ofn.lpstrFilter = (LPCWSTR)L"Slang Profiles (*.slangp)\0*.slangp\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFilter = (LPCWSTR)L"Slang Profiles or Shaders (*.slangp;*.slang)\0*.slangp;*.slang\0Slang Profiles (*.slangp)\0*.slangp\0Slang Shaders (*.slang)\0*.slang\0All Files (*.*)\0*.*\0";
     ofn.lpstrFile   = (LPWSTR)szFileName;
     ofn.nMaxFile    = MAX_PATH;
     ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;

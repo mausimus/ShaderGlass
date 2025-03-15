@@ -7,7 +7,6 @@ class ShaderGC
 {
 public:
     static PresetDef* CompilePreset(std::filesystem::path source, std::ostream& log, bool& warn);
-    static ShaderDef CompileShader(std::filesystem::path source, std::ostream& log, bool& warn);
     static TextureDef CompileTexture(std::filesystem::path source, std::ostream& log, bool& warn);
 
     static std::vector<std::string> LoadSource(const std::filesystem::path& input, bool followIncludes);
@@ -21,4 +20,5 @@ public:
 
 private:
     static ShaderDef CompileSourceShader(SourceShaderDef& def, std::ostream& log, bool& warn);
+    static PresetDef* CompileShader(std::filesystem::path source, std::ostream& log, bool& warn);
 };

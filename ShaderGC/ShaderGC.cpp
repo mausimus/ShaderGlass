@@ -69,11 +69,19 @@ ShaderDef ShaderGC::CompileSourceShader(SourceShaderDef& def, ostream& log, bool
     return sd;
 }
 
-ShaderDef ShaderGC::CompileShader(std::filesystem::path source, ostream& log, bool& warn)
+PresetDef* ShaderGC::CompileShader(std::filesystem::path source, ostream& log, bool& warn)
 {
     SourceShaderDef def(source, SourceShaderInfo());
     ProcessSourceShader(def, log, warn);
-    return CompileSourceShader(def, log, warn);
+    auto shaderDef = CompileSourceShader(def, log, warn);
+
+    // dummy preset
+    PresetDef* pdef = new PresetDef();
+    pdef->Name      = source.filename().string();
+    pdef->Category  = "Imported";
+    pdef->ShaderDefs.push_back(shaderDef);
+
+    return pdef;
 }
 
 vector<string> ShaderGC::LoadSource(const filesystem::path& input, bool followIncludes)
@@ -483,6 +491,9 @@ void ShaderGC::ParsePreset(const std::filesystem::path& input, std::map<std::str
 
 PresetDef* ShaderGC::CompilePreset(std::filesystem::path input, ostream& log, bool& warn)
 {
+    if(_stricmp(input.extension().string().c_str(), ".slang") == 0)
+        return CompileShader(input, log, warn);
+
     SourcePresetDef sp(input, SourceShaderInfo());
     ProcessSourcePreset(sp, log, warn);
 
