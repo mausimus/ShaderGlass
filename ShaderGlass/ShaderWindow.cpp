@@ -856,7 +856,7 @@ void ShaderWindow::UpdateTitle()
         wchar_t     title[200];
         const char* scaleString = m_captureOptions.freeScale ? "free" : outputScale.mnemonic;
         const auto fps = (int)roundf(m_captureManager.FPS());
-        _snwprintf_s(title, 200, _T("ShaderGlass (%s%S, %Spx, %S%%, ~%S, %dfps)"), windowName, shader->Name, pixelSize.mnemonic, scaleString, aspectRatio.mnemonic, fps);
+        _snwprintf_s(title, 200, _T("ShaderGlass (%s%S, %Spx, %S%%, ~%S, %dfps)"), windowName, shader->Name.c_str(), pixelSize.mnemonic, scaleString, aspectRatio.mnemonic, fps);
         SetWindowTextW(m_mainWindow, title);
     }
     else

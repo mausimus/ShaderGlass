@@ -54,8 +54,8 @@ ShaderDef ShaderGC::CompileSourceShader(SourceShaderDef& def, ostream& log, bool
     sd.FragmentSource   = nullptr;
     sd.FragmentByteCode = CopyVector(fragmentDXBC);
     sd.FragmentLength   = fragmentDXBC.size();
-
-    sd.Name = "imported";
+    sd.Dynamic          = true;
+    sd.Name             = def.input.filename().string();
 
     for(const auto& p : def.params)
     {
@@ -488,7 +488,7 @@ PresetDef ShaderGC::CompilePreset(std::filesystem::path input, ostream& log, boo
     ProcessSourcePreset(sp, log, warn);
 
     PresetDef def;
-    def.Name     = "Imported";
+    def.Name     = input.filename().string();
     def.Category = "Imported";
 
     for(auto& s : sp.shaders)
@@ -596,7 +596,8 @@ TextureDef ShaderGC::CompileTexture(std::filesystem::path source, std::ostream& 
 
     def.Data       = new uint8_t[size];
     def.DataLength = size;
-    def.Name       = "imported";
+    def.Name       = source.filename().string();
+    def.Dynamic    = true;
     inf.read((char*)def.Data, size);
     inf.close();
 

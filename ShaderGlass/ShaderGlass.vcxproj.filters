@@ -87,15 +87,6 @@
     <ClInclude Include="WIC\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderDef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PresetDef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureDef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>

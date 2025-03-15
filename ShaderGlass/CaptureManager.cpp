@@ -328,7 +328,7 @@ int CaptureManager::FindByName(const char* presetName)
     int p = 0;
     while(p < m_presetList.size())
     {
-        if(strcmp(m_presetList[p]->Name, presetName) == 0)
+        if(m_presetList[p]->Name == presetName)
         {
             return p;
         }

@@ -19,6 +19,6 @@ public:
     std::vector<ShaderDef>     ShaderDefs;
     std::vector<TextureDef>    TextureDefs;
     std::vector<ParamOverride> Overrides;
-    const char*                Name;
-    const char*                Category;
+    std::string                Name;
+    std::string                Category;
 };

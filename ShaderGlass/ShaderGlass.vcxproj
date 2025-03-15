@@ -192,9 +192,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="ShaderDef.h" />
-    <ClInclude Include="PresetDef.h" />
-    <ClInclude Include="TextureDef.h" />
     <ClInclude Include="WIC\pch.h" />
     <ClInclude Include="WIC\ScreenGrab11.h" />
     <ClInclude Include="WIC\WICTextureLoader11.h" />

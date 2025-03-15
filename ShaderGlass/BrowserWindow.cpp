@@ -232,10 +232,10 @@ void BrowserWindow::Build()
     int i = 0;
     for(const auto& sp : m_captureManager.Presets())
     {
-        if(strcmp(sp->Category, "general") == 0)
+        if(sp->Category == "general")
         {
             auto id     = WM_SHADER(i++);
-            noneItem    = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(sp->Name), id, 1);
+            noneItem    = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(sp->Name.c_str()), id, 1);
             m_items[id] = noneItem;
             continue;
         }
@@ -244,7 +244,7 @@ void BrowserWindow::Build()
             categoryMenus.insert(std::make_pair(sp->Category, std::vector<std::pair<const char*, UINT>>()));
         }
         auto& menu = categoryMenus.find(sp->Category)->second;
-        menu.push_back(std::make_pair(sp->Name, WM_SHADER(i++)));
+        menu.push_back(std::make_pair(sp->Name.c_str(), WM_SHADER(i++)));
     }
 
     AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("Favorites"), -1, 1);
