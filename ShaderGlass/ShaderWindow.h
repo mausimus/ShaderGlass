@@ -15,7 +15,8 @@ public:
     ShaderWindow(CaptureManager& manager);
 
     bool Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow);
-    void Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserWindow);
+    void Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserWindow, HWND compileWindow);
+    void CompileThreadFunc();
     HWND m_mainWindow {nullptr};
 
 private:
@@ -24,6 +25,7 @@ private:
     HINSTANCE                    m_instance {nullptr};
     HWND                         m_paramsWindow {nullptr};
     HWND                         m_browserWindow {nullptr};
+    HWND                         m_compileWindow {nullptr};
     HMENU                        m_mainMenu {nullptr};
     HMENU                        m_programMenu {nullptr};
     HMENU                        m_shaderMenu {nullptr};
@@ -51,12 +53,15 @@ private:
     bool                         m_isBorderless {false};
     bool                         m_paramsPositioned {false};
     bool                         m_browserPositioned {false};
+    HANDLE                       m_compileThread {nullptr};
+    HANDLE                       m_compileEvent {nullptr};
     float                        m_dpiScale {1.0f};
     RECT                         m_lastPosition;
     std::unique_ptr<InputDialog> m_inputDialog;
     bool                         m_toggledNone;
     unsigned                     m_toggledPresetNo;
     std::vector<std::wstring>    m_recentProfiles;
+    std::filesystem::path        m_importPath;
 
     bool LoadProfile(const std::wstring& fileName);
     void LoadProfile();

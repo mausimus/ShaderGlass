@@ -187,7 +187,7 @@ void ParamsWindow::RebuildControls()
     char title[200];
     const auto& shader = m_captureManager.Presets().at(m_captureOptions.presetNo);
     if(m_captureManager.IsActive())
-        snprintf(title, 200, "Shader Parameters: %s", shader->Name);
+        snprintf(title, 200, "Shader Parameters: %s", shader->Name.c_str());
     else
         snprintf(title, 200, "Shader Parameters");
     SetWindowTextA(m_mainWindow, title);

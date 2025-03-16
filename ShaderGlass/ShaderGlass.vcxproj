@@ -169,6 +169,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BrowserWindow.h" />
+    <ClInclude Include="CompileWindow.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="InputDialog.h" />
     <ClInclude Include="ParamsWindow.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="BrowserWindow.cpp" />
     <ClCompile Include="CaptureManager.cpp" />
     <ClCompile Include="CaptureSession.cpp" />
+    <ClCompile Include="CompileWindow.cpp" />
     <ClCompile Include="InputDialog.cpp" />
     <ClCompile Include="WIC\ScreenGrab11.cpp" />
     <ClCompile Include="WinMain.cpp" />

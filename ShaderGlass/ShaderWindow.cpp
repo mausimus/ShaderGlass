@@ -319,7 +319,8 @@ void ShaderWindow::ImportShader()
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner   = NULL;
-    ofn.lpstrFilter = (LPCWSTR)L"Slang Profiles or Shaders (*.slangp;*.slang)\0*.slangp;*.slang\0Slang Profiles (*.slangp)\0*.slangp\0Slang Shaders (*.slang)\0*.slang\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFilter =
+        (LPCWSTR)L"Slang Profiles or Shaders (*.slangp;*.slang)\0*.slangp;*.slang\0Slang Profiles (*.slangp)\0*.slangp\0Slang Shaders (*.slang)\0*.slang\0All Files (*.*)\0*.*\0";
     ofn.lpstrFile   = (LPWSTR)szFileName;
     ofn.nMaxFile    = MAX_PATH;
     ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
@@ -473,17 +474,86 @@ void ShaderWindow::SaveProfile()
     }
 }
 
+DWORD WINAPI CompileThreadFuncProxy(LPVOID lpParam)
+{
+    ((ShaderWindow*)lpParam)->CompileThreadFunc();
+    return 0;
+}
+
+// shader compiler needs to reuse thread
+void ShaderWindow::CompileThreadFunc()
+{
+    while(true)
+    {
+        WaitForSingleObject(m_compileEvent, INFINITE);
+        ResetEvent(m_compileEvent);
+
+        if(m_importPath.empty())
+            continue;
+
+        std::string errorMsg;
+        try
+        {
+            std::ofstream log;
+            bool          warn;
+            auto          preset = ShaderGC::CompilePreset(m_importPath, log, warn);
+            if(preset == nullptr)
+                throw std::runtime_error("Internal error");
+            auto          id     = m_captureManager.AddPreset(preset);
+            m_numPresets         = m_captureManager.Presets().size();
+            SendMessage(m_browserWindow, WM_COMMAND, WM_USER + 1, id);
+            SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(id), 0);
+        }
+        catch(std::exception& ex)
+        {
+            errorMsg = std::string(ex.what());
+        }
+        EnableWindow(m_mainWindow, true);
+        ShowWindow(m_compileWindow, SW_HIDE);
+        m_importPath = std::filesystem::path();
+
+        if(errorMsg.size())
+        {
+            MessageBox(m_mainWindow, convertCharArrayToLPCWSTR(errorMsg.c_str()), L"ShaderGlass", MB_OK);
+        }
+    }
+}
+
 bool ShaderWindow::ImportShader(const std::wstring& fileName)
 {
     try
     {
-        std::ostringstream log;
-        bool               warn;
-        auto               preset = ShaderGC::CompilePreset(fileName, log, warn);
-        auto               id     = m_captureManager.AddPreset(preset);
-        m_numPresets              = m_captureManager.Presets().size();
-        SendMessage(m_browserWindow, WM_COMMAND, WM_USER + 1, id);
-        SendMessage(m_mainWindow, WM_COMMAND, WM_SHADER(id), 0);
+        m_importPath = fileName;
+
+        RECT rc, rcDlg, rcOwner;
+        GetWindowRect(m_mainWindow, &rcOwner);
+        GetWindowRect(m_compileWindow, &rcDlg);
+        CopyRect(&rc, &rcOwner);
+        OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
+        OffsetRect(&rc, -rc.left, -rc.top);
+        OffsetRect(&rc, -rcDlg.right, -rcDlg.bottom);
+        SetWindowPos(m_compileWindow,
+                     HWND_TOP,
+                     rcOwner.left + (rc.right / 2),
+                     rcOwner.top + max(0, (rc.bottom / 2)),
+                     0,
+                     0, // Ignores size arguments.
+                     SWP_NOSIZE);
+
+        ShowWindow(m_compileWindow, SW_SHOW);
+        EnableWindow(m_mainWindow, false);
+        if(!m_compileEvent)
+        {
+            m_compileEvent = CreateEvent(NULL, TRUE, FALSE, TEXT("CompileEvent"));
+        }
+        if(!m_compileThread)
+        {
+            m_compileThread = CreateThread(NULL, 0, CompileThreadFuncProxy, this, 0, NULL);
+        }
+        if(m_compileEvent)
+        {
+            SetEvent(m_compileEvent);
+        }
         return true;
     }
     catch(std::exception& ex)
@@ -1806,7 +1876,7 @@ void ShaderWindow::UnregisterHotkeys()
     UnregisterHotKey(m_mainWindow, HK_PAUSE);
 }
 
-void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserWindow)
+void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserWindow, HWND compileWindow)
 {
     bool autoStart  = true;
     bool fullScreen = false;
@@ -1834,6 +1904,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
 
     m_paramsWindow  = paramsWindow;
     m_browserWindow = browserWindow;
+    m_compileWindow = compileWindow;
     m_inputDialog.reset(new InputDialog(m_instance, m_mainWindow));
 
     if(autoStart)

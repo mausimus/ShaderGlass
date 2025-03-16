@@ -160,7 +160,7 @@ int CaptureManager::AddPreset(PresetDef* preset)
     }
     if(existing)
     {
-        m_presetList[existing] = std::unique_ptr<PresetDef>(preset);
+        m_presetList[existing].reset(preset);
         return existing;
     }
     else

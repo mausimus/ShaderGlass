@@ -171,7 +171,7 @@ void ShaderGC::ProcessSourceShader(SourceShaderDef& def, ostream& log, bool& war
             }
             else
             {
-                throw std::runtime_error("Unsupported format: " + trimLine);
+                throw std::runtime_error("Sorry, unsupported format " + trimLine.substr(15));
             }
         }
         else if(trimLine.starts_with("//"))

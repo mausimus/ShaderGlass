@@ -4,6 +4,7 @@
 #include "ShaderWindow.h"
 #include "ParamsWindow.h"
 #include "BrowserWindow.h"
+#include "CompileWindow.h"
 
 #pragma comment(                                                                                                                           \
     linker,                                                                                                                                \
@@ -49,7 +50,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         return FALSE;
     }
 
-    shaderWindow.Start(lpCmdLine, paramsWindow.m_mainWindow, browserWindow.m_mainWindow);
+    CompileWindow compileWindow(captureManager);
+    if(!compileWindow.Create(hInstance, SW_HIDE, shaderWindow.m_mainWindow))
+    {
+        return FALSE;
+    }
+
+    shaderWindow.Start(lpCmdLine, paramsWindow.m_mainWindow, browserWindow.m_mainWindow, compileWindow.m_mainWindow);
 
     while(GetMessage(&msg, nullptr, 0, 0))
     {

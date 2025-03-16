@@ -12,6 +12,7 @@
 #define IDC_SHADERBROWSER               106
 #define IDS_PARAM_TITLE                 107
 #define IDI_SHADERGLASS                 108
+#define IDC_COMPILEWINDOW               108
 #define IDI_SMALL                       109
 #define IDC_SHADERGLASS                 110
 #define IDM_PIXELSIZE_NEXT              111
