@@ -60,7 +60,9 @@ void ShaderGlass::Initialize(
     m_lastSize.x = clientRect.right;
     m_lastSize.y = clientRect.bottom;
 
-    m_prevTicks = GetTickCount64();
+    m_prevTicks          = GetTickCount64();
+    m_startTicks         = GetTickCount64();
+    m_prevLogicalFrameNo = 0;
 
     // create swapchain
     {
@@ -91,14 +93,14 @@ void ShaderGlass::Initialize(
         d3d11SwapChainDesc.SampleDesc.Count      = 1;
         d3d11SwapChainDesc.SampleDesc.Quality    = 0;
         d3d11SwapChainDesc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        d3d11SwapChainDesc.BufferCount           = 2;
+        d3d11SwapChainDesc.BufferCount           = 3;
         // flip mode has a weird bug where the first frame doesn't align with the window client area, until window is moved :(
-        //d3d11SwapChainDesc.Scaling               = DXGI_SCALING_NONE;
-        //d3d11SwapChainDesc.SwapEffect            = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-        d3d11SwapChainDesc.Scaling    = DXGI_SCALING_STRETCH;
-        d3d11SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-        d3d11SwapChainDesc.AlphaMode  = DXGI_ALPHA_MODE_UNSPECIFIED;
-        d3d11SwapChainDesc.Flags      = 0;
+        d3d11SwapChainDesc.Scaling    = DXGI_SCALING_NONE;
+        d3d11SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        //d3d11SwapChainDesc.Scaling    = DXGI_SCALING_STRETCH;
+        //d3d11SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+        d3d11SwapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
+        d3d11SwapChainDesc.Flags     = 0;
 
         hr = dxgiFactory->CreateSwapChainForHwnd(m_device.get(), m_outputWindow, &d3d11SwapChainDesc, 0, 0, m_swapChain.put());
         assert(SUCCEEDED(hr));
@@ -307,24 +309,41 @@ void ShaderGlass::DestroyPasses()
 void ShaderGlass::PresentFrame()
 {
     DXGI_PRESENT_PARAMETERS presentParameters {};
-    m_swapChain->Present1(1, 0, &presentParameters);
+    m_swapChain->Present1(0, DXGI_PRESENT_RESTART, &presentParameters);
     PostMessage(m_outputWindow, WM_PAINT, 0, 0); // necessary for click-through
 }
 
-void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
+void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG frameTicks)
 {
-    m_frameCounter++;
+    auto nowTicks            = GetTickCount64();
+    auto timeSinceLastRender = nowTicks - m_prevRenderTicks;
+    auto logicalFrameNo = (int)roundf((nowTicks - m_startTicks) / 16.6666666f); // fix shaders at 60 fps
 
-#ifdef _DEBUG
-    if(m_frameCounter % 60 == 0)
+    // same input
+    if(frameTicks == m_prevFrameTicks)
     {
-        char frameCount[20];
-        snprintf(frameCount, 20, "%d\n", m_frameCounter);
-        OutputDebugStringA(frameCount);
-    }
-#endif
+        if(logicalFrameNo == m_prevLogicalFrameNo)
+            return;
 
-    if(!m_running || !texture || (m_frameSkip != 0 && (m_frameCounter % (m_frameSkip + 1) != 0)))
+        auto timeSinceLastInput = nowTicks - frameTicks;
+        if(timeSinceLastInput < 20) // 3.3 ms delay allowance for frame timing
+            return;
+    }
+
+    if(m_frameSkip > 0)
+    {
+        if(logicalFrameNo == m_prevLogicalFrameNo) // already rendered
+            return;
+
+        if((logicalFrameNo % (m_frameSkip + 1) != 0)) // don't need this frame
+            return;
+    }
+
+    m_frameCounter++;
+    m_prevFrameTicks     = frameTicks;
+    m_prevLogicalFrameNo = logicalFrameNo;
+
+    if(!m_running || !texture)
     {
         // skip frame
         PresentFrame();
@@ -480,6 +499,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
     if(m_newShaderPreset)
     {
+        m_startTicks = GetTickCount64(); // reset logical frame no
+
         DestroyShaders();
         m_shaderPreset.swap(m_newShaderPreset);
         m_newShaderPreset.reset();
@@ -837,7 +858,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     winrt::com_ptr<ID3D11ShaderResourceView> textureView;
     hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
     assert(SUCCEEDED(hr));
-    m_preprocessPass.Render(textureView.get(), m_passResources, m_frameSkip + 1, 0, 0);
+    m_preprocessPass.Render(textureView.get(), m_passResources, logicalFrameNo, 0, 0);
 
     int p = 0;
     for(auto& shaderPass : m_shaderPasses)
@@ -847,11 +868,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
 
         if(p == 0)
         {
-            shaderPass.Render(m_originalView.get(), m_passResources, m_frameSkip + 1, passBoxX, passBoxY);
+            shaderPass.Render(m_originalView.get(), m_passResources, logicalFrameNo, passBoxX, passBoxY);
         }
         else
         {
-            shaderPass.Render(m_passResources, m_frameSkip + 1, passBoxX, passBoxY);
+            shaderPass.Render(m_passResources, logicalFrameNo, passBoxX, passBoxY);
         }
         p++;
     }
@@ -926,14 +947,14 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture)
     PresentFrame();
 
     m_renderCounter++;
-    auto ticks = GetTickCount64();
-    if(ticks - m_prevTicks > 1000)
+    m_prevRenderTicks = GetTickCount64();
+    if(m_prevRenderTicks - m_prevTicks > 1000)
     {
-        auto deltaTicks     = ticks - m_prevTicks;
+        auto deltaTicks     = m_prevRenderTicks - m_prevTicks;
         auto deltaFrames    = m_renderCounter - m_prevRenderCounter;
         m_fps               = deltaFrames * 1000.0f / deltaTicks;
         m_prevRenderCounter = m_renderCounter;
-        m_prevTicks         = ticks;
+        m_prevTicks         = m_prevRenderTicks;
     }
 }
 

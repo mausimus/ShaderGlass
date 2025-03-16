@@ -20,6 +20,7 @@ bool CaptureManager::Initialize()
 {
     m_presetList.push_back(make_unique<PassthroughPresetDef>());
     m_presetList.insert(m_presetList.end(), RetroArchPresetList.begin(), RetroArchPresetList.end());
+    m_frameEvent = CreateEvent(NULL, FALSE, FALSE, L"FrameEvent");
     return false;
 }
 
@@ -112,12 +113,12 @@ bool CaptureManager::StartSession()
         m_options.imageWidth  = desc.Width;
         m_options.imageHeight = desc.Height;
 
-        m_session = make_unique<CaptureSession>(device, inputTexture, *m_shaderGlass);
+        m_session = make_unique<CaptureSession>(device, inputTexture, *m_shaderGlass, m_frameEvent);
         UpdatePixelSize();
     }
     else
     {
-        m_session = make_unique<CaptureSession>(device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass);
+        m_session = make_unique<CaptureSession>(device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass, m_frameEvent);
     }
 
     m_active = true;
@@ -175,11 +176,20 @@ bool CaptureManager::IsActive()
     return m_session.get();
 }
 
-float CaptureManager::FPS()
+float CaptureManager::OutFPS()
 {
     if(m_shaderGlass)
     {
         return m_shaderGlass->FPS();
+    }
+    return 0.f;
+}
+
+float CaptureManager::InFPS()
+{
+    if(m_session)
+    {
+        return m_session->FPS();
     }
     return 0.f;
 }
@@ -209,6 +219,7 @@ void CaptureManager::Exit()
     if(m_session.get())
     {
         m_active = false;
+        SetEvent(m_frameEvent);
 
         m_session->Stop();
         delete m_session.release();
@@ -317,8 +328,8 @@ void CaptureManager::ThreadFunc()
 {
     while(m_active)
     {
+        WaitForSingleObject(m_frameEvent, 1);
         ProcessFrame();
-        Sleep(1);
     }
 }
 

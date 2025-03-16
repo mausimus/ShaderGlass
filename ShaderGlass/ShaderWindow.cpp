@@ -4,6 +4,8 @@
 #include "ShaderWindow.h"
 #include "ShaderGC.h"
 
+#define TIMER_TITLE 0
+
 ShaderWindow::ShaderWindow(CaptureManager& captureManager) :
     m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass(), m_toggledNone(false)
 { }
@@ -974,8 +976,9 @@ void ShaderWindow::UpdateTitle()
 
         wchar_t     title[200];
         const char* scaleString = m_captureOptions.freeScale ? "free" : outputScale.mnemonic;
-        const auto  fps         = (int)roundf(m_captureManager.FPS());
-        _snwprintf_s(title, 200, _T("ShaderGlass (%s%S, %Spx, %S%%, ~%S, %dfps)"), windowName, shader->Name.c_str(), pixelSize.mnemonic, scaleString, aspectRatio.mnemonic, fps);
+        const auto  inFPS       = (int)roundf(m_captureManager.InFPS());
+        const auto  outFPS      = (int)roundf(m_captureManager.OutFPS());
+        _snwprintf_s(title, 200, _T("ShaderGlass (%s%S, %Spx, %S%%, ~%S, %d/%dfps)"), windowName, shader->Name.c_str(), pixelSize.mnemonic, scaleString, aspectRatio.mnemonic, inFPS, outFPS);
         SetWindowTextW(m_mainWindow, title);
     }
     else
@@ -1542,7 +1545,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             KillTimer(m_mainWindow, ID_PROCESSING_SCREENSHOT);
             Screenshot();
             return 0;
-        case 0:
+        case TIMER_TITLE:
             UpdateTitle();
             return 0;
         }
@@ -1917,5 +1920,5 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
         SendMessage(m_mainWindow, WM_COMMAND, ID_PROCESSING_FULLSCREEN, 0);
     }
 
-    SetTimer(m_mainWindow, 0, 1000, NULL);
+    SetTimer(m_mainWindow, TIMER_TITLE, 1000, NULL);
 }

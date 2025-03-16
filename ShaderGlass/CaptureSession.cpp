@@ -16,8 +16,11 @@ using namespace Windows::UI;
 using namespace Windows::UI::Composition;
 } // namespace winrt
 
-CaptureSession::CaptureSession(winrt::IDirect3DDevice const& device, winrt::GraphicsCaptureItem const& item, winrt::DirectXPixelFormat pixelFormat, ShaderGlass& shaderGlass) :
-    m_device {device}, m_item {item}, m_shaderGlass {shaderGlass}
+CaptureSession::CaptureSession(winrt::IDirect3DDevice const&     device,
+                               winrt::GraphicsCaptureItem const& item,
+                               winrt::DirectXPixelFormat         pixelFormat,
+                               ShaderGlass&                      shaderGlass,
+                               HANDLE                            frameEvent) : m_device {device}, m_item {item}, m_shaderGlass {shaderGlass}, m_frameEvent(frameEvent)
 {
     m_framePool = winrt::Direct3D11CaptureFramePool::CreateFreeThreaded(m_device, pixelFormat, 2, m_item.Size());
     m_session   = m_framePool.CreateCaptureSession(m_item);
@@ -33,14 +36,30 @@ CaptureSession::CaptureSession(winrt::IDirect3DDevice const& device, winrt::Grap
         { }
     }
 
+    if(winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession", L"MinUpdateInterval"))
+    {
+        try
+        {
+            m_session.MinUpdateInterval(winrt::Windows::Foundation::TimeSpan(std::chrono::milliseconds(5)));
+        }
+        catch(...)
+        { }
+    }
+
+    m_numInputFrames  = 0;
+    m_prevInputFrames = 0;
+    m_fps             = 0;
+    m_prevTicks       = GetTickCount64();
     m_framePool.FrameArrived({this, &CaptureSession::OnFrameArrived});
     m_session.StartCapture();
 
     WINRT_ASSERT(m_session != nullptr);
 }
 
-CaptureSession::CaptureSession(winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice const& device, winrt::com_ptr<ID3D11Texture2D> inputImage, ShaderGlass& shaderGlass) :
-    m_device {device}, m_inputImage {inputImage}, m_shaderGlass {shaderGlass}
+CaptureSession::CaptureSession(winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice const& device,
+                               winrt::com_ptr<ID3D11Texture2D>                                       inputImage,
+                               ShaderGlass&                                                          shaderGlass,
+                               HANDLE frameEvent) : m_device {device}, m_inputImage {inputImage}, m_shaderGlass {shaderGlass}, m_frameEvent {frameEvent}
 {
     ProcessInput();
 }
@@ -55,17 +74,28 @@ void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sen
 {
     auto frame   = sender.TryGetNextFrame();
     m_inputFrame = GetDXGIInterfaceFromObject<ID3D11Texture2D>(frame.Surface());
+    m_frameTicks = GetTickCount64();
+    SetEvent(m_frameEvent);
+    m_numInputFrames++;
+    if(m_frameTicks - m_prevTicks > 1000)
+    {
+        auto deltaTicks   = m_frameTicks - m_prevTicks;
+        auto deltaFrames  = m_numInputFrames - m_prevInputFrames;
+        m_fps             = deltaFrames * 1000.0f / deltaTicks;
+        m_prevInputFrames = m_numInputFrames;
+        m_prevTicks       = m_frameTicks;
+    }
 }
 
 void CaptureSession::ProcessInput()
 {
     if(m_inputImage.get())
     {
-        m_shaderGlass.Process(m_inputImage);
+        m_shaderGlass.Process(m_inputImage, 0);
     }
     else
     {
-        m_shaderGlass.Process(m_inputFrame);
+        m_shaderGlass.Process(m_inputFrame, m_frameTicks);
     }
 }
 

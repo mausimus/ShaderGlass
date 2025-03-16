@@ -206,14 +206,14 @@ void ShaderPass::Resize(int sourceWidth, int sourceHeight, int destWidth, int de
     }
 }
 
-void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount, int boxX, int boxY)
+void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameNo, int boxX, int boxY)
 {
-    Render(m_sourceView, resources, frameCount, boxX, boxY);
+    Render(m_sourceView, resources, frameNo, boxX, boxY);
 }
 
-void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount, int boxX, int boxY)
+void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameNo, int boxX, int boxY)
 {
-    params_FrameCount += frameCount;
+    params_FrameCount = frameNo;
     if(m_shader.m_frameCountMod > 0)
     {
         while(params_FrameCount >= m_shader.m_frameCountMod)
