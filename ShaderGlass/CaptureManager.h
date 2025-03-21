@@ -25,6 +25,9 @@ struct CaptureOptions
     RECT         inputArea {0, 0, 0, 0};
     float        dpiScale {1.0f};
     bool         freeScale {false};
+    bool         flipMode {false};
+    bool         allowTearing {false};
+    bool         maxCaptureRate {false};
 };
 
 class CaptureManager

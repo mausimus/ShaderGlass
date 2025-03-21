@@ -40,6 +40,7 @@ private:
     HMENU                        m_outputWindowMenu {nullptr};
     HMENU                        m_inputMenu {nullptr};
     HMENU                        m_recentMenu {nullptr};
+    HMENU                        m_advancedMenu {nullptr};
     std::vector<CaptureWindow>   m_captureWindows;
     std::vector<CaptureDisplay>  m_captureDisplays;
     CaptureManager&              m_captureManager;
@@ -90,6 +91,14 @@ private:
     void UnregisterHotkeys();
     void SaveHotkeyState(bool state);
     bool GetHotkeyState();
+    void SaveFlipModeState(bool state);
+    bool GetFlipModeState();
+    void SaveTearingState(bool state);
+    bool GetTearingState();
+    void SaveMaxCaptureRateState(bool state);
+    bool GetMaxCaptureRateState();
+    bool GetRegistryOption(const wchar_t* name, bool default);
+    void SaveRegistryOption(const wchar_t* name, bool value);
     void SaveRecentProfiles();
     void LoadRecentProfiles();
     void AddRecentProfile(const std::wstring& path);

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CaptureSession.h"
+#include "Helpers.h"
 
 #include "Util/direct3d11.interop.h"
 
@@ -20,13 +21,14 @@ CaptureSession::CaptureSession(winrt::IDirect3DDevice const&     device,
                                winrt::GraphicsCaptureItem const& item,
                                winrt::DirectXPixelFormat         pixelFormat,
                                ShaderGlass&                      shaderGlass,
+                               bool                              maxCaptureRate,
                                HANDLE                            frameEvent) : m_device {device}, m_item {item}, m_shaderGlass {shaderGlass}, m_frameEvent(frameEvent)
 {
     m_framePool = winrt::Direct3D11CaptureFramePool::CreateFreeThreaded(m_device, pixelFormat, 2, m_item.Size());
     m_session   = m_framePool.CreateCaptureSession(m_item);
 
     // try to disable yellow border
-    if(winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession", L"IsBorderRequired"))
+    if(CanDisableBorder())
     {
         try
         {
@@ -36,11 +38,13 @@ CaptureSession::CaptureSession(winrt::IDirect3DDevice const&     device,
         { }
     }
 
-    if(winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession", L"MinUpdateInterval"))
+    if(CanSetCaptureRate())
     {
         try
         {
-            m_session.MinUpdateInterval(winrt::Windows::Foundation::TimeSpan(std::chrono::milliseconds(5)));
+            // max 250Hz?
+            const auto minInterval = maxCaptureRate ? std::chrono::milliseconds(4) : std::chrono::milliseconds(15);
+            m_session.MinUpdateInterval(winrt::Windows::Foundation::TimeSpan(minInterval));
         }
         catch(...)
         { }

@@ -23,12 +23,14 @@ ShaderGlass::~ShaderGlass()
 }
 
 void ShaderGlass::Initialize(
-    HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, bool image, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context)
+    HWND outputWindow, HWND captureWindow, HMONITOR captureMonitor, bool clone, bool image, bool flipMode, bool allowTearing, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context)
 {
     m_outputWindow  = outputWindow;
     m_captureWindow = captureWindow;
     m_clone         = clone;
     m_image         = image;
+    m_flipMode      = flipMode;
+    m_allowTearing  = allowTearing;
     m_device        = device;
     m_context       = context;
 
@@ -94,13 +96,26 @@ void ShaderGlass::Initialize(
         d3d11SwapChainDesc.SampleDesc.Quality    = 0;
         d3d11SwapChainDesc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         d3d11SwapChainDesc.BufferCount           = 3;
-        // flip mode has a weird bug where the first frame doesn't align with the window client area, until window is moved :(
-        d3d11SwapChainDesc.Scaling    = DXGI_SCALING_NONE;
-        d3d11SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-        //d3d11SwapChainDesc.Scaling    = DXGI_SCALING_STRETCH;
-        //d3d11SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+        // flip mode has a weird bug on Win 10 where the first frame doesn't align with the window client area, until window is moved :(
+        if(m_flipMode)
+        {
+            d3d11SwapChainDesc.Scaling    = DXGI_SCALING_NONE;
+            d3d11SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        }
+        else
+        {
+            d3d11SwapChainDesc.Scaling    = DXGI_SCALING_STRETCH;
+            d3d11SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+        }
         d3d11SwapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-        d3d11SwapChainDesc.Flags     = 0;
+        if(m_flipMode && m_allowTearing)
+        {
+            d3d11SwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+        }
+        else
+        {
+            d3d11SwapChainDesc.Flags = 0;
+        }
 
         hr = dxgiFactory->CreateSwapChainForHwnd(m_device.get(), m_outputWindow, &d3d11SwapChainDesc, 0, 0, m_swapChain.put());
         assert(SUCCEEDED(hr));
@@ -271,7 +286,10 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
 
         if(clientRect.right > 0 && clientRect.bottom > 0)
         {
-            hr = m_swapChain->ResizeBuffers(0, static_cast<UINT>(clientRect.right), static_cast<UINT>(clientRect.bottom), DXGI_FORMAT_UNKNOWN, 0);
+            UINT flags = 0;
+            if(m_flipMode && m_allowTearing)
+                flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+            hr = m_swapChain->ResizeBuffers(0, static_cast<UINT>(clientRect.right), static_cast<UINT>(clientRect.bottom), DXGI_FORMAT_UNKNOWN, flags);
             assert(SUCCEEDED(hr));
 
             hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_displayTexture.put());
@@ -309,7 +327,16 @@ void ShaderGlass::DestroyPasses()
 void ShaderGlass::PresentFrame()
 {
     DXGI_PRESENT_PARAMETERS presentParameters {};
-    m_swapChain->Present1(0, DXGI_PRESENT_RESTART, &presentParameters);
+    UINT presentFlags = 0;
+    if(m_flipMode)
+    {
+        presentFlags |= DXGI_PRESENT_RESTART;
+        if(m_allowTearing)
+        {
+            presentFlags |= DXGI_PRESENT_ALLOW_TEARING;
+        }
+    }
+    m_swapChain->Present1(0, presentFlags, &presentParameters);
     PostMessage(m_outputWindow, WM_PAINT, 0, 0); // necessary for click-through
 }
 

@@ -978,7 +978,34 @@ void ShaderWindow::UpdateTitle()
         const char* scaleString = m_captureOptions.freeScale ? "free" : outputScale.mnemonic;
         const auto  inFPS       = (int)roundf(m_captureManager.InFPS());
         const auto  outFPS      = (int)roundf(m_captureManager.OutFPS());
-        _snwprintf_s(title, 200, _T("ShaderGlass (%s%S, %Spx, %S%%, ~%S, %d/%dfps)"), windowName, shader->Name.c_str(), pixelSize.mnemonic, scaleString, aspectRatio.mnemonic, inFPS, outFPS);
+        char advancedFlags[10];
+        advancedFlags[0] = ' ';
+        int a = 1;
+        if(m_captureOptions.flipMode)
+        {
+            advancedFlags[a++] = 'F';
+            if(m_captureOptions.allowTearing)
+                advancedFlags[a++] = 'T';
+        }
+        if(m_captureOptions.maxCaptureRate)
+            advancedFlags[a++] = 'M';
+        advancedFlags[a] = 0;
+        if(a == 1)
+            advancedFlags[0] = 0;
+        char inFPSdisplay[20] = "";
+        if(m_captureOptions.flipMode || m_captureOptions.maxCaptureRate)
+            snprintf(inFPSdisplay, 20, "%d->", inFPS);
+        _snwprintf_s(title,
+                     200,
+                     _T("ShaderGlass (%s%S, %Spx, %S%%, ~%S, %S%dfps%S)"),
+                     windowName,
+                     shader->Name.c_str(),
+                     pixelSize.mnemonic,
+                     scaleString,
+                     aspectRatio.mnemonic,
+                     inFPSdisplay,
+                     outFPS,
+                     advancedFlags);
         SetWindowTextW(m_mainWindow, title);
     }
     else
@@ -1085,6 +1112,42 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 RegisterHotkeys();
                 CheckMenuItem(m_programMenu, ID_PROCESSING_GLOBALHOTKEYS, MF_CHECKED);
                 SaveHotkeyState(true);
+            }
+            break;
+        case ID_PRESENTATION_USEFLIPMODE:
+            if(GetMenuState(m_advancedMenu, ID_PRESENTATION_USEFLIPMODE, MF_BYCOMMAND) & MF_CHECKED)
+            {
+                CheckMenuItem(m_advancedMenu, ID_PRESENTATION_USEFLIPMODE, MF_UNCHECKED);
+                SaveFlipModeState(false);
+            }
+            else
+            {
+                CheckMenuItem(m_advancedMenu, ID_PRESENTATION_USEFLIPMODE, MF_CHECKED);
+                SaveFlipModeState(true);
+            }
+            break;
+        case ID_ADVANCED_ALLOWTEARING:
+            if(GetMenuState(m_advancedMenu, ID_ADVANCED_ALLOWTEARING, MF_BYCOMMAND) & MF_CHECKED)
+            {
+                CheckMenuItem(m_advancedMenu, ID_ADVANCED_ALLOWTEARING, MF_UNCHECKED);
+                SaveTearingState(false);
+            }
+            else
+            {
+                CheckMenuItem(m_advancedMenu, ID_ADVANCED_ALLOWTEARING, MF_CHECKED);
+                SaveTearingState(true);
+            }
+            break;
+        case ID_ADVANCED_MAXCAPTUREFRAMERATE:
+            if(GetMenuState(m_advancedMenu, ID_ADVANCED_MAXCAPTUREFRAMERATE, MF_BYCOMMAND) & MF_CHECKED)
+            {
+                CheckMenuItem(m_advancedMenu, ID_ADVANCED_MAXCAPTUREFRAMERATE, MF_UNCHECKED);
+                SaveMaxCaptureRateState(false);
+            }
+            else
+            {
+                CheckMenuItem(m_advancedMenu, ID_ADVANCED_MAXCAPTUREFRAMERATE, MF_CHECKED);
+                SaveMaxCaptureRateState(true);
             }
             break;
         case ID_DESKTOP_LOCKINPUTAREA:
@@ -1691,6 +1754,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 
     m_programMenu = GetSubMenu(m_mainMenu, 0);
     m_shaderMenu  = GetSubMenu(m_mainMenu, 3);
+    m_advancedMenu = GetSubMenu(m_mainMenu, 4);
     BuildProgramMenu();
     BuildInputMenu();
     BuildOutputMenu();
@@ -1700,7 +1764,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 
     if(Is1903())
     {
-        ModifyMenu(GetSubMenu(m_mainMenu, 4),
+        ModifyMenu(GetSubMenu(m_mainMenu, 5),
                    ID_HELP_WINDOWSVERSION,
                    MF_BYCOMMAND | MF_STRING | MF_DISABLED,
                    ID_HELP_WINDOWSVERSION,
@@ -1711,7 +1775,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     {
         CheckMenuItem(GetSubMenu(m_mainMenu, 1), IDM_INPUT_REMOVEBORDER, MF_CHECKED | MF_BYCOMMAND);
 
-        ModifyMenu(GetSubMenu(m_mainMenu, 4), ID_HELP_WINDOWSVERSION, MF_BYCOMMAND | MF_STRING | MF_DISABLED, ID_HELP_WINDOWSVERSION, L"Excellent functionality, Windows 11");
+        ModifyMenu(GetSubMenu(m_mainMenu, 5), ID_HELP_WINDOWSVERSION, MF_BYCOMMAND | MF_STRING | MF_DISABLED, ID_HELP_WINDOWSVERSION, L"Excellent functionality, Windows 11");
     }
 
     SetMenu(m_mainWindow, m_mainMenu);
@@ -1723,6 +1787,28 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     else
     {
         CheckMenuItem(m_programMenu, ID_PROCESSING_GLOBALHOTKEYS, MF_BYCOMMAND | MF_UNCHECKED);
+    }
+    if(GetFlipModeState())
+    {
+        CheckMenuItem(m_advancedMenu, ID_PRESENTATION_USEFLIPMODE, MF_BYCOMMAND | MF_CHECKED);
+        m_captureOptions.flipMode = true;
+    }
+    if(GetTearingState())
+    {
+        CheckMenuItem(m_advancedMenu, ID_ADVANCED_ALLOWTEARING, MF_BYCOMMAND | MF_CHECKED);
+        m_captureOptions.allowTearing = true;
+    }
+    if(CanSetCaptureRate())
+    {
+        if(GetMaxCaptureRateState())
+        {
+            CheckMenuItem(m_advancedMenu, ID_ADVANCED_MAXCAPTUREFRAMERATE, MF_BYCOMMAND | MF_CHECKED);
+            m_captureOptions.maxCaptureRate = true;
+        }
+    }
+    else
+    {
+        ModifyMenu(m_advancedMenu, ID_ADVANCED_MAXCAPTUREFRAMERATE, MF_BYCOMMAND | MF_STRING | MF_DISABLED, ID_ADVANCED_MAXCAPTUREFRAMERATE, L"Max Capture Rate (Win11 24H2)");
     }
 
     m_captureOptions.monitor      = nullptr;
@@ -1744,7 +1830,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     return TRUE;
 }
 
-void ShaderWindow::SaveHotkeyState(bool state)
+void ShaderWindow::SaveRegistryOption(const wchar_t* name, bool state)
 {
     HKEY  hkey;
     DWORD dwDisposition;
@@ -1752,23 +1838,63 @@ void ShaderWindow::SaveHotkeyState(bool state)
     {
         DWORD size  = sizeof(DWORD);
         DWORD value = state ? 1 : 0;
-        RegSetValueEx(hkey, TEXT("Global Hotkeys"), 0, REG_DWORD, (PBYTE)&value, size);
+        RegSetValueEx(hkey, name, 0, REG_DWORD, (PBYTE)&value, size);
         RegCloseKey(hkey);
     }
 }
 
-bool ShaderWindow::GetHotkeyState()
+bool ShaderWindow::GetRegistryOption(const wchar_t* name, bool default)
 {
     HKEY hKey;
     if(RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Software\\ShaderGlass"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
     {
-        DWORD value = 1;
+        DWORD value = (default ? 1 : 0);
         DWORD size  = sizeof(DWORD);
-        RegGetValue(hKey, NULL, TEXT("Global Hotkeys"), RRF_RT_REG_DWORD, NULL, &value, &size);
+        RegGetValue(hKey, NULL, name, RRF_RT_REG_DWORD, NULL, &value, &size);
         return value == 1;
     }
 
-    return true;
+    return default;
+}
+
+void ShaderWindow::SaveHotkeyState(bool state)
+{
+    SaveRegistryOption(TEXT("Global Hotkeys"), state);
+}
+
+bool ShaderWindow::GetHotkeyState()
+{
+    return GetRegistryOption(TEXT("Global Hotkeys"), true);
+}
+
+void ShaderWindow::SaveFlipModeState(bool state)
+{
+    SaveRegistryOption(TEXT("Use Flip Mode"), state);
+}
+
+bool ShaderWindow::GetFlipModeState()
+{
+    return GetRegistryOption(TEXT("Use Flip Mode"), false);
+}
+
+void ShaderWindow::SaveTearingState(bool state)
+{
+    SaveRegistryOption(TEXT("Allow Tearing"), state);
+}
+
+bool ShaderWindow::GetTearingState()
+{
+    return GetRegistryOption(TEXT("Allow Tearing"), false);
+}
+
+void ShaderWindow::SaveMaxCaptureRateState(bool state)
+{
+    SaveRegistryOption(TEXT("Max Capture Rate"), state);
+}
+
+bool ShaderWindow::GetMaxCaptureRateState()
+{
+    return GetRegistryOption(TEXT("Max Capture Rate"), false);
 }
 
 void ShaderWindow::LoadRecentProfiles()

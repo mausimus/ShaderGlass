@@ -9,6 +9,7 @@ public:
                    winrt::Windows::Graphics::Capture::GraphicsCaptureItem const&         item,
                    winrt::Windows::Graphics::DirectX::DirectXPixelFormat                 pixelFormat,
                    ShaderGlass&                                                          shaderGlass,
+                   bool                                                                  maxCaptureRate,
                    HANDLE                                                                frameEvent);
 
     CaptureSession(winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice const& device,
