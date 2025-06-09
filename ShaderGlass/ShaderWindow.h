@@ -113,6 +113,8 @@ private:
     bool GetTearingState();
     void SaveMaxCaptureRateState(bool state);
     bool GetMaxCaptureRateState();
+    void SaveUseHDRState(bool state);
+    bool GetUseHDRState();
     void SaveRememberFPS(int fps);
     bool RememberFPS();
     int  GetRememberFPS();

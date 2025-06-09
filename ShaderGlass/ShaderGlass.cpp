@@ -36,6 +36,7 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
                              bool                                image,
                              bool                                flipMode,
                              bool                                allowTearing,
+                             bool                                useHDR,
                              winrt::com_ptr<ID3D11Device>        device,
                              winrt::com_ptr<ID3D11DeviceContext> context)
 {
@@ -45,6 +46,7 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
     m_image         = image;
     m_flipMode      = flipMode;
     m_allowTearing  = allowTearing;
+    m_useHDR        = useHDR;
     m_device        = device;
     m_context       = context;
 
@@ -105,7 +107,7 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
         DXGI_SWAP_CHAIN_DESC1 d3d11SwapChainDesc = {};
         d3d11SwapChainDesc.Width                 = 0;
         d3d11SwapChainDesc.Height                = 0;
-        d3d11SwapChainDesc.Format                = DXGI_FORMAT_B8G8R8A8_UNORM;
+        d3d11SwapChainDesc.Format                = m_useHDR ? DXGI_FORMAT_R16G16B16A16_FLOAT : DXGI_FORMAT_B8G8R8A8_UNORM;
         d3d11SwapChainDesc.SampleDesc.Count      = 1;
         d3d11SwapChainDesc.SampleDesc.Quality    = 0;
         d3d11SwapChainDesc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -149,6 +151,14 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
     desc.MultisampleEnable     = FALSE;
     hr                         = m_device->CreateRasterizerState(&desc, m_rasterizerState.put());
     assert(SUCCEEDED(hr));
+
+    if(m_useHDR)
+    {
+        hr = m_swapChain->QueryInterface(__uuidof(IDXGISwapChain3), reinterpret_cast<void**>(m_swapChain3.put()));
+        assert(SUCCEEDED(hr));
+
+        SetSwapchainColorSpace();
+    }
 
     m_context->RSSetState(m_rasterizerState.get());
 
@@ -324,6 +334,17 @@ std::vector<std::tuple<int, ShaderParam*>> ShaderGlass::Params()
     return params;
 }
 
+void ShaderGlass::SetSwapchainColorSpace()
+{
+    assert(m_swapChain3.get());
+
+    if(m_swapChain3.get())
+    {
+        hr = m_swapChain3->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709);
+        assert(SUCCEEDED(hr));
+    }
+}
+
 bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
 {
     if(force || (clientRect.right != m_lastSize.x) || (clientRect.bottom != m_lastSize.y))
@@ -350,6 +371,11 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
 
             hr = m_device->CreateRenderTargetView(m_displayTexture.get(), NULL, m_displayRenderTarget.put());
             assert(SUCCEEDED(hr));
+
+            if(m_useHDR)
+            {
+                SetSwapchainColorSpace();
+            }
         }
         return true;
     }

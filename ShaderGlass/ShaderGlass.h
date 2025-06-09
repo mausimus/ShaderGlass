@@ -25,6 +25,7 @@ public:
                      bool                                image,
                      bool                                flipMode,
                      bool                                allowTearing,
+                     bool                                useHDR,
                      winrt::com_ptr<ID3D11Device>        device,
                      winrt::com_ptr<ID3D11DeviceContext> context);
     void  Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG frameTicks);
@@ -51,6 +52,7 @@ public:
 
 private:
     bool TryResizeSwapChain(const RECT& clientRect, bool force);
+    void SetSwapchainColorSpace();
     void DestroyShaders();
     void DestroyPasses();
     void DestroyTargets();
@@ -65,6 +67,7 @@ private:
     winrt::com_ptr<ID3D11Device>             m_device {nullptr};
     winrt::com_ptr<ID3D11ShaderResourceView> m_originalView {nullptr};
     winrt::com_ptr<IDXGISwapChain1>          m_swapChain {nullptr};
+    winrt::com_ptr<IDXGISwapChain3>          m_swapChain3 {nullptr};
     winrt::com_ptr<ID3D11RasterizerState>    m_rasterizerState {nullptr};
     winrt::com_ptr<ID3D11Texture2D>          m_displayTexture {nullptr};
     winrt::com_ptr<ID3D11RenderTargetView>   m_displayRenderTarget {nullptr};
@@ -85,6 +88,7 @@ private:
     bool       m_image {false};
     bool       m_flipMode {false};
     bool       m_allowTearing {false};
+    bool       m_useHDR {false};
     int        m_frameCounter {0};
     int        m_logicalFrameCounter {0};
     ULONGLONG  m_startTicks {0};

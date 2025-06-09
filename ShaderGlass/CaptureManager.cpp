@@ -121,6 +121,7 @@ bool CaptureManager::StartSession()
                               !m_options.imageFile.empty(),
                               m_options.flipMode,
                               m_options.allowTearing,
+                              m_options.useHDR,
                               m_d3dDevice,
                               m_context);
     UpdatePixelSize();
@@ -159,8 +160,12 @@ bool CaptureManager::StartSession()
     }
     else
     {
+        winrt::Windows::Graphics::DirectX::DirectXPixelFormat pixelFormat =
+            m_options.useHDR ? winrt::Windows::Graphics::DirectX::DirectXPixelFormat::R16G16B16A16Float
+                             : winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized;
+
         m_session = make_unique<CaptureSession>(
-            device, captureItem, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent);
+            device, captureItem, pixelFormat, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent);
     }
 
     m_active = true;

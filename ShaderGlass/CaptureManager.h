@@ -36,6 +36,7 @@ struct CaptureOptions
     bool         flipMode {false};
     bool         allowTearing {false};
     bool         maxCaptureRate {false};
+    bool         useHDR {false};
     RECT         croppedArea {0, 0, 0, 0};
     bool         vertical {false};
 };
