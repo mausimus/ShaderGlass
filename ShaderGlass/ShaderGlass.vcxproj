@@ -210,6 +210,7 @@
     <ClCompile Include="CaptureSession.cpp" />
     <ClCompile Include="CompileWindow.cpp" />
     <ClCompile Include="CropDialog.cpp" />
+    <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="InputDialog.cpp" />
     <ClCompile Include="WIC\ScreenGrab11.cpp" />
     <ClCompile Include="WinMain.cpp" />

@@ -440,6 +440,11 @@ void ShaderWindow::LoadImage()
             SetFreeScale();
         }
 
+        if(!HasCaptureAPI() && !m_captureManager.IsActive())
+        {
+            Start();
+        }
+
         UpdateWindowState();
     }
 }
@@ -685,12 +690,16 @@ BOOL CALLBACK ShaderWindow::EnumWindowsProc(_In_ HWND hwnd, _In_ LPARAM lParam)
 void ShaderWindow::ScanWindows()
 {
     m_captureWindows.clear();
-    EnumWindows(&ShaderWindow::EnumWindowsProcProxy, (LPARAM)this);
-
     for(UINT i = 0; i < MAX_CAPTURE_WINDOWS; i++)
     {
         RemoveMenu(m_windowMenu, WM_CAPTURE_WINDOW(i), MF_BYCOMMAND);
     }
+
+    if(!HasCaptureAPI())
+        return;
+
+    EnumWindows(&ShaderWindow::EnumWindowsProcProxy, (LPARAM)this);
+
     UINT i = 0;
     for(const auto& w : m_captureWindows)
     {
@@ -703,6 +712,13 @@ void ShaderWindow::ScanWindows()
 void ShaderWindow::ScanDisplays()
 {
     m_captureDisplays.clear();
+    for(UINT i = 0; i < MAX_CAPTURE_DISPLAYS; i++)
+    {
+        RemoveMenu(m_displayMenu, WM_CAPTURE_DISPLAY(i), MF_BYCOMMAND);
+    }
+
+    if(!HasCaptureAPI())
+        return;
 
     if(!Is1903())
     {
@@ -717,10 +733,6 @@ void ShaderWindow::ScanDisplays()
 
     EnumDisplayMonitors(NULL, NULL, &ShaderWindow::EnumDisplayMonitorsProcProxy, (LPARAM)this);
 
-    for(UINT i = 0; i < MAX_CAPTURE_DISPLAYS; i++)
-    {
-        RemoveMenu(m_displayMenu, WM_CAPTURE_DISPLAY(i), MF_BYCOMMAND);
-    }
     UINT i = 0;
     for(const auto& w : m_captureDisplays)
     {
@@ -935,7 +947,7 @@ BOOL ShaderWindow::InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     m_instance = hInstance;
 
-    int x, y, w, h;
+    int x = 0, y = 0, w = 0, h = 0;
     GetStartingPosition(x, y, w, h);
 
     HWND hWnd = CreateWindowW(m_windowClass, m_title, WS_OVERLAPPEDWINDOW | WS_EX_WINDOWEDGE, x, y, w, h, nullptr, nullptr, hInstance, this);
@@ -1082,16 +1094,19 @@ void ShaderWindow::UpdateWindowState()
         // clone or normal window
         SetWindowLong(m_mainWindow, GWL_EXSTYLE, cur_style & ~WS_EX_LAYERED);
 
-    if(m_captureManager.IsActive() && !m_captureOptions.clone && !m_captureOptions.captureWindow)
-    // desktop glass - exclude from capture
+    if(HasCaptureAPI())
     {
-        SetWindowDisplayAffinity(m_mainWindow, WDA_EXCLUDEFROMCAPTURE);
-        //SetWindowDisplayAffinity(m_paramsWindow, WDA_EXCLUDEFROMCAPTURE);
-    }
-    else
-    {
-        SetWindowDisplayAffinity(m_mainWindow, WDA_NONE);
-        //SetWindowDisplayAffinity(m_paramsWindow, WDA_NONE);
+        if(m_captureManager.IsActive() && !m_captureOptions.clone && !m_captureOptions.captureWindow)
+        // desktop glass - exclude from capture
+        {
+            SetWindowDisplayAffinity(m_mainWindow, WDA_EXCLUDEFROMCAPTURE);
+            //SetWindowDisplayAffinity(m_paramsWindow, WDA_EXCLUDEFROMCAPTURE);
+        }
+        else
+        {
+            SetWindowDisplayAffinity(m_mainWindow, WDA_NONE);
+            //SetWindowDisplayAffinity(m_paramsWindow, WDA_NONE);
+        }
     }
 
     UpdateTitle();
@@ -1324,6 +1339,8 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             }
             break;
         case ID_DESKTOP_LOCKINPUTAREA:
+            if(!HasCaptureAPI())
+                break;
             if(m_captureOptions.inputArea.right - m_captureOptions.inputArea.left != 0)
             {
                 m_captureOptions.inputArea.top    = 0;
@@ -1383,6 +1400,8 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             }
             break;
         case IDM_INPUT_CAPTURECURSOR:
+            if(!HasCaptureAPI())
+                break;
             m_captureOptions.captureCursor = !m_captureOptions.captureCursor;
             m_captureManager.UpdateCursor();
             if(m_captureOptions.captureCursor)
@@ -1447,18 +1466,24 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         }
         break;
         case IDM_WINDOW_SOLID:
+            if(!HasCaptureAPI())
+                break;
             m_captureOptions.transparent = false;
             CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_UNCHECKED | MF_BYCOMMAND);
             CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_CHECKED | MF_BYCOMMAND);
             UpdateWindowState();
             break;
         case IDM_WINDOW_TRANSPARENT:
+            if(!HasCaptureAPI())
+                break;
             m_captureOptions.transparent = true;
             CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_TRANSPARENT, MF_CHECKED | MF_BYCOMMAND);
             CheckMenuItem(m_outputWindowMenu, IDM_WINDOW_SOLID, MF_UNCHECKED | MF_BYCOMMAND);
             UpdateWindowState();
             break;
         case IDM_MODE_GLASS:
+            if(!HasCaptureAPI())
+                break;
             m_captureOptions.clone = false;
             CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_CHECKED | MF_BYCOMMAND);
             CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_UNCHECKED | MF_BYCOMMAND);
@@ -1469,6 +1494,8 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             UpdateWindowState();
             break;
         case IDM_MODE_CLONE:
+            if(!HasCaptureAPI())
+                break;
             m_captureOptions.clone = true;
             CheckMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_UNCHECKED | MF_BYCOMMAND);
             CheckMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_CHECKED | MF_BYCOMMAND);
@@ -1599,6 +1626,8 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 }
                 if(wmId >= WM_CAPTURE_WINDOW(0) && wmId < WM_CAPTURE_WINDOW(MAX_CAPTURE_WINDOWS))
                 {
+                    if(!HasCaptureAPI())
+                        break;
                     CheckMenuRadioItem(m_windowMenu, WM_CAPTURE_WINDOW(0), WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())), wmId, MF_BYCOMMAND);
                     CheckMenuRadioItem(m_displayMenu, WM_CAPTURE_DISPLAY(0), WM_CAPTURE_DISPLAY(static_cast<UINT>(m_captureDisplays.size())), 0, MF_BYCOMMAND);
                     m_captureOptions.captureWindow = m_captureWindows.at(wmId - WM_CAPTURE_WINDOW(0)).hwnd;
@@ -1619,6 +1648,8 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 }
                 if(wmId >= WM_CAPTURE_DISPLAY(0) && wmId < WM_CAPTURE_DISPLAY(MAX_CAPTURE_DISPLAYS))
                 {
+                    if(!HasCaptureAPI())
+                        break;
                     CheckMenuRadioItem(m_windowMenu, WM_CAPTURE_WINDOW(0), WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())), 0, MF_BYCOMMAND);
                     CheckMenuRadioItem(m_displayMenu, WM_CAPTURE_DISPLAY(0), WM_CAPTURE_DISPLAY(static_cast<UINT>(m_captureDisplays.size())), wmId, MF_BYCOMMAND);
                     m_captureOptions.captureWindow = NULL;
@@ -2022,7 +2053,21 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     ScanWindows();
     ScanDisplays();
 
-    if(Is1903())
+    if(!HasCaptureAPI())
+    {
+        ModifyMenu(m_helpMenu,
+                   ID_HELP_WINDOWSVERSION,
+                   MF_BYCOMMAND | MF_STRING | MF_DISABLED,
+                   ID_HELP_WINDOWSVERSION,
+                   L"No Windows Capture API! Only file input is possible.");
+
+        EnableMenuItem(m_inputMenu, 0, MF_BYPOSITION | MF_DISABLED);
+        EnableMenuItem(m_inputMenu, 1, MF_BYPOSITION | MF_DISABLED);
+        EnableMenuItem(m_inputMenu, IDM_INPUT_CAPTURECURSOR, MF_BYCOMMAND | MF_DISABLED);
+        EnableMenuItem(m_modeMenu, IDM_MODE_GLASS, MF_DISABLED | MF_BYCOMMAND);
+        EnableMenuItem(m_modeMenu, IDM_MODE_CLONE, MF_DISABLED | MF_BYCOMMAND);
+    }
+    else if(Is1903())
     {
         ModifyMenu(m_helpMenu,
                    ID_HELP_WINDOWSVERSION,
@@ -2508,7 +2553,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
     m_inputDialog.reset(new InputDialog(m_instance, m_mainWindow));
     m_cropDialog.reset(new CropDialog(m_instance, m_mainWindow));
 
-    if(autoStart)
+    if(autoStart && HasCaptureAPI())
     {
         SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
         SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);

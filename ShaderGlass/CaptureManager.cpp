@@ -8,6 +8,7 @@ GNU General Public License v3.0
 #include "pch.h"
 #include "CaptureManager.h"
 #include "ShaderList.h"
+#include "Helpers.h"
 
 #include "Util/capture.desktop.interop.h"
 #include "Util/direct3d11.interop.h"
@@ -80,7 +81,7 @@ bool CaptureManager::StartSession()
     }
 
     auto dxgiDevice = m_d3dDevice.as<IDXGIDevice>();
-    auto device     = CreateDirect3DDevice(dxgiDevice.get());
+    auto device     = HasCaptureAPI() ? CreateDirect3DDevice(dxgiDevice.get()) : nullptr;
 
     // get GPU name
     {

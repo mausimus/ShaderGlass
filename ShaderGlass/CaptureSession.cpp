@@ -78,7 +78,7 @@ CaptureSession::CaptureSession(winrt::Windows::Graphics::DirectX::Direct3D11::ID
 
 void CaptureSession::UpdateCursor(bool captureCursor)
 {
-    if(m_session && winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession", L"IsCursorCaptureEnabled"))
+    if(m_session && CanUpdateCursor())
         m_session.IsCursorCaptureEnabled(captureCursor);
 }
 
