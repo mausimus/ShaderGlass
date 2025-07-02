@@ -177,7 +177,7 @@
     <ClInclude Include="CropDialog.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="InputDialog.h" />
-    <ClInclude Include="MFVideoCapture.h" />
+    <ClInclude Include="DeviceCapture.h" />
     <ClInclude Include="ParamsWindow.h" />
     <ClInclude Include="Preset.h" />
     <ClInclude Include="Options.h" />
@@ -213,7 +213,7 @@
     <ClCompile Include="CropDialog.cpp" />
     <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="InputDialog.cpp" />
-    <ClCompile Include="MFVideoCapture.cpp" />
+    <ClCompile Include="DeviceCapture.cpp" />
     <ClCompile Include="WIC\ScreenGrab11.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="ParamsWindow.cpp" />

@@ -12,7 +12,6 @@ GNU General Public License v3.0
 #include "Shaders\PreprocessShaderDef.h"
 #include "Shaders\PassthroughShaderDef.h"
 #include "Shaders\PassthroughPresetDef.h"
-#include <mutex>
 
 class ShaderGlass
 {

@@ -5,31 +5,23 @@
 #include <Mfreadwrite.h>
 #include <mferror.h>
 
-struct CaptureFormatInfo
-{
-    unsigned     m_no;
-    std::wstring m_name;
-};
+#include "Options.h"
 
-struct CaptureDeviceInfo
-{
-    unsigned     m_no;
-    std::wstring m_name;
-
-    std::vector<CaptureFormatInfo> m_formats;
-};
-
-class MFVideoCapture
+class DeviceCapture
 {
 public:
-    void                           Init();
-    std::vector<CaptureDeviceInfo> GetDevicesAndFormats();
-    void                           Start(winrt::com_ptr<ID3D11Device> d3dDevice, int deviceNo, int formatNo);
-    bool                           Poll();
+    DeviceCapture();
+
+    std::vector<CaptureDevice> GetCaptureDevices();
+    void                       Start(winrt::com_ptr<ID3D11Device> d3dDevice, int deviceNo, int formatNo);
+    void                       Stop();
+    bool                       Poll();
 
     winrt::com_ptr<ID3D11Texture2D> m_outputTexture;
+    bool                            m_active;
 
 private:
+    void Init();
     void CreateMediaSource(unsigned deviceNo, unsigned streamNo, unsigned mediaNo);
     void CreateSourceReader();
     void SetMediaType();
@@ -45,4 +37,6 @@ private:
     winrt::com_ptr<IMFSample>                 m_outputSample;
     UINT32                                    m_width;
     UINT32                                    m_height;
+    bool                                      m_init;
+    std::mutex                                m_mutex {};
 };

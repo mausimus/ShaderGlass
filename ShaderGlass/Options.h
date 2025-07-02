@@ -14,6 +14,9 @@ GNU General Public License v3.0
 #define MAX_OUTPUT_SCALES 20U
 #define MAX_CAPTURE_WINDOWS 100U
 #define MAX_CAPTURE_DISPLAYS 10U
+#define MAX_CAPTURE_DEVICES 20U
+#define MAX_CAPTURE_FORMATS 20U
+#define MAX_CAPTURE_DEVICES_FORMATS (MAX_CAPTURE_DEVICES * MAX_CAPTURE_FORMATS)
 #define MAX_RECENT_PROFILES 20U
 #define MAX_RECENT_IMPORTS 20U
 #define HK_FULLSCREEN 1000
@@ -29,6 +32,7 @@ GNU General Public License v3.0
 #define WM_CAPTURE_DISPLAY(i) (static_cast<UINT> WM_CAPTURE_WINDOW(MAX_CAPTURE_WINDOWS) + i)
 #define WM_RECENT_PROFILE(i) (static_cast<UINT> WM_CAPTURE_DISPLAY(MAX_CAPTURE_DISPLAYS) + i)
 #define WM_RECENT_IMPORT(i) (static_cast<UINT> WM_RECENT_PROFILE(MAX_RECENT_PROFILES) + i)
+#define WM_CAPTURE_DEVICE_FORMAT(i) (static_cast<UINT> WM_RECENT_IMPORT(MAX_RECENT_IMPORTS) + i)
 
 #define CUSTOM_MNEMONIC "Custom"
 
@@ -81,6 +85,22 @@ struct CaptureDisplay
     CaptureDisplay(HMONITOR monitor, const std::string& name) : monitor {monitor}, name {name} { }
     HMONITOR    monitor;
     std::string name;
+};
+
+struct CaptureFormat
+{
+    unsigned     no;
+    std::wstring name;
+    std::string  id;
+    unsigned     sortOrder;
+};
+
+struct CaptureDevice
+{
+    unsigned     no;
+    std::wstring name;
+
+    std::vector<CaptureFormat> formats;
 };
 
 static const std::map<UINT, PixelSizeInfo> pixelSizes = {{WM_PIXEL_SIZE(0), PixelSizeInfo(1.0f, 1.0f, "x1", "1")},

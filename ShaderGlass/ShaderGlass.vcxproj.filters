@@ -114,7 +114,7 @@
     <ClInclude Include="CropDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MFVideoCapture.h">
+    <ClInclude Include="DeviceCapture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -176,7 +176,7 @@
     <ClCompile Include="Helpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MFVideoCapture.cpp">
+    <ClCompile Include="DeviceCapture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

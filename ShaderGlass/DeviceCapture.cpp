@@ -7,32 +7,41 @@ GNU General Public License v3.0
 
 #include "pch.h"
 
-#include "MFVideoCapture.h"
+#include "DeviceCapture.h"
+#include "Helpers.h"
 
 #pragma comment(lib, "mf.lib")
 #pragma comment(lib, "mfuuid")
 
 #define THROW(h)                                                                                                                                                                   \
     if(FAILED(h))                                                                                                                                                                  \
-        throw std::runtime_error("Unable to initialize MF Capture");
+        throw std::runtime_error("Unable to initialize Media Foundation Capture");
 
 static HRESULT hr;
 
 constexpr unsigned STREAM_NO = 0;
 
-void MFVideoCapture::Init()
+DeviceCapture::DeviceCapture() : m_width {0}, m_height {0}, m_init {false}, m_active {false} { }
+
+void DeviceCapture::Init()
 {
-    THROW(MFStartup(MF_VERSION, MFSTARTUP_LITE));
+    if(!m_init)
+    {
+        THROW(MFStartup(MF_VERSION, MFSTARTUP_LITE));
+        m_init = true;
+    }
 }
 
-std::vector<CaptureDeviceInfo> MFVideoCapture::GetDevicesAndFormats()
+std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
 {
-    std::vector<CaptureDeviceInfo> result;
+    std::vector<CaptureDevice> result;
 
     winrt::com_ptr<IMFAttributes> attributes;
     UINT32                        numDevices = 0;
     IMFActivate**                 devices    = NULL;
     BOOL                          selected   = FALSE;
+
+    Init();
 
     THROW(MFCreateAttributes(attributes.put(), 1));
     THROW(attributes->SetGUID(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID));
@@ -50,18 +59,17 @@ std::vector<CaptureDeviceInfo> MFVideoCapture::GetDevicesAndFormats()
             winrt::com_ptr<IMFMediaTypeHandler>       mediaTypeHandler;
             winrt::com_ptr<IMFMediaType>              mediaType;
 
-            CaptureDeviceInfo cdi;
-
             THROW(devices[deviceNo]->ActivateObject(__uuidof(IMFMediaSource), reinterpret_cast<void**>(mediaSource.put())));
             THROW(mediaSource->CreatePresentationDescriptor(presentationDescriptor.put()));
             THROW(presentationDescriptor->GetStreamDescriptorByIndex(STREAM_NO, &selected, streamDescriptor.put()));
             if(!selected)
                 throw std::runtime_error("Stream not selected");
 
-            wchar_t deviceName[1024];
-            UINT32  deviceNameLen = 1024;
-            devices[deviceNo]->GetString(MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME, deviceName, 1024, &deviceNameLen);
-            cdi.m_name = std::wstring(deviceName);
+            wchar_t deviceName[MAX_DEVICE_NAME];
+            UINT32  deviceNameLen = MAX_DEVICE_NAME;
+            devices[deviceNo]->GetString(MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME, deviceName, MAX_DEVICE_NAME, &deviceNameLen);
+
+            CaptureDevice cdi {.no = deviceNo + 1, .name = std::wstring(deviceName)};
 
             DWORD mediaTypeCount;
             THROW(streamDescriptor->GetMediaTypeHandler(mediaTypeHandler.put()));
@@ -87,11 +95,16 @@ std::vector<CaptureDeviceInfo> MFVideoCapture::GetDevicesAndFormats()
                 THROW(MFGetAttributeRatio(mediaType.get(), MF_MT_FRAME_RATE, &num, &denum));
                 float fps = denum != 0 ? num / (float)denum : 0.0f;
 
-                wchar_t formatName[50];
-                _snwprintf_s(formatName, 50, L"%dx%d %.2f fps (%S)\n", w, h, fps, formatCode);
+                wchar_t formatName[MAX_DEVICE_NAME];
+                _snwprintf_s(formatName, MAX_DEVICE_NAME, L"%dx%d %.2f fps (%S)\n", w, h, fps, formatCode);
 
-                cdi.m_formats.push_back(CaptureFormatInfo {.m_no = i, .m_name = std::wstring(formatName)});
+                char formatId[MAX_DEVICE_NAME];
+                snprintf(formatId, MAX_DEVICE_NAME, "%u:%u:%lu:%u:%u", w, h, format.Data1, num, denum);
+
+                cdi.formats.push_back(CaptureFormat {.no = i + 1, .name = std::wstring(formatName), .id = std::string(formatId), .sortOrder = w * h * 500 + (int)fps});
             }
+            std::sort(cdi.formats.begin(), cdi.formats.end(), [](const CaptureFormat& a, const CaptureFormat& b) { return a.sortOrder > b.sortOrder; });
+
             result.emplace_back(cdi);
         }
     }
@@ -106,16 +119,20 @@ std::vector<CaptureDeviceInfo> MFVideoCapture::GetDevicesAndFormats()
     return result;
 }
 
-void MFVideoCapture::Start(winrt::com_ptr<ID3D11Device> d3dDevice, int deviceNo, int formatNo)
+void DeviceCapture::Start(winrt::com_ptr<ID3D11Device> d3dDevice, int deviceNo, int formatNo)
 {
+    Init();
+
     CreateMediaSource(deviceNo, STREAM_NO, formatNo);
     CreateSourceReader();
     SetMediaType();
     CreateSampleAllocator(d3dDevice);
     CreateOutputTexture();
+
+    m_active = true;
 }
 
-void MFVideoCapture::CreateOutputTexture()
+void DeviceCapture::CreateOutputTexture()
 {
     winrt::com_ptr<IMFMediaBuffer> mediaBuffer;
     winrt::com_ptr<IMFDXGIBuffer>  dxgiBuffer;
@@ -125,7 +142,7 @@ void MFVideoCapture::CreateOutputTexture()
     THROW(dxgiBuffer->GetResource(IID_PPV_ARGS(m_outputTexture.put())));
 }
 
-void MFVideoCapture::CreateSourceReader()
+void DeviceCapture::CreateSourceReader()
 {
     winrt::com_ptr<IMFAttributes> attributes;
 
@@ -134,7 +151,7 @@ void MFVideoCapture::CreateSourceReader()
     THROW(MFCreateSourceReaderFromMediaSource(m_mediaSource.get(), attributes.get(), m_sourceReader.put()));
 }
 
-void MFVideoCapture::CreateMediaSource(unsigned deviceNo, unsigned streamNo, unsigned mediaNo)
+void DeviceCapture::CreateMediaSource(unsigned deviceNo, unsigned streamNo, unsigned mediaNo)
 {
     winrt::com_ptr<IMFAttributes>             attributes;
     winrt::com_ptr<IMFPresentationDescriptor> presentationDescriptor;
@@ -177,7 +194,7 @@ void MFVideoCapture::CreateMediaSource(unsigned deviceNo, unsigned streamNo, uns
     }
 }
 
-void MFVideoCapture::SetMediaType()
+void DeviceCapture::SetMediaType()
 {
     winrt::com_ptr<IMFMediaType> sourceMediaType;
 
@@ -194,7 +211,7 @@ void MFVideoCapture::SetMediaType()
     THROW(m_sourceReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, NULL, m_outputMediaType.get()));
 }
 
-void MFVideoCapture::CreateSampleAllocator(winrt::com_ptr<ID3D11Device> d3dDevice)
+void DeviceCapture::CreateSampleAllocator(winrt::com_ptr<ID3D11Device> d3dDevice)
 {
     winrt::com_ptr<IMFDXGIDeviceManager> dxgiDeviceManager;
     winrt::com_ptr<IMFMediaTypeHandler>  mediaTypeHandler;
@@ -212,7 +229,7 @@ void MFVideoCapture::CreateSampleAllocator(winrt::com_ptr<ID3D11Device> d3dDevic
     THROW(m_sampleAllocator->AllocateSample(m_outputSample.put()));
 }
 
-bool MFVideoCapture::Poll()
+bool DeviceCapture::Poll()
 {
     winrt::com_ptr<IMFSample>      inputSample;
     winrt::com_ptr<IMFMediaBuffer> srcBuffer;
@@ -223,6 +240,11 @@ bool MFVideoCapture::Poll()
     LONGLONG                       streamTime;
     BYTE*                          bufferData = NULL;
     DWORD                          bufferLen  = 0;
+
+    std::unique_lock lock(m_mutex);
+
+    if(!m_active)
+        return false;
 
     THROW(m_sourceReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags, &streamTime, inputSample.put()));
     if(!inputSample)
@@ -238,7 +260,23 @@ bool MFVideoCapture::Poll()
     return true;
 }
 
-HRESULT MFVideoCapture::CopyAttribute(IMFAttributes* pFrom, IMFAttributes* pTo, REFGUID guidKey)
+void DeviceCapture::Stop()
+{
+    std::unique_lock lock(m_mutex);
+
+    if(m_active)
+    {
+        m_active = false;
+
+        m_outputSample    = nullptr;
+        m_sampleAllocator = nullptr;
+        m_outputMediaType = nullptr;
+        m_sourceReader    = nullptr;
+        m_mediaSource     = nullptr;
+    }
+}
+
+HRESULT DeviceCapture::CopyAttribute(IMFAttributes* pFrom, IMFAttributes* pTo, REFGUID guidKey)
 {
     PROPVARIANT val;
     pFrom->GetItem(guidKey, &val);

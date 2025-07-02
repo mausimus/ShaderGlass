@@ -56,6 +56,11 @@ const ShaderCache& CaptureManager::Cache()
     return m_shaderCache;
 }
 
+DeviceCapture& CaptureManager::Devices()
+{
+    return m_deviceCapture;
+}
+
 bool CaptureManager::UpdateInput()
 {
     if(IsActive())
@@ -101,7 +106,9 @@ bool CaptureManager::StartSession()
 #endif
 
     winrt::Windows::Graphics::Capture::GraphicsCaptureItem captureItem {nullptr};
-    if(!m_options.imageFile.size())
+
+    auto isCaptureAPI = !m_options.imageFile.size() && m_options.deviceNo == 0;
+    if(isCaptureAPI)
     {
         try
         {
@@ -119,7 +126,7 @@ bool CaptureManager::StartSession()
                               m_options.captureWindow,
                               m_options.monitor,
                               m_options.clone,
-                              !m_options.imageFile.empty(),
+                              !m_options.imageFile.empty() || m_options.deviceNo,
                               m_options.flipMode,
                               m_options.allowTearing,
                               m_options.useHDR,
@@ -159,14 +166,25 @@ bool CaptureManager::StartSession()
         m_session = make_unique<CaptureSession>(device, inputTexture, *m_shaderGlass, m_frameEvent);
         UpdatePixelSize();
     }
+    else if(m_options.deviceNo)
+    {
+        m_deviceCapture.Start(m_d3dDevice, m_options.deviceNo - 1, m_options.deviceFormat - 1);
+
+        // retrieve input image size
+        D3D11_TEXTURE2D_DESC desc = {};
+        m_deviceCapture.m_outputTexture->GetDesc(&desc);
+        m_options.imageWidth  = desc.Width;
+        m_options.imageHeight = desc.Height;
+
+        m_session = make_unique<CaptureSession>(device, m_deviceCapture.m_outputTexture, *m_shaderGlass, m_frameEvent);
+        UpdatePixelSize();
+    }
     else
     {
-        winrt::Windows::Graphics::DirectX::DirectXPixelFormat pixelFormat =
-            m_options.useHDR ? winrt::Windows::Graphics::DirectX::DirectXPixelFormat::R16G16B16A16Float
-                             : winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized;
+        winrt::Windows::Graphics::DirectX::DirectXPixelFormat pixelFormat = m_options.useHDR ? winrt::Windows::Graphics::DirectX::DirectXPixelFormat::R16G16B16A16Float
+                                                                                             : winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized;
 
-        m_session = make_unique<CaptureSession>(
-            device, captureItem, pixelFormat, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent);
+        m_session = make_unique<CaptureSession>(device, captureItem, pixelFormat, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent);
     }
 
     m_active = true;
@@ -277,6 +295,9 @@ void CaptureManager::Exit()
     {
         m_active = false;
         SetEvent(m_frameEvent);
+
+        if(m_deviceCapture.m_active)
+            m_deviceCapture.Stop();
 
         m_session->Stop();
         delete m_session.release();
@@ -406,6 +427,8 @@ void CaptureManager::ThreadFunc()
     while(m_active)
     {
         WaitForSingleObject(m_frameEvent, 1);
+        if(m_deviceCapture.m_active)
+            m_deviceCapture.Poll();
         ProcessFrame();
     }
 }

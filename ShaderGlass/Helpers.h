@@ -8,6 +8,7 @@ GNU General Public License v3.0
 #pragma once
 
 #define MAX_WINDOW_TITLE 200
+#define MAX_DEVICE_NAME 200
 
 wchar_t* convertCharArrayToLPCWSTR(const char* charArray);
 BOOL IsAltTabWindow(HWND hwnd);

@@ -9,6 +9,7 @@ GNU General Public License v3.0
 
 #include "CaptureSession.h"
 #include "ShaderCache.h"
+#include "DeviceCapture.h"
 
 struct CaptureOptions
 {
@@ -30,6 +31,8 @@ struct CaptureOptions
     std::wstring imageFile {};
     int          imageWidth {0};
     int          imageHeight {0};
+    int          deviceNo {0};
+    int          deviceFormat {0};
     RECT         inputArea {0, 0, 0, 0};
     float        dpiScale {1.0f};
     bool         freeScale {false};
@@ -52,6 +55,7 @@ public:
     const std::vector<std::unique_ptr<PresetDef>>& Presets();
     std::vector<std::tuple<int, ShaderParam*>>     Params();
     const ShaderCache&                             Cache();
+    DeviceCapture&                                 Devices();
 
     bool  Initialize();
     bool  IsActive();
@@ -97,6 +101,7 @@ private:
     std::vector<std::tuple<int, std::string, double>> m_queuedParams;
     std::vector<std::tuple<int, std::string, double>> m_lastParams;
     ShaderCache                                       m_shaderCache;
+    DeviceCapture                                     m_deviceCapture;
     HANDLE                                            m_frameEvent {nullptr};
     unsigned int                                      m_lastPreset;
 };
