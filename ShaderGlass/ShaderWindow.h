@@ -57,7 +57,6 @@ private:
     HMENU                        m_orientationMenu {nullptr};
     std::vector<CaptureWindow>   m_captureWindows;
     std::vector<CaptureDisplay>  m_captureDisplays;
-    std::vector<CaptureDevice>   m_captureDevices;
     CaptureManager&              m_captureManager;
     CaptureOptions&              m_captureOptions;
     unsigned                     m_numPresets {0};

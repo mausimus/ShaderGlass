@@ -452,7 +452,7 @@ void ShaderWindow::StartImage(bool setDefaults)
     EnableMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_BYCOMMAND | MF_ENABLED);
 
     // if we are *switching* to file mode, default pixel size and freescale
-    if(setDefaults)
+    if(setDefaults && !ScaleLocked())
     {
         // set starting scale to fit within current window size
         RECT r;
@@ -516,7 +516,8 @@ void ShaderWindow::SaveProfile(const std::wstring& fileName)
             << std::to_string(m_captureOptions.inputArea.right) << " " << std::to_string(m_captureOptions.inputArea.bottom) << "\"" << std::endl;
     if(m_captureOptions.deviceNo)
     {
-        for(const auto& d : m_captureDevices)
+        const auto& devices = m_captureManager.Devices().GetCaptureDevices();
+        for(const auto& d : devices)
         {
             if(d.no == m_captureOptions.deviceNo)
             {
@@ -770,16 +771,16 @@ void ShaderWindow::ScanDevices()
         RemoveMenu(m_deviceMenu, i, MF_BYPOSITION);
     }
 
-    m_captureDevices = m_captureManager.Devices().GetCaptureDevices();
+    const auto& captureDevices = m_captureManager.Devices().GetCaptureDevices();
 
-    if(!m_captureDevices.size())
+    if(!captureDevices.size())
     {
         InsertMenu(m_deviceMenu, 1, MF_STRING | MF_DISABLED, ID_DEVICE_NODEVICESFOUND, TEXT("No capture devices"));
         return;
     }
 
     numDevices = 0;
-    for(auto& w : m_captureDevices)
+    for(auto& w : captureDevices)
     {
         auto deviceMenu = CreatePopupMenu();
 
