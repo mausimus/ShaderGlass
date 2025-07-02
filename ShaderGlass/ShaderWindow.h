@@ -104,7 +104,7 @@ private:
     void         TryUpdateInput();
     void         Screenshot();
     void         LoadImage();
-    void         StartImage();
+    void         StartImage(bool setDefaults);
     void         UpdateTitle();
     void         SetFreeScale();
     void         RegisterHotkeys();

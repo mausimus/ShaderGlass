@@ -10,8 +10,11 @@ GNU General Public License v3.0
 #include "DeviceCapture.h"
 #include "Helpers.h"
 
+#include <Shlwapi.h>
+
 #pragma comment(lib, "mf.lib")
 #pragma comment(lib, "mfuuid")
+#pragma comment(lib, "Shlwapi.lib")
 
 #define THROW(h)                                                                                                                                                                   \
     if(FAILED(h))                                                                                                                                                                  \
@@ -21,7 +24,7 @@ static HRESULT hr;
 
 constexpr unsigned STREAM_NO = 0;
 
-DeviceCapture::DeviceCapture() : m_width {0}, m_height {0}, m_init {false}, m_active {false} { }
+DeviceCapture::DeviceCapture() { }
 
 void DeviceCapture::Init()
 {
@@ -148,6 +151,11 @@ void DeviceCapture::CreateSourceReader()
 
     THROW(MFCreateAttributes(attributes.put(), 1));
     THROW(attributes->SetUINT32(MF_SOURCE_READER_ENABLE_VIDEO_PROCESSING, 1));
+    if(m_async)
+    {
+        m_callback.attach(new(std::nothrow) SourceReaderCallback(this));
+        THROW(attributes->SetUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, m_callback.get()));
+    }
     THROW(MFCreateSourceReaderFromMediaSource(m_mediaSource.get(), attributes.get(), m_sourceReader.put()));
 }
 
@@ -229,26 +237,18 @@ void DeviceCapture::CreateSampleAllocator(winrt::com_ptr<ID3D11Device> d3dDevice
     THROW(m_sampleAllocator->AllocateSample(m_outputSample.put()));
 }
 
-bool DeviceCapture::Poll()
+void DeviceCapture::Process(IMFSample* inputSample)
 {
-    winrt::com_ptr<IMFSample>      inputSample;
-    winrt::com_ptr<IMFMediaBuffer> srcBuffer;
-    winrt::com_ptr<IMFMediaBuffer> dstBuffer;
-    winrt::com_ptr<IMF2DBuffer>    dstBuffer2D;
-    DWORD                          streamIndex;
-    DWORD                          streamFlags;
-    LONGLONG                       streamTime;
-    BYTE*                          bufferData = NULL;
-    DWORD                          bufferLen  = 0;
-
     std::unique_lock lock(m_mutex);
 
     if(!m_active)
-        return false;
+        return;
 
-    THROW(m_sourceReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags, &streamTime, inputSample.put()));
-    if(!inputSample)
-        return false;
+    winrt::com_ptr<IMFMediaBuffer> srcBuffer;
+    winrt::com_ptr<IMFMediaBuffer> dstBuffer;
+    winrt::com_ptr<IMF2DBuffer>    dstBuffer2D;
+    BYTE*                          bufferData = NULL;
+    DWORD                          bufferLen  = 0;
 
     THROW(inputSample->ConvertToContiguousBuffer(srcBuffer.put()));
     THROW(srcBuffer->Lock(&bufferData, NULL, &bufferLen));
@@ -256,8 +256,40 @@ bool DeviceCapture::Poll()
     THROW(dstBuffer->QueryInterface(IID_PPV_ARGS(dstBuffer2D.put())));
     THROW(dstBuffer2D->ContiguousCopyFrom(bufferData, bufferLen));
     THROW(srcBuffer->Unlock());
+}
 
-    return true;
+bool DeviceCapture::Poll()
+{
+    std::unique_lock lock(m_mutex);
+
+    if(!m_active)
+        return false;
+
+    if(m_async)
+    {
+        if(!m_callback->m_waiting)
+        {
+            m_callback->m_waiting = true;
+            THROW(m_sourceReader->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, NULL, NULL, NULL, NULL));
+            return true;
+        }
+        return false;
+    }
+    else
+    {
+        winrt::com_ptr<IMFSample> inputSample;
+        DWORD                     streamIndex;
+        DWORD                     streamFlags;
+        LONGLONG                  streamTime;
+
+        THROW(m_sourceReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags, &streamTime, inputSample.put()));
+        if(!inputSample)
+            return false;
+
+        Process(inputSample.get());
+
+        return true;
+    }
 }
 
 void DeviceCapture::Stop()
@@ -272,6 +304,7 @@ void DeviceCapture::Stop()
         m_sampleAllocator = nullptr;
         m_outputMediaType = nullptr;
         m_sourceReader    = nullptr;
+        m_callback        = nullptr;
         m_mediaSource     = nullptr;
     }
 }
@@ -290,4 +323,64 @@ HRESULT DeviceCapture::CopyAttribute(IMFAttributes* pFrom, IMFAttributes* pTo, R
         hr = S_OK;
     }
     return hr;
+}
+
+DeviceCapture::SourceReaderCallback::SourceReaderCallback(DeviceCapture* capture) : m_capture(capture), m_nRefCount(1)
+{
+    InitializeCriticalSection(&m_critsec);
+}
+
+STDMETHODIMP DeviceCapture::SourceReaderCallback::QueryInterface(REFIID iid, void** ppv)
+{
+    static const QITAB qit[] = {
+        QITABENT(DeviceCapture::SourceReaderCallback, IMFSourceReaderCallback),
+        {0},
+    };
+    return QISearch(this, qit, iid, ppv);
+}
+
+STDMETHODIMP_(ULONG) DeviceCapture::SourceReaderCallback::AddRef()
+{
+    return InterlockedIncrement(&m_nRefCount);
+}
+
+STDMETHODIMP_(ULONG) DeviceCapture::SourceReaderCallback::Release()
+{
+    ULONG uCount = InterlockedDecrement(&m_nRefCount);
+    if(uCount == 0)
+    {
+        delete this;
+    }
+    return uCount;
+}
+
+STDMETHODIMP DeviceCapture::SourceReaderCallback::OnReadSample(HRESULT hrStatus, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp, IMFSample* pSample)
+{
+    m_waiting = false;
+    EnterCriticalSection(&m_critsec);
+
+    if(SUCCEEDED(hrStatus))
+    {
+        if(pSample)
+        {
+            m_capture->Process(pSample);
+        }
+    }
+    else
+    {
+        // error
+    }
+
+    LeaveCriticalSection(&m_critsec);
+    return S_OK;
+}
+
+STDMETHODIMP DeviceCapture::SourceReaderCallback::OnEvent(DWORD, IMFMediaEvent*)
+{
+    return S_OK;
+}
+
+STDMETHODIMP DeviceCapture::SourceReaderCallback::OnFlush(DWORD)
+{
+    return S_OK;
 }

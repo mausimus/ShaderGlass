@@ -424,11 +424,15 @@ void ShaderWindow::LoadImage()
         std::wstring ws(ofn.lpstrFile);
         m_captureOptions.imageFile = ws;
         m_captureOptions.deviceNo  = 0;
-        StartImage();
+
+        auto prevState   = CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_CHECKED | MF_BYCOMMAND);
+        auto setDefaults = prevState != MF_CHECKED;
+
+        StartImage(setDefaults);
     }
 }
 
-void ShaderWindow::StartImage()
+void ShaderWindow::StartImage(bool setDefaults)
 {
     m_captureOptions.captureWindow = NULL;
     m_captureOptions.monitor       = NULL;
@@ -436,8 +440,6 @@ void ShaderWindow::StartImage()
     // update input checkboxes
     CheckMenuRadioItem(m_windowMenu, WM_CAPTURE_WINDOW(0), WM_CAPTURE_WINDOW(static_cast<UINT>(m_captureWindows.size())), 0, MF_BYCOMMAND);
     CheckMenuRadioItem(m_displayMenu, WM_CAPTURE_DISPLAY(0), WM_CAPTURE_DISPLAY(static_cast<UINT>(m_captureDisplays.size())), 0, MF_BYCOMMAND);
-    auto prevState   = CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_CHECKED | MF_BYCOMMAND);
-    auto setDefaults = prevState != MF_CHECKED;
 
     // default to solid clone
     m_captureOptions.clone = true;
@@ -1894,6 +1896,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     auto deviceFormatId = wmId - WM_CAPTURE_DEVICE_FORMAT(0);
                     auto deviceNo       = deviceFormatId / MAX_CAPTURE_FORMATS;
                     auto formatNo       = deviceFormatId % MAX_CAPTURE_FORMATS;
+                    auto setDefaults    = (m_captureOptions.deviceNo == 0);
                     m_captureOptions.imageFile.clear();
                     m_captureOptions.deviceNo     = deviceNo;
                     m_captureOptions.deviceFormat = formatNo;
@@ -1902,7 +1905,9 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                                        WM_CAPTURE_DEVICE_FORMAT(static_cast<UINT>(deviceNo * (MAX_CAPTURE_FORMATS + 1))),
                                        wmId,
                                        MF_BYCOMMAND);
-                    StartImage();
+                    CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_UNCHECKED | MF_BYCOMMAND);
+
+                    StartImage(setDefaults);
 
                     break;
                 }
@@ -2202,11 +2207,7 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 
     if(!HasCaptureAPI())
     {
-        ModifyMenu(m_helpMenu,
-                   ID_HELP_WINDOWSVERSION,
-                   MF_BYCOMMAND | MF_STRING | MF_DISABLED,
-                   ID_HELP_WINDOWSVERSION,
-                   L"No Windows Capture API! Only file input is possible.");
+        ModifyMenu(m_helpMenu, ID_HELP_WINDOWSVERSION, MF_BYCOMMAND | MF_STRING | MF_DISABLED, ID_HELP_WINDOWSVERSION, L"No Windows Capture API! Only file input is possible.");
 
         EnableMenuItem(m_inputMenu, 0, MF_BYPOSITION | MF_DISABLED);
         EnableMenuItem(m_inputMenu, 1, MF_BYPOSITION | MF_DISABLED);
