@@ -24,6 +24,13 @@ static HRESULT hr;
 
 constexpr unsigned STREAM_NO = 0;
 
+const std::map<unsigned long, int> FormatPriorities {
+    {842094158, 3}, // NV12
+    {1196444237, 0}, // MJPG
+    {844715353, 2}, // YUY2
+    {875967048, 0} // H264
+};
+
 DeviceCapture::DeviceCapture() { }
 
 void DeviceCapture::Init()
@@ -54,7 +61,7 @@ std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
 
     try
     {
-        for(unsigned deviceNo = 0; deviceNo < numDevices; deviceNo++)
+        for(unsigned deviceNo = 0; deviceNo < numDevices && deviceNo < MAX_CAPTURE_DEVICES; deviceNo++)
         {
             winrt::com_ptr<IMFMediaSource>            mediaSource;
             winrt::com_ptr<IMFPresentationDescriptor> presentationDescriptor;
@@ -72,15 +79,17 @@ std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
             UINT32  deviceNameLen = MAX_DEVICE_NAME;
             devices[deviceNo]->GetString(MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME, deviceName, MAX_DEVICE_NAME, &deviceNameLen);
 
-            CaptureDevice cdi {.no = deviceNo + 1, .name = std::wstring(deviceName)};
+            CaptureDevice cdi {.no = deviceNo, .name = std::wstring(deviceName)};
 
             DWORD mediaTypeCount;
             THROW(streamDescriptor->GetMediaTypeHandler(mediaTypeHandler.put()));
             THROW(mediaTypeHandler->GetMediaTypeCount(&mediaTypeCount));
 
-            for(unsigned i = 0; i < mediaTypeCount; i++)
+            std::map<unsigned, CaptureFormat> bestFormatByBucket;
+
+            for(unsigned formatNo = 0; formatNo < mediaTypeCount; formatNo++)
             {
-                THROW(mediaTypeHandler->GetMediaTypeByIndex(i, mediaType.put()));
+                THROW(mediaTypeHandler->GetMediaTypeByIndex(formatNo, mediaType.put()));
 
                 GUID format;
                 THROW(mediaType->GetGUID(MF_MT_SUBTYPE, &format));
@@ -99,14 +108,53 @@ std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
                 float fps = denum != 0 ? num / (float)denum : 0.0f;
 
                 wchar_t formatName[MAX_DEVICE_NAME];
-                _snwprintf_s(formatName, MAX_DEVICE_NAME, L"%dx%d %.2f fps (%S)\n", w, h, fps, formatCode);
+                //_snwprintf_s(formatName, MAX_DEVICE_NAME, L"%dx%d %.2f fps (%S)\n", w, h, fps, formatCode);
+                _snwprintf_s(formatName, MAX_DEVICE_NAME, L"%dx%d @ %.2f fps\n", w, h, fps);
 
                 char formatId[MAX_DEVICE_NAME];
                 snprintf(formatId, MAX_DEVICE_NAME, "%u:%u:%lu:%u:%u", w, h, format.Data1, num, denum);
 
-                cdi.formats.push_back(CaptureFormat {.no = i + 1, .name = std::wstring(formatName), .id = std::string(formatId), .sortOrder = w * h * 500 + (int)fps});
+                int  priority      = 1;
+                auto knownPriority = FormatPriorities.find(format.Data1);
+                if(knownPriority != FormatPriorities.end())
+                    priority = knownPriority->second;
+
+                auto newFormat = CaptureFormat {.no = formatNo, .name = std::wstring(formatName), .id = std::string(formatId), .wh = w * h, .fps = fps, .priority = priority};
+
+                unsigned bucket         = (w << 16) + h;
+                auto     existingBucket = bestFormatByBucket.find(bucket);
+                if(existingBucket != bestFormatByBucket.end())
+                {
+                    // check if this better
+                    auto replace        = false;
+                    auto existingFormat = existingBucket->second;
+                    if(fps > existingFormat.fps)
+                        replace = true;
+                    else if(fps == existingFormat.fps && priority > existingFormat.priority)
+                        replace = true;
+
+                    if(replace)
+                    {
+                        bestFormatByBucket[bucket] = newFormat;
+                    }
+                }
+                else
+                {
+                    bestFormatByBucket[bucket] = newFormat;
+                }
             }
-            std::sort(cdi.formats.begin(), cdi.formats.end(), [](const CaptureFormat& a, const CaptureFormat& b) { return a.sortOrder > b.sortOrder; });
+
+            for(auto& b : bestFormatByBucket)
+            {
+                cdi.formats.emplace_back(b.second);
+            }
+
+            std::sort(cdi.formats.begin(), cdi.formats.end(), [](const CaptureFormat& a, const CaptureFormat& b) { return a.wh > b.wh; });
+
+            if(cdi.formats.size() > MAX_CAPTURE_FORMATS)
+            {
+                cdi.formats.resize(MAX_CAPTURE_FORMATS);
+            }
 
             result.emplace_back(cdi);
         }

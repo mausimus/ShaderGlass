@@ -31,8 +31,7 @@ struct CaptureOptions
     std::wstring imageFile {};
     int          imageWidth {0};
     int          imageHeight {0};
-    int          deviceNo {0};
-    int          deviceFormat {0};
+    int          deviceFormatNo {0};
     RECT         inputArea {0, 0, 0, 0};
     float        dpiScale {1.0f};
     bool         freeScale {false};
@@ -55,7 +54,7 @@ public:
     const std::vector<std::unique_ptr<PresetDef>>& Presets();
     std::vector<std::tuple<int, ShaderParam*>>     Params();
     const ShaderCache&                             Cache();
-    DeviceCapture&                                 Devices();
+    const std::vector<CaptureDevice>&              CaptureDevices();
 
     bool  Initialize();
     bool  IsActive();
@@ -88,6 +87,7 @@ public:
     float InFPS();
     float OutFPS();
     int   FindByName(const char* presetName);
+    bool  FindDeviceFormat(int deviceFormatNo, std::vector<CaptureDevice>::const_iterator& device, std::vector<CaptureFormat>::const_iterator& format);
 
 private:
     volatile bool                                     m_active {false};
@@ -100,6 +100,7 @@ private:
     std::vector<std::unique_ptr<PresetDef>>           m_presetList;
     std::vector<std::tuple<int, std::string, double>> m_queuedParams;
     std::vector<std::tuple<int, std::string, double>> m_lastParams;
+    std::vector<CaptureDevice>                        m_captureDevices;
     ShaderCache                                       m_shaderCache;
     DeviceCapture                                     m_deviceCapture;
     HANDLE                                            m_frameEvent {nullptr};

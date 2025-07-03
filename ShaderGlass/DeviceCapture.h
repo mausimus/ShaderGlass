@@ -7,6 +7,9 @@
 
 #include "Options.h"
 
+#define MAX_CAPTURE_DEVICES 16U
+#define MAX_CAPTURE_FORMATS 256U
+
 class DeviceCapture
 {
 public:

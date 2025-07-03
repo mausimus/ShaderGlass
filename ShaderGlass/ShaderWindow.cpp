@@ -274,11 +274,11 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
 
         if(deviceName.has_value() && deviceName.value().size() && deviceFormat.has_value() && deviceFormat.value().size())
         {
-            auto devices = m_captureManager.Devices().GetCaptureDevices();
+            auto devices = m_captureManager.CaptureDevices();
             for(const auto& d : devices)
                 for(const auto& f : d.formats)
                     if(d.name == deviceName && f.id == deviceFormat)
-                        SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_DEVICE_FORMAT(d.no * MAX_CAPTURE_FORMATS + f.no), 0);
+                        SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_DEVICE_FORMAT(f.deviceFormatNo), 0);
         }
         else if(windowName.has_value() && windowName.value().size())
         {
@@ -422,8 +422,8 @@ void ShaderWindow::LoadImage()
     if(GetOpenFileName(&ofn))
     {
         std::wstring ws(ofn.lpstrFile);
-        m_captureOptions.imageFile = ws;
-        m_captureOptions.deviceNo  = 0;
+        m_captureOptions.imageFile      = ws;
+        m_captureOptions.deviceFormatNo = 0;
 
         auto prevState   = CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_CHECKED | MF_BYCOMMAND);
         auto setDefaults = prevState != MF_CHECKED;
@@ -514,25 +514,16 @@ void ShaderWindow::SaveProfile(const std::wstring& fileName)
     outfile << "ScaleLocked " << std::quoted(std::to_string(ScaleLocked())) << std::endl;
     outfile << "InputArea \"" << std::to_string(m_captureOptions.inputArea.left) << " " << std::to_string(m_captureOptions.inputArea.top) << " "
             << std::to_string(m_captureOptions.inputArea.right) << " " << std::to_string(m_captureOptions.inputArea.bottom) << "\"" << std::endl;
-    if(m_captureOptions.deviceNo)
+    if(m_captureOptions.deviceFormatNo)
     {
-        const auto& devices = m_captureManager.Devices().GetCaptureDevices();
-        for(const auto& d : devices)
+        std::vector<CaptureDevice>::const_iterator di;
+        std::vector<CaptureFormat>::const_iterator fi;
+        if(m_captureManager.FindDeviceFormat(m_captureOptions.deviceFormatNo, di, fi))
         {
-            if(d.no == m_captureOptions.deviceNo)
-            {
-                for(const auto& f : d.formats)
-                {
-                    if(f.no == m_captureOptions.deviceFormat)
-                    {
-                        char buf[MAX_DEVICE_NAME];
-                        WideCharToMultiByte(CP_UTF8, 0, d.name.c_str(), -1, buf, MAX_DEVICE_NAME, NULL, NULL);
-                        outfile << "CaptureDevice " << std::quoted(buf) << std::endl;
-                        outfile << "CaptureFormat " << std::quoted(f.id) << std::endl;
-                        break;
-                    }
-                }
-            }
+            char buf[MAX_DEVICE_NAME];
+            WideCharToMultiByte(CP_UTF8, 0, di->name.c_str(), -1, buf, MAX_DEVICE_NAME, NULL, NULL);
+            outfile << "CaptureDevice " << std::quoted(buf) << std::endl;
+            outfile << "CaptureFormat " << std::quoted(fi->id) << std::endl;
         }
     }
     else if(m_captureOptions.captureWindow)
@@ -771,7 +762,7 @@ void ShaderWindow::ScanDevices()
         RemoveMenu(m_deviceMenu, i, MF_BYPOSITION);
     }
 
-    const auto& captureDevices = m_captureManager.Devices().GetCaptureDevices();
+    const auto& captureDevices = m_captureManager.CaptureDevices();
 
     if(!captureDevices.size())
     {
@@ -779,28 +770,22 @@ void ShaderWindow::ScanDevices()
         return;
     }
 
-    numDevices = 0;
     for(auto& w : captureDevices)
     {
         auto deviceMenu = CreatePopupMenu();
-
-        int numFormats = 0;
         for(auto& f : w.formats)
         {
-            auto id = WM_CAPTURE_DEVICE_FORMAT((w.no * MAX_CAPTURE_FORMATS) + (f.no));
-            InsertMenu(deviceMenu, 1, MF_STRING, id, f.name.c_str());
+            if(f.deviceFormatNo)
+            {
+                auto id = WM_CAPTURE_DEVICE_FORMAT(f.deviceFormatNo);
+                InsertMenu(deviceMenu, 1, MF_STRING, id, f.name.c_str());
 
-            if(m_captureOptions.deviceNo == w.no && m_captureOptions.deviceFormat == f.no)
-                CheckMenuItem(deviceMenu, id, MF_CHECKED | MF_BYCOMMAND);
-
-            if(++numFormats == MAX_CAPTURE_FORMATS)
-                break;
+                if(m_captureOptions.deviceFormatNo == f.deviceFormatNo)
+                    CheckMenuItem(deviceMenu, id, MF_CHECKED | MF_BYCOMMAND);
+            }
         }
 
         InsertMenu(m_deviceMenu, 1, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)deviceMenu, w.name.c_str());
-
-        if(++numDevices == MAX_CAPTURE_DEVICES)
-            break;
     }
 }
 
@@ -1081,7 +1066,7 @@ void ShaderWindow::AdjustWindowSize(HWND hWnd)
 
     // resize client area to captured window/file x scale
     if(m_captureManager.IsActive() && !m_captureOptions.freeScale &&
-       ((m_captureOptions.captureWindow && m_captureOptions.clone) || !m_captureOptions.imageFile.empty() || m_captureOptions.deviceNo))
+       ((m_captureOptions.captureWindow && m_captureOptions.clone) || !m_captureOptions.imageFile.empty() || m_captureOptions.deviceFormatNo))
     {
         LONG inputWidth = 0, inputHeight = 0;
 
@@ -1764,7 +1749,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_UNCHECKED | MF_BYCOMMAND);
                     EnableMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_BYCOMMAND | MF_ENABLED);
                     m_captureOptions.imageFile.clear();
-                    m_captureOptions.deviceNo = 0;
+                    m_captureOptions.deviceFormatNo = 0;
                     TryUpdateInput();
                     UpdateWindowState();
                     SetFreeScale();
@@ -1798,7 +1783,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_UNCHECKED | MF_BYCOMMAND);
                     EnableMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_BYCOMMAND | MF_DISABLED);
                     m_captureOptions.imageFile.clear();
-                    m_captureOptions.deviceNo = 0;
+                    m_captureOptions.deviceFormatNo = 0;
                     TryUpdateInput();
                     UpdateWindowState();
                     break;
@@ -1892,24 +1877,15 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     }
                     break;
                 }
-                if(wmId >= WM_CAPTURE_DEVICE_FORMAT(0) && wmId < WM_CAPTURE_DEVICE_FORMAT(MAX_CAPTURE_DEVICES_FORMATS))
+                if(wmId >= WM_CAPTURE_DEVICE_FORMAT(0) && wmId < WM_CAPTURE_DEVICE_FORMAT(MAX_CAPTURE_DEVICE_FORMATS))
                 {
-                    auto deviceFormatId = wmId - WM_CAPTURE_DEVICE_FORMAT(0);
-                    auto deviceNo       = deviceFormatId / MAX_CAPTURE_FORMATS;
-                    auto formatNo       = deviceFormatId % MAX_CAPTURE_FORMATS;
-                    auto setDefaults    = (m_captureOptions.deviceNo == 0);
+                    auto deviceFormatNo = wmId - WM_CAPTURE_DEVICE_FORMAT(0);
+                    auto setDefaults    = (m_captureOptions.deviceFormatNo == 0);
                     m_captureOptions.imageFile.clear();
-                    m_captureOptions.deviceNo     = deviceNo;
-                    m_captureOptions.deviceFormat = formatNo;
-                    CheckMenuRadioItem(m_outputScaleMenu,
-                                       WM_CAPTURE_DEVICE_FORMAT(deviceNo * MAX_CAPTURE_FORMATS),
-                                       WM_CAPTURE_DEVICE_FORMAT(static_cast<UINT>(deviceNo * (MAX_CAPTURE_FORMATS + 1))),
-                                       wmId,
-                                       MF_BYCOMMAND);
+                    m_captureOptions.deviceFormatNo = deviceFormatNo;
                     CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_UNCHECKED | MF_BYCOMMAND);
 
                     StartImage(setDefaults);
-
                     break;
                 }
             }
