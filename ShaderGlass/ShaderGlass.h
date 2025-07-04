@@ -27,7 +27,7 @@ public:
                      bool                                useHDR,
                      winrt::com_ptr<ID3D11Device>        device,
                      winrt::com_ptr<ID3D11DeviceContext> context);
-    void  Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG frameTicks);
+    void  Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG frameTicks, int inputFrameNo);
     void  SetInputScale(float w, float h);
     void  SetOutputScale(float w, float h);
     void  SetOutputFlip(bool h, bool v);
@@ -96,6 +96,7 @@ private:
     ULONGLONG  m_prevRenderTicks {0};
     ULONGLONG  m_prevTicks {0};
     ULONGLONG  m_prevFrameTicks {0};
+    int        m_prevInputFrameNo {0};
     int        m_prevLogicalFrameNo {0};
     float      m_fps {0};
     bool       m_requiresFeedback {false};

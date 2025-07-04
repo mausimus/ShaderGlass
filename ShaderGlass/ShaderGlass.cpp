@@ -413,14 +413,14 @@ void ShaderGlass::PresentFrame()
     PostMessage(m_outputWindow, WM_PAINT, 0, 0); // necessary for click-through
 }
 
-void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG frameTicks)
+void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG frameTicks, int inputFrameNo)
 {
     auto nowTicks            = GetTickCount64();
     auto timeSinceLastRender = nowTicks - m_prevRenderTicks;
     auto logicalFrameNo      = (int)roundf((nowTicks - m_startTicks) / 16.6666666f); // fix shaders at 60 fps
 
     // same input
-    if(frameTicks == m_prevFrameTicks)
+    if(inputFrameNo == m_prevInputFrameNo)
     {
         if(logicalFrameNo == m_prevLogicalFrameNo)
             return;
@@ -441,6 +441,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
     m_frameCounter++;
     m_prevFrameTicks     = frameTicks;
+    m_prevInputFrameNo   = inputFrameNo;
     m_prevLogicalFrameNo = logicalFrameNo;
 
     if(!m_running || !texture)
