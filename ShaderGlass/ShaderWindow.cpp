@@ -428,11 +428,11 @@ void ShaderWindow::LoadImage()
         auto prevState   = CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_CHECKED | MF_BYCOMMAND);
         auto setDefaults = prevState != MF_CHECKED;
 
-        StartImage(setDefaults);
+        StartImage(setDefaults, setDefaults ? WM_PIXEL_SIZE(0) : 0);
     }
 }
 
-void ShaderWindow::StartImage(bool setDefaults)
+void ShaderWindow::StartImage(bool autoScale, int pixelSize)
 {
     m_captureOptions.captureWindow = NULL;
     m_captureOptions.monitor       = NULL;
@@ -452,7 +452,11 @@ void ShaderWindow::StartImage(bool setDefaults)
     EnableMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_BYCOMMAND | MF_ENABLED);
 
     // if we are *switching* to file mode, default pixel size and freescale
-    if(setDefaults && !ScaleLocked())
+    if(pixelSize)
+    {
+        SendMessage(m_mainWindow, WM_COMMAND, pixelSize, 0);
+    }
+    if(autoScale && !ScaleLocked())
     {
         // set starting scale to fit within current window size
         RECT r;
@@ -464,7 +468,6 @@ void ShaderWindow::StartImage(bool setDefaults)
         }
 
         m_captureOptions.outputScale = (float)defaultScale;
-        SendMessage(m_mainWindow, WM_COMMAND, WM_PIXEL_SIZE(0), 0);
         SetFreeScale();
     }
 
@@ -1885,7 +1888,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     m_captureOptions.deviceFormatNo = deviceFormatNo;
                     CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_UNCHECKED | MF_BYCOMMAND);
 
-                    StartImage(setDefaults);
+                    StartImage(setDefaults, setDefaults ? WM_PIXEL_SIZE(3) : 0);
                     break;
                 }
             }

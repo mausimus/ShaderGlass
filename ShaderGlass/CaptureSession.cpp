@@ -58,10 +58,7 @@ CaptureSession::CaptureSession(winrt::IDirect3DDevice const&     device,
         { }
     }
 
-    m_numInputFrames  = 0;
-    m_prevInputFrames = 0;
-    m_fps             = 0;
-    m_prevTicks       = GetTickCount64();
+    Reset();
     m_framePool.FrameArrived({this, &CaptureSession::OnFrameArrived});
     m_session.StartCapture();
 
@@ -73,7 +70,16 @@ CaptureSession::CaptureSession(winrt::Windows::Graphics::DirectX::Direct3D11::ID
                                ShaderGlass&                                                          shaderGlass,
                                HANDLE frameEvent) : m_device {device}, m_inputImage {inputImage}, m_shaderGlass {shaderGlass}, m_frameEvent {frameEvent}
 {
+    Reset();
     ProcessInput();
+}
+
+void CaptureSession::Reset()
+{
+    m_numInputFrames  = 0;
+    m_prevInputFrames = 0;
+    m_fps             = 0;
+    m_prevTicks       = GetTickCount64();
 }
 
 void CaptureSession::UpdateCursor(bool captureCursor)
@@ -86,7 +92,6 @@ void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sen
 {
     auto frame   = sender.TryGetNextFrame();
     m_inputFrame = GetDXGIInterfaceFromObject<ID3D11Texture2D>(frame.Surface());
-    m_frameTicks = GetTickCount64();
 
     auto contentSize = frame.ContentSize();
     if(contentSize.Width != m_contentSize.Width || contentSize.Height != m_contentSize.Height)
@@ -97,6 +102,12 @@ void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sen
     }
 
     SetEvent(m_frameEvent);
+    OnInputFrame();
+}
+
+void CaptureSession::OnInputFrame()
+{
+    m_frameTicks = GetTickCount64();
     m_numInputFrames++;
     if(m_frameTicks - m_prevTicks > 1000)
     {
@@ -112,7 +123,7 @@ void CaptureSession::ProcessInput()
 {
     if(m_inputImage.get())
     {
-        m_shaderGlass.Process(m_inputImage, 0);
+        m_shaderGlass.Process(m_inputImage, m_frameTicks);
     }
     else
     {

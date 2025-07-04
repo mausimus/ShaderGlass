@@ -94,12 +94,6 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
             hr = dxgiDevice->GetAdapter(dxgiAdapter.put());
             assert(SUCCEEDED(hr));
 
-            DXGI_ADAPTER_DESC adapterDesc;
-            dxgiAdapter->GetDesc(&adapterDesc);
-
-            OutputDebugStringA("Graphics Device: ");
-            OutputDebugStringW(adapterDesc.Description);
-
             hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory2), (void**)dxgiFactory.put());
             assert(SUCCEEDED(hr));
         }

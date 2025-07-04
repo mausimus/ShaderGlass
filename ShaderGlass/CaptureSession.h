@@ -30,6 +30,8 @@ public:
 
     void UpdateCursor(bool captureCursor);
 
+    void OnInputFrame();
+
     void ProcessInput();
 
     float FPS()
@@ -38,6 +40,8 @@ public:
     }
 
 private:
+    void Reset();
+
     winrt::Windows::Graphics::Capture::GraphicsCaptureItem         m_item {nullptr};
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool  m_framePool {nullptr};
     winrt::Windows::Graphics::Capture::GraphicsCaptureSession      m_session {nullptr};

@@ -103,7 +103,7 @@ private:
     void         TryUpdateInput();
     void         Screenshot();
     void         LoadImage();
-    void         StartImage(bool setDefaults);
+    void         StartImage(bool autoScale, int pixelSize);
     void         UpdateTitle();
     void         SetFreeScale();
     void         RegisterHotkeys();

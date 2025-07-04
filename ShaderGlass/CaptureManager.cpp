@@ -184,12 +184,13 @@ bool CaptureManager::StartSession()
         m_deviceCapture.Start(m_d3dDevice, di->no, fi->no);
 
         // retrieve input image size
-        D3D11_TEXTURE2D_DESC desc = {};
-        m_deviceCapture.m_outputTexture->GetDesc(&desc);
+        auto                 inputTexture = m_deviceCapture.m_outputTexture;
+        D3D11_TEXTURE2D_DESC desc         = {};
+        inputTexture->GetDesc(&desc);
         m_options.imageWidth  = desc.Width;
         m_options.imageHeight = desc.Height;
 
-        m_session = make_unique<CaptureSession>(device, m_deviceCapture.m_outputTexture, *m_shaderGlass, m_frameEvent);
+        m_session = make_unique<CaptureSession>(device, inputTexture, *m_shaderGlass, m_frameEvent);
         UpdatePixelSize();
     }
     else
@@ -286,6 +287,8 @@ void CaptureManager::ProcessFrame()
 {
     if(m_session.get())
     {
+        if(m_deviceCapture.m_active && m_deviceCapture.Poll())
+            m_session->OnInputFrame();
         m_session->ProcessInput();
     }
 }
@@ -440,8 +443,6 @@ void CaptureManager::ThreadFunc()
     while(m_active)
     {
         WaitForSingleObject(m_frameEvent, 1);
-        if(m_deviceCapture.m_active)
-            m_deviceCapture.Poll();
         ProcessFrame();
     }
 }

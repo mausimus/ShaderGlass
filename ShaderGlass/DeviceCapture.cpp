@@ -10,12 +10,6 @@ GNU General Public License v3.0
 #include "DeviceCapture.h"
 #include "Helpers.h"
 
-#include <Shlwapi.h>
-
-#pragma comment(lib, "mf.lib")
-#pragma comment(lib, "mfuuid")
-#pragma comment(lib, "Shlwapi.lib")
-
 #define THROW(h)                                                                                                                                                                   \
     if(FAILED(h))                                                                                                                                                                  \
         throw std::runtime_error("Unable to initialize Media Foundation Capture");
@@ -170,6 +164,43 @@ std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
     return result;
 }
 
+static DWORD WINAPI DeviceCaptureThreadFuncProxy(LPVOID lpParam)
+{
+    ((DeviceCapture*)lpParam)->ThreadFunc();
+    return 0;
+}
+
+void DeviceCapture::ThreadFunc()
+{
+    while(m_active)
+    {
+        try
+        {
+            WaitForNextFrame();
+        }
+        catch(...)
+        { }
+    }
+}
+
+bool DeviceCapture::Poll()
+{
+    std::unique_lock lock(m_mutex);
+
+    try
+    {
+        if(m_inputSample)
+        {
+            Process(m_inputSample.get());
+            m_inputSample = nullptr;
+            return true;
+        }
+    }
+    catch(...)
+    { }
+    return false;
+}
+
 void DeviceCapture::Start(winrt::com_ptr<ID3D11Device> d3dDevice, int deviceNo, int formatNo)
 {
     Init();
@@ -181,6 +212,7 @@ void DeviceCapture::Start(winrt::com_ptr<ID3D11Device> d3dDevice, int deviceNo, 
     CreateOutputTexture();
 
     m_active = true;
+    m_thread = CreateThread(NULL, 0, DeviceCaptureThreadFuncProxy, this, 0, NULL);
 }
 
 void DeviceCapture::CreateOutputTexture()
@@ -199,11 +231,6 @@ void DeviceCapture::CreateSourceReader()
 
     THROW(MFCreateAttributes(attributes.put(), 1));
     THROW(attributes->SetUINT32(MF_SOURCE_READER_ENABLE_VIDEO_PROCESSING, 1));
-    if(m_async)
-    {
-        m_callback.attach(new(std::nothrow) SourceReaderCallback(this));
-        THROW(attributes->SetUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, m_callback.get()));
-    }
     THROW(MFCreateSourceReaderFromMediaSource(m_mediaSource.get(), attributes.get(), m_sourceReader.put()));
 }
 
@@ -287,8 +314,6 @@ void DeviceCapture::CreateSampleAllocator(winrt::com_ptr<ID3D11Device> d3dDevice
 
 void DeviceCapture::Process(IMFSample* inputSample)
 {
-    std::unique_lock lock(m_mutex);
-
     if(!m_active)
         return;
 
@@ -306,38 +331,23 @@ void DeviceCapture::Process(IMFSample* inputSample)
     THROW(srcBuffer->Unlock());
 }
 
-bool DeviceCapture::Poll()
+bool DeviceCapture::WaitForNextFrame()
 {
-    std::unique_lock lock(m_mutex);
-
     if(!m_active)
         return false;
 
-    if(m_async)
-    {
-        if(!m_callback->m_waiting)
-        {
-            m_callback->m_waiting = true;
-            THROW(m_sourceReader->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, NULL, NULL, NULL, NULL));
-            return true;
-        }
+    winrt::com_ptr<IMFSample> inputSample;
+    DWORD                     streamIndex;
+    DWORD                     streamFlags;
+    LONGLONG                  streamTime;
+
+    THROW(m_sourceReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags, &streamTime, inputSample.put()));
+    if(!inputSample || !m_active)
         return false;
-    }
-    else
-    {
-        winrt::com_ptr<IMFSample> inputSample;
-        DWORD                     streamIndex;
-        DWORD                     streamFlags;
-        LONGLONG                  streamTime;
 
-        THROW(m_sourceReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags, &streamTime, inputSample.put()));
-        if(!inputSample)
-            return false;
+    m_inputSample = inputSample;
 
-        Process(inputSample.get());
-
-        return true;
-    }
+    return true;
 }
 
 void DeviceCapture::Stop()
@@ -348,11 +358,11 @@ void DeviceCapture::Stop()
     {
         m_active = false;
 
+        m_inputSample     = nullptr;
         m_outputSample    = nullptr;
         m_sampleAllocator = nullptr;
         m_outputMediaType = nullptr;
         m_sourceReader    = nullptr;
-        m_callback        = nullptr;
         m_mediaSource     = nullptr;
     }
 }
@@ -371,64 +381,4 @@ HRESULT DeviceCapture::CopyAttribute(IMFAttributes* pFrom, IMFAttributes* pTo, R
         hr = S_OK;
     }
     return hr;
-}
-
-DeviceCapture::SourceReaderCallback::SourceReaderCallback(DeviceCapture* capture) : m_capture(capture), m_nRefCount(1)
-{
-    InitializeCriticalSection(&m_critsec);
-}
-
-STDMETHODIMP DeviceCapture::SourceReaderCallback::QueryInterface(REFIID iid, void** ppv)
-{
-    static const QITAB qit[] = {
-        QITABENT(DeviceCapture::SourceReaderCallback, IMFSourceReaderCallback),
-        {0},
-    };
-    return QISearch(this, qit, iid, ppv);
-}
-
-STDMETHODIMP_(ULONG) DeviceCapture::SourceReaderCallback::AddRef()
-{
-    return InterlockedIncrement(&m_nRefCount);
-}
-
-STDMETHODIMP_(ULONG) DeviceCapture::SourceReaderCallback::Release()
-{
-    ULONG uCount = InterlockedDecrement(&m_nRefCount);
-    if(uCount == 0)
-    {
-        delete this;
-    }
-    return uCount;
-}
-
-STDMETHODIMP DeviceCapture::SourceReaderCallback::OnReadSample(HRESULT hrStatus, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp, IMFSample* pSample)
-{
-    m_waiting = false;
-    EnterCriticalSection(&m_critsec);
-
-    if(SUCCEEDED(hrStatus))
-    {
-        if(pSample)
-        {
-            m_capture->Process(pSample);
-        }
-    }
-    else
-    {
-        // error
-    }
-
-    LeaveCriticalSection(&m_critsec);
-    return S_OK;
-}
-
-STDMETHODIMP DeviceCapture::SourceReaderCallback::OnEvent(DWORD, IMFMediaEvent*)
-{
-    return S_OK;
-}
-
-STDMETHODIMP DeviceCapture::SourceReaderCallback::OnFlush(DWORD)
-{
-    return S_OK;
 }
