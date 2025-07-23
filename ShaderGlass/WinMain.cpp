@@ -37,7 +37,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     ccs.dwSize = sizeof(ccs);
     InitCommonControlsEx(&ccs);
 
-    CaptureManager captureManager;
+    CaptureManager captureManager(hInstance);
     ShaderWindow   shaderWindow(captureManager);
     if(!shaderWindow.Create(hInstance, nCmdShow))
     {

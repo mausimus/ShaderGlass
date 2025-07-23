@@ -10,6 +10,7 @@ GNU General Public License v3.0
 #include "CaptureSession.h"
 #include "ShaderCache.h"
 #include "DeviceCapture.h"
+#include "CursorEmulator.h"
 
 struct CaptureOptions
 {
@@ -46,7 +47,7 @@ struct CaptureOptions
 class CaptureManager
 {
 public:
-    CaptureManager();
+    CaptureManager(HINSTANCE instance);
 
     CaptureOptions m_options;
     std::wstring   m_deviceName;
@@ -55,6 +56,8 @@ public:
     std::vector<std::tuple<int, ShaderParam*>>     Params();
     const ShaderCache&                             Cache();
     const std::vector<CaptureDevice>&              CaptureDevices();
+    void                                           ShowCursor();
+    void                                           HideCursor();
 
     bool  Initialize();
     bool  IsActive();
@@ -103,6 +106,8 @@ private:
     std::vector<CaptureDevice>                        m_captureDevices;
     ShaderCache                                       m_shaderCache;
     DeviceCapture                                     m_deviceCapture;
+    CursorEmulator                                    m_cursorEmulator;
     HANDLE                                            m_frameEvent {nullptr};
+    HINSTANCE                                         m_instance {0};
     unsigned int                                      m_lastPreset;
 };

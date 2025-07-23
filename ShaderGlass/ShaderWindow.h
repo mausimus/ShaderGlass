@@ -68,6 +68,7 @@ private:
     bool                         m_isBorderless {false};
     bool                         m_paramsPositioned {false};
     bool                         m_browserPositioned {false};
+    bool                         m_inMenu {false};
     HANDLE                       m_compileThread {nullptr};
     HANDLE                       m_compileEvent {nullptr};
     float                        m_dpiScale {1.0f};
@@ -102,7 +103,7 @@ private:
     void         Stop();
     void         TryUpdateInput();
     void         Screenshot();
-    void         LoadImage();
+    void         LoadInputImage();
     void         StartImage(bool autoScale, int pixelSize);
     void         UpdateTitle();
     void         SetFreeScale();

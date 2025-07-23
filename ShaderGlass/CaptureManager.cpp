@@ -22,7 +22,7 @@ using namespace std;
 using namespace util;
 using namespace util::uwp;
 
-CaptureManager::CaptureManager() : m_options(), m_deviceName(L"Default"), m_lastPreset(-1) { }
+CaptureManager::CaptureManager(HINSTANCE instance) : m_options(), m_deviceName(L"Default"), m_lastPreset(-1), m_instance {instance} { }
 
 bool CaptureManager::Initialize()
 {
@@ -56,16 +56,18 @@ const ShaderCache& CaptureManager::Cache()
     return m_shaderCache;
 }
 
+void CaptureManager::HideCursor()
+{
+    m_cursorEmulator.HideCursors();
+}
+
+void CaptureManager::ShowCursor()
+{
+    m_cursorEmulator.ShowCursors();
+}
+
 const std::vector<CaptureDevice>& CaptureManager::CaptureDevices()
 {
-    if(!m_captureDevices.size())
-    {
-        m_captureDevices   = m_deviceCapture.GetCaptureDevices();
-        int deviceFormatNo = 1;
-        for(auto& d : m_captureDevices)
-            for(auto& f : d.formats)
-                f.deviceFormatNo = deviceFormatNo < MAX_CAPTURE_DEVICE_FORMATS ? deviceFormatNo++ : 0;
-    }
     return m_captureDevices;
 }
 
@@ -129,7 +131,7 @@ bool CaptureManager::StartSession()
         }
     }
 
-    m_shaderGlass = make_unique<ShaderGlass>();
+    m_shaderGlass = make_unique<ShaderGlass>(m_cursorEmulator);
     m_shaderGlass->Initialize(m_options.outputWindow,
                               m_options.captureWindow,
                               m_options.monitor,
@@ -225,8 +227,19 @@ float CaptureManager::GetDefaultValue(ShaderParam* p)
 
 void CaptureManager::UpdateCursor()
 {
-    if(m_session)
-        m_session->UpdateCursor(m_options.captureCursor);
+    if(m_options.captureCursor && m_options.transparent)
+    {
+        m_cursorEmulator.Init(m_d3dDevice, m_instance, m_options.outputWindow);
+        m_cursorEmulator.Start();
+        if(m_session)
+            m_session->UpdateCursor(false);
+    }
+    else
+    {
+        m_cursorEmulator.Stop();
+        if(m_session)
+            m_session->UpdateCursor(m_options.captureCursor);
+    }
 }
 
 void CaptureManager::Debug()
@@ -309,6 +322,8 @@ void CaptureManager::Exit()
 {
     if(m_session.get())
     {
+        m_cursorEmulator.Stop();
+
         m_active = false;
         SetEvent(m_frameEvent);
 

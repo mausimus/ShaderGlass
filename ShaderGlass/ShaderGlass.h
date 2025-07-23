@@ -13,10 +13,12 @@ GNU General Public License v3.0
 #include "Shaders\PassthroughShaderDef.h"
 #include "Shaders\PassthroughPresetDef.h"
 
+class CursorEmulator;
+
 class ShaderGlass
 {
 public:
-    ShaderGlass();
+    ShaderGlass(CursorEmulator& cursorEmulator);
     void  Initialize(HWND                                outputWindow,
                      HWND                                captureWindow,
                      HMONITOR                            captureMonitor,
@@ -105,6 +107,7 @@ private:
     int        m_boxX {0};
     int        m_boxY {0};
 
+    CursorEmulator&                                   m_cursorEmulator;
     PassthroughPresetDef                              m_passthroughDef;
     PreprocessShaderDef                               m_preprocessShaderDef;
     PresetDef                                         m_preprocessPresetDef;

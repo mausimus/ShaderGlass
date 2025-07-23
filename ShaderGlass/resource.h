@@ -27,6 +27,9 @@
 #define IDB_BITMAP1                     136
 #define IDB_FOLDER                      136
 #define IDD_CROP_DIALOG                 137
+#define IDC_SG_IBEAM                    138
+#define IDC_SG_BLANK                    139
+#define IDC_SG_CROSS                    140
 #define IDC_EDIT1                       1000
 #define IDC_SPIN1                       1001
 #define IDC_SPIN2                       1002
@@ -188,7 +191,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        138
+#define _APS_NEXT_RESOURCE_VALUE        141
 #define _APS_NEXT_COMMAND_VALUE         32924
 #define _APS_NEXT_CONTROL_VALUE         1002
 #define _APS_NEXT_SYMED_VALUE           116

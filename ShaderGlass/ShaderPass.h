@@ -22,6 +22,7 @@ public:
     void Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context);
     void Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount, int boxX, int boxY);
     void Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameCount, int boxX, int boxY);
+    void RenderCursor(float x, float y, float w, float h, winrt::com_ptr<ID3D11ShaderResourceView> cursorView);
     void
     Resize(int sourceWidth, int sourceHeight, int destWidth, int destHeight, const std::map<std::string, float4>& textureSizes, const std::vector<std::array<UINT, 4>>& passSizes);
     void UpdateMVP(float sx, float sy, float tx, float ty);
@@ -51,4 +52,7 @@ private:
     float                                             params_SourceSize[4] {0, 0, 0, 0};
     float                                             params_OutputSize[4] {0, 0, 0, 0};
     int                                               params_FrameCount {0};
+    winrt::com_ptr<ID3D11BlendState>                  m_blendState;
+    int                                               m_sourceBinding {-1};
+    float4x4                                          m_cursorMVP {};
 };

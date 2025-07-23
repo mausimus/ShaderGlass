@@ -10,6 +10,7 @@ GNU General Public License v3.0
 #include "resource.h"
 #include "ShaderWindow.h"
 #include "ShaderGC.h"
+#include "CursorEmulator.h"
 
 #include "Shlobj.h"
 
@@ -406,7 +407,7 @@ void ShaderWindow::SetFreeScale()
     m_captureManager.UpdateOutputSize();
 }
 
-void ShaderWindow::LoadImage()
+void ShaderWindow::LoadInputImage()
 {
     OPENFILENAMEW ofn;
     wchar_t       szFileName[MAX_PATH] = L"";
@@ -1353,7 +1354,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 SetMenu(hWnd, m_mainMenu);
             break;
         case ID_INPUT_FILE:
-            LoadImage();
+            LoadInputImage();
             break;
         case ID_PROCESSING_SETASDEFAULT:
             SaveDefault();
@@ -1989,6 +1990,12 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         }
         break;
     }
+    case WM_ENTERMENULOOP:
+        m_inMenu = true;
+        break;
+    case WM_EXITMENULOOP:
+        m_inMenu = false;
+        break;
     case WM_PAINT: {
         if(m_captureManager.IsActive() && m_captureOptions.transparent)
         {
@@ -2000,10 +2007,17 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 if(p.x > 0 && p.x < r.right && p.y > 0 && p.y < r.bottom)
                 {
                     SetTransparent(true);
+                    // TODO: check if mouse over parameters or browser window while they are visible? or is focus enough
+                    auto focusedWindow = GetForegroundWindow();
+                    if(!m_inMenu && focusedWindow != m_browserWindow && focusedWindow != m_paramsWindow)
+                        m_captureManager.HideCursor();
+                    else
+                        m_captureManager.ShowCursor();
                 }
                 else
                 {
                     SetTransparent(false);
+                    m_captureManager.ShowCursor();
                 }
             }
         }

@@ -44,6 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -175,6 +176,7 @@
     <ClInclude Include="BrowserWindow.h" />
     <ClInclude Include="CompileWindow.h" />
     <ClInclude Include="CropDialog.h" />
+    <ClInclude Include="CursorEmulator.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="InputDialog.h" />
     <ClInclude Include="DeviceCapture.h" />
@@ -211,6 +213,7 @@
     <ClCompile Include="CaptureSession.cpp" />
     <ClCompile Include="CompileWindow.cpp" />
     <ClCompile Include="CropDialog.cpp" />
+    <ClCompile Include="CursorEmulator.cpp" />
     <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="InputDialog.cpp" />
     <ClCompile Include="DeviceCapture.cpp" />
@@ -242,6 +245,9 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="blank.cur" />
+    <None Include="cross.cur" />
+    <None Include="ibeam.cur" />
     <None Include="ShaderGlass.aps" />
     <None Include="Shaders\RetroArch.template" />
     <None Include="Util\LICENSE" />

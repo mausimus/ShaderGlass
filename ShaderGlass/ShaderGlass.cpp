@@ -8,14 +8,16 @@ GNU General Public License v3.0
 #include "pch.h"
 #include "ShaderGlass.h"
 #include "ShaderList.h"
+#include "CursorEmulator.h"
 #include "resource.h"
 
 static HRESULT     hr;
 static const float background_colour[4] = {0, 0, 0, 1.0f};
 
-ShaderGlass::ShaderGlass() :
+ShaderGlass::ShaderGlass(CursorEmulator& cursorEmulator) :
     m_lastSize {}, m_lastPos {}, m_lastCaptureWindowPos {}, m_lastCaptureWindowSize {}, m_passthroughDef(), m_shaderPreset(new Preset(m_passthroughDef)),
-    m_preprocessShader(m_preprocessShaderDef), m_preprocessPreset(m_preprocessPresetDef), m_preprocessPass(m_preprocessShader, m_preprocessPreset, true)
+    m_preprocessShader(m_preprocessShaderDef), m_preprocessPreset(m_preprocessPresetDef), m_preprocessPass(m_preprocessShader, m_preprocessPreset, true),
+    m_cursorEmulator(cursorEmulator)
 { }
 
 ShaderGlass::~ShaderGlass()
@@ -1000,6 +1002,43 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
     assert(SUCCEEDED(hr));
     m_preprocessPass.Render(textureView.get(), m_passResources, logicalFrameNo, 0, 0);
+
+    if(m_cursorEmulator.Hidden())
+    {
+        CURSORINFO ci {.cbSize = sizeof(CURSORINFO)};
+        if(GetCursorInfo(&ci))
+        {
+            auto mx = ci.ptScreenPos.x;
+            auto my = ci.ptScreenPos.y;
+            mx -= topLeft.x;
+            my -= topLeft.y;
+
+            auto cursor = m_cursorEmulator.GetCursor();
+            if(cursor && cursor->image)
+            {
+                mx -= cursor->hotSpotX;
+                my -= cursor->hotSpotY;
+
+                float cx, cy, cw, ch;
+
+                if(m_vertical)
+                {
+                    cx = m_preprocessPass.m_destWidth - (my + cursor->w) / m_inputScaleW;
+                    cy = m_preprocessPass.m_destHeight - (mx + cursor->h) / m_inputScaleH;
+                    cw = cursor->w / m_inputScaleW;
+                    ch = cursor->h / m_inputScaleH;
+                }
+                else
+                {
+                    cx = mx / m_inputScaleW;
+                    cy = my / m_inputScaleH;
+                    cw = cursor->w / m_inputScaleW;
+                    ch = cursor->h / m_inputScaleH;
+                }
+                m_preprocessPass.RenderCursor(cx, cy, cw, ch, cursor->view);
+            }
+        }
+    }
 
     int p = 0;
     for(auto& shaderPass : m_shaderPasses)
