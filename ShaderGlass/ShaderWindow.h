@@ -15,6 +15,7 @@ GNU General Public License v3.0
 #include "CaptureManager.h"
 #include "InputDialog.h"
 #include "CropDialog.h"
+#include "HotkeyDialog.h"
 #include "Helpers.h"
 
 class ShaderWindow
@@ -28,58 +29,61 @@ public:
     HWND m_mainWindow {nullptr};
 
 private:
-    WCHAR                        m_title[MAX_LOADSTRING];
-    WCHAR                        m_windowClass[MAX_LOADSTRING];
-    HINSTANCE                    m_instance {nullptr};
-    HWND                         m_paramsWindow {nullptr};
-    HWND                         m_browserWindow {nullptr};
-    HWND                         m_compileWindow {nullptr};
-    UINT                         m_dpi {USER_DEFAULT_SCREEN_DPI};
-    HMENU                        m_mainMenu {nullptr};
-    HMENU                        m_programMenu {nullptr};
-    HMENU                        m_gpuMenu {nullptr};
-    HMENU                        m_shaderMenu {nullptr};
-    HMENU                        m_pixelSizeMenu {nullptr};
-    HMENU                        m_aspectRatioMenu {nullptr};
-    HMENU                        m_outputScaleMenu {nullptr};
-    HMENU                        m_frameSkipMenu {nullptr};
-    HMENU                        m_flipMenu {nullptr};
-    HMENU                        m_windowMenu {nullptr};
-    HMENU                        m_modeMenu {nullptr};
-    HMENU                        m_displayMenu {nullptr};
-    HMENU                        m_deviceMenu {nullptr};
-    HMENU                        m_outputWindowMenu {nullptr};
-    HMENU                        m_inputMenu {nullptr};
-    HMENU                        m_recentMenu {nullptr};
-    HMENU                        m_importsMenu {nullptr};
-    HMENU                        m_advancedMenu {nullptr};
-    HMENU                        m_helpMenu {nullptr};
-    HMENU                        m_orientationMenu {nullptr};
-    std::vector<CaptureWindow>   m_captureWindows;
-    std::vector<CaptureDisplay>  m_captureDisplays;
-    CaptureManager&              m_captureManager;
-    CaptureOptions&              m_captureOptions;
-    unsigned                     m_numPresets {0};
-    unsigned                     m_selectedPixelSize {0};
-    unsigned                     m_selectedOutputScale {0};
-    unsigned                     m_selectedAspectRatio {0};
-    unsigned                     m_selectedFrameSkip {0};
-    bool                         m_isTransparent {false};
-    bool                         m_isBorderless {false};
-    bool                         m_paramsPositioned {false};
-    bool                         m_browserPositioned {false};
-    bool                         m_inMenu {false};
-    HANDLE                       m_compileThread {nullptr};
-    HANDLE                       m_compileEvent {nullptr};
-    float                        m_dpiScale {1.0f};
-    RECT                         m_lastPosition;
-    std::unique_ptr<InputDialog> m_inputDialog;
-    std::unique_ptr<CropDialog>  m_cropDialog;
-    bool                         m_toggledNone;
-    unsigned                     m_toggledPresetNo;
-    std::vector<std::wstring>    m_recentProfiles;
-    std::vector<std::wstring>    m_recentImports;
-    std::filesystem::path        m_importPath;
+    WCHAR                         m_title[MAX_LOADSTRING];
+    WCHAR                         m_windowClass[MAX_LOADSTRING];
+    HINSTANCE                     m_instance {nullptr};
+    HWND                          m_paramsWindow {nullptr};
+    HWND                          m_browserWindow {nullptr};
+    HWND                          m_compileWindow {nullptr};
+    UINT                          m_dpi {USER_DEFAULT_SCREEN_DPI};
+    HMENU                         m_mainMenu {nullptr};
+    HMENU                         m_programMenu {nullptr};
+    HMENU                         m_hotkeysMenu {nullptr};
+    HMENU                         m_gpuMenu {nullptr};
+    HMENU                         m_shaderMenu {nullptr};
+    HMENU                         m_pixelSizeMenu {nullptr};
+    HMENU                         m_aspectRatioMenu {nullptr};
+    HMENU                         m_outputScaleMenu {nullptr};
+    HMENU                         m_frameSkipMenu {nullptr};
+    HMENU                         m_flipMenu {nullptr};
+    HMENU                         m_windowMenu {nullptr};
+    HMENU                         m_modeMenu {nullptr};
+    HMENU                         m_displayMenu {nullptr};
+    HMENU                         m_deviceMenu {nullptr};
+    HMENU                         m_outputWindowMenu {nullptr};
+    HMENU                         m_inputMenu {nullptr};
+    HMENU                         m_recentMenu {nullptr};
+    HMENU                         m_importsMenu {nullptr};
+    HMENU                         m_advancedMenu {nullptr};
+    HMENU                         m_helpMenu {nullptr};
+    HMENU                         m_orientationMenu {nullptr};
+    std::vector<CaptureWindow>    m_captureWindows;
+    std::vector<CaptureDisplay>   m_captureDisplays;
+    CaptureManager&               m_captureManager;
+    CaptureOptions&               m_captureOptions;
+    unsigned                      m_numPresets {0};
+    unsigned                      m_selectedPixelSize {0};
+    unsigned                      m_selectedOutputScale {0};
+    unsigned                      m_selectedAspectRatio {0};
+    unsigned                      m_selectedFrameSkip {0};
+    bool                          m_isTransparent {false};
+    bool                          m_isBorderless {false};
+    bool                          m_paramsPositioned {false};
+    bool                          m_browserPositioned {false};
+    bool                          m_inMenu {false};
+    HANDLE                        m_compileThread {nullptr};
+    HANDLE                        m_compileEvent {nullptr};
+    float                         m_dpiScale {1.0f};
+    RECT                          m_lastPosition;
+    std::unique_ptr<InputDialog>  m_inputDialog;
+    std::unique_ptr<CropDialog>   m_cropDialog;
+    std::unique_ptr<HotkeyDialog> m_hotkeyDialog;
+    bool                          m_toggledNone;
+    unsigned                      m_toggledPresetNo;
+    std::vector<std::wstring>     m_recentProfiles;
+    std::vector<std::wstring>     m_recentImports;
+    std::map<UINT, HotkeyInfo>    m_hotkeys;
+    std::filesystem::path         m_importPath;
 
     bool         LoadProfile(const std::wstring& fileName);
     void         LoadProfile();
@@ -111,6 +115,8 @@ private:
     void         UnregisterHotkeys();
     void         SaveHotkeyState(bool state);
     bool         GetHotkeyState();
+    void         SaveHotkey(UINT id);
+    void         LoadHotkeys();
     void         SaveFlipModeState(bool state);
     bool         GetFlipModeState();
     void         SaveTearingState(bool state);
@@ -126,6 +132,7 @@ private:
     void         SaveRegistryOption(const wchar_t* name, bool value);
     int          GetRegistryInt(const wchar_t* name, int default);
     void         SaveRegistryInt(const wchar_t* name, int value);
+    void         DeleteRegistry(const wchar_t* name);
     void         GetStartingPosition(int& x, int& y, int& w, int& h);
     void         SaveStartingPosition();
     void         ForgetStartingPosition();

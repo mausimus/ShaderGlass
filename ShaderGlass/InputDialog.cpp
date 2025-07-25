@@ -17,7 +17,7 @@ static LPCWSTR startingValue;
 
 InputDialog::InputDialog(HINSTANCE hInstance, HWND mainWindow) : m_instance(hInstance), m_mainWindow(mainWindow) { }
 
-INT_PTR CALLBACK InputProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK InputProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     TCHAR lpszInput[16];
     WORD  cchInput;

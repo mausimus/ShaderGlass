@@ -120,6 +120,9 @@
     <ClInclude Include="CursorEmulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HotkeyDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -183,6 +186,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CursorEmulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HotkeyDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

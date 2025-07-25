@@ -17,9 +17,6 @@ GNU General Public License v3.0
 #define MAX_CAPTURE_DEVICE_FORMATS 1024U
 #define MAX_RECENT_PROFILES 20U
 #define MAX_RECENT_IMPORTS 20U
-#define HK_FULLSCREEN 1000
-#define HK_SCREENSHOT 1001
-#define HK_PAUSE 1002
 
 #define WM_PIXEL_SIZE(i) (static_cast<UINT>(WM_USER) + i)
 #define WM_ASPECT_RATIO(i) (static_cast<UINT> WM_PIXEL_SIZE(MAX_PIXEL_SIZES) + i)
@@ -105,6 +102,15 @@ struct CaptureDevice
     std::wstring name;
 
     std::vector<CaptureFormat> formats;
+};
+
+struct HotkeyInfo
+{
+    HotkeyInfo(UINT id, WORD defaultKey, const wchar_t* name) : id {id}, currentKey {defaultKey}, defaultKey {defaultKey}, name {name} { }
+    const wchar_t* name;
+    UINT           id;
+    WORD           currentKey;
+    WORD           defaultKey;
 };
 
 static const std::map<UINT, PixelSizeInfo> pixelSizes = {{WM_PIXEL_SIZE(0), PixelSizeInfo(1.0f, 1.0f, L"x1", "1")},

@@ -178,6 +178,7 @@
     <ClInclude Include="CropDialog.h" />
     <ClInclude Include="CursorEmulator.h" />
     <ClInclude Include="Helpers.h" />
+    <ClInclude Include="HotkeyDialog.h" />
     <ClInclude Include="InputDialog.h" />
     <ClInclude Include="DeviceCapture.h" />
     <ClInclude Include="ParamsWindow.h" />
@@ -215,6 +216,7 @@
     <ClCompile Include="CropDialog.cpp" />
     <ClCompile Include="CursorEmulator.cpp" />
     <ClCompile Include="Helpers.cpp" />
+    <ClCompile Include="HotkeyDialog.cpp" />
     <ClCompile Include="InputDialog.cpp" />
     <ClCompile Include="DeviceCapture.cpp" />
     <ClCompile Include="WIC\ScreenGrab11.cpp" />
