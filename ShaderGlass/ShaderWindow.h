@@ -50,6 +50,7 @@ private:
     HMENU                         m_modeMenu {nullptr};
     HMENU                         m_displayMenu {nullptr};
     HMENU                         m_deviceMenu {nullptr};
+    HMENU                         m_outputMenu {nullptr};
     HMENU                         m_outputWindowMenu {nullptr};
     HMENU                         m_inputMenu {nullptr};
     HMENU                         m_recentMenu {nullptr};
@@ -71,6 +72,7 @@ private:
     bool                          m_paramsPositioned {false};
     bool                          m_browserPositioned {false};
     bool                          m_inMenu {false};
+    bool                          m_inDialog {false};
     HANDLE                        m_compileThread {nullptr};
     HANDLE                        m_compileEvent {nullptr};
     float                         m_dpiScale {1.0f};
@@ -115,7 +117,8 @@ private:
     void         UnregisterHotkeys();
     void         SaveHotkeyState(bool state);
     bool         GetHotkeyState();
-    void         SaveHotkey(UINT id);
+    void         SaveHotkey(const HotkeyInfo& hk);
+    void         UpdateHotkey(const HotkeyInfo& hk);
     void         LoadHotkeys();
     void         SaveFlipModeState(bool state);
     bool         GetFlipModeState();
@@ -152,6 +155,8 @@ private:
     void         RemoveDefault();
     bool         LoadDefault();
     bool         ScaleLocked() const;
+    void         StartDialog();
+    void         EndDialog();
 
     static BOOL CALLBACK    EnumWindowsProcProxy(_In_ HWND hwnd, _In_ LPARAM lParam);
     static BOOL CALLBACK    EnumDisplayMonitorsProcProxy(_In_ HMONITOR hMonitor, _In_ HDC hDC, _In_ LPRECT lpRect, _In_ LPARAM lParam);

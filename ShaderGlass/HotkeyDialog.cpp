@@ -79,3 +79,31 @@ WORD HotkeyDialog::GetHotkey(const wchar_t* name, WORD hk)
 
     return hk;
 }
+
+std::wstring HotkeyDialog::GetKeyString(WORD hk)
+{
+    wchar_t keyString[30];
+    keyString[0] = 0;
+
+    const auto vk = LOBYTE(hk);
+    if(vk != 0)
+    {
+        const auto mod = HIBYTE(hk);
+        if(mod != 0)
+        {
+            if(mod & MOD_CONTROL)
+                wcscat_s(keyString, 30, L"Ctrl+");
+            if(mod & MOD_SHIFT)
+                wcscat_s(keyString, 30, L"Shift+");
+            if(mod & MOD_ALT)
+                wcscat_s(keyString, 30, L"Alt+");
+        }
+        auto    sc = MapVirtualKey(vk, MAPVK_VK_TO_VSC);
+        wchar_t wvk[10];
+        wvk[0] = 0;
+        GetKeyNameText(sc << 16, wvk, 10);
+        wcscat_s(keyString, 30, wvk);
+    }
+
+    return std::wstring(keyString);
+}

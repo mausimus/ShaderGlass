@@ -106,11 +106,14 @@ struct CaptureDevice
 
 struct HotkeyInfo
 {
-    HotkeyInfo(UINT id, WORD defaultKey, const wchar_t* name) : id {id}, currentKey {defaultKey}, defaultKey {defaultKey}, name {name} { }
+    HotkeyInfo(UINT id, WORD defaultKey, const wchar_t* name, const wchar_t* accelerator) :
+        id {id}, currentKey {defaultKey}, defaultKey {defaultKey}, name {name}, accelerator {accelerator}
+    { }
     const wchar_t* name;
     UINT           id;
     WORD           currentKey;
     WORD           defaultKey;
+    const wchar_t* accelerator;
 };
 
 static const std::map<UINT, PixelSizeInfo> pixelSizes = {{WM_PIXEL_SIZE(0), PixelSizeInfo(1.0f, 1.0f, L"x1", "1")},

@@ -13,6 +13,7 @@ public:
     HotkeyDialog(HINSTANCE hInstance, HWND mainWindow);
 
     WORD GetHotkey(const wchar_t* label, WORD hk);
+    std::wstring GetKeyString(WORD hk);
 
 private:
     HINSTANCE m_instance;

@@ -355,6 +355,18 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
     return true;
 }
 
+void ShaderWindow::StartDialog()
+{
+    m_inDialog = true;
+    UpdateWindowState();
+}
+
+void ShaderWindow::EndDialog()
+{
+    m_inDialog = false;
+    UpdateWindowState();
+}
+
 void ShaderWindow::LoadProfile()
 {
     OPENFILENAMEW ofn;
@@ -368,11 +380,13 @@ void ShaderWindow::LoadProfile()
     ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
     ofn.lpstrDefExt = (LPCWSTR)L"sgp";
 
+    StartDialog();
     if(GetOpenFileName(&ofn))
     {
         std::wstring ws(ofn.lpstrFile);
         LoadProfile(ws);
     }
+    EndDialog();
 }
 
 void ShaderWindow::ImportShader()
@@ -389,11 +403,13 @@ void ShaderWindow::ImportShader()
     ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
     ofn.lpstrDefExt = (LPCWSTR)L"slangp";
 
+    StartDialog();
     if(GetOpenFileName(&ofn))
     {
         std::wstring ws(ofn.lpstrFile);
         ImportShader(ws);
     }
+    EndDialog();
 }
 
 void ShaderWindow::SetFreeScale()
@@ -420,6 +436,7 @@ void ShaderWindow::LoadInputImage()
     ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
     ofn.lpstrDefExt = (LPCWSTR)L"png";
 
+    StartDialog();
     if(GetOpenFileName(&ofn))
     {
         std::wstring ws(ofn.lpstrFile);
@@ -429,8 +446,9 @@ void ShaderWindow::LoadInputImage()
         auto prevState   = CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_CHECKED | MF_BYCOMMAND);
         auto setDefaults = prevState != MF_CHECKED;
 
-        StartImage(setDefaults, setDefaults ? WM_PIXEL_SIZE(0) : 0);
+        StartImage(setDefaults, setDefaults ? WM_PIXEL_SIZE(0) : 0);    
     }
+    EndDialog();
 }
 
 void ShaderWindow::StartImage(bool autoScale, int pixelSize)
@@ -577,11 +595,13 @@ void ShaderWindow::SaveProfile()
     ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
     ofn.lpstrDefExt = (LPCWSTR)L"sgp";
 
+    StartDialog();
     if(GetSaveFileName(&ofn))
     {
         std::wstring ws(ofn.lpstrFile);
         SaveProfile(ws);
     }
+    EndDialog();
 }
 
 DWORD WINAPI CompileThreadFuncProxy(LPVOID lpParam)
@@ -828,7 +848,9 @@ void ShaderWindow::ScanDisplays()
 
 void ShaderWindow::CropWindow()
 {
+    StartDialog();
     m_cropDialog->Show(m_captureOptions.croppedArea);
+    EndDialog();
 }
 
 void ShaderWindow::BuildProgramMenu()
@@ -881,12 +903,12 @@ void ShaderWindow::BuildInputMenu()
 
 void ShaderWindow::BuildOutputMenu()
 {
-    auto sMenu = GetSubMenu(m_mainMenu, 2);
-    DeleteMenu(sMenu, 0, MF_BYPOSITION);
+    m_outputMenu = GetSubMenu(m_mainMenu, 2);
+    DeleteMenu(m_outputMenu, 0, MF_BYPOSITION);
 
-    m_modeMenu         = GetSubMenu(sMenu, 0);
-    m_outputWindowMenu = GetSubMenu(sMenu, 1);
-    m_flipMenu         = GetSubMenu(sMenu, 2);
+    m_modeMenu         = GetSubMenu(m_outputMenu, 0);
+    m_outputWindowMenu = GetSubMenu(m_outputMenu, 1);
+    m_flipMenu         = GetSubMenu(m_outputMenu, 2);
 
     m_outputScaleMenu = CreatePopupMenu();
     AppendMenu(m_outputScaleMenu, MF_STRING, IDM_OUTPUT_FREESCALE, L"Free");
@@ -895,18 +917,18 @@ void ShaderWindow::BuildOutputMenu()
         AppendMenu(m_outputScaleMenu, MF_STRING, os.first, os.second.text);
     }
     AppendMenu(m_outputScaleMenu, MF_STRING, IDM_OUTPUT_LOCKSCALE, L"Retain");
-    InsertMenu(sMenu, 3, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_outputScaleMenu, L"Scale");
+    InsertMenu(m_outputMenu, 3, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_outputScaleMenu, L"Scale");
 
     m_aspectRatioMenu = CreatePopupMenu();
     for(const auto& ar : aspectRatios)
     {
         AppendMenu(m_aspectRatioMenu, MF_STRING, ar.first, ar.second.text);
     }
-    InsertMenu(sMenu, 4, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_aspectRatioMenu, L"Aspect Ratio Correction");
+    InsertMenu(m_outputMenu, 4, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_aspectRatioMenu, L"Aspect Ratio Correction");
 
-    m_orientationMenu = GetSubMenu(sMenu, 5);
+    m_orientationMenu = GetSubMenu(m_outputMenu, 5);
 
-    InsertMenu(sMenu, 6, MF_BYPOSITION | MF_STRING, ID_PROCESSING_FULLSCREEN, L"Fullscreen\tCtrl+Shift+G");
+    InsertMenu(m_outputMenu, 6, MF_BYPOSITION | MF_STRING, ID_PROCESSING_FULLSCREEN, L"Fullscreen\tCtrl+Shift+G");
 }
 
 void ShaderWindow::BuildShaderMenu()
@@ -1168,7 +1190,7 @@ void ShaderWindow::AdjustWindowSize(HWND hWnd)
 void ShaderWindow::UpdateWindowState()
 {
     // always topmost when processing
-    if(m_captureManager.IsActive())
+    if(m_captureManager.IsActive() && !m_inDialog)
         SetWindowPos(m_mainWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
     else
         SetWindowPos(m_mainWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
@@ -1744,8 +1766,11 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             }
 
             auto& hk      = m_hotkeys.at(wmId);
+            StartDialog();
             hk.currentKey = m_hotkeyDialog->GetHotkey(hk.name, hk.currentKey);
-            SaveHotkey(wmId);
+            EndDialog();
+            SaveHotkey(hk);
+            UpdateHotkey(hk);
 
             if(GetHotkeyState())
             {
@@ -1869,7 +1894,9 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                         }
                         else
                         {
+                            StartDialog();
                             float customInput = m_inputDialog->GetInput("Aspect Ratio Correction (Pixel Height):", aspectRatio->second.r);
+                            EndDialog();
                             if(std::isnan(customInput))
                                 break;
 
@@ -2054,7 +2081,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     SetTransparent(true);
                     // TODO: check if mouse over parameters or browser window while they are visible? or is focus enough
                     auto focusedWindow = GetForegroundWindow();
-                    if(!m_inMenu && focusedWindow != m_browserWindow && focusedWindow != m_paramsWindow)
+                    if(!m_inMenu && !m_inDialog && focusedWindow != m_browserWindow && focusedWindow != m_paramsWindow)
                         m_captureManager.HideCursor();
                     else
                         m_captureManager.ShowCursor();
@@ -2173,10 +2200,12 @@ void ShaderWindow::Screenshot()
     ofn.lpstrInitialDir = NULL;
     ofn.Flags           = OFN_PATHMUSTEXIST;
 
+    StartDialog();
     if(GetSaveFileName(&ofn) == TRUE)
     {
         m_captureManager.SaveOutput(ofn.lpstrFile);
     }
+    EndDialog();
 }
 
 void ShaderWindow::ToggleBorderless(HWND hWnd)
@@ -2729,9 +2758,8 @@ bool ShaderWindow::ScaleLocked() const
     return GetMenuState(m_outputScaleMenu, IDM_OUTPUT_LOCKSCALE, MF_BYCOMMAND) & MF_CHECKED;
 }
 
-void ShaderWindow::SaveHotkey(UINT id)
+void ShaderWindow::SaveHotkey(const HotkeyInfo& hk)
 {
-    const auto& hk = m_hotkeys.at(id);
     if(hk.currentKey == hk.defaultKey)
     {
         DeleteRegistry(hk.name);
@@ -2742,16 +2770,45 @@ void ShaderWindow::SaveHotkey(UINT id)
     }
 }
 
+void ShaderWindow::UpdateHotkey(const HotkeyInfo& hk)
+{
+    wchar_t     text[60];
+    const auto& keyString = hk.currentKey ? m_hotkeyDialog->GetKeyString(hk.currentKey) : std::wstring(hk.accelerator);
+
+    int checked;
+    switch(hk.id)
+    {
+    case ID_GLOBALHOTKEYS_CURSOR:
+        checked = m_captureOptions.captureCursor ? MF_CHECKED : MF_UNCHECKED;
+        _snwprintf_s(text, 60, L"Capture Cursor\t%s", keyString.c_str());
+        ModifyMenu(m_inputMenu, IDM_INPUT_CAPTURECURSOR, MF_BYCOMMAND | MF_STRING | checked, IDM_INPUT_CAPTURECURSOR, text);
+        break;
+    case ID_GLOBALHOTKEYS_FULLSCREEN:
+        _snwprintf_s(text, 60, L"Fullscreen\t%s", keyString.c_str());
+        ModifyMenu(m_outputMenu, ID_PROCESSING_FULLSCREEN, MF_BYCOMMAND | MF_STRING, ID_PROCESSING_FULLSCREEN, text);
+        break;
+    case ID_GLOBALHOTKEYS_PAUSE:
+        _snwprintf_s(text, 60, L"Pause/Unpause\t%s", keyString.c_str());
+        ModifyMenu(m_programMenu, ID_PROCESSING_PAUSE, MF_BYCOMMAND | MF_STRING, ID_PROCESSING_PAUSE, text);
+        break;
+    case ID_GLOBALHOTKEYS_SCREENSHOT:
+        _snwprintf_s(text, 60, L"Take Snapshot...\t%s", keyString.c_str());
+        ModifyMenu(m_outputMenu, ID_PROCESSING_SCREENSHOT, MF_BYCOMMAND | MF_STRING, ID_PROCESSING_SCREENSHOT, text);
+        break;
+    }
+}
+
 void ShaderWindow::LoadHotkeys()
 {
-    m_hotkeys.emplace(ID_GLOBALHOTKEYS_FULLSCREEN, HotkeyInfo(ID_GLOBALHOTKEYS_FULLSCREEN, MAKEWORD('G', MOD_CONTROL | MOD_SHIFT), L"Fullscreen Key"));
-    m_hotkeys.emplace(ID_GLOBALHOTKEYS_SCREENSHOT, HotkeyInfo(ID_GLOBALHOTKEYS_SCREENSHOT, MAKEWORD('S', MOD_CONTROL | MOD_SHIFT), L"Screenshot Key"));
-    m_hotkeys.emplace(ID_GLOBALHOTKEYS_PAUSE, HotkeyInfo(ID_GLOBALHOTKEYS_PAUSE, MAKEWORD('P', MOD_CONTROL | MOD_SHIFT), L"Pause Key"));
-    m_hotkeys.emplace(ID_GLOBALHOTKEYS_CURSOR, HotkeyInfo(ID_GLOBALHOTKEYS_CURSOR, MAKEWORD('M', MOD_CONTROL | MOD_SHIFT), L"Cursor Key"));
+    m_hotkeys.emplace(ID_GLOBALHOTKEYS_FULLSCREEN, HotkeyInfo(ID_GLOBALHOTKEYS_FULLSCREEN, MAKEWORD('G', MOD_CONTROL | MOD_SHIFT), L"Fullscreen Key", L"f"));
+    m_hotkeys.emplace(ID_GLOBALHOTKEYS_SCREENSHOT, HotkeyInfo(ID_GLOBALHOTKEYS_SCREENSHOT, MAKEWORD('S', MOD_CONTROL | MOD_SHIFT), L"Screenshot Key", L"s"));
+    m_hotkeys.emplace(ID_GLOBALHOTKEYS_PAUSE, HotkeyInfo(ID_GLOBALHOTKEYS_PAUSE, 0, L"Pause Key", L"a"));
+    m_hotkeys.emplace(ID_GLOBALHOTKEYS_CURSOR, HotkeyInfo(ID_GLOBALHOTKEYS_CURSOR, 0, L"Cursor Key", L"c"));
 
     for(auto& hk : m_hotkeys)
     {
         hk.second.currentKey = GetRegistryInt(hk.second.name, hk.second.defaultKey);
+        UpdateHotkey(hk.second);
     }
 }
 
