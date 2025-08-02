@@ -1760,7 +1760,8 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case ID_GLOBALHOTKEYS_SCREENSHOT:
         case ID_GLOBALHOTKEYS_PAUSE:
         case ID_GLOBALHOTKEYS_CURSOR: {
-            if(GetHotkeyState())
+            auto globalState = GetHotkeyState();
+            if(globalState)
             {
                 UnregisterHotkeys();
             }
@@ -1770,9 +1771,9 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             hk.currentKey = m_hotkeyDialog->GetHotkey(hk.name, hk.currentKey);
             EndDialog();
             SaveHotkey(hk);
-            UpdateHotkey(hk);
+            UpdateHotkey(hk, globalState);
 
-            if(GetHotkeyState())
+            if(globalState)
             {
                 RegisterHotkeys();
             }
@@ -2304,8 +2305,10 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 
     SetMenu(m_mainWindow, m_mainMenu);
     srand(static_cast<unsigned>(time(NULL)));
+    auto hotkeyState = GetHotkeyState();
     LoadHotkeys();
-    if(GetHotkeyState())
+    UpdateHotkeys(hotkeyState);
+    if(hotkeyState)
     {
         RegisterHotkeys();
     }
@@ -2452,6 +2455,7 @@ int ShaderWindow::GetRegistryInt(const wchar_t* name, int default)
 void ShaderWindow::SaveHotkeyState(bool state)
 {
     SaveRegistryOption(TEXT("Global Hotkeys"), state);
+    UpdateHotkeys(state);
 }
 
 bool ShaderWindow::GetHotkeyState()
@@ -2770,10 +2774,10 @@ void ShaderWindow::SaveHotkey(const HotkeyInfo& hk)
     }
 }
 
-void ShaderWindow::UpdateHotkey(const HotkeyInfo& hk)
+void ShaderWindow::UpdateHotkey(const HotkeyInfo& hk, bool globalState)
 {
     wchar_t     text[60];
-    const auto& keyString = hk.currentKey ? m_hotkeyDialog->GetKeyString(hk.currentKey) : std::wstring(hk.accelerator);
+    const auto& keyString = hk.currentKey && globalState ? m_hotkeyDialog->GetKeyString(hk.currentKey) : std::wstring(hk.accelerator);
 
     int checked;
     switch(hk.id)
@@ -2804,11 +2808,14 @@ void ShaderWindow::LoadHotkeys()
     m_hotkeys.emplace(ID_GLOBALHOTKEYS_SCREENSHOT, HotkeyInfo(ID_GLOBALHOTKEYS_SCREENSHOT, MAKEWORD('S', MOD_CONTROL | MOD_SHIFT), L"Screenshot Key", L"s"));
     m_hotkeys.emplace(ID_GLOBALHOTKEYS_PAUSE, HotkeyInfo(ID_GLOBALHOTKEYS_PAUSE, 0, L"Pause Key", L"a"));
     m_hotkeys.emplace(ID_GLOBALHOTKEYS_CURSOR, HotkeyInfo(ID_GLOBALHOTKEYS_CURSOR, 0, L"Cursor Key", L"c"));
+}
 
+void ShaderWindow::UpdateHotkeys(bool globalHotkeys)
+{
     for(auto& hk : m_hotkeys)
     {
         hk.second.currentKey = GetRegistryInt(hk.second.name, hk.second.defaultKey);
-        UpdateHotkey(hk.second);
+        UpdateHotkey(hk.second, globalHotkeys);
     }
 }
 
@@ -2818,7 +2825,7 @@ void ShaderWindow::RegisterHotkeys()
     {
         if(hk.second.currentKey)
             RegisterHotKey(m_mainWindow, hk.first, HIBYTE(hk.second.currentKey), LOBYTE(hk.second.currentKey));
-    }
+    }    
 }
 
 void ShaderWindow::UnregisterHotkeys()

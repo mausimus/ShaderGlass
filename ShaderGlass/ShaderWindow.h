@@ -118,8 +118,9 @@ private:
     void         SaveHotkeyState(bool state);
     bool         GetHotkeyState();
     void         SaveHotkey(const HotkeyInfo& hk);
-    void         UpdateHotkey(const HotkeyInfo& hk);
+    void         UpdateHotkey(const HotkeyInfo& hk, bool globalState);
     void         LoadHotkeys();
+    void         UpdateHotkeys(bool globalState);
     void         SaveFlipModeState(bool state);
     bool         GetFlipModeState();
     void         SaveTearingState(bool state);
