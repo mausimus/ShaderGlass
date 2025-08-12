@@ -487,9 +487,18 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         return;
     }
     auto timeSinceLastRender = nowTicks - m_prevRenderTicks;
-    auto fractionalFrameNo   = (nowTicks - m_startTicks) / (m_frameTime * max(m_subFrames, 1));
+    auto frameDuration       = m_frameTime * max(m_subFrames, 1);
+    auto fractionalFrameNo   = (nowTicks - m_startTicks) / frameDuration;
     auto logicalFrameNo      = (int)floor(fractionalFrameNo);
-    auto subFrameNo          = m_subFrames > 1 ? ((int)floor((fractionalFrameNo - floor(fractionalFrameNo)) * m_subFrames) % m_subFrames) + 1 : 0;
+
+    if (logicalFrameNo > m_prevLogicalFrameNo + 1)
+    {
+        logicalFrameNo    = m_prevLogicalFrameNo + 1;
+        m_startTicks      = nowTicks - (ULONGLONG)(logicalFrameNo * frameDuration);
+        fractionalFrameNo = (nowTicks - m_startTicks) / frameDuration;
+    }
+
+    auto subFrameNo = m_subFrames > 1 ? ((int)floor((fractionalFrameNo - floor(fractionalFrameNo)) * m_subFrames) % m_subFrames) + 1 : 0;
 
     if(logicalFrameNo == m_prevLogicalFrameNo && subFrameNo == m_prevSubFrameNo)
         return;
