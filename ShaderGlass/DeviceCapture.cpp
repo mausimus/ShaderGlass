@@ -229,8 +229,10 @@ void DeviceCapture::CreateSourceReader()
 {
     winrt::com_ptr<IMFAttributes> attributes;
 
-    THROW(MFCreateAttributes(attributes.put(), 1));
+    THROW(MFCreateAttributes(attributes.put(), 3));
     THROW(attributes->SetUINT32(MF_SOURCE_READER_ENABLE_VIDEO_PROCESSING, 1));
+    THROW(attributes->SetUINT32(MF_READWRITE_ENABLE_HARDWARE_TRANSFORMS, 1));
+    THROW(attributes->SetUINT32(MF_LOW_LATENCY, 1));
     THROW(MFCreateSourceReaderFromMediaSource(m_mediaSource.get(), attributes.get(), m_sourceReader.put()));
 }
 
