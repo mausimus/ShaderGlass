@@ -279,7 +279,7 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
             for(const auto& d : devices)
                 for(const auto& f : d.formats)
                     if(d.name == deviceName && f.id == deviceFormat)
-                        SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_DEVICE_FORMAT(f.deviceFormatNo), 0);
+                        SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_DEVICE_FORMAT(f.deviceFormatNo), 1);
         }
         else if(windowName.has_value() && windowName.value().size())
         {
@@ -1970,7 +1970,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 if(wmId >= WM_CAPTURE_DEVICE_FORMAT(0) && wmId < WM_CAPTURE_DEVICE_FORMAT(MAX_CAPTURE_DEVICE_FORMATS))
                 {
                     auto deviceFormatNo = wmId - WM_CAPTURE_DEVICE_FORMAT(0);
-                    auto setDefaults    = (m_captureOptions.deviceFormatNo == 0);
+                    auto setDefaults    = lParam == 0 && (m_captureOptions.deviceFormatNo == 0);
                     m_captureOptions.imageFile.clear();
                     m_captureOptions.deviceFormatNo = deviceFormatNo;
                     CheckMenuItem(m_inputMenu, ID_INPUT_FILE, MF_UNCHECKED | MF_BYCOMMAND);

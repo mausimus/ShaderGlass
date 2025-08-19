@@ -22,8 +22,9 @@ const std::map<unsigned long, int> FormatPriorities {
     {842094158, 3}, // NV12
     {1196444237, 0}, // MJPG
     {844715353, 2}, // YUY2
-    {875967048, 0} // H264
-};
+    {875967048, 0}, // H264
+    {20, 1}}
+; // RGB
 
 DeviceCapture::DeviceCapture() { }
 
@@ -101,9 +102,12 @@ std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
                 THROW(MFGetAttributeRatio(mediaType.get(), MF_MT_FRAME_RATE, &num, &denum));
                 float fps = denum != 0 ? num / (float)denum : 0.0f;
 
+                if(fps > 75)
+                    continue;
+
                 wchar_t formatName[MAX_DEVICE_NAME];
                 //_snwprintf_s(formatName, MAX_DEVICE_NAME, L"%dx%d %.2f fps (%S)\n", w, h, fps, formatCode);
-                _snwprintf_s(formatName, MAX_DEVICE_NAME, L"%dx%d @ %.2f fps\n", w, h, fps);
+                _snwprintf_s(formatName, MAX_DEVICE_NAME, L"%dx%d @ %.2f fps", w, h, fps);
 
                 char formatId[MAX_DEVICE_NAME];
                 snprintf(formatId, MAX_DEVICE_NAME, "%u:%u:%lu:%u:%u", w, h, format.Data1, num, denum);
@@ -230,7 +234,7 @@ void DeviceCapture::CreateSourceReader()
     winrt::com_ptr<IMFAttributes> attributes;
 
     THROW(MFCreateAttributes(attributes.put(), 3));
-    THROW(attributes->SetUINT32(MF_SOURCE_READER_ENABLE_VIDEO_PROCESSING, 1));
+    THROW(attributes->SetUINT32(MF_SOURCE_READER_ENABLE_ADVANCED_VIDEO_PROCESSING, 1));
     THROW(attributes->SetUINT32(MF_READWRITE_ENABLE_HARDWARE_TRANSFORMS, 1));
     THROW(attributes->SetUINT32(MF_LOW_LATENCY, 1));
     THROW(MFCreateSourceReaderFromMediaSource(m_mediaSource.get(), attributes.get(), m_sourceReader.put()));
