@@ -402,14 +402,14 @@ void BrowserWindow::Build()
 
     AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("Community Favorites"), -1, 1);
 
-    for(int fp = 0; fp < sizeof(favoritePresets) / sizeof(const char*); fp++)
+    /*for(int fp = 0; fp < sizeof(favoritePresets) / sizeof(const char*); fp++)
     {
         auto p = m_captureManager.FindByName(favoritePresets[fp]);
         if(p != -1)
         {
             m_favorites[WM_SHADER(p)] = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR(favoritePresets[fp]), WM_SHADER(p), 2);
         }
-    }
+    }*/
 
     auto raItem = AddItemToTree(m_treeControl, convertCharArrayToLPCWSTR("RetroArch Library"), -1, 1);
 

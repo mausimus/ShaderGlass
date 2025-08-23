@@ -251,6 +251,8 @@ void ShaderGC::ProcessSourceShader(SourceShaderDef& def, ostream& log, bool& war
     def.params.push_back(SourceShaderParam("OriginalSize", 4, 0));
     def.params.push_back(SourceShaderParam("OutputSize", 4, 0));
     def.params.push_back(SourceShaderParam("FrameCount", 1, 0));
+    def.params.push_back(SourceShaderParam("CurrentSubFrame", 1, 0));
+    def.params.push_back(SourceShaderParam("TotalSubFrames", 1, 0));
 }
 
 int GetSize(const std::string& mtype)

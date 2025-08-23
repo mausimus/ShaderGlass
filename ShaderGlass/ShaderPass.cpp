@@ -254,14 +254,20 @@ void ShaderPass::Resize(
     }
 }
 
-void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameNo, int boxX, int boxY)
+void ShaderPass::Render(std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameNo, int subFrameNo, int boxX, int boxY)
 {
-    Render(m_sourceView, resources, frameNo, boxX, boxY);
+    Render(m_sourceView, resources, frameNo, subFrameNo, boxX, boxY);
 }
 
-void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameNo, int boxX, int boxY)
+void ShaderPass::UpdateSubFrames(int totalSubFrames)
+{
+    params_TotalSubFrames = totalSubFrames;
+}
+
+void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>>& resources, int frameNo, int subFrameNo, int boxX, int boxY)
 {
     params_FrameCount = frameNo;
+    params_CurrentSubFrame = subFrameNo;
     if(m_shader.m_frameCountMod > 0)
     {
         while(params_FrameCount >= m_shader.m_frameCountMod)
@@ -269,6 +275,8 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
     }
 
     m_shader.SetParam("FrameCount", &params_FrameCount);
+    m_shader.SetParam("CurrentSubFrame", &params_CurrentSubFrame);
+    m_shader.SetParam("TotalSubFrames", &params_TotalSubFrames);
     m_shader.SetParam("MVP", &m_modelViewProj);
 
     if(m_constantBuffer != nullptr)

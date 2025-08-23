@@ -198,6 +198,11 @@
 #define ID_GLOBALHOTKEYS_SHOWMENU       32937
 #define ID_PROCESSING_RENDERER          32938
 #define ID_RENDERER_DIRECT3D11          32939
+#define ID_OUTPUT_SUB                   32940
+#define ID_SUB_DUMMY                    32941
+#define ID_Menu32942                    32942
+#define ID_SUBFRAME_SYNC                32943
+#define ID_SUB_INTERNALVSYNC            32944
 #define IDC_STATIC                      -1
 #define IDC_STATIC_LABEL                -1
 
@@ -207,7 +212,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        142
-#define _APS_NEXT_COMMAND_VALUE         32940
+#define _APS_NEXT_COMMAND_VALUE         32945
 #define _APS_NEXT_CONTROL_VALUE         1004
 #define _APS_NEXT_SYMED_VALUE           116
 #endif

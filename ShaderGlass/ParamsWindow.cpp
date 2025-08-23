@@ -253,6 +253,10 @@ void ParamsWindow::RebuildControls(bool doResize)
             int startValue = (int)roundf(numSteps * (p->currentValue - p->minValue) / (p->maxValue - p->minValue));
             AddTrackbar(0, numSteps, startValue, numSteps, p->name.c_str(), p);
         }
+        else
+        {
+            AddTrackbar(0, 0, 0, 0, p->name.c_str(), p);
+        }
     }
 
     if(m_trackbars.size())
@@ -415,10 +419,11 @@ void ParamsWindow::AddTrackbar(UINT iMin, UINT iMax, UINT iStart, UINT iSteps, c
         }
     }
 
+    int exStyle = iMin == iMax ? WS_DISABLED : 0;
     auto hwndTrack = CreateWindowEx(0,
                                     TRACKBAR_CLASS,
                                     L"Trackbar Control",
-                                    WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
+                                    WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS | exStyle,
                                     (LONG)(m_dpiScale * STATIC_WIDTH),
                                     (LONG)(m_dpiScale * (m_trackbars.size() * PARAM_HEIGHT + PARAMS_TOP)),
                                     (LONG)(m_dpiScale * TRACK_WIDTH),

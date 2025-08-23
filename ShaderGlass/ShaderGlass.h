@@ -39,6 +39,9 @@ public:
     void  SetCroppedArea(RECT area);
     void  SetFreeScale(bool freeScale);
     void  SetVertical(bool vertical);
+    void  SetSubFrames(unsigned subFrames);
+    void  SetSyncSubFrame(bool syncSubFrame);
+    void  SetInternalVSync(bool internalVSync);
     float FPS()
     {
         return m_fps;
@@ -58,7 +61,7 @@ private:
     void DestroyPasses();
     void DestroyTargets();
     void RebuildShaders();
-    void PresentFrame();
+    void PresentFrame(bool vsync);
 
     POINT                                    m_lastSize;
     POINT                                    m_lastPos;
@@ -92,14 +95,15 @@ private:
     bool       m_useHDR {false};
     int        m_frameCounter {0};
     int        m_logicalFrameCounter {0};
-    ULONGLONG  m_startTicks {0};
+    int32_t    m_startTicks {0};
     int        m_renderCounter {0};
     int        m_prevRenderCounter {0};
-    ULONGLONG  m_prevRenderTicks {0};
-    ULONGLONG  m_prevTicks {0};
-    ULONGLONG  m_prevFrameTicks {0};
+    int32_t    m_prevRenderTicks {0};
+    int32_t    m_prevTicks {0};
+    int32_t    m_prevFrameTicks {0};
     int        m_prevInputFrameNo {0};
     int        m_prevLogicalFrameNo {0};
+    int        m_prevSubFrameNo {0};
     float      m_fps {0};
     bool       m_requiresFeedback {false};
     int        m_requiresHistory {0};
@@ -118,21 +122,26 @@ private:
     std::unique_ptr<Preset>                           m_newShaderPreset {nullptr};
     std::vector<std::tuple<int, std::string, double>> m_newParams;
 
-    volatile int   m_frameSkip {0};
-    volatile bool  m_running {false};
-    volatile float m_inputScaleW {3.0f};
-    volatile float m_inputScaleH {3.0f};
-    volatile bool  m_inputRescaled {false};
-    volatile float m_outputScaleW {1.0f};
-    volatile float m_outputScaleH {1.0f};
-    volatile bool  m_outputRescaled {false};
-    volatile bool  m_flipHorizontal {false};
-    volatile bool  m_flipVertical {false};
-    volatile RECT  m_lockedArea {0, 0, 0, 0};
-    volatile bool  m_lockedAreaUpdated {false};
-    volatile bool  m_freeScale {false};
-    volatile RECT  m_croppedArea {0, 0, 0, 0};
-    volatile bool  m_croppedAreaUpdated {false};
-    volatile bool  m_vertical {false};
-    volatile bool  m_verticalUpdated {false};
+    volatile int    m_frameSkip {0};
+    volatile bool   m_running {false};
+    volatile float  m_inputScaleW {3.0f};
+    volatile float  m_inputScaleH {3.0f};
+    volatile bool   m_inputRescaled {false};
+    volatile float  m_outputScaleW {1.0f};
+    volatile float  m_outputScaleH {1.0f};
+    volatile bool   m_outputRescaled {false};
+    volatile bool   m_flipHorizontal {false};
+    volatile bool   m_flipVertical {false};
+    volatile RECT   m_lockedArea {0, 0, 0, 0};
+    volatile bool   m_lockedAreaUpdated {false};
+    volatile bool   m_freeScale {false};
+    volatile RECT   m_croppedArea {0, 0, 0, 0};
+    volatile bool   m_croppedAreaUpdated {false};
+    volatile bool   m_vertical {false};
+    volatile bool   m_verticalUpdated {false};
+    volatile int    m_subFrames {0};
+    volatile bool   m_subFramesUpdated {false};
+    volatile bool   m_syncSubFrame {true};
+    volatile bool   m_internalVSync {false};
+    volatile double m_frameTime {0};
 };

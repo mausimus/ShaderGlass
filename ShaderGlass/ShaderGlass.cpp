@@ -9,7 +9,10 @@ GNU General Public License v3.0
 #include "ShaderGlass.h"
 #include "ShaderList.h"
 #include "CursorEmulator.h"
+#include "Helpers.h"
 #include "resource.h"
+
+//#define TIMING_DUMP
 
 static HRESULT     hr;
 static const float background_colour[4] = {0, 0, 0, 1.0f};
@@ -28,7 +31,9 @@ ShaderGlass::~ShaderGlass()
     DestroyPasses();
     DestroyTargets();
 
+    m_context->ClearState();
     m_context->Flush();
+    m_context = nullptr;
 }
 
 void ShaderGlass::Initialize(HWND                                outputWindow,
@@ -80,9 +85,10 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
     m_lastSize.x = clientRect.right;
     m_lastSize.y = clientRect.bottom;
 
-    m_prevTicks          = GetTickCount64();
-    m_startTicks         = GetTickCount64();
+    m_prevTicks          = 0;
+    m_startTicks         = 0;
     m_prevLogicalFrameNo = 0;
+    m_prevSubFrameNo     = 0;
 
     // create swapchain
     {
@@ -156,6 +162,17 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
         SetSwapchainColorSpace();
     }
 
+    DWM_TIMING_INFO ti;
+    ti.cbSize = sizeof(ti);
+    if(DwmGetCompositionTimingInfo(NULL, &ti) == S_OK)
+    {
+        m_frameTime = TICKS_PER_SEC * (double)ti.rateRefresh.uiDenominator / (double)ti.rateRefresh.uiNumerator;
+    }
+    else
+    {
+        m_frameTime = TICKS_PER_SEC / 60.0;
+    }
+
     m_context->RSSetState(m_rasterizerState.get());
 
     m_preprocessShader.Create(m_device);
@@ -171,7 +188,8 @@ void ShaderGlass::RebuildShaders()
     m_shaderPasses.reserve(m_shaderPreset->m_shaders.size() + (m_vertical ? 1 : 0));
     for(auto& shader : m_shaderPreset->m_shaders)
     {
-        m_shaderPasses.emplace_back(shader, *m_shaderPreset, m_device, m_context);
+        auto& pass = m_shaderPasses.emplace_back(shader, *m_shaderPreset, m_device, m_context);
+        pass.UpdateSubFrames(m_subFrames);
     }
     if(m_vertical)
     {
@@ -257,6 +275,25 @@ void ShaderGlass::SetVertical(bool vertical)
     }
 }
 
+void ShaderGlass::SetSubFrames(unsigned subFrames)
+{
+    if(m_subFrames != subFrames)
+    {
+        m_subFrames        = subFrames;
+        m_subFramesUpdated = true;
+    }
+}
+
+void ShaderGlass::SetSyncSubFrame(bool syncSubFrame)
+{
+    m_syncSubFrame = syncSubFrame;
+}
+
+void ShaderGlass::SetInternalVSync(bool internalVSync)
+{
+    m_internalVSync = internalVSync;
+}
+
 void ShaderGlass::DestroyTargets()
 {
     if(m_preprocessedRenderTarget != nullptr)
@@ -272,7 +309,7 @@ void ShaderGlass::UpdateParams()
     for(auto& s : m_shaderPreset->m_shaders)
         for(auto& p : s.Params())
         {
-            if(p->size == 4 && p->name != "FrameCount")
+            if(p->size == 4 && p->name != "FrameCount" && p->name != "CurrentSubFrame" && p->name != "TotalSubFrames")
                 s.SetParam(p, &p->currentValue);
         }
 }
@@ -294,7 +331,7 @@ void ShaderGlass::ResetParams()
     for(auto& s : m_shaderPreset->m_shaders)
         for(auto& p : s.Params())
         {
-            if(p->size == 4 && p->name != "FrameCount")
+            if(p->size == 4 && p->name != "FrameCount" && p->name != "CurrentSubFrame" && p->name != "TotalSubFrames")
             {
                 // check for preset override
                 auto hasOverride = false;
@@ -322,7 +359,7 @@ std::vector<std::tuple<int, ShaderParam*>> ShaderGlass::Params()
     for(auto& s : m_shaderPreset->m_shaders)
     {
         for(auto& p : s.Params())
-            if(p->size == 4 && p->name != "FrameCount")
+            if(p->size == 4 && p->name != "FrameCount" && p->name != "CurrentSubFrame" && p->name != "TotalSubFrames")
                 params.push_back(std::make_tuple(i, p));
 
         i++;
@@ -399,38 +436,129 @@ void ShaderGlass::DestroyPasses()
     m_requiresHistory  = 0;
 }
 
-void ShaderGlass::PresentFrame()
+#ifdef TIMING_DUMP
+
+#    define TIMING_BUFLEN 1200
+int     _timingIndex = 0;
+int32_t _nowTicks[TIMING_BUFLEN];
+int32_t _prePresentTicks[TIMING_BUFLEN];
+int32_t _postPresentTicks[TIMING_BUFLEN];
+int32_t _frameNo[TIMING_BUFLEN];
+int32_t _subFrameNo[TIMING_BUFLEN];
+int32_t _frameTicks[TIMING_BUFLEN];
+double  _fracFrame[TIMING_BUFLEN];
+
+#endif
+
+void ShaderGlass::PresentFrame(bool vsync)
 {
     DXGI_PRESENT_PARAMETERS presentParameters {};
     UINT                    presentFlags = 0;
     if(m_flipMode)
     {
-        presentFlags |= DXGI_PRESENT_RESTART;
+        if(!vsync)
+        {
+            presentFlags |= DXGI_PRESENT_RESTART;
+        }
         if(m_allowTearing)
         {
             presentFlags |= DXGI_PRESENT_ALLOW_TEARING;
         }
     }
-    m_swapChain->Present1(0, presentFlags, &presentParameters);
+#ifdef TIMING_DUMP
+    _prePresentTicks[_timingIndex] = GetTicks();
+#endif
+    m_swapChain->Present1(vsync ? 1 : 0, presentFlags, &presentParameters);
+    auto afterTicks = GetTicks();
+#ifdef TIMING_DUMP
+    _postPresentTicks[_timingIndex] = afterTicks;
+#endif
     PostMessage(m_outputWindow, WM_PAINT, 0, 0); // necessary for click-through
 }
 
 void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG frameTicks, int inputFrameNo)
 {
-    auto nowTicks            = GetTickCount64();
-    auto timeSinceLastRender = nowTicks - m_prevRenderTicks;
-    auto logicalFrameNo      = (int)roundf((nowTicks - m_startTicks) / 16.6666666f); // fix shaders at 60 fps
-
-    // same input
-    if(inputFrameNo == m_prevInputFrameNo)
+    bool holdInput = false;
+    auto nowTicks  = GetTicks();
+    if(m_startTicks == 0)
     {
-        if(logicalFrameNo == m_prevLogicalFrameNo)
-            return;
+#ifdef TIMING_DUMP
+        memset(_nowTicks, 0, sizeof(_nowTicks));
+        memset(_prePresentTicks, 0, sizeof(_prePresentTicks));
+        memset(_postPresentTicks, 0, sizeof(_postPresentTicks));
+        memset(_frameNo, 0, sizeof(_frameNo));
+        memset(_subFrameNo, 0, sizeof(_subFrameNo));
+        memset(_fracFrame, 0, sizeof(_fracFrame));
+        _timingIndex = 0;
+#endif
 
-        auto timeSinceLastInput = nowTicks - frameTicks;
-        if(timeSinceLastInput < 20) // 3.3 ms delay allowance for frame timing
+        // when starting up, wait for VSync once and set our internal frame timing to mid-VSync (make this offset configurable? do more attempts for better accuracy?)
+        // then, we will present frames half-way through VSync
+        PresentFrame(true);
+        nowTicks     = GetTicks();
+        m_startTicks = nowTicks - (int32_t)(m_frameTime / 2);
+        m_prevTicks  = m_startTicks;
+#ifdef TIMING_DUMP
+        _nowTicks[_timingIndex] = nowTicks;
+        _frameNo[_timingIndex]  = m_startTicks;
+#endif
+        return;
+    }
+    double fractionalFrameNo = m_prevLogicalFrameNo;
+    int    logicalFrameNo    = m_prevLogicalFrameNo;
+    int    subFrameNo        = m_prevSubFrameNo;
+
+    if(m_internalVSync)
+    {
+        fractionalFrameNo = (nowTicks - m_startTicks) / (m_frameTime * max(m_subFrames, 1));
+        logicalFrameNo    = (int)floor(fractionalFrameNo);
+        subFrameNo        = m_subFrames > 1 ? ((int)floor((fractionalFrameNo - floor(fractionalFrameNo)) * m_subFrames) % m_subFrames) + 1 : 0;
+        if(logicalFrameNo == m_prevLogicalFrameNo && subFrameNo == m_prevSubFrameNo)
             return;
     }
+    else
+    {
+        if(m_subFrames > 0)
+        {
+            subFrameNo = m_prevSubFrameNo + 1;
+            if(subFrameNo > m_subFrames)
+            {
+                subFrameNo = 1;
+                logicalFrameNo++;
+            }
+            else if(m_syncSubFrame)
+            {
+                holdInput = true;
+            }
+        }
+        else
+        {
+            logicalFrameNo++;
+        }
+    }
+
+#ifdef TIMING_DUMP
+    _timingIndex++;
+    if(_timingIndex == TIMING_BUFLEN)
+    {
+        // save & exit
+        std::ofstream o(L"c:\\temp\\sg-timings.csv");
+        o << "NowTicks" << "," << "FrameNo" << "," << "SubFrameNo" << "," << "PrePresentTicks" << "," << "PostPresentTicks" << "," << "FracFrameNo" << "," << "FrameTicks"
+          << std::endl;
+        for(int i = 0; i < _timingIndex; i++)
+        {
+            o << _nowTicks[i] << "," << _frameNo[i] << "," << _subFrameNo[i] << "," << _prePresentTicks[i] << "," << _postPresentTicks[i] << "," << _fracFrame[i] << ","
+              << _frameTicks[i] << std::endl;
+        }
+        o.close();
+        abort();
+    }
+    _nowTicks[_timingIndex]   = nowTicks;
+    _fracFrame[_timingIndex]  = fractionalFrameNo;
+    _frameNo[_timingIndex]    = logicalFrameNo;
+    _subFrameNo[_timingIndex] = subFrameNo;
+    _frameTicks[_timingIndex] = frameTicks;
+#endif
 
     if(m_frameSkip > 0)
     {
@@ -445,11 +573,12 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     m_prevFrameTicks     = frameTicks;
     m_prevInputFrameNo   = inputFrameNo;
     m_prevLogicalFrameNo = logicalFrameNo;
+    m_prevSubFrameNo     = subFrameNo;
 
     if(!m_running || !texture)
     {
         // skip frame
-        PresentFrame();
+        PresentFrame(false);
         return;
     }
 
@@ -539,7 +668,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     if(clientRect.right <= 0 || clientRect.bottom <= 0)
     {
         // skip
-        PresentFrame();
+        PresentFrame(false);
         return;
     }
 
@@ -630,7 +759,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
     if(m_newShaderPreset || m_verticalUpdated)
     {
-        m_startTicks = GetTickCount64(); // reset logical frame no
+        m_startTicks = 0; // reset logical frame no
 
         DestroyShaders();
         if(m_newShaderPreset)
@@ -910,6 +1039,15 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         }
     }
 
+    if(m_subFramesUpdated)
+    {
+        for(auto& p : m_shaderPasses)
+        {
+            p.UpdateSubFrames(m_subFrames);
+        }
+        m_subFramesUpdated = false;
+    }
+
     if(outputMoved || outputResized || inputResized || (m_lastPos.x != topLeft.x || m_lastPos.y != topLeft.y) || m_lockedAreaUpdated)
     {
         // preprocess captured frame to a texture: crop (via scale & translation), reduce resolution, and whatnot (invert y?)
@@ -1001,7 +1139,10 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     winrt::com_ptr<ID3D11ShaderResourceView> textureView;
     hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
     assert(SUCCEEDED(hr));
-    m_preprocessPass.Render(textureView.get(), m_passResources, logicalFrameNo, 0, 0);
+    if(!holdInput)
+    {
+        m_preprocessPass.Render(textureView.get(), m_passResources, logicalFrameNo, subFrameNo, 0, 0);
+    }
 
     if(m_cursorEmulator.Hidden())
     {
@@ -1010,7 +1151,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         {
             auto mx = ci.ptScreenPos.x;
             auto my = ci.ptScreenPos.y;
-            
+
             if(!m_clone)
             {
                 // glass
@@ -1061,11 +1202,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
         if(p == 0)
         {
-            shaderPass.Render(m_originalView.get(), m_passResources, logicalFrameNo, passBoxX, passBoxY);
+            shaderPass.Render(m_originalView.get(), m_passResources, logicalFrameNo, subFrameNo, passBoxX, passBoxY);
         }
         else
         {
-            shaderPass.Render(m_passResources, logicalFrameNo, passBoxX, passBoxY);
+            shaderPass.Render(m_passResources, logicalFrameNo, subFrameNo, passBoxX, passBoxY);
         }
         p++;
     }
@@ -1139,15 +1280,15 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         }
     }
 
-    PresentFrame();
+    PresentFrame(true);
 
     m_renderCounter++;
-    m_prevRenderTicks = GetTickCount64();
-    if(m_prevRenderTicks - m_prevTicks > 1000)
+    m_prevRenderTicks = GetTicks();
+    if(m_prevRenderTicks - m_prevTicks > TICKS_PER_SEC)
     {
         auto deltaTicks     = m_prevRenderTicks - m_prevTicks;
         auto deltaFrames    = m_renderCounter - m_prevRenderCounter;
-        m_fps               = deltaFrames * 1000.0f / deltaTicks;
+        m_fps               = deltaFrames * (float)TICKS_PER_SEC / deltaTicks;
         m_prevRenderCounter = m_renderCounter;
         m_prevTicks         = m_prevRenderTicks;
     }

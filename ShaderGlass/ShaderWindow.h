@@ -40,8 +40,10 @@ private:
     HMENU                         m_programMenu {nullptr};
     HMENU                         m_hotkeysMenu {nullptr};
     HMENU                         m_gpuMenu {nullptr};
+    HMENU                         m_crossMenu {nullptr};
     HMENU                         m_shaderMenu {nullptr};
     HMENU                         m_pixelSizeMenu {nullptr};
+    HMENU                         m_subFramesMenu {nullptr};
     HMENU                         m_aspectRatioMenu {nullptr};
     HMENU                         m_outputScaleMenu {nullptr};
     HMENU                         m_frameSkipMenu {nullptr};
@@ -63,6 +65,7 @@ private:
     CaptureManager&               m_captureManager;
     CaptureOptions&               m_captureOptions;
     unsigned                      m_numPresets {0};
+    unsigned                      m_selectedSubFrames {0};
     unsigned                      m_selectedPixelSize {0};
     unsigned                      m_selectedOutputScale {0};
     unsigned                      m_selectedAspectRatio {0};
@@ -120,6 +123,8 @@ private:
     void         SaveHotkey(const HotkeyInfo& hk);
     void         UpdateHotkey(const HotkeyInfo& hk, bool globalState);
     void         LoadHotkeys();
+    void         LoadGPUs();
+    void         SaveGPUs(const LUID& captureId, const LUID& renderId);
     void         UpdateHotkeys(bool globalState);
     void         SaveFlipModeState(bool state);
     bool         GetFlipModeState();
