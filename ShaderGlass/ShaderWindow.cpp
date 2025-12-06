@@ -49,6 +49,7 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
         std::optional<bool>                               transparent;
         std::optional<bool>                               clone;
         std::vector<std::tuple<int, std::string, double>> params;
+        bool                                              isImport;
         while(!infile.eof())
         {
             std::string key;
@@ -266,7 +267,8 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
         // try to find shader
         if(shaderPath.has_value() && !shaderPath.value().empty())
         {
-            ImportShader(shaderPath.value());
+            ImportShader(shaderPath.value(), paused);
+            isImport = true;
         }
         else if(shaderName.size())
         {
@@ -350,7 +352,7 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
             m_captureManager.SetParams(params);
         }
 
-        if(paused)
+        if(paused && !isImport)
             SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
 
         AddRecentProfile(fileName);
@@ -415,7 +417,7 @@ void ShaderWindow::ImportShader()
     if(GetOpenFileName(&ofn))
     {
         std::wstring ws(ofn.lpstrFile);
-        ImportShader(ws);
+        ImportShader(ws, false);
     }
     EndDialog();
 }
@@ -662,10 +664,16 @@ void ShaderWindow::CompileThreadFunc()
         {
             MessageBox(m_mainWindow, convertCharArrayToLPCWSTR(errorMsg.c_str()), L"ShaderGlass", MB_OK);
         }
+
+        if(m_forceStart)
+        {
+            m_forceStart = false;
+            PostMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
+        }
     }
 }
 
-bool ShaderWindow::ImportShader(const std::wstring& fileName)
+bool ShaderWindow::ImportShader(const std::wstring& fileName, bool forceStart)
 {
     try
     {
@@ -703,6 +711,7 @@ bool ShaderWindow::ImportShader(const std::wstring& fileName)
         }
         if(m_compileEvent)
         {
+            m_forceStart = forceStart;
             SetEvent(m_compileEvent);
         }
         return true;
@@ -2042,7 +2051,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     if(importId < m_recentImports.size())
                     {
                         auto path = m_recentImports.at(importId);
-                        if(!ImportShader(path))
+                        if(!ImportShader(path, false))
                         {
                             RemoveRecentImport(path);
                         }

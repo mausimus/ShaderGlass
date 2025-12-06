@@ -89,13 +89,14 @@ private:
     std::vector<std::wstring>     m_recentImports;
     std::map<UINT, HotkeyInfo>    m_hotkeys;
     std::filesystem::path         m_importPath;
+    bool                          m_forceStart;
 
     bool         LoadProfile(const std::wstring& fileName);
     void         LoadProfile();
     void         SaveProfile(const std::wstring& fileName);
     void         SaveProfile();
     void         ImportShader();
-    bool         ImportShader(const std::wstring& fileName);
+    bool         ImportShader(const std::wstring& fileName, bool forceStart);
     void         ScanWindows();
     void         ScanDisplays();
     void         ScanDevices();
