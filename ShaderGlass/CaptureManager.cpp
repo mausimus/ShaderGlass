@@ -348,12 +348,17 @@ float CaptureManager::InFPS()
 
 void CaptureManager::ProcessFrame()
 {
-    if(m_session.get())
+    try
     {
-        if(m_deviceCapture.m_active && m_deviceCapture.Poll())
-            m_session->OnInputFrame();
-        m_session->ProcessInput();
+        if(m_session.get())
+        {
+            if(m_deviceCapture.m_active && m_deviceCapture.Poll())
+                m_session->OnInputFrame();
+            m_session->ProcessInput();
+        }
     }
+    catch(...)
+    { }
 }
 
 void CaptureManager::StopSession()

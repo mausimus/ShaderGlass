@@ -344,10 +344,15 @@ void DeviceCapture::Process(IMFSample* inputSample)
     DWORD                          bufferLen  = 0;
 
     THROW(inputSample->ConvertToContiguousBuffer(srcBuffer.put()));
-    THROW(srcBuffer->Lock(&bufferData, NULL, &bufferLen));
     THROW(m_outputSample->GetBufferByIndex(0, dstBuffer.put()));
     THROW(dstBuffer->QueryInterface(IID_PPV_ARGS(dstBuffer2D.put())));
-    THROW(dstBuffer2D->ContiguousCopyFrom(bufferData, bufferLen));
+    THROW(srcBuffer->Lock(&bufferData, NULL, &bufferLen));
+    try
+    {
+        THROW(dstBuffer2D->ContiguousCopyFrom(bufferData, bufferLen));
+    }
+    catch(...)
+    { }
     THROW(srcBuffer->Unlock());
 }
 
@@ -365,7 +370,10 @@ bool DeviceCapture::WaitForNextFrame()
     if(!inputSample || !m_active)
         return false;
 
-    m_inputSample = inputSample;
+    {
+        std::unique_lock lock(m_mutex);
+        m_inputSample = inputSample;
+    }
 
     return true;
 }
