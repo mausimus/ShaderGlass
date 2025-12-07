@@ -49,7 +49,7 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
         std::optional<bool>                               transparent;
         std::optional<bool>                               clone;
         std::vector<std::tuple<int, std::string, double>> params;
-        bool                                              isImport;
+        bool                                              isImport = false;
         while(!infile.eof())
         {
             std::string key;
