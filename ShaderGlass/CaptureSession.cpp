@@ -81,7 +81,7 @@ void CaptureSession::Reset()
     m_numInputFrames  = 0;
     m_prevInputFrames = 0;
     m_fps             = 0;
-    m_prevTicks       = GetTickCount64();
+    m_prevTicks       = GetTicks();
 }
 
 void CaptureSession::UpdateCursor(bool captureCursor)
@@ -109,7 +109,7 @@ void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sen
 
 void CaptureSession::OnInputFrame()
 {
-    m_frameTicks = GetTickCount64();
+    m_frameTicks = GetTicks();
     m_numInputFrames++;
     if(m_frameTicks - m_prevTicks > 1000)
     {

@@ -9,6 +9,7 @@ GNU General Public License v3.0
 #include "ShaderGlass.h"
 #include "ShaderList.h"
 #include "CursorEmulator.h"
+#include "Helpers.h"
 #include "resource.h"
 
 static HRESULT     hr;
@@ -80,8 +81,8 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
     m_lastSize.x = clientRect.right;
     m_lastSize.y = clientRect.bottom;
 
-    m_prevTicks          = GetTickCount64();
-    m_startTicks         = GetTickCount64();
+    m_prevTicks          = GetTicks();
+    m_startTicks         = GetTicks();
     m_prevLogicalFrameNo = 0;
 
     // create swapchain
@@ -417,7 +418,7 @@ void ShaderGlass::PresentFrame()
 
 void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG frameTicks, int inputFrameNo)
 {
-    auto nowTicks            = GetTickCount64();
+    auto nowTicks            = GetTicks();
     auto timeSinceLastRender = nowTicks - m_prevRenderTicks;
     auto logicalFrameNo      = (int)roundf((nowTicks - m_startTicks) / 16.6666666f); // fix shaders at 60 fps
 
@@ -630,7 +631,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
     if(m_newShaderPreset || m_verticalUpdated)
     {
-        m_startTicks = GetTickCount64(); // reset logical frame no
+        m_startTicks = GetTicks(); // reset logical frame no
 
         DestroyShaders();
         if(m_newShaderPreset)
@@ -1142,7 +1143,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     PresentFrame();
 
     m_renderCounter++;
-    m_prevRenderTicks = GetTickCount64();
+    m_prevRenderTicks = GetTicks();
     if(m_prevRenderTicks - m_prevTicks > 1000)
     {
         auto deltaTicks     = m_prevRenderTicks - m_prevTicks;
