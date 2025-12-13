@@ -20,7 +20,7 @@ ShaderWindow::ShaderWindow(CaptureManager& captureManager) :
     m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass(), m_toggledNone(false)
 { }
 
-bool ShaderWindow::LoadProfile(const std::wstring& fileName)
+bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart)
 {
     try
     {
@@ -267,7 +267,7 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName)
         // try to find shader
         if(shaderPath.has_value() && !shaderPath.value().empty())
         {
-            ImportShader(shaderPath.value(), paused);
+            ImportShader(shaderPath.value(), paused || forceStart);
             isImport = true;
         }
         else if(shaderName.size())
@@ -3107,7 +3107,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
             {
                 std::wstring ws(args[a]);
                 if(ws.size())
-                    LoadProfile(ws);
+                    LoadProfile(ws, autoStart);
             }
         }
     }
@@ -3120,7 +3120,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
     m_hotkeyDialog.reset(new HotkeyDialog(m_instance, m_mainWindow));
     GetTicks();
 
-    if(autoStart && HasCaptureAPI())
+    if(autoStart && HasCaptureAPI() && !m_forceStart)
     {
         SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
         SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);

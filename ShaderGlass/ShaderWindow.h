@@ -91,7 +91,7 @@ private:
     std::filesystem::path         m_importPath;
     volatile bool                 m_forceStart {false};
 
-    bool         LoadProfile(const std::wstring& fileName);
+    bool         LoadProfile(const std::wstring& fileName, bool forceStart = false);
     void         LoadProfile();
     void         SaveProfile(const std::wstring& fileName);
     void         SaveProfile();
