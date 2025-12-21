@@ -2186,24 +2186,40 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         if(m_captureManager.IsActive() && m_captureOptions.transparent)
         {
             POINT p;
-            if(GetCursorPos(&p) && ScreenToClient(hWnd, &p))
+            if(GetCursorPos(&p))
             {
-                RECT r;
-                GetClientRect(hWnd, &r);
-                if(p.x > 0 && p.x < r.right && p.y > 0 && p.y < r.bottom)
+                int cx = p.x;
+                int cy = p.y;
+                if(ScreenToClient(hWnd, &p))
                 {
-                    SetTransparent(true);
-                    // TODO: check if mouse over parameters or browser window while they are visible? or is focus enough
-                    auto focusedWindow = GetForegroundWindow();
-                    if(!m_inMenu && !m_inDialog && focusedWindow != m_browserWindow && focusedWindow != m_paramsWindow)
-                        m_captureManager.HideCursor();
+                    RECT r;
+                    GetClientRect(hWnd, &r);
+                    if(p.x >= 0 && p.x < r.right && p.y >= 0 && p.y < r.bottom)
+                    {
+                        SetTransparent(true);
+                        // TODO: check if mouse over parameters or browser window while they are visible? or is focus enough
+                        auto focusedWindow = GetForegroundWindow();
+                        if(!m_inMenu && !m_inDialog && focusedWindow != m_browserWindow && focusedWindow != m_paramsWindow)
+                            m_captureManager.HideCursor();
+                        else
+                            m_captureManager.ShowCursor();
+                    }
                     else
+                    {
+                        GetWindowRect(hWnd, &r);
+                        if(cx >= r.left && cx < r.right && cy >= r.top && cy < r.bottom)
+                        {
+                            // we are in border/menus, make sure we can interact
+                            SetTransparent(false);
+                        }
+                        else
+                        {
+                            // prevent other windows assuming they are occluded
+                            SetTransparent(true);
+                        }
+
                         m_captureManager.ShowCursor();
-                }
-                else
-                {
-                    SetTransparent(false);
-                    m_captureManager.ShowCursor();
+                    }
                 }
             }
         }
