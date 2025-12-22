@@ -468,9 +468,10 @@ void ShaderGlass::PresentFrame(bool vsync)
 #ifdef TIMING_DUMP
     _prePresentTicks[_timingIndex] = GetTicks();
 #endif
+    ZeroMemory(&presentParameters, sizeof(presentParameters));
     m_swapChain->Present1(vsync ? 1 : 0, presentFlags, &presentParameters);
-    auto afterTicks = GetTicks();
 #ifdef TIMING_DUMP
+    auto afterTicks                 = GetTicks();
     _postPresentTicks[_timingIndex] = afterTicks;
 #endif
     PostMessage(m_outputWindow, WM_PAINT, 0, 0); // necessary for click-through
@@ -1136,12 +1137,37 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         m_context->ClearRenderTargetView(m_preprocessedRenderTarget.get(), background_colour);
     }
 
-    winrt::com_ptr<ID3D11ShaderResourceView> textureView;
-    hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
-    assert(SUCCEEDED(hr));
     if(!holdInput)
     {
-        m_preprocessPass.Render(textureView.get(), m_passResources, logicalFrameNo, subFrameNo, 0, 0);
+        // use copy for preprocess if no-op
+        bool hasLockedArea = m_lockedArea.right - m_lockedArea.left;
+        bool hasInputScale = m_inputScaleW != 1 || m_inputScaleH != 1;
+        bool isContained   = topLeft.x + destWidth <= capturedTextureDesc.Width && topLeft.x >= 0 && topLeft.y + destHeight <= capturedTextureDesc.Height && topLeft.y >= 0;
+        if(!m_captureWindow && !m_image && !m_flipHorizontal && !m_flipVertical && !m_cursorEmulator.Hidden() && !hasLockedArea && !hasInputScale && isContained)
+        {
+            if(capturedTextureDesc.Width == destWidth && capturedTextureDesc.Height == destHeight)
+            {
+                m_context->CopyResource(m_preprocessedTexture.get(), texture.get());
+            }
+            else
+            {
+                D3D11_BOX box;
+                box.left   = topLeft.x;
+                box.top    = topLeft.y;
+                box.right  = box.left + destWidth;
+                box.bottom = box.top + destHeight;
+                box.back   = 1;
+                box.front  = 0;
+                m_context->CopySubresourceRegion(m_preprocessedTexture.get(), 0, 0, 0, 0, texture.get(), 0, &box);
+            }
+        }
+        else
+        {
+            winrt::com_ptr<ID3D11ShaderResourceView> textureView;
+            hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
+            assert(SUCCEEDED(hr));
+            m_preprocessPass.Render(textureView.get(), m_passResources, logicalFrameNo, subFrameNo, 0, 0);
+        }
     }
 
     if(m_cursorEmulator.Hidden())
