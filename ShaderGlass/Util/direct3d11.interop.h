@@ -1,4 +1,7 @@
 #pragma once
+
+#ifndef SG_WINE
+
 #include <winrt/windows.graphics.directx.direct3d11.h>
 
 extern "C"
@@ -38,3 +41,15 @@ auto GetDXGIInterfaceFromObject(winrt::Windows::Foundation::IInspectable const& 
     winrt::check_hresult(access->GetInterface(winrt::guid_of<T>(), result.put_void()));
     return result;
 }
+
+#else
+
+#include <windows.graphics.directx.direct3d11.h>
+
+inline winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice CreateDirect3DDevice(IDXGIDevice* dxgi_device)
+{
+    winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice d;
+    return d;
+}
+
+#endif

@@ -424,7 +424,7 @@ int ShaderPass::RequiresHistory() const
                 auto historyNum    = std::stoi(historyString);
                 if(historyNum > 0 && historyNum < 100)
                 {
-                    maxHistory = max(maxHistory, historyNum);
+                    maxHistory = std::max(maxHistory, historyNum);
                 }
             }
             catch(...)

@@ -2,13 +2,15 @@
 
 #include <mfapi.h>
 #include <mfidl.h>
-#include <Mfreadwrite.h>
+#include <mfreadwrite.h>
 #include <mferror.h>
 
 #include "Options.h"
 
 #define MAX_CAPTURE_DEVICES 16U
 #define MAX_CAPTURE_FORMATS 256U
+
+#ifndef SG_WINE
 
 class DeviceCapture
 {
@@ -47,3 +49,22 @@ private:
     bool                                      m_init {false};
     std::mutex                                m_mutex {};
 };
+
+#else
+
+class DeviceCapture
+{
+public:
+    DeviceCapture(){}
+
+    std::vector<CaptureDevice>      GetCaptureDevices() { return std::vector<CaptureDevice>(); }
+    void                            Start(winrt::com_ptr<ID3D11Device> d3dDevice, LPWSTR symlink, int formatNo) {}
+    void                            Stop() {}
+    bool                            WaitForNextFrame() {return false;}
+    bool                            Poll() {return false;}
+    void                            ThreadFunc() {}
+    winrt::com_ptr<ID3D11Texture2D> m_outputTexture;
+    bool                            m_active {false};
+};
+
+#endif

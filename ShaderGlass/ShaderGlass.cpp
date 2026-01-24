@@ -136,7 +136,7 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
     hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_displayTexture.put());
     assert(SUCCEEDED(hr));
     if(!m_displayTexture)
-        throw std::exception("Unable to create framebuffer");
+        throw std::runtime_error("Unable to create framebuffer");
 
     m_device->CreateRenderTargetView(m_displayTexture.get(), 0, m_displayRenderTarget.put());
 
@@ -793,7 +793,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
             for(const auto& pass : m_shaderPasses)
             {
                 m_requiresFeedback |= pass.RequiresFeedback();
-                m_requiresHistory = max(m_requiresHistory, pass.RequiresHistory());
+                m_requiresHistory = std::max(m_requiresHistory, pass.RequiresHistory());
             }
 
             for(size_t p = 1; p < m_shaderPasses.size(); p++)

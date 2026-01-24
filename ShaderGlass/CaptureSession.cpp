@@ -14,14 +14,16 @@ GNU General Public License v3.0
 namespace winrt
 {
 using namespace Windows::Foundation;
-using namespace Windows::System;
 using namespace Windows::Graphics;
 using namespace Windows::Graphics::Capture;
 using namespace Windows::Graphics::DirectX;
 using namespace Windows::Graphics::DirectX::Direct3D11;
+#ifndef SG_WINE
+using namespace Windows::System;
 using namespace Windows::Foundation::Numerics;
 using namespace Windows::UI;
 using namespace Windows::UI::Composition;
+#endif
 } // namespace winrt
 
 CaptureSession::CaptureSession(winrt::IDirect3DDevice const&     device,
@@ -31,6 +33,7 @@ CaptureSession::CaptureSession(winrt::IDirect3DDevice const&     device,
                                bool                              maxCaptureRate,
                                HANDLE frameEvent) : m_device {device}, m_item {item}, m_pixelFormat {pixelFormat}, m_shaderGlass {shaderGlass}, m_frameEvent(frameEvent)
 {
+    #ifndef SG_WINE
     m_contentSize = m_item.Size();
     m_framePool   = winrt::Direct3D11CaptureFramePool::CreateFreeThreaded(m_device, pixelFormat, 2, m_contentSize);
     m_session     = m_framePool.CreateCaptureSession(m_item);
@@ -65,6 +68,7 @@ CaptureSession::CaptureSession(winrt::IDirect3DDevice const&     device,
     m_session.StartCapture();
 
     WINRT_ASSERT(m_session != nullptr);
+    #endif
 }
 
 CaptureSession::CaptureSession(winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice const& device,
@@ -86,12 +90,15 @@ void CaptureSession::Reset()
 
 void CaptureSession::UpdateCursor(bool captureCursor)
 {
+    #ifndef SG_WINE
     if(m_session && CanUpdateCursor())
         m_session.IsCursorCaptureEnabled(captureCursor);
+    #endif
 }
 
 void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sender, winrt::IInspectable const&)
 {
+    #ifndef SG_WINE
     auto frame   = sender.TryGetNextFrame();
     m_inputFrame = GetDXGIInterfaceFromObject<ID3D11Texture2D>(frame.Surface());
 
@@ -105,6 +112,7 @@ void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sen
 
     SetEvent(m_frameEvent);
     OnInputFrame();
+    #endif
 }
 
 void CaptureSession::OnInputFrame()
@@ -135,6 +143,7 @@ void CaptureSession::ProcessInput()
 
 void CaptureSession::Stop()
 {
+    #ifndef SG_WINE
     if(m_session)
         m_session.Close();
 
@@ -144,4 +153,5 @@ void CaptureSession::Stop()
     m_framePool = nullptr;
     m_session   = nullptr;
     m_item      = nullptr;
+#endif
 }

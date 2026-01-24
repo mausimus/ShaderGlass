@@ -133,9 +133,9 @@ private:
     void         SaveRememberFPS(int fps);
     bool         RememberFPS();
     int          GetRememberFPS();
-    bool         GetRegistryOption(const wchar_t* name, bool default);
+    bool         GetRegistryOption(const wchar_t* name, bool def);
     void         SaveRegistryOption(const wchar_t* name, bool value);
-    int          GetRegistryInt(const wchar_t* name, int default);
+    int          GetRegistryInt(const wchar_t* name, int def);
     void         SaveRegistryInt(const wchar_t* name, int value);
     void         DeleteRegistry(const wchar_t* name);
     void         GetStartingPosition(int& x, int& y, int& w, int& h);

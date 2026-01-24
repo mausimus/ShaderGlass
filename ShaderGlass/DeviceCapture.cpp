@@ -14,6 +14,8 @@ GNU General Public License v3.0
     if(FAILED(h))                                                                                                                                                                  \
         throw std::runtime_error("Unable to initialize Media Foundation Capture");
 
+#ifndef SG_WINE
+
 static HRESULT hr;
 
 constexpr unsigned STREAM_NO = 0;
@@ -410,3 +412,5 @@ HRESULT DeviceCapture::CopyAttribute(IMFAttributes* pFrom, IMFAttributes* pTo, R
     }
     return hr;
 }
+
+#endif

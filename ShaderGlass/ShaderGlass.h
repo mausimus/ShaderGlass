@@ -9,9 +9,9 @@ GNU General Public License v3.0
 
 #include "Preset.h"
 #include "ShaderPass.h"
-#include "Shaders\PreprocessShaderDef.h"
-#include "Shaders\PassthroughShaderDef.h"
-#include "Shaders\PassthroughPresetDef.h"
+#include "Shaders/PreprocessShaderDef.h"
+#include "Shaders/PassthroughShaderDef.h"
+#include "Shaders/PassthroughPresetDef.h"
 
 class CursorEmulator;
 

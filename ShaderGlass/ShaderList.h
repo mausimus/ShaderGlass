@@ -12,10 +12,10 @@ GNU General Public License v3.0
 #include "PresetDef.h"
 #include "ShaderCache.h"
 
-#include "shaders\PassthroughShaderDef.h"
-#include "shaders\PreprocessShaderDef.h"
+#include "Shaders/PassthroughShaderDef.h"
+#include "Shaders/PreprocessShaderDef.h"
 
-#include "shaders\PassthroughPresetDef.h"
+#include "Shaders/PassthroughPresetDef.h"
 
 extern std::vector<PresetDef*> RetroArchPresetList;
 extern std::vector<CachedShader> RetroArchCachedShaders();

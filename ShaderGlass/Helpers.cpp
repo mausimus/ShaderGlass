@@ -46,6 +46,9 @@ std::wstring GetWindowStringText(HWND hwnd)
 
 bool HasCaptureAPI()
 {
+    #ifdef SG_WINE
+    return false;
+    #else
     if(!hasCaptureAPI.has_value())
     {
         try
@@ -58,10 +61,14 @@ bool HasCaptureAPI()
         }
     }
     return hasCaptureAPI.value();
+    #endif
 }
 
 bool Is1903()
 {
+    #ifdef SG_WINE
+    return true;
+    #else
     try
     {
         return HasCaptureAPI() && !winrt::Windows::Foundation::Metadata::ApiInformation::IsApiContractPresent(L"Windows.Foundation.UniversalApiContract", 9);
@@ -70,10 +77,14 @@ bool Is1903()
     {
         return false;
     }
+    #endif
 }
 
 bool CanDisableBorder()
 {
+    #ifdef SG_WINE
+    return false;
+    #else
     try
     {
         return HasCaptureAPI() && winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession", L"IsBorderRequired");
@@ -82,10 +93,14 @@ bool CanDisableBorder()
     {
         return false;
     }
+    #endif
 }
 
 bool CanSetCaptureRate()
 {
+    #ifdef SG_WINE
+    return false;
+    #else
     try
     {
         return HasCaptureAPI() && winrt::Windows::Foundation::Metadata::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession", L"MinUpdateInterval");
@@ -94,10 +109,14 @@ bool CanSetCaptureRate()
     {
         return false;
     }
+    #endif
 }
 
 bool CanUpdateCursor()
 {
+    #ifdef SG_WINE
+    return false;
+    #else
     try
     {
         return HasCaptureAPI() &&
@@ -107,4 +126,5 @@ bool CanUpdateCursor()
     {
         return false;
     }
+    #endif
 }

@@ -1,4 +1,6 @@
 #pragma once
+
+#ifndef SG_WINE
 #include <winrt/Windows.Graphics.Capture.h>
 #include <windows.graphics.capture.interop.h>
 #include <windows.graphics.capture.h>
@@ -21,3 +23,19 @@ namespace util
         return item;
     }
 }
+#else
+namespace util
+{
+    inline auto CreateCaptureItemForWindow(HWND hwnd)
+    {
+        winrt::Windows::Graphics::Capture::GraphicsCaptureItem item;
+        return item;
+    }
+
+    inline auto CreateCaptureItemForMonitor(HMONITOR hmon)
+    {
+        winrt::Windows::Graphics::Capture::GraphicsCaptureItem item;
+        return item;
+    }
+}
+#endif

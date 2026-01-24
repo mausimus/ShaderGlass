@@ -12,7 +12,7 @@ GNU General Public License v3.0
 #include "ShaderGC.h"
 #include "CursorEmulator.h"
 
-#include "Shlobj.h"
+#include "shlobj.h"
 
 #define TIMER_TITLE 0
 
@@ -481,7 +481,7 @@ void ShaderWindow::StartImage(bool autoScale, int pixelSize)
         int defaultScale = 1;
         if(m_captureOptions.imageWidth > 0 && m_captureOptions.imageHeight > 0)
         {
-            defaultScale = max(1, min(r.right / m_captureOptions.imageWidth, r.bottom / m_captureOptions.imageHeight));
+            defaultScale = std::max(1, std::min(r.right / m_captureOptions.imageWidth, r.bottom / m_captureOptions.imageHeight));
         }
 
         m_captureOptions.outputScale = (float)defaultScale;
@@ -684,7 +684,7 @@ bool ShaderWindow::ImportShader(const std::wstring& fileName, bool forceStart)
         SetWindowPos(m_compileWindow,
                      HWND_TOP,
                      rcOwner.left + (rc.right / 2),
-                     rcOwner.top + max(0, (rc.bottom / 2)),
+                     rcOwner.top + std::max(0, (rc.bottom / 2)),
                      0,
                      0, // Ignores size arguments.
                      SWP_NOSIZE);
@@ -1348,7 +1348,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 if(!SetWindowPos(m_browserWindow,
                                  HWND_TOP,
                                  rcOwner.right - (rcDlg.right - rcDlg.left),
-                                 rcOwner.top + max(0, (rc.bottom / 2)),
+                                 rcOwner.top + std::max(0, (rc.bottom / 2)),
                                  0,
                                  0, // Ignores size arguments.
                                  SWP_NOSIZE))
@@ -1375,7 +1375,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                 SetWindowPos(m_paramsWindow,
                              HWND_TOP,
                              rcOwner.left + (rc.right / 2),
-                             rcOwner.top + max(0, (rc.bottom / 2)),
+                             rcOwner.top + std::max(0, (rc.bottom / 2)),
                              0,
                              0, // Ignores size arguments.
                              SWP_NOSIZE);
@@ -2445,19 +2445,19 @@ void ShaderWindow::SaveRegistryOption(const wchar_t* name, bool state)
     }
 }
 
-bool ShaderWindow::GetRegistryOption(const wchar_t* name, bool default)
+bool ShaderWindow::GetRegistryOption(const wchar_t* name, bool def)
 {
     HKEY hKey;
     if(RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Software\\ShaderGlass"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
     {
-        DWORD value = (default ? 1 : 0);
+        DWORD value = (def ? 1 : 0);
         DWORD size  = sizeof(DWORD);
         RegGetValue(hKey, NULL, name, RRF_RT_REG_DWORD, NULL, &value, &size);
         RegCloseKey(hKey);
         return value == 1;
     }
 
-    return default;
+    return def;
 }
 
 void ShaderWindow::SaveRegistryInt(const wchar_t* name, int value)
@@ -2484,19 +2484,19 @@ void ShaderWindow::DeleteRegistry(const wchar_t* name)
     }
 }
 
-int ShaderWindow::GetRegistryInt(const wchar_t* name, int default)
+int ShaderWindow::GetRegistryInt(const wchar_t* name, int def)
 {
     HKEY hKey;
     if(RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Software\\ShaderGlass"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
     {
-        DWORD dvalue = default;
+        DWORD dvalue = def;
         DWORD size   = sizeof(DWORD);
         RegGetValue(hKey, NULL, name, RRF_RT_REG_DWORD, NULL, &dvalue, &size);
         RegCloseKey(hKey);
         return (int)dvalue;
     }
 
-    return default;
+    return def;
 }
 
 void ShaderWindow::SaveHotkeyState(bool state)
