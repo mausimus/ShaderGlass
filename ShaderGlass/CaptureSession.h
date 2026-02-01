@@ -12,16 +12,14 @@ GNU General Public License v3.0
 class CaptureSession
 {
 public:
-    CaptureSession(IDXGIDevice* dxgiDevice,
-                   winrt::Windows::Graphics::Capture::GraphicsCaptureItem const&         item,
-                   winrt::Windows::Graphics::DirectX::DirectXPixelFormat                 pixelFormat,
-                   ShaderGlass&                                                          shaderGlass,
-                   bool                                                                  maxCaptureRate,
-                   HANDLE                                                                frameEvent);
+    CaptureSession(winrt::com_ptr<ID3D11Device>                                  d3dDevice,
+                   winrt::Windows::Graphics::Capture::GraphicsCaptureItem const& item,
+                   winrt::Windows::Graphics::DirectX::DirectXPixelFormat         pixelFormat,
+                   ShaderGlass&                                                  shaderGlass,
+                   bool                                                          maxCaptureRate,
+                   HANDLE                                                        frameEvent);
 
-    CaptureSession(winrt::com_ptr<ID3D11Texture2D>                                       inputImage,
-                   ShaderGlass&                                                          shaderGlass,
-                   HANDLE                                                                frameEvent);
+    CaptureSession(winrt::com_ptr<ID3D11Texture2D> inputImage, ShaderGlass& shaderGlass, HANDLE frameEvent);
 
     void OnFrameArrived(winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool const& sender, winrt::Windows::Foundation::IInspectable const& args);
 
@@ -38,6 +36,9 @@ public:
         return m_fps;
     }
 
+    // CaptureLib
+    void OnCaptureLibArrived(void* data, UINT width, UINT height);
+
 private:
     void Reset();
 
@@ -47,6 +48,7 @@ private:
     winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice m_device {nullptr};
     winrt::com_ptr<ID3D11Texture2D>                                m_inputImage {nullptr};
     winrt::com_ptr<ID3D11Texture2D>                                m_inputFrame {nullptr};
+    winrt::com_ptr<ID3D11Device>                                   m_d3dDevice {nullptr};
     winrt::Windows::Graphics::DirectX::DirectXPixelFormat          m_pixelFormat {0};
     winrt::Windows::Graphics::SizeInt32                            m_contentSize {0, 0};
     ULONGLONG                                                      m_frameTicks {0};
@@ -56,4 +58,11 @@ private:
     int                                                            m_prevInputFrames {0};
     HANDLE                                                         m_frameEvent {nullptr};
     ShaderGlass&                                                   m_shaderGlass;
+
+    // CaptureLib
+    bool                                         UseCaptureLib();
+    std::mutex                                   m_mutex;
+    std::vector<winrt::com_ptr<ID3D11Texture2D>> m_inputFrames;
+    winrt::com_ptr<ID3D11DeviceContext>          m_context;
+    int                                          m_nextInput {0};
 };
