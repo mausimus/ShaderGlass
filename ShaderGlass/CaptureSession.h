@@ -12,15 +12,14 @@ GNU General Public License v3.0
 class CaptureSession
 {
 public:
-    CaptureSession(winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice const& device,
+    CaptureSession(IDXGIDevice* dxgiDevice,
                    winrt::Windows::Graphics::Capture::GraphicsCaptureItem const&         item,
                    winrt::Windows::Graphics::DirectX::DirectXPixelFormat                 pixelFormat,
                    ShaderGlass&                                                          shaderGlass,
                    bool                                                                  maxCaptureRate,
                    HANDLE                                                                frameEvent);
 
-    CaptureSession(winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice const& device,
-                   winrt::com_ptr<ID3D11Texture2D>                                       inputImage,
+    CaptureSession(winrt::com_ptr<ID3D11Texture2D>                                       inputImage,
                    ShaderGlass&                                                          shaderGlass,
                    HANDLE                                                                frameEvent);
 

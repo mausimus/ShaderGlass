@@ -24,13 +24,15 @@ using namespace Windows::UI;
 using namespace Windows::UI::Composition;
 } // namespace winrt
 
-CaptureSession::CaptureSession(winrt::IDirect3DDevice const&     device,
+CaptureSession::CaptureSession(IDXGIDevice*                      dxgiDevice,
                                winrt::GraphicsCaptureItem const& item,
                                winrt::DirectXPixelFormat         pixelFormat,
                                ShaderGlass&                      shaderGlass,
                                bool                              maxCaptureRate,
-                               HANDLE frameEvent) : m_device {device}, m_item {item}, m_pixelFormat {pixelFormat}, m_shaderGlass {shaderGlass}, m_frameEvent(frameEvent)
+                               HANDLE frameEvent) : m_item {item}, m_pixelFormat {pixelFormat}, m_shaderGlass {shaderGlass}, m_frameEvent(frameEvent)
 {
+    m_device = HasCaptureAPI() ? CreateDirect3DDevice(dxgiDevice) : nullptr;
+
     m_contentSize = m_item.Size();
     m_framePool   = winrt::Direct3D11CaptureFramePool::CreateFreeThreaded(m_device, pixelFormat, 2, m_contentSize);
     m_session     = m_framePool.CreateCaptureSession(m_item);
@@ -67,10 +69,9 @@ CaptureSession::CaptureSession(winrt::IDirect3DDevice const&     device,
     WINRT_ASSERT(m_session != nullptr);
 }
 
-CaptureSession::CaptureSession(winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice const& device,
-                               winrt::com_ptr<ID3D11Texture2D>                                       inputImage,
+CaptureSession::CaptureSession(winrt::com_ptr<ID3D11Texture2D>                                       inputImage,
                                ShaderGlass&                                                          shaderGlass,
-                               HANDLE frameEvent) : m_device {device}, m_inputImage {inputImage}, m_shaderGlass {shaderGlass}, m_frameEvent {frameEvent}
+                               HANDLE frameEvent) : m_inputImage {inputImage}, m_device(nullptr), m_shaderGlass {shaderGlass}, m_frameEvent {frameEvent}
 {
     Reset();
     ProcessInput();
