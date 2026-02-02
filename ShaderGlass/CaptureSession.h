@@ -8,6 +8,8 @@ GNU General Public License v3.0
 #pragma once
 
 #include "ShaderGlass.h"
+#include <mutex>
+#include <atomic>
 
 class CaptureSession
 {
@@ -48,6 +50,8 @@ private:
     winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice m_device {nullptr};
     winrt::com_ptr<ID3D11Texture2D>                                m_inputImage {nullptr};
     winrt::com_ptr<ID3D11Texture2D>                                m_inputFrame {nullptr};
+    std::mutex                                                     m_inputFrameMutex; // Protects m_inputFrame access
+    std::atomic<bool>                                              m_frameAvailable {false}; // Signals new frame
     winrt::Windows::Graphics::DirectX::DirectXPixelFormat          m_pixelFormat {0};
     winrt::Windows::Graphics::SizeInt32                            m_contentSize {0, 0};
     ULONGLONG                                                      m_frameTicks {0};

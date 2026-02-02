@@ -8,6 +8,8 @@ GNU General Public License v3.0
 #include "pch.h"
 
 #include "Shader.h"
+#include "../ShaderGC/SafeParsing.h"
+#include "Util/ErrorHandling.h"
 
 static HRESULT hr;
 
@@ -71,12 +73,12 @@ Shader::Shader(ShaderDef& shaderDef) :
     std::string value;
 
     if(Get("scale_x", value))
-        m_scaleX = stof(value);
+        m_scaleX = SafeParseFloat<float>(value, 1.0f);
     if(Get("scale_y", value))
-        m_scaleY = stof(value);
+        m_scaleY = SafeParseFloat<float>(value, 1.0f);
     if(Get("scale", value))
     {
-        m_scaleX = stof(value);
+        m_scaleX = SafeParseFloat<float>(value, 1.0f);
         m_scaleY = m_scaleX;
     }
 
@@ -113,7 +115,7 @@ Shader::Shader(ShaderDef& shaderDef) :
     }
     if(Get("framecount_mod", value))
     {
-        m_frameCountMod = static_cast<int>(atof(value.c_str()));
+        m_frameCountMod = SafeParseInt<int>(value, 0);
     }
     if(Get("wrap_mode", value))
     {
@@ -132,10 +134,10 @@ void Shader::Create(winrt::com_ptr<ID3D11Device> d3dDevice)
         Compile();
 
     hr = d3dDevice->CreateVertexShader(m_shaderDef.VertexByteCode, m_shaderDef.VertexLength, NULL, m_vertexShader.put());
-    assert(SUCCEEDED(hr));
+    THROW_IF_FAILED(hr);
 
     hr = d3dDevice->CreatePixelShader(m_shaderDef.FragmentByteCode, m_shaderDef.FragmentLength, NULL, m_pixelShader.put());
-    assert(SUCCEEDED(hr));
+    THROW_IF_FAILED(hr);
 }
 
 void Shader::Compile()

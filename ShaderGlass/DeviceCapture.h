@@ -6,6 +6,7 @@
 #include <mferror.h>
 
 #include "Options.h"
+#include "Util/ThreadHandle.h"
 
 #define MAX_CAPTURE_DEVICES 16U
 #define MAX_CAPTURE_FORMATS 256U
@@ -43,7 +44,7 @@ private:
     winrt::com_ptr<IMFSample>                 m_inputSample;
     UINT32                                    m_width {0};
     UINT32                                    m_height {0};
-    HANDLE                                    m_thread {0};
+    ThreadHandle                              m_thread;
     bool                                      m_init {false};
     std::mutex                                m_mutex {};
 };

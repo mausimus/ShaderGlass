@@ -12,6 +12,7 @@ GNU General Public License v3.0
 #include "Shaders\PreprocessShaderDef.h"
 #include "Shaders\PassthroughShaderDef.h"
 #include "Shaders\PassthroughPresetDef.h"
+#include <atomic>
 
 class CursorEmulator;
 
@@ -28,7 +29,8 @@ public:
                      bool                                allowTearing,
                      bool                                useHDR,
                      winrt::com_ptr<ID3D11Device>        device,
-                     winrt::com_ptr<ID3D11DeviceContext> context);
+                     winrt::com_ptr<ID3D11DeviceContext> context,
+                     std::mutex&                         contextMutex);
     void  Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG frameTicks, int inputFrameNo);
     void  SetInputScale(float w, float h);
     void  SetOutputScale(float w, float h);
@@ -65,6 +67,7 @@ private:
     POINT                                    m_lastCaptureWindowPos;
     POINT                                    m_lastCaptureWindowSize;
     winrt::com_ptr<ID3D11DeviceContext>      m_context {nullptr};
+    std::mutex*                              m_contextMutex {nullptr}; // Thread safety for context (not owned)
     winrt::com_ptr<ID3D11Device>             m_device {nullptr};
     winrt::com_ptr<ID3D11ShaderResourceView> m_originalView {nullptr};
     winrt::com_ptr<IDXGISwapChain1>          m_swapChain {nullptr};
@@ -118,21 +121,31 @@ private:
     std::unique_ptr<Preset>                           m_newShaderPreset {nullptr};
     std::vector<std::tuple<int, std::string, double>> m_newParams;
 
-    volatile int   m_frameSkip {0};
-    volatile bool  m_running {false};
-    volatile float m_inputScaleW {3.0f};
-    volatile float m_inputScaleH {3.0f};
-    volatile bool  m_inputRescaled {false};
-    volatile float m_outputScaleW {1.0f};
-    volatile float m_outputScaleH {1.0f};
-    volatile bool  m_outputRescaled {false};
-    volatile bool  m_flipHorizontal {false};
-    volatile bool  m_flipVertical {false};
-    volatile RECT  m_lockedArea {0, 0, 0, 0};
-    volatile bool  m_lockedAreaUpdated {false};
-    volatile bool  m_freeScale {false};
-    volatile RECT  m_croppedArea {0, 0, 0, 0};
-    volatile bool  m_croppedAreaUpdated {false};
-    volatile bool  m_vertical {false};
-    volatile bool  m_verticalUpdated {false};
+    // Thread-safe atomic variables (replaced volatile for proper memory ordering)
+    std::atomic<int>   m_frameSkip {0};
+    std::atomic<bool>  m_running {false};
+    std::atomic<float> m_inputScaleW {3.0f};
+    std::atomic<float> m_inputScaleH {3.0f};
+    std::atomic<bool>  m_inputRescaled {false};
+    std::atomic<float> m_outputScaleW {1.0f};
+    std::atomic<float> m_outputScaleH {1.0f};
+    std::atomic<bool>  m_outputRescaled {false};
+    std::atomic<bool>  m_flipHorizontal {false};
+    std::atomic<bool>  m_flipVertical {false};
+    std::atomic<bool>  m_lockedAreaUpdated {false};
+    std::atomic<bool>  m_freeScale {false};
+    std::atomic<bool>  m_croppedAreaUpdated {false};
+    std::atomic<bool>  m_vertical {false};
+    std::atomic<bool>  m_verticalUpdated {false};
+
+    // RECT requires mutex protection (not trivially copyable for atomic)
+    struct {
+        RECT value {0, 0, 0, 0};
+        std::mutex mutex;
+    } m_lockedArea;
+
+    struct {
+        RECT value {0, 0, 0, 0};
+        std::mutex mutex;
+    } m_croppedArea;
 };

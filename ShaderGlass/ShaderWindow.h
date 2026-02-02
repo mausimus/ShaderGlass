@@ -17,6 +17,8 @@ GNU General Public License v3.0
 #include "CropDialog.h"
 #include "HotkeyDialog.h"
 #include "Helpers.h"
+#include "Util/ThreadHandle.h"
+#include <atomic>
 
 class ShaderWindow
 {
@@ -73,8 +75,8 @@ private:
     bool                          m_browserPositioned {false};
     bool                          m_inMenu {false};
     bool                          m_inDialog {false};
-    HANDLE                        m_compileThread {nullptr};
-    HANDLE                        m_compileEvent {nullptr};
+    ThreadHandle                  m_compileThread;
+    EventHandle                   m_compileEvent;
     float                         m_dpiScale {1.0f};
     RECT                          m_lastPosition;
     std::unique_ptr<InputDialog>  m_inputDialog;
@@ -86,7 +88,7 @@ private:
     std::vector<std::wstring>     m_recentImports;
     std::map<UINT, HotkeyInfo>    m_hotkeys;
     std::filesystem::path         m_importPath;
-    volatile bool                 m_forceStart {false};
+    std::atomic<bool>             m_forceStart {false};
 
     bool         LoadProfile(const std::wstring& fileName, bool forceStart = false);
     void         LoadProfile();

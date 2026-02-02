@@ -39,4 +39,13 @@ public:
 private:
     static ShaderDef  CompileSourceShader(SourceShaderDef& def, std::ostream& log, bool& warn, const ShaderCache& cache);
     static PresetDef* CompileShader(std::filesystem::path source, std::ostream& log, bool& warn, const ShaderCache& cache);
+
+    // Security helpers
+    static std::filesystem::path ValidateIncludePath(const std::filesystem::path& basePath, const std::filesystem::path& includePath);
+    static std::vector<std::string> LoadSourceWithDepthLimit(const std::filesystem::path& input, bool followIncludes, int depth);
+    static void ParsePresetWithDepthLimit(const std::filesystem::path& input,
+                                          std::map<std::string, std::string>& keyValues,
+                                          std::map<std::string, std::filesystem::path>& valuePaths,
+                                          int depth);
+    static constexpr int MAX_INCLUDE_DEPTH = 32;
 };

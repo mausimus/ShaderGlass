@@ -10,6 +10,7 @@ GNU General Public License v3.0
 #include "resource.h"
 #include "Helpers.h"
 #include "InputDialog.h"
+#include "../ShaderGC/SafeParsing.h"
 
 static float   inputValue;
 static LPCWSTR labelText;
@@ -68,11 +69,19 @@ static INT_PTR CALLBACK InputProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
             // Null-terminate the string.
             lpszInput[cchInput] = 0;
-            try
+
+            // Convert wide string to narrow for parsing
+            std::string narrowInput;
+            for(int i = 0; i < cchInput; i++)
             {
-                inputValue = std::stof(lpszInput);
+                narrowInput += (char)lpszInput[i];
             }
-            catch(std::exception&)
+
+            // Use safe parsing with sentinel value to detect errors
+            constexpr float PARSE_ERROR_SENTINEL = std::numeric_limits<float>::quiet_NaN();
+            inputValue = SafeParseFloat<float>(narrowInput, PARSE_ERROR_SENTINEL);
+
+            if(std::isnan(inputValue))
             {
                 MessageBox(hDlg, L"Invalid value entered.", L"Error", MB_OK);
                 EndDialog(hDlg, FALSE);

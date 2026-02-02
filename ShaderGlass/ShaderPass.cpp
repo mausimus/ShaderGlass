@@ -8,7 +8,9 @@ GNU General Public License v3.0
 #include "pch.h"
 
 #include "ShaderPass.h"
+#include "../ShaderGC/SafeParsing.h"
 #include "Helpers.h"
+#include "Util/ErrorHandling.h"
 
 static HRESULT hr;
 
@@ -44,7 +46,7 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
                                                    {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}};
 
     hr = m_device->CreateInputLayout(inputElementDesc, ARRAYSIZE(inputElementDesc), m_shader.m_shaderDef.VertexByteCode, m_shader.m_shaderDef.VertexLength, m_inputLayout.put());
-    assert(SUCCEEDED(hr));
+    THROW_IF_FAILED(hr);
     {
         D3D11_BUFFER_DESC vertex_buff_descr = {};
         vertex_buff_descr.ByteWidth         = sizeof(sVertexBuffer);
@@ -53,7 +55,7 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
         D3D11_SUBRESOURCE_DATA sr_data      = {0};
         sr_data.pSysMem                     = sVertexBuffer;
         hr                                  = m_device->CreateBuffer(&vertex_buff_descr, &sr_data, m_vertexBuffer.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
     }
 
     for(const auto& texture : m_shader.m_shaderDef.Samplers)
@@ -136,7 +138,7 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
         constantBufferDesc.CPUAccessFlags    = D3D11_CPU_ACCESS_WRITE;
 
         hr = m_device->CreateBuffer(&constantBufferDesc, nullptr, m_constantBuffer.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
     }
     else
     {
@@ -152,7 +154,7 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
         pushBufferDesc.CPUAccessFlags    = D3D11_CPU_ACCESS_WRITE;
 
         hr = m_device->CreateBuffer(&pushBufferDesc, nullptr, m_pushBuffer.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
     }
     else
     {
@@ -198,7 +200,7 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
         omDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
         hr = device->CreateBlendState(&omDesc, m_blendState.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
     }
 }
 
@@ -418,17 +420,12 @@ int ShaderPass::RequiresHistory() const
     {
         if(texture.name.starts_with("OriginalHistory"))
         {
-            try
+            auto historyString = texture.name.substr(15);
+            auto historyNum    = SafeParseInt<int>(historyString, -1);
+            if(historyNum > 0 && historyNum < 100)
             {
-                auto historyString = texture.name.substr(15);
-                auto historyNum    = std::stoi(historyString);
-                if(historyNum > 0 && historyNum < 100)
-                {
-                    maxHistory = max(maxHistory, historyNum);
-                }
+                maxHistory = max(maxHistory, historyNum);
             }
-            catch(...)
-            { }
         }
     }
     return maxHistory;

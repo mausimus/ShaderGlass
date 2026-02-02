@@ -21,20 +21,96 @@ filesystem::path reportPath;
 filesystem::path listPath;
 vector<string>   shaderList;
 
-std::string exec(const char* cmd, ofstream& log)
+// Secure command execution using CreateProcess to prevent command injection
+std::string exec(const std::vector<std::string>& args, ofstream& log)
 {
-    std::array<char, 128> buffer;
-    std::string           result;
-    log << cmd << endl;
-    std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd, "r"), _pclose);
-    if(!pipe)
+    if(args.empty())
     {
-        throw std::runtime_error("popen() failed!");
+        throw std::runtime_error("exec() called with empty arguments");
     }
-    while(fgets(buffer.data(), static_cast<int>(buffer.size()), pipe.get()) != nullptr)
+
+    // Build command line with proper quoting
+    std::string cmdLine;
+    for(size_t i = 0; i < args.size(); i++)
     {
-        result += buffer.data();
+        if(i > 0) cmdLine += " ";
+
+        // Quote arguments that contain spaces or special characters
+        bool needsQuote = args[i].find_first_of(" \t\n\"") != std::string::npos;
+        if(needsQuote) cmdLine += "\"";
+
+        // Escape any quotes in the argument
+        for(char c : args[i])
+        {
+            if(c == '\"') cmdLine += "\\\"";
+            else cmdLine += c;
+        }
+
+        if(needsQuote) cmdLine += "\"";
     }
+
+    log << "Executing: " << cmdLine << endl;
+
+    // Create pipes for stdout/stderr capture
+    SECURITY_ATTRIBUTES sa = {};
+    sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+    sa.bInheritHandle = TRUE;
+    sa.lpSecurityDescriptor = NULL;
+
+    HANDLE hReadPipe = NULL;
+    HANDLE hWritePipe = NULL;
+    if(!CreatePipe(&hReadPipe, &hWritePipe, &sa, 0))
+    {
+        throw std::runtime_error("CreatePipe() failed");
+    }
+
+    // Ensure read handle is not inherited
+    SetHandleInformation(hReadPipe, HANDLE_FLAG_INHERIT, 0);
+
+    // Setup process startup info
+    STARTUPINFOA si = {};
+    si.cb = sizeof(STARTUPINFO);
+    si.hStdError = hWritePipe;
+    si.hStdOutput = hWritePipe;
+    si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE;
+
+    PROCESS_INFORMATION pi = {};
+
+    // CreateProcess requires a mutable string
+    std::vector<char> cmdLineBuf(cmdLine.begin(), cmdLine.end());
+    cmdLineBuf.push_back('\0');
+
+    if(!CreateProcessA(NULL, cmdLineBuf.data(), NULL, NULL, TRUE,
+                       CREATE_NO_WINDOW, NULL, NULL, &si, &pi))
+    {
+        CloseHandle(hReadPipe);
+        CloseHandle(hWritePipe);
+        throw std::runtime_error("CreateProcess() failed");
+    }
+
+    // Close write end in parent
+    CloseHandle(hWritePipe);
+
+    // Read output
+    std::string result;
+    char buffer[4096];
+    DWORD bytesRead;
+
+    while(ReadFile(hReadPipe, buffer, sizeof(buffer) - 1, &bytesRead, NULL) && bytesRead > 0)
+    {
+        buffer[bytesRead] = '\0';
+        result += buffer;
+    }
+
+    // Wait for process to complete
+    WaitForSingleObject(pi.hProcess, INFINITE);
+
+    // Cleanup
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+    CloseHandle(hReadPipe);
+
     return result;
 }
 
@@ -67,12 +143,17 @@ filesystem::path glsl(const filesystem::path& shaderPath, const string& stage, c
 
     if(_tools)
     {
-        stringstream cmd;
-        cmd << "\"" << toolsPath.string() << _glslExe << "\" "
-            << "-V --quiet -S " << stage << " -o " << output.string() << " " << input.string() << "";
-        auto        cmds      = cmd.str();
-        auto        cmdstring = cmds.c_str();
-        const auto& result    = exec(cmdstring, log);
+        std::vector<std::string> args = {
+            (toolsPath / _glslExe).string(),
+            "-V",
+            "--quiet",
+            "-S",
+            stage,
+            "-o",
+            output.string(),
+            input.string()
+        };
+        const auto& result = exec(args, log);
         if(result.length() > 0)
             log << result << endl;
         if(result.find("error") != string::npos || result.find("ERROR") != string::npos)
@@ -95,15 +176,23 @@ pair<string, string> spirv(const filesystem::path& input, const std::string& sta
 {
     if(_tools)
     {
-        stringstream cmd1, cmd2;
-        cmd1 << "\"" << toolsPath.string() << _spirvExe << "\" "
-             << " --hlsl --shader-model 50 " << input.string() << "";
-        const auto& code = exec(cmd1.str().c_str(), log);
+        std::vector<std::string> args1 = {
+            (toolsPath / _spirvExe).string(),
+            "--hlsl",
+            "--shader-model",
+            "50",
+            input.string()
+        };
+        const auto& code = exec(args1, log);
         std::string metadata;
         if(stage == "frag")
         {
-            cmd2 << "\"" << toolsPath.string() << _spirvExe << "\" " << input.string() << " --reflect";
-            metadata = exec(cmd2.str().c_str(), log);
+            std::vector<std::string> args2 = {
+                (toolsPath / _spirvExe).string(),
+                input.string(),
+                "--reflect"
+            };
+            metadata = exec(args2, log);
         }
         return make_pair(code, metadata);
     }
@@ -181,10 +270,19 @@ pair<string, string> fxc(const filesystem::path& shaderPath, const string& profi
 
     if(_tools)
     {
-        stringstream cmd;
-        cmd << "\"" << _fxcPath << "\" "
-            << " /nologo /O3 /E main /T " << profile << " /Fh " << output.string() << " " << input.string() << " 2>&1";
-        const auto& result = exec(cmd.str().c_str(), log);
+        std::vector<std::string> args = {
+            _fxcPath,
+            "/nologo",
+            "/O3",
+            "/E",
+            "main",
+            "/T",
+            profile,
+            "/Fh",
+            output.string(),
+            input.string()
+        };
+        const auto& result = exec(args, log);
         if(result.length() > 0)
             log << result << endl;
         if(result.find("error") != string::npos || result.find("ERROR") != string::npos)

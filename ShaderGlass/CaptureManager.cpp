@@ -13,6 +13,7 @@ GNU General Public License v3.0
 #include "Util/capture.desktop.interop.h"
 #include "Util/direct3d11.interop.h"
 #include "Util/d3dHelpers.h"
+#include "Util/ErrorHandling.h"
 
 #include <wincodec.h>
 #include "WIC\ScreenGrab11.h"
@@ -22,13 +23,16 @@ using namespace std;
 using namespace util;
 using namespace util::uwp;
 
-CaptureManager::CaptureManager(HINSTANCE instance) : m_options(), m_deviceName(L"Default"), m_lastPreset(-1), m_instance {instance} { }
+CaptureManager::CaptureManager(HINSTANCE instance)
+    : m_options(), m_deviceName(L"Default"), m_lastPreset(-1), m_instance{instance}, m_frameEvent(FALSE, FALSE)
+{
+}
 
 bool CaptureManager::Initialize()
 {
     m_presetList.push_back(make_unique<PassthroughPresetDef>());
     m_presetList.insert(m_presetList.end(), RetroArchPresetList.begin(), RetroArchPresetList.end());
-    m_frameEvent = CreateEvent(NULL, FALSE, FALSE, L"FrameEvent");
+    // m_frameEvent is now initialized in constructor via EventHandle RAII wrapper
     return false;
 }
 
@@ -149,7 +153,8 @@ bool CaptureManager::StartSession()
                               m_options.allowTearing,
                               m_options.useHDR,
                               m_d3dDevice,
-                              m_context);
+                              m_context,
+                              m_contextMutex);
     UpdatePixelSize();
     UpdateOutputSize();
     UpdateOutputFlip();
@@ -173,7 +178,7 @@ bool CaptureManager::StartSession()
                                                       DirectX::WIC_LOADER_IGNORE_SRGB, // "If the sRGB chunk is found, it is assumed to be gamma 2.2"
                                                       (ID3D11Resource**)(inputTexture.put()),
                                                       inputTextureView.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
 
         // retrieve input image size
         D3D11_TEXTURE2D_DESC desc = {};
@@ -200,7 +205,7 @@ bool CaptureManager::StartSession()
         m_options.imageWidth  = desc.Width;
         m_options.imageHeight = desc.Height;
 
-        m_session = make_unique<CaptureSession>(device, inputTexture, *m_shaderGlass, m_frameEvent);
+        m_session = make_unique<CaptureSession>(device, inputTexture, *m_shaderGlass, m_frameEvent.get());
         UpdatePixelSize();
     }
     else
@@ -208,11 +213,21 @@ bool CaptureManager::StartSession()
         winrt::Windows::Graphics::DirectX::DirectXPixelFormat pixelFormat = m_options.useHDR ? winrt::Windows::Graphics::DirectX::DirectXPixelFormat::R16G16B16A16Float
                                                                                              : winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized;
 
-        m_session = make_unique<CaptureSession>(device, captureItem, pixelFormat, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent);
+        m_session = make_unique<CaptureSession>(device, captureItem, pixelFormat, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent.get());
     }
 
     m_active = true;
-    CreateThread(NULL, 0, ThreadFuncProxy, this, 0, NULL);
+
+    // Create render thread with RAII wrapper
+    try
+    {
+        m_renderThread = ThreadHandle::Create(ThreadFuncProxy, this);
+    }
+    catch(const std::exception& e)
+    {
+        m_active = false;
+        throw;
+    }
 
     UpdateCursor();
     return true;
@@ -337,17 +352,30 @@ void CaptureManager::Exit()
     {
         m_cursorEmulator.Stop();
 
+        // Signal thread to exit
         m_active = false;
-        SetEvent(m_frameEvent);
+        m_frameEvent.Set();
+
+        // Wait for render thread to complete (with timeout)
+        if(m_renderThread.isValid())
+        {
+            if(!m_renderThread.Join(5000)) // 5 second timeout
+            {
+                // Thread didn't exit cleanly - force terminate as last resort
+                m_renderThread.Terminate();
+            }
+        }
 
         if(m_deviceCapture.m_active)
             m_deviceCapture.Stop();
 
         m_session->Stop();
-        delete m_session.release();
+        // Fix: Use reset() instead of delete on release()
+        m_session.reset();
 
         m_shaderGlass->Stop();
-        delete m_shaderGlass.release();
+        // Fix: Use reset() instead of delete on release()
+        m_shaderGlass.reset();
 
         if(m_debug)
         {
@@ -470,7 +498,14 @@ void CaptureManager::ThreadFunc()
 {
     while(m_active)
     {
-        WaitForSingleObject(m_frameEvent, 1);
+        // Performance: Use INFINITE timeout instead of 1ms busy-wait
+        // This eliminates unnecessary CPU usage when idle
+        WaitForSingleObject(m_frameEvent.get(), INFINITE);
+
+        // Check if we're still active after wake-up
+        if(!m_active)
+            break;
+
         ProcessFrame();
     }
 }

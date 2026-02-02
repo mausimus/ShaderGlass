@@ -44,6 +44,28 @@ std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
     IMFActivate**                 devices    = NULL;
     BOOL                          selected   = FALSE;
 
+    // RAII helper to ensure COM cleanup on all exit paths
+    struct DeviceArrayGuard
+    {
+        IMFActivate** devices;
+        UINT32 count;
+
+        DeviceArrayGuard() : devices(nullptr), count(0) {}
+
+        ~DeviceArrayGuard()
+        {
+            if(devices)
+            {
+                for(UINT32 i = 0; i < count; i++)
+                {
+                    if(devices[i])
+                        devices[i]->Release();
+                }
+                CoTaskMemFree(devices);
+            }
+        }
+    } deviceGuard;
+
     try
     {
         Init();
@@ -51,6 +73,11 @@ std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
         THROW(MFCreateAttributes(attributes.put(), 1));
         THROW(attributes->SetGUID(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID));
         THROW(MFEnumDeviceSources(attributes.get(), &devices, &numDevices));
+
+        // Register devices with RAII guard for automatic cleanup
+        deviceGuard.devices = devices;
+        deviceGuard.count = numDevices;
+
         if(numDevices == 0)
             return result;
 
@@ -63,8 +90,16 @@ std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
                 winrt::com_ptr<IMFStreamDescriptor>       streamDescriptor;
                 winrt::com_ptr<IMFMediaTypeHandler>       mediaTypeHandler;
                 winrt::com_ptr<IMFMediaType>              mediaType;
-                LPWSTR                                    symlink;
+                LPWSTR                                    symlink = nullptr;
                 UINT32                                    slen;
+
+                // RAII helper for allocated string
+                struct SymlinkGuard
+                {
+                    LPWSTR* ptr;
+                    SymlinkGuard(LPWSTR* p) : ptr(p) {}
+                    ~SymlinkGuard() { if(ptr && *ptr) CoTaskMemFree(*ptr); }
+                } symlinkGuard(&symlink);
 
                 THROW(devices[deviceNo]->ActivateObject(__uuidof(IMFMediaSource), reinterpret_cast<void**>(mediaSource.put())));
                 THROW(devices[deviceNo]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK, &symlink, &slen));
@@ -175,13 +210,11 @@ std::vector<CaptureDevice> DeviceCapture::GetCaptureDevices()
     }
     catch(std::exception&)
     {
-        for(UINT32 i = 0; i < numDevices; i++)
-            devices[i]->Release();
-        if(devices)
-            CoTaskMemFree(devices);
+        // DeviceArrayGuard RAII will handle cleanup
     }
 
     return result;
+    // DeviceArrayGuard destructor will cleanup devices on all exit paths
 }
 
 static DWORD WINAPI DeviceCaptureThreadFuncProxy(LPVOID lpParam)
@@ -232,7 +265,17 @@ void DeviceCapture::Start(winrt::com_ptr<ID3D11Device> d3dDevice, LPWSTR symlink
     CreateOutputTexture();
 
     m_active = true;
-    m_thread = CreateThread(NULL, 0, DeviceCaptureThreadFuncProxy, this, 0, NULL);
+
+    // Create capture thread with RAII wrapper
+    try
+    {
+        m_thread = ThreadHandle::Create(DeviceCaptureThreadFuncProxy, this);
+    }
+    catch(const std::exception& e)
+    {
+        m_active = false;
+        throw;
+    }
 }
 
 void DeviceCapture::CreateOutputTexture()
@@ -380,11 +423,23 @@ bool DeviceCapture::WaitForNextFrame()
 
 void DeviceCapture::Stop()
 {
-    std::unique_lock lock(m_mutex);
-
     if(m_active)
     {
+        // Signal thread to exit
         m_active = false;
+
+        // Wait for thread to complete (with timeout)
+        if(m_thread.isValid())
+        {
+            if(!m_thread.Join(5000)) // 5 second timeout
+            {
+                // Thread didn't exit cleanly - force terminate as last resort
+                m_thread.Terminate();
+            }
+        }
+
+        // Clean up resources after thread has stopped
+        std::unique_lock lock(m_mutex);
 
         m_inputSample     = nullptr;
         m_outputSample    = nullptr;

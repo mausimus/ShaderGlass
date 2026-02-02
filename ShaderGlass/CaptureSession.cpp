@@ -7,6 +7,7 @@ GNU General Public License v3.0
 
 #include "pch.h"
 #include "CaptureSession.h"
+#include "../ShaderGC/SafeParsing.h"
 #include "Helpers.h"
 
 #include "Util/direct3d11.interop.h"
@@ -92,8 +93,14 @@ void CaptureSession::UpdateCursor(bool captureCursor)
 
 void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sender, winrt::IInspectable const&)
 {
-    auto frame   = sender.TryGetNextFrame();
-    m_inputFrame = GetDXGIInterfaceFromObject<ID3D11Texture2D>(frame.Surface());
+    auto frame = sender.TryGetNextFrame();
+
+    // Thread safety: Protect m_inputFrame access with mutex
+    {
+        std::lock_guard<std::mutex> lock(m_inputFrameMutex);
+        m_inputFrame = GetDXGIInterfaceFromObject<ID3D11Texture2D>(frame.Surface());
+        m_frameAvailable = true;
+    }
 
     auto contentSize = frame.ContentSize();
     if(contentSize.Width != m_contentSize.Width || contentSize.Height != m_contentSize.Height)
@@ -115,7 +122,7 @@ void CaptureSession::OnInputFrame()
     {
         auto deltaTicks   = m_frameTicks - m_prevTicks;
         auto deltaFrames  = m_numInputFrames - m_prevInputFrames;
-        m_fps             = deltaFrames * 1000.0f / deltaTicks;
+        m_fps             = SafeDivide(deltaFrames * 1000.0f, static_cast<float>(deltaTicks), 0.0f);
         m_prevInputFrames = m_numInputFrames;
         m_prevTicks       = m_frameTicks;
     }
@@ -129,7 +136,21 @@ void CaptureSession::ProcessInput()
     }
     else
     {
-        m_shaderGlass.Process(m_inputFrame, m_frameTicks, m_numInputFrames);
+        // Thread safety: Protect m_inputFrame access with mutex
+        winrt::com_ptr<ID3D11Texture2D> frameToProcess;
+        {
+            std::lock_guard<std::mutex> lock(m_inputFrameMutex);
+            if(m_frameAvailable)
+            {
+                frameToProcess = m_inputFrame;
+                m_frameAvailable = false;
+            }
+        }
+
+        if(frameToProcess)
+        {
+            m_shaderGlass.Process(frameToProcess, m_frameTicks, m_numInputFrames);
+        }
     }
 }
 

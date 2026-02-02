@@ -11,6 +11,7 @@ GNU General Public License v3.0
 #include "ShaderWindow.h"
 #include "ShaderGC.h"
 #include "CursorEmulator.h"
+#include "../ShaderGC/SafeParsing.h"
 
 #include "Shlobj.h"
 
@@ -116,15 +117,10 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart)
                 if(!found)
                 {
                     // set as custom
-                    try
+                    float customValue = SafeParseFloat<float>(value, 0.0f);
+                    if(customValue != 0.0f && !std::isnan(customValue))
                     {
-                        float customValue = std::stof(value);
-                        if(customValue != 0 && !std::isnan(customValue))
-                            SendMessage(m_mainWindow, WM_COMMAND, aspectRatios.rbegin()->first, (LPARAM)(customValue * CUSTOM_PARAM_SCALE));
-                    }
-                    catch(std::exception&)
-                    {
-                        // ignored
+                        SendMessage(m_mainWindow, WM_COMMAND, aspectRatios.rbegin()->first, (LPARAM)(customValue * CUSTOM_PARAM_SCALE));
                     }
                 }
             }
@@ -237,20 +233,18 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart)
             }
             else if(key.starts_with("Param-") && key.size() >= 9)
             {
-                try
-                {
-                    size_t start = 6;
-                    size_t split = key.find('-', start);
-                    if(split == key.npos || split == key.size() - 1 || split == start)
-                        continue;
+                size_t start = 6;
+                size_t split = key.find('-', start);
+                if(split == key.npos || split == key.size() - 1 || split == start)
+                    continue;
 
-                    auto passNo = std::stoi(key.substr(start, split - start));
-                    auto name   = key.substr(split + 1);
-                    params.push_back(std::make_tuple(passNo, name, std::stod(value)));
-                }
-                catch(std::exception&)
+                auto passNo = SafeParseInt<int>(key.substr(start, split - start), -1);
+                auto name   = key.substr(split + 1);
+                auto paramValue = SafeParseFloat<double>(value, 0.0);
+
+                if(passNo >= 0)
                 {
-                    // ignored
+                    params.push_back(std::make_tuple(passNo, name, paramValue));
                 }
             }
         }
@@ -619,8 +613,8 @@ void ShaderWindow::CompileThreadFunc()
 
     while(true)
     {
-        WaitForSingleObject(m_compileEvent, INFINITE);
-        ResetEvent(m_compileEvent);
+        WaitForSingleObject(m_compileEvent.get(), INFINITE);
+        m_compileEvent.Reset();
 
         if(m_importPath.empty())
             continue;
@@ -691,18 +685,18 @@ bool ShaderWindow::ImportShader(const std::wstring& fileName, bool forceStart)
 
         ShowWindow(m_compileWindow, SW_SHOW);
         EnableWindow(m_mainWindow, false);
-        if(!m_compileEvent)
+        if(!m_compileEvent.isValid())
         {
-            m_compileEvent = CreateEvent(NULL, TRUE, FALSE, TEXT("CompileEvent"));
+            m_compileEvent = EventHandle(TRUE, FALSE);
         }
-        if(!m_compileThread)
+        if(!m_compileThread.isValid())
         {
-            m_compileThread = CreateThread(NULL, 0, CompileThreadFuncProxy, this, 0, NULL);
+            m_compileThread = ThreadHandle::Create(CompileThreadFuncProxy, this);
         }
-        if(m_compileEvent)
+        if(m_compileEvent.isValid())
         {
             m_forceStart = forceStart;
-            SetEvent(m_compileEvent);
+            m_compileEvent.Set();
         }
         return true;
     }

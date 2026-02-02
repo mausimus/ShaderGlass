@@ -10,6 +10,8 @@ GNU General Public License v3.0
 #include "ShaderList.h"
 #include "CursorEmulator.h"
 #include "resource.h"
+#include "Util/ErrorHandling.h"
+#include "../ShaderGC/SafeParsing.h"
 
 static HRESULT     hr;
 static const float background_colour[4] = {0, 0, 0, 1.0f};
@@ -40,7 +42,8 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
                              bool                                allowTearing,
                              bool                                useHDR,
                              winrt::com_ptr<ID3D11Device>        device,
-                             winrt::com_ptr<ID3D11DeviceContext> context)
+                             winrt::com_ptr<ID3D11DeviceContext> context,
+                             std::mutex&                         contextMutex)
 {
     m_outputWindow  = outputWindow;
     m_captureWindow = captureWindow;
@@ -51,6 +54,7 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
     m_useHDR        = useHDR;
     m_device        = device;
     m_context       = context;
+    m_contextMutex  = &contextMutex; // Store reference for thread-safe context access
 
     if(captureMonitor && !clone)
     {
@@ -90,14 +94,14 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
         {
             winrt::com_ptr<IDXGIDevice1> dxgiDevice;
             hr = m_device->QueryInterface(__uuidof(IDXGIDevice1), (void**)dxgiDevice.put());
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
 
             winrt::com_ptr<IDXGIAdapter> dxgiAdapter;
             hr = dxgiDevice->GetAdapter(dxgiAdapter.put());
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
 
             hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory2), (void**)dxgiFactory.put());
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
         }
 
         DXGI_SWAP_CHAIN_DESC1 d3d11SwapChainDesc = {};
@@ -130,11 +134,11 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
         }
 
         hr = dxgiFactory->CreateSwapChainForHwnd(m_device.get(), m_outputWindow, &d3d11SwapChainDesc, 0, 0, m_swapChain.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
     }
 
     hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_displayTexture.put());
-    assert(SUCCEEDED(hr));
+    THROW_IF_FAILED(hr);
     if(!m_displayTexture)
         throw std::exception("Unable to create framebuffer");
 
@@ -146,12 +150,12 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
     desc.DepthClipEnable       = FALSE;
     desc.MultisampleEnable     = FALSE;
     hr                         = m_device->CreateRasterizerState(&desc, m_rasterizerState.put());
-    assert(SUCCEEDED(hr));
+    THROW_IF_FAILED(hr);
 
     if(m_useHDR)
     {
         hr = m_swapChain->QueryInterface(__uuidof(IDXGISwapChain3), reinterpret_cast<void**>(m_swapChain3.put()));
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
 
         SetSwapchainColorSpace();
     }
@@ -223,21 +227,21 @@ void ShaderGlass::SetFrameSkip(int s)
 
 void ShaderGlass::SetLockedArea(RECT lockedArea)
 {
-    m_lockedArea.top    = lockedArea.top;
-    m_lockedArea.bottom = lockedArea.bottom;
-    m_lockedArea.left   = lockedArea.left;
-    m_lockedArea.right  = lockedArea.right;
+    std::lock_guard<std::mutex> lock(m_lockedArea.mutex);
+    m_lockedArea.value = lockedArea;
     m_lockedAreaUpdated = true;
 }
 
 void ShaderGlass::SetCroppedArea(RECT croppedArea)
 {
-    if(m_croppedArea.top != croppedArea.top || m_croppedArea.bottom != croppedArea.bottom || m_croppedArea.left != croppedArea.left || m_croppedArea.right != croppedArea.right)
+    std::lock_guard<std::mutex> lock(m_croppedArea.mutex);
+    bool changed = (m_croppedArea.value.top != croppedArea.top ||
+                   m_croppedArea.value.bottom != croppedArea.bottom ||
+                   m_croppedArea.value.left != croppedArea.left ||
+                   m_croppedArea.value.right != croppedArea.right);
+    if(changed)
     {
-        m_croppedArea.top    = croppedArea.top;
-        m_croppedArea.bottom = croppedArea.bottom;
-        m_croppedArea.left   = croppedArea.left;
-        m_croppedArea.right  = croppedArea.right;
+        m_croppedArea.value = croppedArea;
         m_croppedAreaUpdated = true;
     }
 }
@@ -337,7 +341,7 @@ void ShaderGlass::SetSwapchainColorSpace()
     if(m_swapChain3.get())
     {
         hr = m_swapChain3->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709);
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
     }
 }
 
@@ -360,13 +364,13 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
             if(m_flipMode && m_allowTearing)
                 flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
             hr = m_swapChain->ResizeBuffers(0, static_cast<UINT>(clientRect.right), static_cast<UINT>(clientRect.bottom), DXGI_FORMAT_UNKNOWN, flags);
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
 
             hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_displayTexture.put());
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
 
             hr = m_device->CreateRenderTargetView(m_displayTexture.get(), NULL, m_displayRenderTarget.put());
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
 
             if(m_useHDR)
             {
@@ -481,6 +485,14 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     D3D11_TEXTURE2D_DESC capturedTextureDesc = {};
     texture->GetDesc(&capturedTextureDesc);
 
+    // Safety: Validate dimensions to prevent division by zero
+    if(capturedTextureDesc.Width == 0 || capturedTextureDesc.Height == 0)
+    {
+        // Invalid texture dimensions, skip frame
+        PresentFrame();
+        return;
+    }
+
     auto inputResized    = m_captureWindow && m_croppedAreaUpdated;
     m_croppedAreaUpdated = false;
 
@@ -497,10 +509,17 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         GetClientRect(m_captureWindow, &captureClient);
 
         DwmGetWindowAttribute(m_captureWindow, DWMWA_EXTENDED_FRAME_BOUNDS, &captureRect, sizeof(RECT));
-        captureTopLeft.x += m_croppedArea.left;
-        captureTopLeft.y += m_croppedArea.top;
-        captureClient.right -= (m_croppedArea.left + m_croppedArea.right);
-        captureClient.bottom -= (m_croppedArea.top + m_croppedArea.bottom);
+
+        // Thread-safe RECT access
+        RECT croppedArea;
+        {
+            std::lock_guard<std::mutex> lock(m_croppedArea.mutex);
+            croppedArea = m_croppedArea.value;
+        }
+        captureTopLeft.x += croppedArea.left;
+        captureTopLeft.y += croppedArea.top;
+        captureClient.right -= (croppedArea.left + croppedArea.right);
+        captureClient.bottom -= (croppedArea.top + croppedArea.bottom);
         if(captureClient.right <= 0)
             captureClient.right = 1;
         if(captureClient.bottom <= 0)
@@ -664,15 +683,17 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     }
 
     // size of preprocessed input, which is 'original' for the shader chain
-    UINT originalWidth  = static_cast<UINT>(destWidth / m_inputScaleW);
-    UINT originalHeight = static_cast<UINT>(destHeight / m_inputScaleH);
+    // Safety: Protect against division by zero
+    UINT originalWidth  = static_cast<UINT>(SafeDivide(static_cast<float>(destWidth), m_inputScaleW, static_cast<float>(destWidth)));
+    UINT originalHeight = static_cast<UINT>(SafeDivide(static_cast<float>(destHeight), m_inputScaleH, static_cast<float>(destHeight)));
 
     if(m_captureWindow || m_image)
     {
         const auto captureW = captureClient.right;
         const auto captureH = captureClient.bottom;
-        originalWidth       = static_cast<UINT>(captureW / m_inputScaleW);
-        originalHeight      = static_cast<UINT>(captureH / m_inputScaleH);
+        // Safety: Protect against division by zero
+        originalWidth       = static_cast<UINT>(SafeDivide(static_cast<float>(captureW), m_inputScaleW, static_cast<float>(captureW)));
+        originalHeight      = static_cast<UINT>(SafeDivide(static_cast<float>(captureH), m_inputScaleH, static_cast<float>(captureH)));
     }
 
     // create preprocessed output texture, scaled down size, inverted etc.
@@ -688,19 +709,19 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         desc2.Height         = m_vertical ? originalWidth : originalHeight;
 
         hr = m_device->CreateTexture2D(&desc2, nullptr, m_preprocessedTexture.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
         outputResized = true;
         rebuildPasses = true;
 
         hr = m_device->CreateShaderResourceView(m_preprocessedTexture.get(), nullptr, m_originalView.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
     }
 
     // create texture render target
     if(m_preprocessedRenderTarget == nullptr)
     {
         hr = m_device->CreateRenderTargetView(m_preprocessedTexture.get(), NULL, m_preprocessedRenderTarget.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
         rebuildPasses = true;
     }
 
@@ -809,17 +830,17 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
                 winrt::com_ptr<ID3D11Texture2D> passTexture;
                 hr = m_device->CreateTexture2D(&desc2, nullptr, passTexture.put());
-                assert(SUCCEEDED(hr));
+                THROW_IF_FAILED(hr);
                 m_passTextures.push_back(passTexture);
 
                 winrt::com_ptr<ID3D11RenderTargetView> passTarget;
                 hr = m_device->CreateRenderTargetView(passTexture.get(), nullptr, passTarget.put());
-                assert(SUCCEEDED(hr));
+                THROW_IF_FAILED(hr);
                 m_passTargets.push_back(passTarget);
 
                 winrt::com_ptr<ID3D11ShaderResourceView> passResource;
                 hr = m_device->CreateShaderResourceView(passTexture.get(), nullptr, passResource.put());
-                assert(SUCCEEDED(hr));
+                THROW_IF_FAILED(hr);
                 m_passResources.insert(std::make_pair(std::string("PassOutput") + std::to_string(p - 1), passResource));
                 if(!pass.m_shader.m_alias.empty())
                 {
@@ -833,11 +854,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
                     winrt::com_ptr<ID3D11Texture2D> feedbackTexture;
                     hr = m_device->CreateTexture2D(&desc2, nullptr, feedbackTexture.put());
-                    assert(SUCCEEDED(hr));
+                    THROW_IF_FAILED(hr);
                     m_passTextures.push_back(feedbackTexture);
                     winrt::com_ptr<ID3D11ShaderResourceView> feedbackResource;
                     hr = m_device->CreateShaderResourceView(feedbackTexture.get(), nullptr, feedbackResource.put());
-                    assert(SUCCEEDED(hr));
+                    THROW_IF_FAILED(hr);
                     m_passResources.insert(std::make_pair(std::string("PassFeedback") + std::to_string(p - 1), feedbackResource));
                     if(!pass.m_shader.m_alias.empty())
                     {
@@ -869,11 +890,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
             {
                 winrt::com_ptr<ID3D11Texture2D> historyTexture;
                 hr = m_device->CreateTexture2D(&desc2, nullptr, historyTexture.put());
-                assert(SUCCEEDED(hr));
+                THROW_IF_FAILED(hr);
                 m_passTextures.push_back(historyTexture);
                 winrt::com_ptr<ID3D11ShaderResourceView> historyResource;
                 hr = m_device->CreateShaderResourceView(historyTexture.get(), nullptr, historyResource.put());
-                assert(SUCCEEDED(hr));
+                THROW_IF_FAILED(hr);
                 m_passResources.insert(std::make_pair(std::string("OriginalHistory") + std::to_string(h + 1), historyResource));
             }
         }
@@ -897,11 +918,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
             winrt::com_ptr<ID3D11Texture2D> feedbackTexture;
             hr = m_device->CreateTexture2D(&desc2, nullptr, feedbackTexture.put());
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
             m_passTextures.push_back(feedbackTexture);
             winrt::com_ptr<ID3D11ShaderResourceView> feedbackResource;
             hr = m_device->CreateShaderResourceView(feedbackTexture.get(), nullptr, feedbackResource.put());
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
             m_passResources.insert(std::make_pair(std::string("PassFeedback") + std::to_string(p), feedbackResource));
             if(!lastPass.m_shader.m_alias.empty())
             {
@@ -916,11 +937,19 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         float sx = 1.0f, sy = 1.0f, tx = 0.0f, ty = 0.0f;
         POINT finalTopLeft  = topLeft;
         m_lockedAreaUpdated = false;
-        if(m_lockedArea.right - m_lockedArea.left != 0)
+
+        // Thread-safe RECT access
+        RECT lockedArea;
+        {
+            std::lock_guard<std::mutex> lock(m_lockedArea.mutex);
+            lockedArea = m_lockedArea.value;
+        }
+
+        if(lockedArea.right - lockedArea.left != 0)
         {
             // we only lock position
-            finalTopLeft.x = m_lockedArea.left;
-            finalTopLeft.y = m_lockedArea.top;
+            finalTopLeft.x = lockedArea.left;
+            finalTopLeft.y = lockedArea.top;
         }
         if(!m_captureWindow && !m_image)
         {
@@ -1000,7 +1029,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
     winrt::com_ptr<ID3D11ShaderResourceView> textureView;
     hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
-    assert(SUCCEEDED(hr));
+    THROW_IF_FAILED(hr);
     m_preprocessPass.Render(textureView.get(), m_passResources, logicalFrameNo, 0, 0);
 
     if(m_cursorEmulator.Hidden())
@@ -1174,7 +1203,7 @@ winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
             desc2.Width          = lastPass->m_destWidth;
             desc2.Height         = lastPass->m_destHeight;
             hr                   = m_device->CreateTexture2D(&desc2, nullptr, outputTexture.put());
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
 
             D3D11_BOX srcBox;
             srcBox.left   = m_boxX;
@@ -1201,7 +1230,7 @@ winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
         else
         {
             hr = m_device->CreateTexture2D(&desc2, nullptr, outputTexture.put());
-            assert(SUCCEEDED(hr));
+            THROW_IF_FAILED(hr);
 
             m_context->CopyResource(outputTexture.get(), displayTexture.get());
         }

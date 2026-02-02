@@ -7,6 +7,9 @@ GNU General Public License v3.0
 
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -29,6 +32,53 @@ GNU General Public License v3.0
 #include "SourceDefs.h"
 
 using namespace std;
+
+// RAII wrapper for temporary files with secure cleanup
+class TempFile
+{
+private:
+    filesystem::path m_path;
+    bool m_created;
+
+public:
+    TempFile(const filesystem::path& basePath, const string& prefix, const string& extension)
+        : m_created(false)
+    {
+        // Create unique temporary file name using current process ID and counter
+        static std::atomic<int> counter{0};
+        int id = counter.fetch_add(1);
+
+        stringstream filename;
+        filename << prefix << "_" << GetCurrentProcessId() << "_" << id << extension;
+
+        m_path = basePath / filename.str();
+        m_created = false;
+    }
+
+    const filesystem::path& path() const { return m_path; }
+
+    void markCreated() { m_created = true; }
+
+    ~TempFile()
+    {
+        // Securely delete temporary file on destruction
+        if(m_created && filesystem::exists(m_path))
+        {
+            try
+            {
+                filesystem::remove(m_path);
+            }
+            catch(...)
+            {
+                // Best effort cleanup - log but don't throw from destructor
+            }
+        }
+    }
+
+    // No copying or assignment
+    TempFile(const TempFile&) = delete;
+    TempFile& operator=(const TempFile&) = delete;
+};
 
 // paths relative to starting in Scripts directory
 const char* _libName      = "RetroArch";

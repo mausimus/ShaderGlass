@@ -12,6 +12,8 @@ GNU General Public License v3.0
 #include "GLSL.h"
 #include "HLSL.h"
 #include "SPIRV.h"
+#include "SafeParsing.h"
+#include "SecurityLimits.h"
 
 #include "json.hpp"
 
@@ -65,9 +67,33 @@ ShaderDef ShaderGC::CompileSourceShader(SourceShaderDef& def, ostream& log, bool
     if(fragmentDXBC.empty())
         fragmentDXBC = HLSL::CompileHLSL(fragmentHLSL.first.c_str(), (int)fragmentHLSL.first.size(), "ps_5_0", true, log, warn);
 
+    // Security: Validate compiled bytecode sizes
+    if(vertexDXBC.size() > SecurityLimits::MAX_SHADER_BYTECODE_SIZE)
+    {
+        throw file_error("Security: Vertex shader bytecode too large (" + std::to_string(vertexDXBC.size()) +
+                       " bytes, max " + std::to_string(SecurityLimits::MAX_SHADER_BYTECODE_SIZE) + ")");
+    }
+    if(fragmentDXBC.size() > SecurityLimits::MAX_SHADER_BYTECODE_SIZE)
+    {
+        throw file_error("Security: Fragment shader bytecode too large (" + std::to_string(fragmentDXBC.size()) +
+                       " bytes, max " + std::to_string(SecurityLimits::MAX_SHADER_BYTECODE_SIZE) + ")");
+    }
+
     // map declared to reflected parameters
     std::vector<SourceShaderSampler> textures;
     def.params = LookupParams(def.params, textures, fragmentHLSL.second);
+
+    // Security: Validate parameter and texture counts
+    if(def.params.size() > SecurityLimits::MAX_PARAMETERS)
+    {
+        throw file_error("Security: Too many shader parameters (" + std::to_string(def.params.size()) +
+                       ", max " + std::to_string(SecurityLimits::MAX_PARAMETERS) + ")");
+    }
+    if(textures.size() > SecurityLimits::MAX_TEXTURES)
+    {
+        throw file_error("Security: Too many shader textures (" + std::to_string(textures.size()) +
+                       ", max " + std::to_string(SecurityLimits::MAX_TEXTURES) + ")");
+    }
 
     ShaderDef sd;
     sd.Format           = CopyString(def.format);
@@ -115,9 +141,92 @@ PresetDef* ShaderGC::CompileShader(std::filesystem::path source, ostream& log, b
     return pdef;
 }
 
-vector<string> ShaderGC::LoadSource(const filesystem::path& input, bool followIncludes)
+// Security: Validate and sanitize include paths to prevent path traversal
+filesystem::path ShaderGC::ValidateIncludePath(const filesystem::path& basePath, const filesystem::path& includePath)
 {
+    try
+    {
+        // Construct the full path
+        filesystem::path fullPath = basePath.parent_path() / includePath;
+        fullPath = fullPath.lexically_normal();
+
+        // Convert to canonical path to resolve .. and symlinks
+        // This will throw if the file doesn't exist
+        if(filesystem::exists(fullPath))
+        {
+            fullPath = filesystem::canonical(fullPath);
+        }
+
+        // Security: Ensure the resolved path is still within or related to the base directory
+        // Get the canonical base directory
+        filesystem::path baseDir;
+        if(filesystem::exists(basePath))
+        {
+            baseDir = filesystem::canonical(basePath.parent_path());
+        }
+        else
+        {
+            baseDir = filesystem::absolute(basePath.parent_path());
+        }
+
+        // Check if the include path tries to escape outside reasonable bounds
+        // We allow includes from the same directory tree
+        auto fullPathStr = fullPath.string();
+        auto baseDirStr = baseDir.string();
+
+        // Reject absolute paths that don't share a common root with the base
+        if(fullPath.is_absolute() && includePath.is_absolute())
+        {
+            // Allow only if they share the same root
+            auto fullRoot = fullPath.root_path();
+            auto baseRoot = baseDir.root_path();
+            if(fullRoot != baseRoot)
+            {
+                throw file_error("Security: Include path uses different drive/root: " + includePath.string());
+            }
+        }
+
+        // Additional check: count how many levels we go up
+        int upLevels = 0;
+        for(const auto& part : includePath)
+        {
+            if(part == "..")
+                upLevels++;
+        }
+        if(upLevels > 10) // Reasonable limit for going up directories
+        {
+            throw file_error("Security: Include path has too many parent directory references: " + includePath.string());
+        }
+
+        return fullPath;
+    }
+    catch(const filesystem::filesystem_error& e)
+    {
+        throw file_error("Invalid include path: " + includePath.string() + " - " + e.what());
+    }
+}
+
+vector<string> ShaderGC::LoadSourceWithDepthLimit(const filesystem::path& input, bool followIncludes, int depth)
+{
+    // Security: Prevent infinite recursion and stack overflow
+    if(depth > MAX_INCLUDE_DEPTH)
+    {
+        throw file_error("Security: Include depth limit exceeded (max " + std::to_string(MAX_INCLUDE_DEPTH) + "): " + input.string());
+    }
+
     vector<string> lines;
+    size_t totalSize = 0;
+
+    // Security: Check file size before reading
+    if(filesystem::exists(input))
+    {
+        auto fileSize = filesystem::file_size(input);
+        if(fileSize > SecurityLimits::MAX_SHADER_SOURCE_SIZE)
+        {
+            throw file_error("Security: Shader source file too large (" + std::to_string(fileSize) +
+                           " bytes, max " + std::to_string(SecurityLimits::MAX_SHADER_SOURCE_SIZE) + "): " + input.string());
+        }
+    }
 
     ifstream infile(input);
     if(!infile.good())
@@ -125,16 +234,30 @@ vector<string> ShaderGC::LoadSource(const filesystem::path& input, bool followIn
     string line;
     while(getline(infile, line))
     {
+        // Security: Enforce line length limits
+        if(line.length() > SecurityLimits::MAX_STRING_LENGTH)
+        {
+            throw file_error("Security: Line too long in shader file: " + input.string());
+        }
+
+        totalSize += line.length() + 1; // +1 for newline
+        if(totalSize > SecurityLimits::MAX_SHADER_SOURCE_SIZE)
+        {
+            throw file_error("Security: Total shader source size exceeded during load: " + input.string());
+        }
+
         if(followIncludes && line.starts_with("#include"))
         {
             istringstream iss(line);
             string        incDirective, incFile;
             iss >> incDirective;
             iss >> quoted(incFile);
-            filesystem::path includePath(input);
-            includePath.remove_filename();
-            includePath /= filesystem::path(incFile);
-            const auto& includeLines = LoadSource(includePath.lexically_normal(), true);
+
+            // Security: Validate the include path
+            filesystem::path includePath = ValidateIncludePath(input, filesystem::path(incFile));
+
+            // Recursively load with incremented depth
+            const auto& includeLines = LoadSourceWithDepthLimit(includePath, true, depth + 1);
             lines.insert(lines.end(), includeLines.begin(), includeLines.end());
         }
         else
@@ -143,6 +266,12 @@ vector<string> ShaderGC::LoadSource(const filesystem::path& input, bool followIn
     infile.close();
 
     return lines;
+}
+
+// Public wrapper that starts with depth 0
+vector<string> ShaderGC::LoadSource(const filesystem::path& input, bool followIncludes)
+{
+    return LoadSourceWithDepthLimit(input, followIncludes, 0);
 }
 
 void ShaderGC::ProcessSourceShader(SourceShaderDef& def, ostream& log, bool& warn)
@@ -481,8 +610,17 @@ void setPresetParams(SourceTextureDef& def, std::string name, const map<string, 
     setPresetParam(name + "_", def, "mipmap", keyValues, seenKeys);
 }
 
-void ShaderGC::ParsePreset(const std::filesystem::path& input, std::map<std::string, std::string>& keyValues, std::map<std::string, std::filesystem::path>& valuePaths)
+void ShaderGC::ParsePresetWithDepthLimit(const std::filesystem::path& input,
+                                          std::map<std::string, std::string>& keyValues,
+                                          std::map<std::string, std::filesystem::path>& valuePaths,
+                                          int depth)
 {
+    // Security: Prevent infinite recursion
+    if(depth > MAX_INCLUDE_DEPTH)
+    {
+        throw file_error("Security: Preset reference depth limit exceeded (max " + std::to_string(MAX_INCLUDE_DEPTH) + "): " + input.string());
+    }
+
     ifstream infile(input.lexically_normal());
     if(!infile.good())
         throw file_error("Unable to find " + input.lexically_normal().string());
@@ -495,10 +633,12 @@ void ShaderGC::ParsePreset(const std::filesystem::path& input, std::map<std::str
             string        incDirective, incFile;
             iss >> incDirective;
             iss >> quoted(incFile);
-            filesystem::path includePath(input);
-            includePath.remove_filename();
-            includePath /= filesystem::path(incFile);
-            ParsePreset(includePath, keyValues, valuePaths);
+
+            // Security: Validate the reference path
+            filesystem::path includePath = ValidateIncludePath(input, filesystem::path(incFile));
+
+            // Recursively parse with incremented depth
+            ParsePresetWithDepthLimit(includePath, keyValues, valuePaths, depth + 1);
         }
         else if(line.starts_with("#"))
         {
@@ -512,6 +652,12 @@ void ShaderGC::ParsePreset(const std::filesystem::path& input, std::map<std::str
         }
     }
     infile.close();
+}
+
+// Public wrapper that starts with depth 0
+void ShaderGC::ParsePreset(const std::filesystem::path& input, std::map<std::string, std::string>& keyValues, std::map<std::string, std::filesystem::path>& valuePaths)
+{
+    ParsePresetWithDepthLimit(input, keyValues, valuePaths, 0);
 }
 
 PresetDef* ShaderGC::CompilePreset(std::filesystem::path input, ostream& log, bool& warn, const ShaderCache& cache)
@@ -572,7 +718,15 @@ void ShaderGC::ProcessSourcePreset(SourcePresetDef& def, std::ostream& log, bool
 
     ParsePreset(def.input, keyValues, keyPaths);
 
-    auto numShaders = atoi(getValue("shaders", -1, keyValues, seenKeys).c_str());
+    auto numShaders = SafeParseInt<int>(getValue("shaders", -1, keyValues, seenKeys), 0);
+
+    // Security: Validate shader count
+    if(numShaders > SecurityLimits::MAX_SHADER_PASSES)
+    {
+        throw file_error("Security: Too many shader passes (" + std::to_string(numShaders) +
+                       ", max " + std::to_string(SecurityLimits::MAX_SHADER_PASSES) + ")");
+    }
+
     for(int i = 0; i < numShaders; i++)
     {
         const auto& shaderRelativePath = getPath("shader", i, keyValues, keyPaths, seenKeys);
@@ -613,14 +767,15 @@ void ShaderGC::ProcessSourcePreset(SourcePresetDef& def, std::ostream& log, bool
     {
         if(!seenKeys.contains(kv.first) && !kv.first.empty() && !kv.second.empty())
         {
-            try
+            // Use safe parsing - returns 0.0f on error instead of throwing
+            auto value = SafeParseFloat<float>(kv.second, 0.0f);
+            if(value != 0.0f || kv.second == "0" || kv.second == "0.0" || kv.second == "0.00")
             {
-                auto value = stof(kv.second);
                 def.overrides.emplace_back(kv.first, value);
             }
-            catch(std::invalid_argument& e)
+            else
             {
-                log << e.what() << " " << kv.first << " = " << kv.second << endl;
+                log << "Warning: Invalid numeric value for " << kv.first << " = " << kv.second << endl;
                 warn = true;
             }
         }
@@ -636,6 +791,18 @@ TextureDef ShaderGC::CompileTexture(std::filesystem::path source, std::ostream& 
         throw file_error("Error loading texture " + source.string());
 
     auto size = inf.tellg();
+
+    // Security: Validate texture file size
+    if(size > SecurityLimits::MAX_TEXTURE_FILE_SIZE)
+    {
+        throw file_error("Security: Texture file too large (" + std::to_string(size) +
+                       " bytes, max " + std::to_string(SecurityLimits::MAX_TEXTURE_FILE_SIZE) + "): " + source.string());
+    }
+    if(size <= 0)
+    {
+        throw file_error("Invalid texture file size: " + source.string());
+    }
+
     inf.seekg(0, ios::beg);
 
     def.Data       = new uint8_t[size];

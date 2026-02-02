@@ -11,6 +11,8 @@ GNU General Public License v3.0
 #include "ShaderCache.h"
 #include "DeviceCapture.h"
 #include "CursorEmulator.h"
+#include "Util/ThreadHandle.h"
+#include <atomic>
 
 struct CaptureOptions
 {
@@ -93,7 +95,10 @@ public:
     bool  FindDeviceFormat(int deviceFormatNo, std::vector<CaptureDevice>::const_iterator& device, std::vector<CaptureFormat>::const_iterator& format);
 
 private:
-    volatile bool                                     m_active {false};
+    std::atomic<bool>                                 m_active {false};
+    ThreadHandle                                      m_renderThread;
+    EventHandle                                       m_frameEvent;
+    std::mutex                                        m_contextMutex; // Protects DirectX 11 context (not thread-safe)
     winrt::com_ptr<ID3D11Device>                      m_d3dDevice {nullptr};
     winrt::com_ptr<ID3D11DeviceContext>               m_context {nullptr};
     winrt::com_ptr<ID3D11Debug>                       m_debug {nullptr};
@@ -107,7 +112,6 @@ private:
     ShaderCache                                       m_shaderCache;
     DeviceCapture                                     m_deviceCapture;
     CursorEmulator                                    m_cursorEmulator;
-    HANDLE                                            m_frameEvent {nullptr};
     HINSTANCE                                         m_instance {0};
     unsigned int                                      m_lastPreset;
 };

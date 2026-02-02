@@ -9,6 +9,7 @@ GNU General Public License v3.0
 
 #include "resource.h"
 #include "CursorEmulator.h"
+#include "Util/ErrorHandling.h"
 
 // clang-format off
 const std::map<int, std::wstring> cursors = {
@@ -309,9 +310,9 @@ void CursorEmulator::InitCursor(int type, const wchar_t* name, winrt::com_ptr<ID
 
         HRESULT hr;
         hr = device->CreateTexture2D(&desc2, &sbd, ci.texture.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
         hr = device->CreateShaderResourceView(ci.texture.get(), nullptr, ci.view.put());
-        assert(SUCCEEDED(hr));
+        THROW_IF_FAILED(hr);
     }
 
     m_cursors.emplace_back(ci);
