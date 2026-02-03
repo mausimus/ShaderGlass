@@ -170,4 +170,26 @@ public:
     // No copying
     EventHandle(const EventHandle&) = delete;
     EventHandle& operator=(const EventHandle&) = delete;
+
+    // Move semantics
+    EventHandle(EventHandle&& other) noexcept : m_handle(other.m_handle)
+    {
+        other.m_handle = NULL;
+    }
+
+    EventHandle& operator=(EventHandle&& other) noexcept
+    {
+        if(this != &other)
+        {
+            // Close existing handle
+            if(m_handle != NULL)
+            {
+                CloseHandle(m_handle);
+            }
+            // Transfer ownership
+            m_handle = other.m_handle;
+            other.m_handle = NULL;
+        }
+        return *this;
+    }
 };

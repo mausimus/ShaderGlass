@@ -137,7 +137,7 @@ See [Online Manual](https://mausimus.github.io/ShaderGlass/MANUAL.html) for opti
 
 ### Code
 
-Built using Visual Studio 2022 using ISO C++ 20, Windows SDK 10.0.26100, Windows Capture API and DirectX 11.
+Built using Visual Studio 2026 (Platform Toolset v145) using ISO C++ 20, Windows SDK 10.0.26100, Windows Capture API and DirectX 11.
 
 ShaderGlass includes a limited implementation of RetroArch shader back-end using DirectX 11.
 [ShaderGen](ShaderGen) is a command-line tool for converting Slang shaders 

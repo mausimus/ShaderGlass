@@ -70,6 +70,10 @@ private:
     std::mutex*                              m_contextMutex {nullptr}; // Thread safety for context (not owned)
     winrt::com_ptr<ID3D11Device>             m_device {nullptr};
     winrt::com_ptr<ID3D11ShaderResourceView> m_originalView {nullptr};
+
+    // Performance: Cache input texture view to avoid recreating every frame
+    winrt::com_ptr<ID3D11Texture2D>          m_cachedInputTexture {nullptr};
+    winrt::com_ptr<ID3D11ShaderResourceView> m_cachedInputView {nullptr};
     winrt::com_ptr<IDXGISwapChain1>          m_swapChain {nullptr};
     winrt::com_ptr<IDXGISwapChain3>          m_swapChain3 {nullptr};
     winrt::com_ptr<ID3D11RasterizerState>    m_rasterizerState {nullptr};
@@ -81,6 +85,11 @@ private:
     std::vector<winrt::com_ptr<ID3D11Texture2D>>                    m_passTextures;
     std::vector<winrt::com_ptr<ID3D11RenderTargetView>>             m_passTargets;
     std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>> m_passResources;
+
+    // Performance: Pre-generated string keys to avoid allocations in hot path
+    std::vector<std::string> m_passOutputKeys;   // "PassOutput0", "PassOutput1", etc.
+    std::vector<std::string> m_passFeedbackKeys; // "PassFeedback0", "PassFeedback1", etc.
+    std::vector<std::string> m_historyKeys;      // "OriginalHistory1", "OriginalHistory2", etc.
     std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>> m_presetTextures;
     std::map<std::string, float4>                                   m_textureSizes;
     std::vector<ShaderPass>                                         m_shaderPasses;

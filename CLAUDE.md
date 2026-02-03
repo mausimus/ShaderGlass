@@ -11,7 +11,7 @@ ShaderGlass is a Windows desktop overlay application that applies GPU shader eff
 - DirectX 11
 - Windows SDK 10.0.26100
 - Windows Graphics Capture API
-- Visual Studio 2022
+- Visual Studio 2026 (Platform Toolset v145)
 
 ## Build Commands
 
@@ -237,5 +237,5 @@ Located in `External/` and `lib/`:
 
 - Windows 10 2004 (build 19041) or Windows 11
 - DirectX 11-capable GPU
-- Visual Studio 2022 with C++20 support
+- Visual Studio 2026 (Platform Toolset v145) with C++20 support
 - Windows SDK 10.0.26100

@@ -1,7 +1,35 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(git -C \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\" status --short)",
+      "Bash(where:*)",
+      "Bash(dir \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\" /B)",
+      "Bash(dir:*)",
+      "Bash(wmic:*)",
+      "Bash(findstr:*)",
+      "Bash(BUILD_MANUAL.bat)",
+      "Bash(cmd /c \"cd /d C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass && BUILD_MANUAL.bat\")",
+      "Bash(cmd /c \"dir /b /s \"C:Program FilesMicrosoft Visual Studio2026*MSBuild.exe\" 2>nul\")",
+      "Bash(cmd /c \"dir /b \"C:Program FilesMicrosoft Visual Studio\" 2>nul\")",
+      "Bash(cmd /c \"where vswhere.exe 2>nul && vswhere.exe -all -property installationVersion,installationPath\")",
+      "Bash(cmd /c \"if exist \"\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\"\" \\(echo VS2022 Found\\) else \\(echo VS2022 Not Found\\)\")",
+      "Bash(cmd /c \"if exist \"\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2026\"\" \\(echo VS2026 Found\\) else \\(echo VS2026 Not Found\\)\")",
+      "Bash(powershell -Command:*)",
+      "Bash(powershell:*)",
+      "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\ShaderGlass.sln\" /p:Configuration=Debug /p:Platform=x64 /t:Rebuild /m /v:minimal /nologo)",
+      "Bash(cmd /c:*)",
+      "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ShaderGlass.sln /p:Configuration=Debug /p:Platform=x64 /t:Rebuild /m:1 /v:normal)",
+      "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ShaderGlass.sln //p:Configuration=Debug //p:Platform=x64 //t:Rebuild //m:1 //v:normal)",
+      "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ShaderGlass.sln //p:Configuration=Debug //p:Platform=x64 //t:Rebuild //m:1 //v:minimal)",
+      "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ShaderGlass.sln //p:Configuration=Debug //p:Platform=x64 //t:Rebuild //m //v:minimal)",
+      "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ShaderGlass.sln //p:Configuration=Debug //p:Platform=x64 //t:Rebuild //m //v:quiet)",
+      "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ShaderGlass.sln //p:Configuration=Debug //p:Platform=x64 //t:Build //m:1 //v:minimal)",
+      "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ShaderGlass.sln //p:Configuration=Debug //p:Platform=x64 //t:Build //m //v:minimal)",
+      "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ShaderGlass.sln //p:Configuration=Release //p:Platform=x64 //t:Build //m //v:minimal)",
+      "Bash(test:*)",
+      "Bash(git stash:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }

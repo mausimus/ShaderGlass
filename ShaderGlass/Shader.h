@@ -64,11 +64,18 @@ public:
     void                      SetParam(std::string name, void* p);
     size_t                    BufferSize(int buffer);
 
+    // Performance: Track if constant buffers need updating
+    bool IsDirty(int buffer) const { return buffer == PUSH_BUFFER ? m_pushBufferDirty : m_uboBufferDirty; }
+    void ClearDirty(int buffer) { if(buffer == PUSH_BUFFER) m_pushBufferDirty = false; else m_uboBufferDirty = false; }
+    void MarkDirty(int buffer) { if(buffer == PUSH_BUFFER) m_pushBufferDirty = true; else m_uboBufferDirty = true; }
+
 private:
     std::unique_ptr<int[]>   m_pushBuffer;
     std::unique_ptr<int[]>   m_uboBuffer;
     winrt::com_ptr<ID3DBlob> m_vertexBlob;
     winrt::com_ptr<ID3DBlob> m_pixelBlob;
+    bool                     m_pushBufferDirty {true}; // Initially dirty to force first upload
+    bool                     m_uboBufferDirty {true};
 
     bool IsTrue(const std::string& presetParam);
     bool Get(const std::string& presetParam, std::string& value);

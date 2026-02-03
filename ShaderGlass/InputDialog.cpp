@@ -42,6 +42,7 @@ static INT_PTR CALLBACK InputProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM
         switch(wParam)
         {
         case IDOK:
+        {
             // Get number of characters.
             cchInput = (WORD)SendDlgItemMessage(hDlg, IDC_EDIT1, EM_LINELENGTH, (WPARAM)0, (LPARAM)0);
             if(cchInput >= 16)
@@ -90,7 +91,7 @@ static INT_PTR CALLBACK InputProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
             EndDialog(hDlg, TRUE);
             return TRUE;
-
+        }
         case IDCANCEL:
             EndDialog(hDlg, TRUE);
             return TRUE;

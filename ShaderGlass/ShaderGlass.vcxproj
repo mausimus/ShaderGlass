@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{d3ca23c5-8ab7-454f-8461-acdba8fb7289}</ProjectGuid>
     <RootNamespace>ShaderGlass</RootNamespace>

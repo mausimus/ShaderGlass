@@ -1,0 +1,41 @@
+# EditorConfig for ShaderGlass
+# https://editorconfig.org/
+
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C++ source files
+[*.{cpp,h,hpp,c}]
+indent_style = space
+indent_size = 4
+max_line_length = 160
+
+# Batch files
+[*.bat]
+end_of_line = crlf
+
+# Markdown files
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+# Visual Studio solution/project files
+[*.{sln,vcxproj,vcxproj.filters}]
+indent_style = space
+indent_size = 2
+
+# JSON/XML files
+[*.{json,xml}]
+indent_style = space
+indent_size = 2
+
+# YAML files
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2

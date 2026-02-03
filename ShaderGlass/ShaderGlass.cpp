@@ -684,16 +684,18 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
     // size of preprocessed input, which is 'original' for the shader chain
     // Safety: Protect against division by zero
-    UINT originalWidth  = static_cast<UINT>(SafeDivide(static_cast<float>(destWidth), m_inputScaleW, static_cast<float>(destWidth)));
-    UINT originalHeight = static_cast<UINT>(SafeDivide(static_cast<float>(destHeight), m_inputScaleH, static_cast<float>(destHeight)));
+    float scaleW = m_inputScaleW.load();
+    float scaleH = m_inputScaleH.load();
+    UINT originalWidth  = static_cast<UINT>(SafeDivide(static_cast<float>(destWidth), scaleW, static_cast<float>(destWidth)));
+    UINT originalHeight = static_cast<UINT>(SafeDivide(static_cast<float>(destHeight), scaleH, static_cast<float>(destHeight)));
 
     if(m_captureWindow || m_image)
     {
         const auto captureW = captureClient.right;
         const auto captureH = captureClient.bottom;
         // Safety: Protect against division by zero
-        originalWidth       = static_cast<UINT>(SafeDivide(static_cast<float>(captureW), m_inputScaleW, static_cast<float>(captureW)));
-        originalHeight      = static_cast<UINT>(SafeDivide(static_cast<float>(captureH), m_inputScaleH, static_cast<float>(captureH)));
+        originalWidth       = static_cast<UINT>(SafeDivide(static_cast<float>(captureW), scaleW, static_cast<float>(captureW)));
+        originalHeight      = static_cast<UINT>(SafeDivide(static_cast<float>(captureH), scaleH, static_cast<float>(captureH)));
     }
 
     // create preprocessed output texture, scaled down size, inverted etc.
@@ -841,7 +843,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
                 winrt::com_ptr<ID3D11ShaderResourceView> passResource;
                 hr = m_device->CreateShaderResourceView(passTexture.get(), nullptr, passResource.put());
                 THROW_IF_FAILED(hr);
-                m_passResources.insert(std::make_pair(std::string("PassOutput") + std::to_string(p - 1), passResource));
+
+                // Performance: Cache string key to avoid allocation in hot path
+                std::string passOutputKey = std::string("PassOutput") + std::to_string(p - 1);
+                m_passOutputKeys.push_back(passOutputKey);
+                m_passResources.insert(std::make_pair(passOutputKey, passResource));
                 if(!pass.m_shader.m_alias.empty())
                 {
                     m_passResources.insert(std::make_pair(pass.m_shader.m_alias, passResource));
@@ -859,7 +865,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
                     winrt::com_ptr<ID3D11ShaderResourceView> feedbackResource;
                     hr = m_device->CreateShaderResourceView(feedbackTexture.get(), nullptr, feedbackResource.put());
                     THROW_IF_FAILED(hr);
-                    m_passResources.insert(std::make_pair(std::string("PassFeedback") + std::to_string(p - 1), feedbackResource));
+
+                    // Performance: Cache string key to avoid allocation in hot path
+                    std::string passFeedbackKey = std::string("PassFeedback") + std::to_string(p - 1);
+                    m_passFeedbackKeys.push_back(passFeedbackKey);
+                    m_passResources.insert(std::make_pair(passFeedbackKey, feedbackResource));
                     if(!pass.m_shader.m_alias.empty())
                     {
                         m_passResources.insert(std::make_pair(pass.m_shader.m_alias + "Feedback", feedbackResource));
@@ -895,7 +905,11 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
                 winrt::com_ptr<ID3D11ShaderResourceView> historyResource;
                 hr = m_device->CreateShaderResourceView(historyTexture.get(), nullptr, historyResource.put());
                 THROW_IF_FAILED(hr);
-                m_passResources.insert(std::make_pair(std::string("OriginalHistory") + std::to_string(h + 1), historyResource));
+
+                // Performance: Cache string key to avoid allocation in hot path
+                std::string historyKey = std::string("OriginalHistory") + std::to_string(h + 1);
+                m_historyKeys.push_back(historyKey);
+                m_passResources.insert(std::make_pair(historyKey, historyResource));
             }
         }
 
@@ -1027,9 +1041,21 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         m_context->ClearRenderTargetView(m_preprocessedRenderTarget.get(), background_colour);
     }
 
+    // Performance: Cache ShaderResourceView to avoid recreating every frame
     winrt::com_ptr<ID3D11ShaderResourceView> textureView;
-    hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
-    THROW_IF_FAILED(hr);
+    if(m_cachedInputTexture.get() != texture.get())
+    {
+        // Texture changed, create new view and cache it
+        hr = m_device->CreateShaderResourceView(texture.get(), nullptr, textureView.put());
+        THROW_IF_FAILED(hr);
+        m_cachedInputTexture = texture;
+        m_cachedInputView = textureView;
+    }
+    else
+    {
+        // Use cached view
+        textureView = m_cachedInputView;
+    }
     m_preprocessPass.Render(textureView.get(), m_passResources, logicalFrameNo, 0, 0);
 
     if(m_cursorEmulator.Hidden())
@@ -1101,11 +1127,14 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
     if(m_requiresFeedback)
     {
+        // Performance note: CopyResource is expensive but necessary for feedback shaders
+        // Future optimization: Consider ping-pong buffer approach to eliminate copies
         // copy output to feedback
         for(size_t q = 0; q < m_shaderPasses.size() - 1; q++)
         {
-            auto                           passOutput   = m_passResources.find(std::string("PassOutput") + std::to_string(q));
-            auto                           passFeedback = m_passResources.find(std::string("PassFeedback") + std::to_string(q));
+            // Performance: Use cached string keys to avoid allocations
+            auto                           passOutput   = m_passResources.find(m_passOutputKeys[q]);
+            auto                           passFeedback = m_passResources.find(m_passFeedbackKeys[q]);
             winrt::com_ptr<ID3D11Resource> outputResource;
             winrt::com_ptr<ID3D11Resource> feedbackResource;
             passOutput->second->GetResource(outputResource.put());
@@ -1119,7 +1148,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         {
             int                            p                = (int)m_shaderPasses.size() - 1;
             const auto&                    lastPass         = m_shaderPasses[p];
-            auto                           lastPassFeedback = m_passResources.find(std::string("PassFeedback") + std::to_string(p));
+            // Performance: Use cached string key
+            auto                           lastPassFeedback = m_passResources.find(m_passFeedbackKeys[p]);
             winrt::com_ptr<ID3D11Resource> lastPassFeedbackResource;
             lastPassFeedback->second->GetResource(lastPassFeedbackResource.put());
             D3D11_TEXTURE2D_DESC desc3 = {};
@@ -1145,7 +1175,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     if(m_requiresHistory)
     {
         // lookup oldest History for reuse
-        const auto&                    lastHistory     = m_passResources.find(std::string("OriginalHistory" + std::to_string(m_requiresHistory)));
+        // Performance: Use cached string key (last element)
+        const auto&                    lastHistory     = m_passResources.find(m_historyKeys.back());
         auto                           lastHistoryView = lastHistory->second;
         winrt::com_ptr<ID3D11Resource> lastHistoryResource;
         lastHistoryView->GetResource(lastHistoryResource.put());
@@ -1153,7 +1184,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         for(int h = m_requiresHistory; h > 1; h--)
         {
             // remap middle Histories one frame back
-            m_passResources[std::string("OriginalHistory" + std::to_string(h))] = m_passResources[std::string("OriginalHistory" + std::to_string(h - 1))];
+            // Performance: Use cached string keys (h-1 because keys are 0-indexed)
+            m_passResources[m_historyKeys[h - 1]] = m_passResources[m_historyKeys[h - 2]];
         }
 
         // copy current Original to History1 for next pass
@@ -1164,7 +1196,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         m_context->CopyResource(lastHistoryResource.get(), originalResource.get());
         if(m_requiresHistory > 1)
         {
-            m_passResources["OriginalHistory1"] = lastHistoryView;
+            // Performance: Use cached string key (first element)
+            m_passResources[m_historyKeys[0]] = lastHistoryView;
         }
     }
 

@@ -13,6 +13,11 @@ GNU General Public License v3.0
 #include <type_traits>
 #include <cmath>
 
+// Helper macros to prevent Windows min/max macro expansion
+// Use parentheses to prevent macro expansion: (std::numeric_limits<T>::min)()
+#define SAFE_MIN(T) (std::numeric_limits<T>::min)()
+#define SAFE_MAX(T) (std::numeric_limits<T>::max)()
+
 // Safe integer parsing with overflow protection
 template<typename T>
 typename std::enable_if<std::is_integral<T>::value, T>::type
@@ -42,7 +47,7 @@ SafeParseInt(const std::string& str, T defaultValue = 0)
             return defaultValue;
 
         // Check bounds for target type
-        if(value < std::numeric_limits<T>::min() || value > std::numeric_limits<T>::max())
+        if(value < SAFE_MIN(T) || value > SAFE_MAX(T))
         {
             throw std::out_of_range("Value out of range for target type");
         }
@@ -57,9 +62,9 @@ SafeParseInt(const std::string& str, T defaultValue = 0)
     {
         // Overflow - return max or min depending on sign
         if(!str.empty() && str[0] == '-')
-            return std::numeric_limits<T>::min();
+            return SAFE_MIN(T);
         else
-            return std::numeric_limits<T>::max();
+            return SAFE_MAX(T);
     }
 }
 
@@ -100,9 +105,9 @@ SafeParseFloat(const std::string& str, T defaultValue = 0.0)
         // Check bounds for target type (if not double/long double)
         if(sizeof(T) < sizeof(long double))
         {
-            if(value < -std::numeric_limits<T>::max() || value > std::numeric_limits<T>::max())
+            if(value < -SAFE_MAX(T) || value > SAFE_MAX(T))
             {
-                return (value < 0) ? -std::numeric_limits<T>::max() : std::numeric_limits<T>::max();
+                return (value < 0) ? -SAFE_MAX(T) : SAFE_MAX(T);
             }
         }
 
@@ -116,9 +121,9 @@ SafeParseFloat(const std::string& str, T defaultValue = 0.0)
     {
         // Overflow - return max or min depending on sign
         if(!str.empty() && str[0] == '-')
-            return -std::numeric_limits<T>::max();
+            return -SAFE_MAX(T);
         else
-            return std::numeric_limits<T>::max();
+            return SAFE_MAX(T);
     }
 }
 
