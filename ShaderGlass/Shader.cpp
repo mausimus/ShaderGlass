@@ -216,9 +216,6 @@ void Shader::SetParam(ShaderParam* p, void* v)
         p->currentValue = *((float*)v);
 
     memcpy(buf + p->offset, v, p->size);
-
-    // Performance: Mark buffer as dirty to trigger upload
-    MarkDirty(p->buffer);
 }
 
 void Shader::SetParam(std::string name, void* v)
@@ -228,7 +225,6 @@ void Shader::SetParam(std::string name, void* v)
         if(p.name == name)
         {
             SetParam(&p, v);
-            // Note: MarkDirty is called inside SetParam
             // return; // same param can be in both bufs
         }
     }

@@ -33,7 +33,7 @@ bool CaptureManager::Initialize()
     m_presetList.push_back(make_unique<PassthroughPresetDef>());
     m_presetList.insert(m_presetList.end(), RetroArchPresetList.begin(), RetroArchPresetList.end());
     // m_frameEvent is now initialized in constructor via EventHandle RAII wrapper
-    return false;
+    return true;
 }
 
 const vector<unique_ptr<PresetDef>>& CaptureManager::Presets()
@@ -498,14 +498,7 @@ void CaptureManager::ThreadFunc()
 {
     while(m_active)
     {
-        // Performance: Use INFINITE timeout instead of 1ms busy-wait
-        // This eliminates unnecessary CPU usage when idle
-        WaitForSingleObject(m_frameEvent.get(), INFINITE);
-
-        // Check if we're still active after wake-up
-        if(!m_active)
-            break;
-
+        WaitForSingleObject(m_frameEvent.get(), 16);
         ProcessFrame();
     }
 }

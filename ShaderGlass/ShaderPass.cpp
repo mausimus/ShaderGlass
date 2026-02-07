@@ -273,23 +273,20 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
     m_shader.SetParam("FrameCount", &params_FrameCount);
     m_shader.SetParam("MVP", &m_modelViewProj);
 
-    // Performance: Only update constant buffers if data has changed
-    if(m_constantBuffer != nullptr && m_shader.IsDirty(UBO_BUFFER))
+    if(m_constantBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
         m_context->Map(m_constantBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
         m_shader.FillParams(UBO_BUFFER, (char*)mappedSubresource.pData);
         m_context->Unmap(m_constantBuffer.get(), 0);
-        m_shader.ClearDirty(UBO_BUFFER);
     }
 
-    if(m_pushBuffer != nullptr && m_shader.IsDirty(PUSH_BUFFER))
+    if(m_pushBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
         m_context->Map(m_pushBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
         m_shader.FillParams(PUSH_BUFFER, (char*)mappedSubresource.pData);
         m_context->Unmap(m_pushBuffer.get(), 0);
-        m_shader.ClearDirty(PUSH_BUFFER);
     }
 
     D3D11_VIEWPORT viewport = {static_cast<float>(boxX), static_cast<float>(boxY), static_cast<float>(m_destWidth), static_cast<float>(m_destHeight), 0.0f, 1.0f};
@@ -382,14 +379,12 @@ void ShaderPass::RenderCursor(float x, float y, float w, float h, winrt::com_ptr
     m_context->RSSetViewports(1, &viewport);
 
     m_shader.SetParam("MVP", &m_cursorMVP);
-    // Performance: Only update constant buffer if data has changed
-    if(m_constantBuffer != nullptr && m_shader.IsDirty(UBO_BUFFER))
+    if(m_constantBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
         m_context->Map(m_constantBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
         m_shader.FillParams(UBO_BUFFER, (char*)mappedSubresource.pData);
         m_context->Unmap(m_constantBuffer.get(), 0);
-        m_shader.ClearDirty(UBO_BUFFER);
     }
 
     ID3D11RenderTargetView*   targets[1]        = {m_targetView};

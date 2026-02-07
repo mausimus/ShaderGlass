@@ -399,8 +399,13 @@ void ShaderGlass::DestroyPasses()
     m_passTargets.clear();
     m_passTextures.clear();
     m_passResources.clear();
+    m_passOutputKeys.clear();
+    m_passFeedbackKeys.clear();
+    m_historyKeys.clear();
     m_requiresFeedback = false;
     m_requiresHistory  = 0;
+    m_cachedInputTexture = nullptr;
+    m_cachedInputView = nullptr;
 }
 
 void ShaderGlass::PresentFrame()
@@ -937,7 +942,9 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
             winrt::com_ptr<ID3D11ShaderResourceView> feedbackResource;
             hr = m_device->CreateShaderResourceView(feedbackTexture.get(), nullptr, feedbackResource.put());
             THROW_IF_FAILED(hr);
-            m_passResources.insert(std::make_pair(std::string("PassFeedback") + std::to_string(p), feedbackResource));
+            std::string lastPassFeedbackKey = std::string("PassFeedback") + std::to_string(p);
+            m_passFeedbackKeys.push_back(lastPassFeedbackKey);
+            m_passResources.insert(std::make_pair(lastPassFeedbackKey, feedbackResource));
             if(!lastPass.m_shader.m_alias.empty())
             {
                 m_passResources.insert(std::make_pair(lastPass.m_shader.m_alias + "Feedback", feedbackResource));
