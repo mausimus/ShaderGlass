@@ -363,3 +363,7 @@ FodyWeavers.xsd
 
 Scripts/slang-shaders
 Scripts/temp
+
+# Pre-built external dependencies (download or build from External/)
+lib/*.lib
+Tools/*.exe

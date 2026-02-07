@@ -251,7 +251,6 @@
     <None Include="blank.cur" />
     <None Include="cross.cur" />
     <None Include="ibeam.cur" />
-    <None Include="ShaderGlass.aps" />
     <None Include="Shaders\RetroArch.template" />
     <None Include="Util\LICENSE" />
   </ItemGroup>
