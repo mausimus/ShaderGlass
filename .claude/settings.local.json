@@ -29,7 +29,11 @@
       "Bash(\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ShaderGlass.sln //p:Configuration=Release //p:Platform=x64 //t:Build //m //v:minimal)",
       "Bash(test:*)",
       "Bash(git stash:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git rm:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(\"C:/Program Files/Microsoft Visual Studio/18/Community/MSBuild/Current/Bin/amd64/MSBuild.exe\" \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\ShaderGlass.sln\" /p:Configuration=Release /p:Platform=x64 /m)",
+      "Bash(tasklist:*)"
     ]
   }
 }
