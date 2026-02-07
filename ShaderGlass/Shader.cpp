@@ -11,11 +11,9 @@ GNU General Public License v3.0
 #include "../ShaderGC/SafeParsing.h"
 #include "Util/ErrorHandling.h"
 
-static HRESULT hr;
-
 const static std::unordered_map<std::string, DXGI_FORMAT> sFormats = {{"R8_UNORM", DXGI_FORMAT_R8_UNORM},
                                                                       {"R8_UINT", DXGI_FORMAT_R8_UINT},
-                                                                      {"R8_SINT", DXGI_FORMAT_R8_UINT},
+                                                                      {"R8_SINT", DXGI_FORMAT_R8_SINT},
                                                                       {"R8G8_UNORM", DXGI_FORMAT_R8G8_UNORM},
                                                                       {"R8G8_UINT", DXGI_FORMAT_R8G8_UINT},
                                                                       {"R8G8_SINT", DXGI_FORMAT_R8G8_SINT},
@@ -133,6 +131,7 @@ void Shader::Create(winrt::com_ptr<ID3D11Device> d3dDevice)
     if(m_shaderDef.VertexLength == 0)
         Compile();
 
+    HRESULT hr;
     hr = d3dDevice->CreateVertexShader(m_shaderDef.VertexByteCode, m_shaderDef.VertexLength, NULL, m_vertexShader.put());
     THROW_IF_FAILED(hr);
 
@@ -145,6 +144,7 @@ void Shader::Compile()
     UINT                     flags = 0; // D3DCOMPILE_ENABLE_STRICTNESS;
     winrt::com_ptr<ID3DBlob> errorBlob;
 
+    HRESULT hr;
     hr = D3DCompile(m_shaderDef.VertexSource,
                     strlen(m_shaderDef.VertexSource),
                     "Vertex",
@@ -225,7 +225,6 @@ void Shader::SetParam(std::string name, void* v)
         if(p.name == name)
         {
             SetParam(&p, v);
-            // return; // same param can be in both bufs
         }
     }
 }
@@ -254,7 +253,7 @@ bool Shader::Get(const std::string& presetParam, std::string& value)
 
 Shader::Shader(Shader&& shader) : m_shaderDef(shader.m_shaderDef)
 {
-    throw std::runtime_error("This shouldn't happen");
+    throw std::runtime_error("Shader move should not be called; use reserve() to prevent vector reallocation");
 }
 
 Shader::~Shader()

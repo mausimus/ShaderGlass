@@ -12,8 +12,6 @@ GNU General Public License v3.0
 #include "Helpers.h"
 #include "Util/ErrorHandling.h"
 
-static HRESULT hr;
-
 ShaderPass::ShaderPass(Shader& shader, Preset& preset, bool preprocess) : m_shader {shader}, m_preset {preset}, m_preprocess {preprocess} { }
 
 ShaderPass::ShaderPass(Shader& shader, Preset& preset, winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<ID3D11DeviceContext> context) : ShaderPass(shader, preset, false)
@@ -42,6 +40,7 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
     m_device  = device;
     m_context = context;
 
+    HRESULT hr;
     D3D11_INPUT_ELEMENT_DESC inputElementDesc[] = {{"TEXCOORD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
                                                    {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}};
 
@@ -74,7 +73,6 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
         samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 
         // is it a static texture?
-        //if(m_preset)
         {
             auto ti = m_preset.m_textures.find(texture.name);
             if(ti != m_preset.m_textures.end())
@@ -125,7 +123,8 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
             }
         }
 
-        m_device->CreateSamplerState(&samplerDesc, samplerState.put());
+        hr = m_device->CreateSamplerState(&samplerDesc, samplerState.put());
+        THROW_IF_FAILED(hr);
         m_samplers.insert(std::make_pair(texture.binding, samplerState));
     }
 
@@ -266,8 +265,7 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
     params_FrameCount = frameNo;
     if(m_shader.m_frameCountMod > 0)
     {
-        while(params_FrameCount >= m_shader.m_frameCountMod)
-            params_FrameCount -= m_shader.m_frameCountMod;
+        params_FrameCount %= m_shader.m_frameCountMod;
     }
 
     m_shader.SetParam("FrameCount", &params_FrameCount);
@@ -276,7 +274,8 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
     if(m_constantBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-        m_context->Map(m_constantBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+        HRESULT hr = m_context->Map(m_constantBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+        THROW_IF_FAILED(hr);
         m_shader.FillParams(UBO_BUFFER, (char*)mappedSubresource.pData);
         m_context->Unmap(m_constantBuffer.get(), 0);
     }
@@ -284,7 +283,8 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
     if(m_pushBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-        m_context->Map(m_pushBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+        HRESULT hr = m_context->Map(m_pushBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+        THROW_IF_FAILED(hr);
         m_shader.FillParams(PUSH_BUFFER, (char*)mappedSubresource.pData);
         m_context->Unmap(m_pushBuffer.get(), 0);
     }
@@ -382,7 +382,8 @@ void ShaderPass::RenderCursor(float x, float y, float w, float h, winrt::com_ptr
     if(m_constantBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-        m_context->Map(m_constantBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+        HRESULT hr = m_context->Map(m_constantBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+        THROW_IF_FAILED(hr);
         m_shader.FillParams(UBO_BUFFER, (char*)mappedSubresource.pData);
         m_context->Unmap(m_constantBuffer.get(), 0);
     }

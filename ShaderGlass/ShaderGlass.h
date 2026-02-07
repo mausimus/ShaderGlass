@@ -103,7 +103,6 @@ private:
     bool       m_allowTearing {false};
     bool       m_useHDR {false};
     int        m_frameCounter {0};
-    int        m_logicalFrameCounter {0};
     ULONGLONG  m_startTicks {0};
     int        m_renderCounter {0};
     int        m_prevRenderCounter {0};

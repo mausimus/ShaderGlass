@@ -13,7 +13,6 @@ GNU General Public License v3.0
 #include "Util/ErrorHandling.h"
 #include "../ShaderGC/SafeParsing.h"
 
-static HRESULT     hr;
 static const float background_colour[4] = {0, 0, 0, 1.0f};
 
 ShaderGlass::ShaderGlass(CursorEmulator& cursorEmulator) :
@@ -30,7 +29,8 @@ ShaderGlass::~ShaderGlass()
     DestroyPasses();
     DestroyTargets();
 
-    m_context->Flush();
+    if(m_context)
+        m_context->Flush();
 }
 
 void ShaderGlass::Initialize(HWND                                outputWindow,
@@ -89,6 +89,7 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
     m_prevLogicalFrameNo = 0;
 
     // create swapchain
+    HRESULT hr;
     {
         winrt::com_ptr<IDXGIFactory2> dxgiFactory;
         {
@@ -142,7 +143,8 @@ void ShaderGlass::Initialize(HWND                                outputWindow,
     if(!m_displayTexture)
         throw std::exception("Unable to create framebuffer");
 
-    m_device->CreateRenderTargetView(m_displayTexture.get(), 0, m_displayRenderTarget.put());
+    hr = m_device->CreateRenderTargetView(m_displayTexture.get(), 0, m_displayRenderTarget.put());
+    THROW_IF_FAILED(hr);
 
     D3D11_RASTERIZER_DESC desc = {};
     desc.CullMode              = D3D11_CULL_NONE;
@@ -340,7 +342,7 @@ void ShaderGlass::SetSwapchainColorSpace()
 
     if(m_swapChain3.get())
     {
-        hr = m_swapChain3->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709);
+        HRESULT hr = m_swapChain3->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709);
         THROW_IF_FAILED(hr);
     }
 }
@@ -360,6 +362,7 @@ bool ShaderGlass::TryResizeSwapChain(const RECT& clientRect, bool force)
 
         if(clientRect.right > 0 && clientRect.bottom > 0)
         {
+            HRESULT hr;
             UINT flags = 0;
             if(m_flipMode && m_allowTearing)
                 flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
@@ -437,7 +440,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
             return;
 
         auto timeSinceLastInput = nowTicks - frameTicks;
-        if(timeSinceLastInput < 20) // 3.3 ms delay allowance for frame timing
+        if(timeSinceLastInput < 20) // 20 ms delay allowance for frame timing
             return;
     }
 
@@ -552,10 +555,6 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         captureRect.bottom = capturedTextureDesc.Height;
         captureClient      = captureRect;
     }
-
-    RECT textureRect;
-    textureRect.right  = capturedTextureDesc.Width;
-    textureRect.bottom = capturedTextureDesc.Height;
 
     auto outputResized = false;
     outputResized      = TryResizeSwapChain(clientRect, m_outputRescaled);
@@ -704,6 +703,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     }
 
     // create preprocessed output texture, scaled down size, inverted etc.
+    HRESULT hr;
     if(m_preprocessedTexture == nullptr)
     {
         D3D11_TEXTURE2D_DESC desc2 = {};
@@ -1229,6 +1229,7 @@ winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
 
     if(displayTexture)
     {
+        HRESULT hr;
         D3D11_TEXTURE2D_DESC desc2 = {};
         displayTexture->GetDesc(&desc2);
         desc2.Usage          = D3D11_USAGE_DEFAULT;
