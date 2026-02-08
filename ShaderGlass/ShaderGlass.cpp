@@ -464,7 +464,14 @@ void ShaderGlass::PresentFrame()
             presentFlags |= DXGI_PRESENT_ALLOW_TEARING;
         }
     }
-    m_swapChain->Present1(0, presentFlags, &presentParameters);
+    HRESULT hr = m_swapChain->Present1(0, presentFlags, &presentParameters);
+    if(FAILED(hr))
+    {
+        if(hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+        {
+            m_running = false;
+        }
+    }
     PostMessage(m_outputWindow, WM_PAINT, 0, 0); // necessary for click-through
 }
 
@@ -557,7 +564,12 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         ClientToScreen(m_captureWindow, &captureTopLeft);
         GetClientRect(m_captureWindow, &captureClient);
 
-        DwmGetWindowAttribute(m_captureWindow, DWMWA_EXTENDED_FRAME_BOUNDS, &captureRect, sizeof(RECT));
+        captureRect = {};
+        HRESULT hrDwm = DwmGetWindowAttribute(m_captureWindow, DWMWA_EXTENDED_FRAME_BOUNDS, &captureRect, sizeof(RECT));
+        if(FAILED(hrDwm))
+        {
+            GetWindowRect(m_captureWindow, &captureRect);
+        }
 
         // Thread-safe RECT access
         RECT croppedArea;
@@ -1291,17 +1303,17 @@ winrt::com_ptr<ID3D11Texture2D> ShaderGlass::GrabOutput()
 
         if(m_shaderPasses.size() && (m_boxX != 0 || m_boxY != 0))
         {
-            const auto& lastPass = m_shaderPasses.rbegin();
-            desc2.Width          = lastPass->m_destWidth;
-            desc2.Height         = lastPass->m_destHeight;
+            const auto& lastPass = m_shaderPasses.back();
+            desc2.Width          = lastPass.m_destWidth;
+            desc2.Height         = lastPass.m_destHeight;
             hr                   = m_device->CreateTexture2D(&desc2, nullptr, outputTexture.put());
             THROW_IF_FAILED(hr);
 
             D3D11_BOX srcBox;
             srcBox.left   = m_boxX;
-            srcBox.right  = srcBox.left + lastPass->m_destWidth;
+            srcBox.right  = srcBox.left + lastPass.m_destWidth;
             srcBox.top    = m_boxY;
-            srcBox.bottom = srcBox.top + lastPass->m_destHeight;
+            srcBox.bottom = srcBox.top + lastPass.m_destHeight;
             srcBox.back   = 1;
             srcBox.front  = 0;
             // fractions :/

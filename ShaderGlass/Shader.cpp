@@ -50,6 +50,7 @@ Shader::Shader(ShaderDef& shaderDef) :
     for(auto& p : shaderDef.Params)
     {
         SetParam(p.name, &p.defaultValue);
+        m_paramLookup[p.name] = &p;
     }
 
     m_filterLinear = IsTrue("filter_linear");
@@ -220,12 +221,10 @@ void Shader::SetParam(ShaderParam* p, void* v)
 
 void Shader::SetParam(std::string name, void* v)
 {
-    for(auto& p : m_shaderDef.Params)
+    auto it = m_paramLookup.find(name);
+    if(it != m_paramLookup.end())
     {
-        if(p.name == name)
-        {
-            SetParam(&p, v);
-        }
+        SetParam(it->second, v);
     }
 }
 

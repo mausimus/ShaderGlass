@@ -30,9 +30,10 @@ union float4x4
 class Shader
 {
 public:
-    ShaderDef&                         m_shaderDef;
-    winrt::com_ptr<ID3D11VertexShader> m_vertexShader;
-    winrt::com_ptr<ID3D11PixelShader>  m_pixelShader;
+    ShaderDef&                                      m_shaderDef;
+    winrt::com_ptr<ID3D11VertexShader>              m_vertexShader;
+    winrt::com_ptr<ID3D11PixelShader>               m_pixelShader;
+    std::unordered_map<std::string, ShaderParam*>   m_paramLookup;
     std::string                        m_alias {};
     float                              m_scaleX {1.0f};
     float                              m_scaleY {1.0f};

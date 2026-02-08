@@ -56,6 +56,10 @@ private:
     int                                               m_sourceBinding {-1};
     float4x4                                          m_cursorMVP {};
 
+    // Cached param pointers for per-frame lookups
+    ShaderParam* m_frameCountParam {nullptr};
+    ShaderParam* m_mvpParam {nullptr};
+
     // Batched binding arrays (pre-built in Initialize)
     int                                    m_minBinding {-1};
     int                                    m_maxBinding {-1};

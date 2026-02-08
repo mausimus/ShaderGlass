@@ -220,6 +220,12 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
         hr = device->CreateBlendState(&omDesc, m_blendState.put());
         THROW_IF_FAILED(hr);
     }
+
+    // Cache param pointers for per-frame lookups
+    auto fcIt = m_shader.m_paramLookup.find("FrameCount");
+    if(fcIt != m_shader.m_paramLookup.end()) m_frameCountParam = fcIt->second;
+    auto mvpIt = m_shader.m_paramLookup.find("MVP");
+    if(mvpIt != m_shader.m_paramLookup.end()) m_mvpParam = mvpIt->second;
 }
 
 void ShaderPass::UpdateMVP(float sx, float sy, float tx, float ty)
@@ -289,8 +295,8 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
         params_FrameCount %= m_shader.m_frameCountMod;
     }
 
-    m_shader.SetParam("FrameCount", &params_FrameCount);
-    m_shader.SetParam("MVP", &m_modelViewProj);
+    if(m_frameCountParam) m_shader.SetParam(m_frameCountParam, &params_FrameCount);
+    if(m_mvpParam) m_shader.SetParam(m_mvpParam, &m_modelViewProj);
 
     if(m_constantBuffer != nullptr)
     {
@@ -398,7 +404,7 @@ void ShaderPass::RenderCursor(float x, float y, float w, float h, winrt::com_ptr
     D3D11_VIEWPORT viewport = {static_cast<float>(x), static_cast<float>(y), w, h, 0.0f, 1.0f};
     m_context->RSSetViewports(1, &viewport);
 
-    m_shader.SetParam("MVP", &m_cursorMVP);
+    if(m_mvpParam) m_shader.SetParam(m_mvpParam, &m_cursorMVP);
     if(m_constantBuffer != nullptr)
     {
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;

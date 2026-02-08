@@ -33,7 +33,16 @@
       "Bash(git rm:*)",
       "Bash(cmd.exe:*)",
       "Bash(\"C:/Program Files/Microsoft Visual Studio/18/Community/MSBuild/Current/Bin/amd64/MSBuild.exe\" \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\ShaderGlass.sln\" /p:Configuration=Release /p:Platform=x64 /m)",
-      "Bash(tasklist:*)"
+      "Bash(tasklist:*)",
+      "Bash(git count-objects:*)",
+      "Bash(xargs:*)",
+      "Bash(git -C \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\" ls-files:*)",
+      "Bash(echo:*)",
+      "Bash(python3:*)",
+      "Bash(cmd //c \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\build_temp.bat\")",
+      "Bash(start \"\" \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\x64\\\\Release\\\\ShaderGlass.exe\")",
+      "Bash(grep:*)",
+      "Bash(cmd //c \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\build.bat\")"
     ]
   }
 }
