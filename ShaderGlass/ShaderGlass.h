@@ -61,6 +61,7 @@ private:
     void DestroyTargets();
     void RebuildShaders();
     void PresentFrame();
+    void SwapFeedbackBuffers();
 
     POINT                                    m_lastSize;
     POINT                                    m_lastPos;
@@ -90,6 +91,21 @@ private:
     std::vector<std::string> m_passOutputKeys;   // "PassOutput0", "PassOutput1", etc.
     std::vector<std::string> m_passFeedbackKeys; // "PassFeedback0", "PassFeedback1", etc.
     std::vector<std::string> m_historyKeys;      // "OriginalHistory1", "OriginalHistory2", etc.
+
+    // Performance: Direct texture pointers indexed by pass number (avoids map lookups + GetResource)
+    std::vector<ID3D11Texture2D*> m_outputTexturesDirect;   // Indexed by pass (0 to N-2)
+    std::vector<ID3D11Texture2D*> m_feedbackTexturesDirect; // Indexed by pass (0 to N-1)
+    std::vector<ID3D11Texture2D*> m_historyTexturesDirect;  // Indexed by history frame
+
+    // Performance: Ping-pong buffers to eliminate feedback CopyResource for intermediate passes
+    bool m_feedbackParity {false};
+    struct PingPongPass {
+        winrt::com_ptr<ID3D11Texture2D>          textureA, textureB;
+        winrt::com_ptr<ID3D11RenderTargetView>   targetA, targetB;
+        winrt::com_ptr<ID3D11ShaderResourceView> srvA, srvB;
+    };
+    std::vector<PingPongPass>  m_pingPongPasses;
+    std::vector<std::string>   m_passAliases;  // Shader alias per intermediate pass (empty if none)
     std::map<std::string, winrt::com_ptr<ID3D11ShaderResourceView>> m_presetTextures;
     std::map<std::string, float4>                                   m_textureSizes;
     std::vector<ShaderPass>                                         m_shaderPasses;

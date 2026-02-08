@@ -405,10 +405,51 @@ void ShaderGlass::DestroyPasses()
     m_passOutputKeys.clear();
     m_passFeedbackKeys.clear();
     m_historyKeys.clear();
+    m_outputTexturesDirect.clear();
+    m_feedbackTexturesDirect.clear();
+    m_historyTexturesDirect.clear();
+    m_pingPongPasses.clear();
+    m_passAliases.clear();
+    m_feedbackParity = false;
     m_requiresFeedback = false;
     m_requiresHistory  = 0;
     m_cachedInputTexture = nullptr;
     m_cachedInputView = nullptr;
+}
+
+void ShaderGlass::SwapFeedbackBuffers()
+{
+    if(!m_requiresFeedback || m_pingPongPasses.empty())
+        return;
+
+    m_feedbackParity = !m_feedbackParity;
+    for(size_t q = 0; q < m_pingPongPasses.size(); q++)
+    {
+        auto& pp = m_pingPongPasses[q];
+
+        // Select which texture is output (render target) and which is feedback (read-only) this frame
+        auto& outSrv = m_feedbackParity ? pp.srvB : pp.srvA;
+        auto& fbSrv  = m_feedbackParity ? pp.srvA : pp.srvB;
+        auto  outTgt = m_feedbackParity ? pp.targetB.get() : pp.targetA.get();
+        auto  outTex = m_feedbackParity ? pp.textureB.get() : pp.textureA.get();
+        auto  fbTex  = m_feedbackParity ? pp.textureA.get() : pp.textureB.get();
+
+        m_shaderPasses[q].m_targetView = outTgt;
+        if(q + 1 < m_shaderPasses.size())
+            m_shaderPasses[q + 1].m_sourceView = outSrv.get();
+
+        m_passResources[m_passOutputKeys[q]]   = outSrv;
+        m_passResources[m_passFeedbackKeys[q]] = fbSrv;
+
+        m_outputTexturesDirect[q]  = outTex;
+        m_feedbackTexturesDirect[q] = fbTex;
+
+        if(!m_passAliases[q].empty())
+        {
+            m_passResources[m_passAliases[q]]                = outSrv;
+            m_passResources[m_passAliases[q] + "Feedback"]   = fbSrv;
+        }
+    }
 }
 
 void ShaderGlass::PresentFrame()
@@ -835,54 +876,85 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
                 desc2.Height    = pass.m_destHeight;
                 desc2.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 
-                winrt::com_ptr<ID3D11Texture2D> passTexture;
-                hr = m_device->CreateTexture2D(&desc2, nullptr, passTexture.put());
-                THROW_IF_FAILED(hr);
-                m_passTextures.push_back(passTexture);
-
-                winrt::com_ptr<ID3D11RenderTargetView> passTarget;
-                hr = m_device->CreateRenderTargetView(passTexture.get(), nullptr, passTarget.put());
-                THROW_IF_FAILED(hr);
-                m_passTargets.push_back(passTarget);
-
-                winrt::com_ptr<ID3D11ShaderResourceView> passResource;
-                hr = m_device->CreateShaderResourceView(passTexture.get(), nullptr, passResource.put());
-                THROW_IF_FAILED(hr);
-
                 // Performance: Cache string key to avoid allocation in hot path
                 std::string passOutputKey = std::string("PassOutput") + std::to_string(p - 1);
                 m_passOutputKeys.push_back(passOutputKey);
-                m_passResources.insert(std::make_pair(passOutputKey, passResource));
-                if(!pass.m_shader.m_alias.empty())
-                {
-                    m_passResources.insert(std::make_pair(pass.m_shader.m_alias, passResource));
-                }
 
-                // create feedback textures if needed
+                std::string alias = pass.m_shader.m_alias;
+                m_passAliases.push_back(alias);
+
                 if(m_requiresFeedback)
                 {
-                    desc2.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+                    // Ping-pong: create TWO textures that alternate output/feedback roles
+                    PingPongPass pp;
 
-                    winrt::com_ptr<ID3D11Texture2D> feedbackTexture;
-                    hr = m_device->CreateTexture2D(&desc2, nullptr, feedbackTexture.put());
+                    hr = m_device->CreateTexture2D(&desc2, nullptr, pp.textureA.put());
                     THROW_IF_FAILED(hr);
-                    m_passTextures.push_back(feedbackTexture);
-                    winrt::com_ptr<ID3D11ShaderResourceView> feedbackResource;
-                    hr = m_device->CreateShaderResourceView(feedbackTexture.get(), nullptr, feedbackResource.put());
+                    hr = m_device->CreateRenderTargetView(pp.textureA.get(), nullptr, pp.targetA.put());
+                    THROW_IF_FAILED(hr);
+                    hr = m_device->CreateShaderResourceView(pp.textureA.get(), nullptr, pp.srvA.put());
                     THROW_IF_FAILED(hr);
 
-                    // Performance: Cache string key to avoid allocation in hot path
+                    hr = m_device->CreateTexture2D(&desc2, nullptr, pp.textureB.put());
+                    THROW_IF_FAILED(hr);
+                    hr = m_device->CreateRenderTargetView(pp.textureB.get(), nullptr, pp.targetB.put());
+                    THROW_IF_FAILED(hr);
+                    hr = m_device->CreateShaderResourceView(pp.textureB.get(), nullptr, pp.srvB.put());
+                    THROW_IF_FAILED(hr);
+
+                    // Clear both to black
+                    m_context->ClearRenderTargetView(pp.targetA.get(), background_colour);
+                    m_context->ClearRenderTargetView(pp.targetB.get(), background_colour);
+
+                    // Store owning com_ptrs so textures stay alive
+                    m_passTextures.push_back(pp.textureA);
+                    m_passTextures.push_back(pp.textureB);
+
+                    // Initial state: A is output, B is feedback
+                    m_passTargets.push_back(pp.targetA);
+                    m_outputTexturesDirect.push_back(pp.textureA.get());
+                    m_feedbackTexturesDirect.push_back(pp.textureB.get());
+
+                    m_passResources.insert(std::make_pair(passOutputKey, pp.srvA));
+                    if(!alias.empty())
+                        m_passResources.insert(std::make_pair(alias, pp.srvA));
+
                     std::string passFeedbackKey = std::string("PassFeedback") + std::to_string(p - 1);
                     m_passFeedbackKeys.push_back(passFeedbackKey);
-                    m_passResources.insert(std::make_pair(passFeedbackKey, feedbackResource));
-                    if(!pass.m_shader.m_alias.empty())
-                    {
-                        m_passResources.insert(std::make_pair(pass.m_shader.m_alias + "Feedback", feedbackResource));
-                    }
-                }
+                    m_passResources.insert(std::make_pair(passFeedbackKey, pp.srvB));
+                    if(!alias.empty())
+                        m_passResources.insert(std::make_pair(alias + "Feedback", pp.srvB));
 
-                m_shaderPasses[p - 1].m_targetView = passTarget.get();
-                m_shaderPasses[p].m_sourceView     = passResource.get();
+                    m_shaderPasses[p - 1].m_targetView = pp.targetA.get();
+                    m_shaderPasses[p].m_sourceView     = pp.srvA.get();
+
+                    m_pingPongPasses.push_back(std::move(pp));
+                }
+                else
+                {
+                    // No feedback: single texture per pass (original behavior)
+                    winrt::com_ptr<ID3D11Texture2D> passTexture;
+                    hr = m_device->CreateTexture2D(&desc2, nullptr, passTexture.put());
+                    THROW_IF_FAILED(hr);
+                    m_outputTexturesDirect.push_back(passTexture.get());
+                    m_passTextures.push_back(passTexture);
+
+                    winrt::com_ptr<ID3D11RenderTargetView> passTarget;
+                    hr = m_device->CreateRenderTargetView(passTexture.get(), nullptr, passTarget.put());
+                    THROW_IF_FAILED(hr);
+                    m_passTargets.push_back(passTarget);
+
+                    winrt::com_ptr<ID3D11ShaderResourceView> passResource;
+                    hr = m_device->CreateShaderResourceView(passTexture.get(), nullptr, passResource.put());
+                    THROW_IF_FAILED(hr);
+
+                    m_passResources.insert(std::make_pair(passOutputKey, passResource));
+                    if(!alias.empty())
+                        m_passResources.insert(std::make_pair(alias, passResource));
+
+                    m_shaderPasses[p - 1].m_targetView = passTarget.get();
+                    m_shaderPasses[p].m_sourceView     = passResource.get();
+                }
             }
         }
         else
@@ -906,6 +978,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
                 winrt::com_ptr<ID3D11Texture2D> historyTexture;
                 hr = m_device->CreateTexture2D(&desc2, nullptr, historyTexture.put());
                 THROW_IF_FAILED(hr);
+                m_historyTexturesDirect.push_back(historyTexture.get());
                 m_passTextures.push_back(historyTexture);
                 winrt::com_ptr<ID3D11ShaderResourceView> historyResource;
                 hr = m_device->CreateShaderResourceView(historyTexture.get(), nullptr, historyResource.put());
@@ -938,6 +1011,7 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
             winrt::com_ptr<ID3D11Texture2D> feedbackTexture;
             hr = m_device->CreateTexture2D(&desc2, nullptr, feedbackTexture.put());
             THROW_IF_FAILED(hr);
+            m_feedbackTexturesDirect.push_back(feedbackTexture.get());
             m_passTextures.push_back(feedbackTexture);
             winrt::com_ptr<ID3D11ShaderResourceView> feedbackResource;
             hr = m_device->CreateShaderResourceView(feedbackTexture.get(), nullptr, feedbackResource.put());
@@ -1115,6 +1189,9 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         }
     }
 
+    // Swap ping-pong buffers before rendering (previous output becomes this frame's feedback)
+    SwapFeedbackBuffers();
+
     int p = 0;
     for(auto& shaderPass : m_shaderPasses)
     {
@@ -1134,31 +1211,12 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
 
     if(m_requiresFeedback)
     {
-        // Performance note: CopyResource is expensive but necessary for feedback shaders
-        // Future optimization: Consider ping-pong buffer approach to eliminate copies
-        // copy output to feedback
-        for(size_t q = 0; q < m_shaderPasses.size() - 1; q++)
-        {
-            // Performance: Use cached string keys to avoid allocations
-            auto                           passOutput   = m_passResources.find(m_passOutputKeys[q]);
-            auto                           passFeedback = m_passResources.find(m_passFeedbackKeys[q]);
-            winrt::com_ptr<ID3D11Resource> outputResource;
-            winrt::com_ptr<ID3D11Resource> feedbackResource;
-            passOutput->second->GetResource(outputResource.put());
-            passFeedback->second->GetResource(feedbackResource.put());
-            m_context->CopyResource(feedbackResource.get(), outputResource.get());
-        }
-
-        // copy display texture as last pass feedback
+        // Intermediate passes use ping-pong (no copy needed) — only last pass needs a copy
         auto displayTexture = m_displayTexture;
         if(displayTexture)
         {
-            int                            p                = (int)m_shaderPasses.size() - 1;
-            const auto&                    lastPass         = m_shaderPasses[p];
-            // Performance: Use cached string key
-            auto                           lastPassFeedback = m_passResources.find(m_passFeedbackKeys[p]);
-            winrt::com_ptr<ID3D11Resource> lastPassFeedbackResource;
-            lastPassFeedback->second->GetResource(lastPassFeedbackResource.put());
+            int         lastIdx  = (int)m_shaderPasses.size() - 1;
+            const auto& lastPass = m_shaderPasses[lastIdx];
             D3D11_TEXTURE2D_DESC desc3 = {};
             displayTexture->GetDesc(&desc3);
             if(m_boxX != 0 || m_boxY != 0 || lastPass.m_destWidth != desc3.Width || lastPass.m_destHeight != desc3.Height)
@@ -1170,41 +1228,34 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
                 srcBox.bottom = srcBox.top + lastPass.m_destHeight;
                 srcBox.back   = 1;
                 srcBox.front  = 0;
-                m_context->CopySubresourceRegion(lastPassFeedbackResource.get(), 0, 0, 0, 0, displayTexture.get(), 0, &srcBox);
+                m_context->CopySubresourceRegion(m_feedbackTexturesDirect[lastIdx], 0, 0, 0, 0, displayTexture.get(), 0, &srcBox);
             }
             else
             {
-                m_context->CopyResource(lastPassFeedbackResource.get(), displayTexture.get());
+                m_context->CopyResource(m_feedbackTexturesDirect[lastIdx], displayTexture.get());
             }
         }
     }
 
     if(m_requiresHistory)
     {
-        // lookup oldest History for reuse
-        // Performance: Use cached string key (last element)
-        const auto&                    lastHistory     = m_passResources.find(m_historyKeys.back());
-        auto                           lastHistoryView = lastHistory->second;
-        winrt::com_ptr<ID3D11Resource> lastHistoryResource;
-        lastHistoryView->GetResource(lastHistoryResource.put());
+        // Save oldest history texture pointer and SRV for reuse
+        auto lastHistoryTexture = m_historyTexturesDirect.back();
+        auto lastHistoryView    = m_passResources[m_historyKeys.back()];
 
+        // Rotate history SRVs: shift each one frame back
         for(int h = m_requiresHistory; h > 1; h--)
         {
-            // remap middle Histories one frame back
-            // Performance: Use cached string keys (h-1 because keys are 0-indexed)
             m_passResources[m_historyKeys[h - 1]] = m_passResources[m_historyKeys[h - 2]];
+            m_historyTexturesDirect[h - 1]         = m_historyTexturesDirect[h - 2];
         }
 
-        // copy current Original to History1 for next pass
-        const auto&                    original = m_passResources.find("Original");
-        winrt::com_ptr<ID3D11Resource> originalResource;
-        original->second->GetResource(originalResource.put());
-
-        m_context->CopyResource(lastHistoryResource.get(), originalResource.get());
+        // Copy current Original to the oldest history texture for reuse
+        m_context->CopyResource(lastHistoryTexture, m_preprocessedTexture.get());
         if(m_requiresHistory > 1)
         {
-            // Performance: Use cached string key (first element)
-            m_passResources[m_historyKeys[0]] = lastHistoryView;
+            m_passResources[m_historyKeys[0]]  = lastHistoryView;
+            m_historyTexturesDirect[0]          = lastHistoryTexture;
         }
     }
 

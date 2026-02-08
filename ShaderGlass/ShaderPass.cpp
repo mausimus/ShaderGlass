@@ -128,6 +128,25 @@ void ShaderPass::Initialize(winrt::com_ptr<ID3D11Device> device, winrt::com_ptr<
         m_samplers.insert(std::make_pair(texture.binding, samplerState));
     }
 
+    // Pre-build batched sampler and null SRV arrays for efficient binding
+    if(!m_shader.m_shaderDef.Samplers.empty())
+    {
+        m_minBinding = INT_MAX;
+        m_maxBinding = -1;
+        for(const auto& texture : m_shader.m_shaderDef.Samplers)
+        {
+            if(texture.binding < m_minBinding) m_minBinding = texture.binding;
+            if(texture.binding > m_maxBinding) m_maxBinding = texture.binding;
+        }
+        m_bindingCount = m_maxBinding - m_minBinding + 1;
+        m_samplerArray.resize(m_bindingCount, nullptr);
+        m_nullSrvArray.resize(m_bindingCount, nullptr);
+        for(const auto& texture : m_shader.m_shaderDef.Samplers)
+        {
+            m_samplerArray[texture.binding - m_minBinding] = m_samplers.at(texture.binding).get();
+        }
+    }
+
     if(m_shader.BufferSize(0) > 0)
     {
         D3D11_BUFFER_DESC constantBufferDesc = {};
@@ -219,6 +238,8 @@ ShaderPass::~ShaderPass()
     m_constantBuffer = nullptr;
     m_pushBuffer     = nullptr;
     m_samplers.clear();
+    m_samplerArray.clear();
+    m_nullSrvArray.clear();
 }
 
 void ShaderPass::Resize(
@@ -303,39 +324,39 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
     m_context->VSSetShader(m_shader.m_vertexShader.get(), NULL, 0);
     m_context->PSSetShader(m_shader.m_pixelShader.get(), NULL, 0);
 
-    std::vector<int> bindings;
-    for(const auto& texture : m_shader.m_shaderDef.Samplers)
+    // Build batched SRV array
+    ID3D11ShaderResourceView* srvArray[16] = {};
+    if(m_bindingCount > 0)
     {
-        auto& sampler = m_samplers.at(texture.binding);
-        if(texture.name == "Source")
+        for(const auto& texture : m_shader.m_shaderDef.Samplers)
         {
-            ID3D11ShaderResourceView* localResources[1] = {sourceView};
-            m_context->PSSetShaderResources(texture.binding, 1, localResources);
-            bindings.push_back(texture.binding);
-        }
-        else
-        {
-            auto it = resources.find(texture.name);
-            if(it == resources.end() && texture.name.starts_with("OriginalHistory"))
+            int slot = texture.binding - m_minBinding;
+            if(texture.name == "Source")
             {
-                it = resources.find("Original"); // should only map 0 to Original
-            }
-            if(it != resources.end())
-            {
-                ID3D11ShaderResourceView* localResources[1] = {it->second.get()};
-                m_context->PSSetShaderResources(texture.binding, 1, localResources);
-                bindings.push_back(texture.binding);
+                srvArray[slot] = sourceView;
             }
             else
             {
+                auto it = resources.find(texture.name);
+                if(it == resources.end() && texture.name.starts_with("OriginalHistory"))
+                {
+                    it = resources.find("Original"); // should only map 0 to Original
+                }
+                if(it != resources.end())
+                {
+                    srvArray[slot] = it->second.get();
+                }
 #ifdef _DEBUG
-                OutputDebugStringW(convertCharArrayToLPCWSTR(texture.name.c_str()));
-                OutputDebugStringW(L"\n");
+                else
+                {
+                    OutputDebugStringW(convertCharArrayToLPCWSTR(texture.name.c_str()));
+                    OutputDebugStringW(L"\n");
+                }
 #endif
             }
         }
-        ID3D11SamplerState* samplers[1] = {sampler.get()};
-        m_context->PSSetSamplers(texture.binding, 1, samplers);
+        m_context->PSSetShaderResources(m_minBinding, m_bindingCount, srvArray);
+        m_context->PSSetSamplers(m_minBinding, m_bindingCount, m_samplerArray.data());
     }
 
     if(m_constantBuffer != nullptr)
@@ -361,10 +382,9 @@ void ShaderPass::Render(ID3D11ShaderResourceView* sourceView, std::map<std::stri
     }
 
     // unbind to allow rebinding as input/output
-    for(auto& b : bindings)
+    if(m_bindingCount > 0)
     {
-        ID3D11ShaderResourceView* null[] = {nullptr};
-        m_context->PSSetShaderResources(b, 1, null);
+        m_context->PSSetShaderResources(m_minBinding, m_bindingCount, m_nullSrvArray.data());
     }
     ID3D11RenderTargetView* null[] = {nullptr};
     m_context->OMSetRenderTargets(1, null, NULL);

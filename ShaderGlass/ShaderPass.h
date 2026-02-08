@@ -55,4 +55,11 @@ private:
     winrt::com_ptr<ID3D11BlendState>                  m_blendState;
     int                                               m_sourceBinding {-1};
     float4x4                                          m_cursorMVP {};
+
+    // Batched binding arrays (pre-built in Initialize)
+    int                                    m_minBinding {-1};
+    int                                    m_maxBinding {-1};
+    int                                    m_bindingCount {0};
+    std::vector<ID3D11SamplerState*>       m_samplerArray;
+    std::vector<ID3D11ShaderResourceView*> m_nullSrvArray;
 };
