@@ -14,8 +14,6 @@ GNU General Public License v3.0
     if(FAILED(h))                                                                                                                                                                  \
         throw std::runtime_error("Unable to initialize Media Foundation Capture");
 
-static HRESULT hr;
-
 constexpr unsigned STREAM_NO = 0;
 
 const std::map<unsigned long, int> FormatPriorities {{842094158, 3}, // NV12
@@ -306,38 +304,26 @@ void DeviceCapture::CreateMediaSource(LPWSTR symlink, unsigned streamNo, unsigne
     winrt::com_ptr<IMFStreamDescriptor>       streamDescriptor;
     winrt::com_ptr<IMFMediaTypeHandler>       mediaTypeHandler;
     winrt::com_ptr<IMFMediaType>              mediaType;
-    IMFActivate**                             devices    = NULL;
-    UINT32                                    numDevices = 0;
     BOOL                                      selected   = FALSE;
 
     THROW(MFCreateAttributes(attributes.put(), 1));
     THROW(attributes->SetGUID(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID));
     THROW(attributes->SetString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK, symlink));
 
-    try
-    {
-        THROW(MFCreateDeviceSource(attributes.get(), m_mediaSource.put()));
-        THROW(m_mediaSource->CreatePresentationDescriptor(presentationDescriptor.put()));
-        THROW(presentationDescriptor->GetStreamDescriptorByIndex(streamNo, &selected, streamDescriptor.put()));
-        if(!selected)
-            throw std::runtime_error("Stream not selected");
+    THROW(MFCreateDeviceSource(attributes.get(), m_mediaSource.put()));
+    THROW(m_mediaSource->CreatePresentationDescriptor(presentationDescriptor.put()));
+    THROW(presentationDescriptor->GetStreamDescriptorByIndex(streamNo, &selected, streamDescriptor.put()));
+    if(!selected)
+        throw std::runtime_error("Stream not selected");
 
-        THROW(streamDescriptor->GetMediaTypeHandler(mediaTypeHandler.put()));
+    THROW(streamDescriptor->GetMediaTypeHandler(mediaTypeHandler.put()));
 
-        DWORD mediaTypeCount;
-        THROW(mediaTypeHandler->GetMediaTypeCount(&mediaTypeCount));
-        if(mediaTypeCount == 0 || mediaTypeCount <= mediaNo)
-            throw std::runtime_error("Device format not found");
-        THROW(mediaTypeHandler->GetMediaTypeByIndex(mediaNo, mediaType.put()));
-        THROW(mediaTypeHandler->SetCurrentMediaType(mediaType.get()));
-    }
-    catch(std::exception&)
-    {
-        for(UINT32 i = 0; i < numDevices; i++)
-            devices[i]->Release();
-        CoTaskMemFree(devices);
-        throw;
-    }
+    DWORD mediaTypeCount;
+    THROW(mediaTypeHandler->GetMediaTypeCount(&mediaTypeCount));
+    if(mediaTypeCount == 0 || mediaTypeCount <= mediaNo)
+        throw std::runtime_error("Device format not found");
+    THROW(mediaTypeHandler->GetMediaTypeByIndex(mediaNo, mediaType.put()));
+    THROW(mediaTypeHandler->SetCurrentMediaType(mediaType.get()));
 }
 
 void DeviceCapture::SetMediaType()
@@ -453,7 +439,8 @@ void DeviceCapture::Stop()
 HRESULT DeviceCapture::CopyAttribute(IMFAttributes* pFrom, IMFAttributes* pTo, REFGUID guidKey)
 {
     PROPVARIANT val;
-    pFrom->GetItem(guidKey, &val);
+    PropVariantInit(&val);
+    HRESULT hr = pFrom->GetItem(guidKey, &val);
     if(SUCCEEDED(hr))
     {
         hr = pTo->SetItem(guidKey, val);

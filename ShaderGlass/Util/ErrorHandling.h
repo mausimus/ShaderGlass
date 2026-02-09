@@ -20,7 +20,9 @@ inline std::string HResultToString(HRESULT hr)
     LPCTSTR errMsg = err.ErrorMessage();
 
     std::wstring ws(errMsg);
-    std::string str(ws.begin(), ws.end());
+    int len = WideCharToMultiByte(CP_UTF8, 0, ws.c_str(), (int)ws.size(), nullptr, 0, nullptr, nullptr);
+    std::string str(len, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, ws.c_str(), (int)ws.size(), str.data(), len, nullptr, nullptr);
 
     std::stringstream ss;
     ss << "HRESULT 0x" << std::hex << hr << ": " << str;

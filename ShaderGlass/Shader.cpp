@@ -163,7 +163,7 @@ void Shader::Compile()
         {
             OutputDebugStringA((char*)errorBlob->GetBufferPointer());
         }
-        assert(false);
+        THROW_IF_FAILED(hr);
     }
 
     hr = D3DCompile(m_shaderDef.FragmentSource,
@@ -183,7 +183,7 @@ void Shader::Compile()
         {
             OutputDebugStringA((char*)errorBlob->GetBufferPointer());
         }
-        assert(false);
+        THROW_IF_FAILED(hr);
     }
 
     m_shaderDef.VertexByteCode   = (BYTE*)m_vertexBlob->GetBufferPointer();

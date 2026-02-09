@@ -18,7 +18,7 @@ GNU General Public License v3.0
 #define TIMER_TITLE 0
 
 ShaderWindow::ShaderWindow(CaptureManager& captureManager) :
-    m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass(), m_toggledNone(false)
+    m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass()
 { }
 
 bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart)
@@ -588,7 +588,7 @@ void ShaderWindow::SaveProfile()
     ofn.lpstrFilter = (LPCWSTR)L"ShaderGlass Profiles (*.sgp)\0*.sgp\0All Files (*.*)\0*.*\0";
     ofn.lpstrFile   = (LPWSTR)szFileName;
     ofn.nMaxFile    = MAX_PATH;
-    ofn.Flags       = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    ofn.Flags       = OFN_EXPLORER | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;
     ofn.lpstrDefExt = (LPCWSTR)L"sgp";
 
     StartDialog();

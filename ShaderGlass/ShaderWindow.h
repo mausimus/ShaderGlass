@@ -78,12 +78,12 @@ private:
     ThreadHandle                  m_compileThread;
     EventHandle                   m_compileEvent;
     float                         m_dpiScale {1.0f};
-    RECT                          m_lastPosition;
+    RECT                          m_lastPosition {};
     std::unique_ptr<InputDialog>  m_inputDialog;
     std::unique_ptr<CropDialog>   m_cropDialog;
     std::unique_ptr<HotkeyDialog> m_hotkeyDialog;
-    bool                          m_toggledNone;
-    unsigned                      m_toggledPresetNo;
+    bool                          m_toggledNone {false};
+    unsigned                      m_toggledPresetNo {0};
     std::vector<std::wstring>     m_recentProfiles;
     std::vector<std::wstring>     m_recentImports;
     std::map<UINT, HotkeyInfo>    m_hotkeys;
