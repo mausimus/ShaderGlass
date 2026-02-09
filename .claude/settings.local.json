@@ -42,7 +42,9 @@
       "Bash(cmd //c \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\build_temp.bat\")",
       "Bash(start \"\" \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\x64\\\\Release\\\\ShaderGlass.exe\")",
       "Bash(grep:*)",
-      "Bash(cmd //c \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\build.bat\")"
+      "Bash(cmd //c \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\build.bat\")",
+      "Bash(cmd //c \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\build_audit.bat\")",
+      "Bash(del \"C:\\\\Users\\\\Blake\\\\Documents\\\\GitHub\\\\ShaderGlass\\\\build_audit.bat\")"
     ]
   }
 }
