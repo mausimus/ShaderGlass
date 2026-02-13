@@ -1,5 +1,5 @@
 #version 450
-// nicelines v6 (2026-02-13)
+// nicelines v7 (2026-02-13)
 
 // === PASS 2: SHADOW MASK ===
 // Aperture-grille-style phosphor triad mask with clip-safe energy distribution.
@@ -177,8 +177,6 @@ void main() {
 
     // === VERTICAL PHOSPHOR GRADATION ===
     // Redistribute phosphor energy vertically by scanline brightness rank.
-    // NOTE: This currently operates on the clip-safe phosphor energy.
-    // May need revisiting once the primary distribution is finalized.
     vec3 finalColor;
     int numRows = max(int(triadH), 1);
 

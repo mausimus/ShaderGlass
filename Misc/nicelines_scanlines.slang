@@ -15,9 +15,8 @@
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
-#pragma parameter MISCONVERGENCE "MISCONVERGENCE Off/On" 0.0 0.0 1.0 1.0
+#pragma parameter MISCONVERGENCE "MISCONVERGENCE Off/On" 1.0 0.0 1.0 1.0
 #pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.5 0.0 2.0 0.05
-#pragma parameter CONV_ANGLE "MISCONVERGENCE Angle (degrees)" 135.0 0.0 360.0 5.0
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
@@ -33,7 +32,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float AUTO_LINES;
     float MISCONVERGENCE;
     float CONV_STRENGTH;
-    float CONV_ANGLE;
     float DEBUG_STAGES;
     float DEBUG_SPLIT;
 } global;
@@ -113,8 +111,7 @@ float processScanlineChannel(vec2 uv, int channel, float targetLines,
     vec3 texColor = texture(Source, sampleUV).rgb;
     float chanValue = (channel == 0) ? texColor.r : (channel == 1) ? texColor.g : texColor.b;
 
-    // Calculate scanline width and energy-preserved value
-    // Use full color for width calculation (consistent beam behavior)
+    // Per-channel width based on channel brightness
     float scanlineWidth = calcScanlineWidth1(chanValue, baseWidth, minWidth, maxWidth);
     float outputValue = chanValue / scanlineWidth;
 
@@ -127,20 +124,15 @@ float processScanlineChannel(vec2 uv, int channel, float targetLines,
 }
 
 // Calculate misconvergence offset for R or B beam
-// Returns UV offset that increases with distance from screen center
-vec2 calcConvergenceOffset(vec2 uv, float strength, float angleDeg, float sign) {
-    // Distance from center (0 at center, ~0.7 at corners)
+// Radial-outward: offset direction follows the vector from screen center.
+// Automatically symmetrical — opposite corners push in opposite directions.
+vec2 calcConvergenceOffset(vec2 uv, float strength, float sign) {
     vec2 fromCenter = uv - 0.5;
     float dist = length(fromCenter);
-
-    // Offset direction from angle parameter (in UV space)
-    float angleRad = radians(angleDeg);
-    vec2 direction = vec2(cos(angleRad), sin(angleRad));
-
-    // Offset magnitude: quadratic with distance from center, scaled by strength
-    // sign: +1 for R beam, -1 for B beam (opposite directions)
+    // Radial direction (outward from center)
+    vec2 direction = (dist > 0.001) ? normalize(fromCenter) : vec2(0.0);
+    // Quadratic falloff: corners (~0.7) get ~2× more offset than edge centers (~0.5)
     float magnitude = sign * strength * dist * dist * 0.02;
-
     return direction * magnitude;
 }
 
@@ -175,14 +167,16 @@ void main() {
 
     if(global.MISCONVERGENCE > 0.5) {
         // R and B beams offset in opposite directions, G stays centered
-        uvR += calcConvergenceOffset(vTexCoord, global.CONV_STRENGTH, global.CONV_ANGLE, 1.0);
-        uvB += calcConvergenceOffset(vTexCoord, global.CONV_STRENGTH, global.CONV_ANGLE, -1.0);
+        uvR += calcConvergenceOffset(vTexCoord, global.CONV_STRENGTH, 1.0);
+        uvB += calcConvergenceOffset(vTexCoord, global.CONV_STRENGTH, -1.0);
         // Clamp to valid UV range
         uvR = clamp(uvR, vec2(0.0), vec2(1.0));
         uvB = clamp(uvB, vec2(0.0), vec2(1.0));
     }
 
     // Each channel gets its own scanline position (independent beam)
+    // TODO: when MISCONVERGENCE is off, all 3 UVs are identical — could optimize
+    // to a single texture fetch instead of 3. Negligible perf impact for now.
     float finalR = processScanlineChannel(uvR, 0, targetLines, baseWidth, minWidth, maxWidth, edgeSoftness);
     float finalG = processScanlineChannel(uvG, 1, targetLines, baseWidth, minWidth, maxWidth, edgeSoftness);
     float finalB = processScanlineChannel(uvB, 2, targetLines, baseWidth, minWidth, maxWidth, edgeSoftness);
