@@ -221,36 +221,34 @@ void main() {
         // Shape 0 = concentrated (high exponent), Shape 1 = spread (low exponent)
         float exponent = mix(4.0, 0.5, global.SPILLOVER_SHAPE);
 
-        // RED: primary=left, secondary=middle (adjacent), tertiary=right (far)
-        float rNorm = clamp(totalRed / 3.0, 0.0, 1.0);
-        float rWpri = 1.0;
-        float rWsec = pow(rNorm, exponent);
-        float rWter = pow(rNorm, exponent * 2.0);
-        float rSum = rWpri + rWsec + rWter;
-        float redLeft   = totalRed * rWpri / rSum;
-        float redMiddle = totalRed * rWsec / rSum;
-        float redRight  = totalRed * rWter / rSum;
+        // Compute weights from LUMINANCE (single shared value for all channels)
+        // This guarantees white balance: all channels use identical weight ratios
+        float luma = dot(avgColor, vec3(0.2126, 0.7152, 0.0722));
+        float lumaNorm = clamp(luma, 0.0, 1.0);
+        float wPri = 1.0;
+        float wSec = pow(lumaNorm, exponent);
+        float wTer = pow(lumaNorm, exponent * 2.0);
+        float wSum = wPri + wSec + wTer;
 
-        // GREEN: primary=middle, secondary=left (adjacent), tertiary=right (far)
-        // Uses same pri/sec/ter chain as R and B for consistent white balance
-        float gNorm = clamp(totalGreen / 3.0, 0.0, 1.0);
-        float gWpri = 1.0;
-        float gWsec = pow(gNorm, exponent);
-        float gWter = pow(gNorm, exponent * 2.0);
-        float gSum = gWpri + gWsec + gWter;
-        float greenMiddle = totalGreen * gWpri / gSum;
-        float greenLeft   = totalGreen * gWsec / gSum;
-        float greenRight  = totalGreen * gWter / gSum;
+        // Weight fractions (same for all channels)
+        float fPri = wPri / wSum;
+        float fSec = wSec / wSum;
+        float fTer = wTer / wSum;
 
-        // BLUE: primary=right, secondary=middle (adjacent), tertiary=left (far)
-        float bNorm = clamp(totalBlue / 3.0, 0.0, 1.0);
-        float bWpri = 1.0;
-        float bWsec = pow(bNorm, exponent);
-        float bWter = pow(bNorm, exponent * 2.0);
-        float bSum = bWpri + bWsec + bWter;
-        float blueRight  = totalBlue * bWpri / bSum;
-        float blueMiddle = totalBlue * bWsec / bSum;
-        float blueLeft   = totalBlue * bWter / bSum;
+        // RED: primary=left, secondary=middle, tertiary=right
+        float redLeft   = totalRed * fPri;
+        float redMiddle = totalRed * fSec;
+        float redRight  = totalRed * fTer;
+
+        // GREEN: primary=middle, secondary=left, tertiary=right
+        float greenMiddle = totalGreen * fPri;
+        float greenLeft   = totalGreen * fSec;
+        float greenRight  = totalGreen * fTer;
+
+        // BLUE: primary=right, secondary=middle, tertiary=left
+        float blueRight  = totalBlue * fPri;
+        float blueMiddle = totalBlue * fSec;
+        float blueLeft   = totalBlue * fTer;
 
         // Assemble per-phosphor vectors
         phosphorLeft   = vec3(redLeft,   greenLeft,   blueLeft);
