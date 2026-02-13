@@ -1,18 +1,23 @@
 #version 450
-// nicelines v6 (2026-02-13)
+// nicelines v7 (2026-02-13)
 
 // === PASS 1: SCANLINES ===
 // This pass handles: scanline simulation with energy preservation
 // Input: blurred linear-space image from pass 0
 // Output: scanline image in linear space (float framebuffer)
 //
-// TODO: add misconvergence effect (RGB channel offset) to this pass
+// Misconvergence: R/B beams offset from G (reference) with increasing
+// displacement toward screen edges, simulating real CRT gun misalignment.
+// Each channel gets its own independent scanline position and mask.
 
 // === PARAMETERS ===
 #pragma parameter SCANLINE_MODE "SCANLINES MODE (224p / 240p / Manual)" 1.0 0.0 2.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
+#pragma parameter MISCONVERGENCE "MISCONVERGENCE Off/On" 0.0 0.0 1.0 1.0
+#pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.5 0.0 2.0 0.05
+#pragma parameter CONV_ANGLE "MISCONVERGENCE Angle (degrees)" 135.0 0.0 360.0 5.0
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
@@ -26,6 +31,9 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float MANUAL_LINES;
     float FINETUNE_LINES;
     float AUTO_LINES;
+    float MISCONVERGENCE;
+    float CONV_STRENGTH;
+    float CONV_ANGLE;
     float DEBUG_STAGES;
     float DEBUG_SPLIT;
 } global;
@@ -46,25 +54,6 @@ void main() {
 layout(location = 0) in vec2 vTexCoord;
 layout(location = 0) out vec4 FragColor;
 layout(set = 0, binding = 2) uniform sampler2D Source;  // Pass 0 output (blurred, linear space)
-
-// Calculate scanline width for a given color
-float calcScanlineWidth(vec3 color, float baseWidth, float minWidth, float maxWidth) {
-    float maxColorChannel = max(max(color.r, color.g), color.b);
-    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
-
-    // Dark path: interpolate minWidth → baseWidth based on luma
-    float t = clamp(luma / baseWidth, 0.0, 1.0);
-    float darkWidth = mix(minWidth, baseWidth, t);
-
-    // Bright path: width follows max channel
-    float brightWidth = clamp(maxColorChannel, baseWidth, maxWidth);
-
-    // Smooth blend between dark and bright paths around baseWidth threshold
-    float blendZone = 0.1;
-    float blend = smoothstep(baseWidth - blendZone * baseWidth, baseWidth + blendZone * baseWidth, maxColorChannel);
-
-    return mix(darkWidth, brightWidth, blend);
-}
 
 // Calculate target scanline count
 float getTargetLines() {
@@ -88,10 +77,78 @@ float getTargetLines() {
     return targetLines;
 }
 
+// Calculate scanline width for a given color (single-channel version)
+float calcScanlineWidth1(float chanValue, float baseWidth, float minWidth, float maxWidth) {
+    // Dark path: interpolate minWidth → baseWidth based on channel value
+    float t = clamp(chanValue / baseWidth, 0.0, 1.0);
+    float darkWidth = mix(minWidth, baseWidth, t);
+
+    // Bright path: width follows channel value
+    float brightWidth = clamp(chanValue, baseWidth, maxWidth);
+
+    // Smooth blend between dark and bright paths
+    float blendZone = 0.1;
+    float blend = smoothstep(baseWidth - blendZone * baseWidth, baseWidth + blendZone * baseWidth, chanValue);
+
+    return mix(darkWidth, brightWidth, blend);
+}
+
+// Process one channel through the scanline pipeline at a given UV
+// Returns the energy-preserved, scanline-masked value for one channel
+float processScanlineChannel(vec2 uv, int channel, float targetLines,
+                              float baseWidth, float minWidth, float maxWidth, float edgeSoftness) {
+    // Calculate scanline position (CENTER-ANCHORED)
+    float distFromCenter = uv.y - 0.5;
+    float scanlinePos = distFromCenter * targetLines;
+    float scanlineIndex = floor(scanlinePos);
+
+    // Sample at scanline center
+    float sampleScanlinePos = scanlineIndex + 0.5;
+    float sampleDistFromCenter = sampleScanlinePos / targetLines;
+    vec2 sampleUV = vec2(uv.x, clamp(0.5 + sampleDistFromCenter, 0.0, 1.0));
+
+    float withinScanline = fract(scanlinePos);
+
+    // Sample the blurred image (already in linear space from pass 0)
+    vec3 texColor = texture(Source, sampleUV).rgb;
+    float chanValue = (channel == 0) ? texColor.r : (channel == 1) ? texColor.g : texColor.b;
+
+    // Calculate scanline width and energy-preserved value
+    // Use full color for width calculation (consistent beam behavior)
+    float scanlineWidth = calcScanlineWidth1(chanValue, baseWidth, minWidth, maxWidth);
+    float outputValue = chanValue / scanlineWidth;
+
+    // Scanline mask with soft edges
+    float halfGap = (1.0 - scanlineWidth) * 0.5;
+    float scanlineMask = smoothstep(halfGap - edgeSoftness, halfGap + edgeSoftness, withinScanline) *
+                         smoothstep(1.0 - halfGap + edgeSoftness, 1.0 - halfGap - edgeSoftness, withinScanline);
+
+    return outputValue * scanlineMask;
+}
+
+// Calculate misconvergence offset for R or B beam
+// Returns UV offset that increases with distance from screen center
+vec2 calcConvergenceOffset(vec2 uv, float strength, float angleDeg, float sign) {
+    // Distance from center (0 at center, ~0.7 at corners)
+    vec2 fromCenter = uv - 0.5;
+    float dist = length(fromCenter);
+
+    // Offset direction from angle parameter (in UV space)
+    float angleRad = radians(angleDeg);
+    vec2 direction = vec2(cos(angleRad), sin(angleRad));
+
+    // Offset magnitude: quadratic with distance from center, scaled by strength
+    // sign: +1 for R beam, -1 for B beam (opposite directions)
+    float magnitude = sign * strength * dist * dist * 0.02;
+
+    return direction * magnitude;
+}
+
 void main() {
     float baseWidth = 0.3;   // Hardcoded thickness baseline
     float minWidth = 0.15;   // Hardcoded thickness min (must be ≤ baseWidth)
     float maxWidth = 1.0;    // Hardcoded thickness max
+    float edgeSoftness = 0.3;
 
     // === COMPARISON SPLIT: pass through input unchanged ===
     int splitMode = int(global.DEBUG_SPLIT + 0.5);
@@ -99,7 +156,6 @@ void main() {
     if(splitMode == 1 && vTexCoord.y < 0.5) showRawHere = true;
     if(splitMode == 2 && vTexCoord.y >= 0.5) showRawHere = true;
     if(showRawHere) {
-        // Input already in linear space from pass 0 (which also skipped)
         FragColor = texture(Source, vTexCoord);
         return;
     }
@@ -112,35 +168,25 @@ void main() {
 
     float targetLines = getTargetLines();
 
-    // Edge softness
-    float edgeSoftness = 0.3;
+    // === PER-CHANNEL SCANLINE PROCESSING WITH MISCONVERGENCE ===
+    vec2 uvR = vTexCoord;
+    vec2 uvG = vTexCoord;
+    vec2 uvB = vTexCoord;
 
-    // Calculate scanline position (CENTER-ANCHORED)
-    float distFromCenter = vTexCoord.y - 0.5;
-    float scanlinePos = distFromCenter * targetLines;
-    float scanlineIndex = floor(scanlinePos);
+    if(global.MISCONVERGENCE > 0.5) {
+        // R and B beams offset in opposite directions, G stays centered
+        uvR += calcConvergenceOffset(vTexCoord, global.CONV_STRENGTH, global.CONV_ANGLE, 1.0);
+        uvB += calcConvergenceOffset(vTexCoord, global.CONV_STRENGTH, global.CONV_ANGLE, -1.0);
+        // Clamp to valid UV range
+        uvR = clamp(uvR, vec2(0.0), vec2(1.0));
+        uvB = clamp(uvB, vec2(0.0), vec2(1.0));
+    }
 
-    // Sample at scanline center
-    float sampleScanlinePos = scanlineIndex + 0.5;
-    float sampleDistFromCenter = sampleScanlinePos / targetLines;
-    vec2 sampleUV = vec2(vTexCoord.x, clamp(0.5 + sampleDistFromCenter, 0.0, 1.0));
-
-    float withinScanline = fract(scanlinePos);
-
-    // Sample the blurred image (already in linear space from pass 0)
-    vec3 color = texture(Source, sampleUV).rgb;
-
-    // Calculate scanline width and energy-preserved color (per-channel, no clamp)
-    float scanlineWidth = calcScanlineWidth(color, baseWidth, minWidth, maxWidth);
-    vec3 outputColor = color / scanlineWidth;
-
-    // Scanline mask with soft edges
-    float halfGap = (1.0 - scanlineWidth) * 0.5;
-    float scanlineMask = smoothstep(halfGap - edgeSoftness, halfGap + edgeSoftness, withinScanline) *
-                         smoothstep(1.0 - halfGap + edgeSoftness, 1.0 - halfGap - edgeSoftness, withinScanline);
-
-    vec3 finalColor = outputColor * scanlineMask;
+    // Each channel gets its own scanline position (independent beam)
+    float finalR = processScanlineChannel(uvR, 0, targetLines, baseWidth, minWidth, maxWidth, edgeSoftness);
+    float finalG = processScanlineChannel(uvG, 1, targetLines, baseWidth, minWidth, maxWidth, edgeSoftness);
+    float finalB = processScanlineChannel(uvB, 2, targetLines, baseWidth, minWidth, maxWidth, edgeSoftness);
 
     // Output in linear space (float framebuffer)
-    FragColor = vec4(finalColor, 1.0);
+    FragColor = vec4(finalR, finalG, finalB, 1.0);
 }

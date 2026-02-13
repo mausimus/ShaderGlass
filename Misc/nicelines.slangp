@@ -1,9 +1,10 @@
-// nicelines multi-pass preset v1 (2026-02-13)
+// nicelines multi-pass preset v7 (2026-02-13)
 shaders = 3
 
 // Pass 0: Downscale Blur + Horizontal Blur
 shader0 = nicelines_blur.slang
 filter_linear0 = false
+mipmap_input0 = true
 scale_type0 = viewport
 scale0 = 1.0
 float_framebuffer0 = true
