@@ -16,7 +16,7 @@
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
 #pragma parameter MISCONVERGENCE "MISCONVERGENCE Off/On" 1.0 0.0 1.0 1.0
-#pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.5 0.0 2.0 0.05
+#pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.25 0.0 2.0 0.05
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
@@ -167,8 +167,10 @@ void main() {
 
     if(global.MISCONVERGENCE > 0.5) {
         // R and B beams offset in opposite directions, G stays centered
-        uvR += calcConvergenceOffset(vTexCoord, global.CONV_STRENGTH, 1.0);
-        uvB += calcConvergenceOffset(vTexCoord, global.CONV_STRENGTH, -1.0);
+        // Scale strength relative to scanline size (normalized to 240p baseline)
+        float convStrength = global.CONV_STRENGTH * (240.0 / targetLines);
+        uvR += calcConvergenceOffset(vTexCoord, convStrength, 1.0);
+        uvB += calcConvergenceOffset(vTexCoord, convStrength, -1.0);
         // Clamp to valid UV range
         uvR = clamp(uvR, vec2(0.0), vec2(1.0));
         uvB = clamp(uvB, vec2(0.0), vec2(1.0));
