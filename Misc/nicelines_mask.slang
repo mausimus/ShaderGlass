@@ -14,10 +14,12 @@
 // === TRIAD PARAMETERS ===
 #pragma parameter PHOSPHOR_WIDTH "TRIAD Phosphor Width (px)" 1.0 1.0 20.0 1.0
 #pragma parameter TRIAD_HEIGHT "TRIAD Height (px)" 3.0 1.0 20.0 1.0
-#pragma parameter SPILLOVER_MODE "TRIAD Spillover (Linear/Curved)" 1.0 0.0 1.0 1.0
+#pragma parameter SPILLOVER_MODE "TRIAD Spillover (Proportional/Curved)" 0.0 0.0 1.0 1.0
+#pragma parameter SPILLOVER_SHAPE "TRIAD Proportional Spillover Shape (0=concentrated, 1=spread)" 0.5 0.0 1.0 0.05
 #pragma parameter CURVE_PRIMARY "TRIAD Curve PRIMARY (0=linear, -=concave, +=convex)" -0.3 -3.0 3.0 0.1
 #pragma parameter CURVE_SECONDARY "TRIAD Curve SECONDARY (0=linear, -=concave, +=convex)" 0.0 -3.0 3.0 0.1
 #pragma parameter CURVE_TERTIARY "TRIAD Curve TERTIARY (0=linear, -=concave, +=convex)" 0.3 -3.0 3.0 0.1
+#pragma parameter PHOSPHOR_GRADATION "TRIAD Vertical Phosphor Gradation" 1.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -32,9 +34,11 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float PHOSPHOR_WIDTH;
     float TRIAD_HEIGHT;
     float SPILLOVER_MODE;
+    float SPILLOVER_SHAPE;
     float CURVE_PRIMARY;
     float CURVE_SECONDARY;
     float CURVE_TERTIARY;
+    float PHOSPHOR_GRADATION;
 } global;
 
 // === VERTEX STAGE ===
@@ -191,31 +195,39 @@ void main() {
     float blueLeft, blueMiddle, blueRight;
 
     if(global.SPILLOVER_MODE < 0.5) {
-        // === LINEAR SPILLOVER ===
-        // Each channel fills its primary phosphor first, then spills to adjacent, then opposite
-        // Phosphor layout: Left=R, Middle=G, Right=B
+        // === PROPORTIONAL SPILLOVER ===
+        // Energy-preserving weighted distribution controlled by shape slider
+        // Shape 0 = concentrated (high exponent), Shape 1 = spread (low exponent)
+        float exponent = mix(4.0, 0.5, global.SPILLOVER_SHAPE);
 
-        // Distribute RED: primary=left, then adjacent (middle), then far (right)
-        redLeft = min(totalRed, 1.0);
-        float redRemaining = max(totalRed - 1.0, 0.0);
-        redMiddle = min(redRemaining, 1.0);
-        redRemaining = max(redRemaining - 1.0, 0.0);
-        redRight = min(redRemaining, 1.0);
+        // RED: primary=left, secondary=middle (adjacent), tertiary=right (far)
+        float rNorm = clamp(totalRed / 3.0, 0.0, 1.0);
+        float rWpri = 1.0;
+        float rWsec = pow(rNorm, exponent);
+        float rWter = pow(rNorm, exponent * 2.0);
+        float rSum = rWpri + rWsec + rWter;
+        redLeft   = totalRed * rWpri / rSum;
+        redMiddle = totalRed * rWsec / rSum;
+        redRight  = totalRed * rWter / rSum;
 
-        // Distribute GREEN: primary=middle, then adjacent (split left+right equally)
-        greenMiddle = min(totalGreen, 1.0);
-        float greenRemaining = max(totalGreen - 1.0, 0.0);
-        // Green spills equally to both adjacent phosphors
-        float greenSpill = min(greenRemaining, 2.0) * 0.5;
-        greenLeft = greenSpill;
-        greenRight = greenSpill;
+        // GREEN: primary=middle, secondary=left+right (both adjacent, split equally)
+        float gNorm = clamp(totalGreen / 3.0, 0.0, 1.0);
+        float gWpri = 1.0;
+        float gWsec = pow(gNorm, exponent);  // shared between left and right
+        float gSum = gWpri + 2.0 * gWsec;
+        greenMiddle = totalGreen * gWpri / gSum;
+        greenLeft   = totalGreen * gWsec / gSum;
+        greenRight  = totalGreen * gWsec / gSum;
 
-        // Distribute BLUE: primary=right, then adjacent (middle), then far (left)
-        blueRight = min(totalBlue, 1.0);
-        float blueRemaining = max(totalBlue - 1.0, 0.0);
-        blueMiddle = min(blueRemaining, 1.0);
-        blueRemaining = max(blueRemaining - 1.0, 0.0);
-        blueLeft = min(blueRemaining, 1.0);
+        // BLUE: primary=right, secondary=middle (adjacent), tertiary=left (far)
+        float bNorm = clamp(totalBlue / 3.0, 0.0, 1.0);
+        float bWpri = 1.0;
+        float bWsec = pow(bNorm, exponent);
+        float bWter = pow(bNorm, exponent * 2.0);
+        float bSum = bWpri + bWsec + bWter;
+        blueRight  = totalBlue * bWpri / bSum;
+        blueMiddle = totalBlue * bWsec / bSum;
+        blueLeft   = totalBlue * bWter / bSum;
     } else {
         // === CURVED SPILLOVER ===
         float expPrimary = pow(2.0, global.CURVE_PRIMARY);
@@ -241,14 +253,65 @@ void main() {
         blueLeft = pow(clamp(bNorm, 0.0, 1.0), expTertiary);
     }
 
-    // Select the color values for this phosphor
-    vec3 finalColor;
+    // Select the energy budget for this phosphor
+    vec3 phosphorEnergy;
     if(phosphorIdx == 0) {
-        finalColor = vec3(redLeft, greenLeft, blueLeft);
+        phosphorEnergy = vec3(redLeft, greenLeft, blueLeft);
     } else if(phosphorIdx == 1) {
-        finalColor = vec3(redMiddle, greenMiddle, blueMiddle);
+        phosphorEnergy = vec3(redMiddle, greenMiddle, blueMiddle);
     } else {
-        finalColor = vec3(redRight, greenRight, blueRight);
+        phosphorEnergy = vec3(redRight, greenRight, blueRight);
+    }
+
+    // === VERTICAL PHOSPHOR GRADATION ===
+    // Redistribute partial phosphor energy vertically based on scanline brightness rank
+    vec3 finalColor;
+    int numRows = max(int(triadH), 1);
+
+    if(global.PHOSPHOR_GRADATION > 0.5 && numRows > 1) {
+        // Current row within the triad
+        float rowInTriad = floor(px.y - triadTopPx);
+        rowInTriad = clamp(rowInTriad, 0.0, float(numRows - 1));
+        int myRowIdx = int(rowInTriad);
+
+        // Sample X position: center of this phosphor column
+        float sampleX = triadLeftPx + float(phosphorIdx) * phosphorW + phosphorW * 0.5;
+
+        // Get brightness at each row in this phosphor column
+        // and compute rank of current row (0 = brightest)
+        float myPxY = triadTopPx + rowInTriad + 0.5;
+        vec2 myUV = vec2(sampleX, myPxY) / global.OutputSize.xy;
+        myUV = clamp(myUV, vec2(0.0), vec2(1.0));
+        float myLuma = dot(texture(Source, myUV).rgb, vec3(0.2126, 0.7152, 0.0722));
+
+        int myRank = 0;
+        for(int r = 0; r < numRows; r++) {
+            if(r == myRowIdx) continue;
+            float rowPxY = triadTopPx + float(r) + 0.5;
+            vec2 rowUV = vec2(sampleX, rowPxY) / global.OutputSize.xy;
+            rowUV = clamp(rowUV, vec2(0.0), vec2(1.0));
+            float rowLuma = dot(texture(Source, rowUV).rgb, vec3(0.2126, 0.7152, 0.0722));
+            // Higher luma = better rank (lower number); tiebreak by row index
+            if(rowLuma > myLuma || (rowLuma == myLuma && r < myRowIdx)) {
+                myRank++;
+            }
+        }
+
+        // Linear energy distribution by rank:
+        // Weight for rank k = (N - k), sum of weights = N*(N+1)/2
+        // Scale factor redistributes so total across all rows = phosphorEnergy * N
+        float weight = float(numRows - myRank);
+        float sumWeights = float(numRows * (numRows + 1)) / 2.0;
+        float scaleFactor = weight * float(numRows) / sumWeights;
+
+        // Apply gradation only to partial phosphors (energy < 1.0 for that channel)
+        // Fully saturated channels stay flat
+        finalColor.r = (phosphorEnergy.r >= 1.0) ? phosphorEnergy.r : phosphorEnergy.r * scaleFactor;
+        finalColor.g = (phosphorEnergy.g >= 1.0) ? phosphorEnergy.g : phosphorEnergy.g * scaleFactor;
+        finalColor.b = (phosphorEnergy.b >= 1.0) ? phosphorEnergy.b : phosphorEnergy.b * scaleFactor;
+    } else {
+        // No gradation — flat phosphor
+        finalColor = phosphorEnergy;
     }
 
     // Convert from linear to sRGB for final display output

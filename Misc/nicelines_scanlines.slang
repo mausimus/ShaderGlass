@@ -10,8 +10,6 @@
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
-#pragma parameter ENERGY_MODE "ENERGY Mode (Per-Channel / Luma / Soft-Clip)" 0.0 0.0 2.0 1.0
-#pragma parameter ENERGY_HEADROOM "ENERGY Headroom (clamp ceiling)" 1.0 1.0 3.0 0.05
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -24,8 +22,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float MANUAL_LINES;
     float FINETUNE_LINES;
     float AUTO_LINES;
-    float ENERGY_MODE;
-    float ENERGY_HEADROOM;
     float DEBUG_STAGES;
 } global;
 
@@ -118,25 +114,9 @@ void main() {
     // Sample the blurred image (already in linear space from pass 0)
     vec3 color = texture(Source, sampleUV).rgb;
 
-    // Calculate scanline width and energy-preserved color
+    // Calculate scanline width and energy-preserved color (per-channel, no clamp)
     float scanlineWidth = calcScanlineWidth(color, baseWidth, minWidth, maxWidth);
-    float headroom = global.ENERGY_HEADROOM;
-
-    int energyMode = int(global.ENERGY_MODE + 0.5);
-    vec3 outputColor;
-
-    if(energyMode == 0) {
-        // Mode 0: Per-channel division (original) — can clip bright saturated channels
-        outputColor = clamp(color / scanlineWidth, 0.0, headroom);
-    } else if(energyMode == 1) {
-        // Mode 1: Luma-only — divide all channels by same factor, preserving color ratios
-        float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
-        float lumaScale = (luma > 0.001) ? clamp(luma / scanlineWidth, 0.0, headroom) / luma : 1.0;
-        outputColor = clamp(color * lumaScale, 0.0, headroom);
-    } else {
-        // Mode 2: Soft-clip — exponential compression, no hard clamp
-        outputColor = headroom * (1.0 - exp(-color / (scanlineWidth * headroom)));
-    }
+    vec3 outputColor = color / scanlineWidth;
 
     // Scanline mask with soft edges
     float halfGap = (1.0 - scanlineWidth) * 0.5;
