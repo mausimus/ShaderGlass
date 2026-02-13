@@ -1,5 +1,5 @@
 #version 450
-// nicelines v3 (2026-02-13)
+// nicelines v4 (2026-02-13)
 
 // === PASS 2: SHADOW MASK ===
 // This pass handles: pixel swap mode, triad phosphor mask
@@ -23,7 +23,7 @@
 #pragma parameter PHOSPHOR_GRADATION "TRIAD Vertical Phosphor Gradation" 1.0 0.0 1.0 1.0
 
 // === DEV MODE PARAMETERS ===
-#pragma parameter DEV_STAGE "DEV Stage (0=flat 1=hardPri 2=equal1/3 3=lumaDistrib)" 0.0 0.0 3.0 1.0
+#pragma parameter DEV_STAGE "DEV Stage (0=flat 1=clipMap 2=safeHardPri 3=fullHardPri)" 0.0 0.0 3.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -137,13 +137,13 @@ void main() {
         return;
     }
 
-    // === MODE 3: Dev mode — sanity-first diagnostic ladder ===
+    // === MODE 3: Dev mode — clipping diagnostic ladder ===
     // Shares triad geometry and area sampling with mode 2,
     // but applies features one at a time controlled by DEV_STAGE:
     //   0 = flat avgColor (baseline — should match input brightness/color exactly)
-    //   1 = hard primary only: max contrast, zero spillover
-    //   2 = equal 1/3 to all phosphors (should match stage 0 exactly)
-    //   3 = luma-weighted proportional distribution (for comparison)
+    //   1 = clip map: red=clipping zones, green=safe (no channel exceeds 1.0 at ×3)
+    //   2 = safe-only hard primary: hard primary where no clip, flat avgColor elsewhere
+    //   3 = full hard primary (clipping allowed, shows raw damage)
     bool devMode = (shadowMode == 3);
     int devStage = devMode ? int(global.DEV_STAGE + 0.5) : 99;
 
@@ -205,10 +205,44 @@ void main() {
         return;
     }
 
-    // === DEV STAGE 1: Hard primary only (maximum contrast, zero spillover) ===
-    // R phosphor = (avgR*3, 0, 0), G phosphor = (0, avgG*3, 0), B phosphor = (0, 0, avgB*3)
-    // Tests whether the fundamental act of making pixels different colors causes dimness.
+    // === DEV STAGE 1: Clip detector map ===
+    // Shows where energy would be lost to framebuffer clipping:
+    //   Green tint = safe (all channels of avgColor*3 <= 1.0)
+    //   Red tint = clipping (at least one channel of avgColor*3 > 1.0)
     if(devMode && devStage == 1) {
+        bool clips = (avgColor.r * 3.0 > 1.0) || (avgColor.g * 3.0 > 1.0) || (avgColor.b * 3.0 > 1.0);
+        vec3 tint = clips ? vec3(1.0, 0.0, 0.0) : vec3(0.0, 1.0, 0.0);
+        vec3 vis = mix(avgColor, tint, 0.5);
+        FragColor = vec4(LinearToSrgb3(vis), 1.0);
+        return;
+    }
+
+    // === DEV STAGE 2: Safe-only hard primary ===
+    // Hard primary only where NO channel clips; flat avgColor elsewhere.
+    // If non-clipping areas match stage 0 brightness, clipping is the sole cause.
+    // If they're STILL dim, there's a perceptual issue beyond clipping.
+    if(devMode && devStage == 2) {
+        bool clips = (avgColor.r * 3.0 > 1.0) || (avgColor.g * 3.0 > 1.0) || (avgColor.b * 3.0 > 1.0);
+        if(clips) {
+            FragColor = vec4(LinearToSrgb3(avgColor), 1.0);
+        } else {
+            vec3 phosphorEnergy;
+            if(phosphorIdx == 0) {
+                phosphorEnergy = vec3(avgColor.r * 3.0, 0.0, 0.0);
+            } else if(phosphorIdx == 1) {
+                phosphorEnergy = vec3(0.0, avgColor.g * 3.0, 0.0);
+            } else {
+                phosphorEnergy = vec3(0.0, 0.0, avgColor.b * 3.0);
+            }
+            FragColor = vec4(LinearToSrgb3(phosphorEnergy), 1.0);
+        }
+        return;
+    }
+
+    // === DEV STAGE 3: Full hard primary (clipping allowed) ===
+    // Maximum contrast triad with no protection against clipping.
+    // Compare to stage 2 to see the damage clipping adds.
+    if(devMode && devStage == 3) {
         vec3 phosphorEnergy;
         if(phosphorIdx == 0) {
             phosphorEnergy = vec3(avgColor.r * 3.0, 0.0, 0.0);
@@ -218,14 +252,6 @@ void main() {
             phosphorEnergy = vec3(0.0, 0.0, avgColor.b * 3.0);
         }
         FragColor = vec4(LinearToSrgb3(phosphorEnergy), 1.0);
-        return;
-    }
-
-    // === DEV STAGE 2: Equal 1/3 to all phosphors (sanity check) ===
-    // Every phosphor gets avgColor — should be identical to stage 0.
-    // Validates that phosphor selection / area sampling path doesn't break anything.
-    if(devMode && devStage == 2) {
-        FragColor = vec4(LinearToSrgb3(avgColor), 1.0);
         return;
     }
 
