@@ -1,14 +1,21 @@
-shaders = 2
+shaders = 3
 
-// Pass 0: Scanlines + Blur
-shader0 = nicelines_scanlines.slang
+// Pass 0: Downscale Blur + Horizontal Blur
+shader0 = nicelines_blur.slang
 filter_linear0 = false
 scale_type0 = viewport
 scale0 = 1.0
-alias0 = Scanlines
+float_framebuffer0 = true
+alias0 = Blur
 
-// Pass 1: Shadow Mask
-shader1 = nicelines_mask.slang
+// Pass 1: Scanlines
+shader1 = nicelines_scanlines.slang
 filter_linear1 = false
+scale_type1 = viewport
+scale1 = 1.0
+float_framebuffer1 = true
+alias1 = Scanlines
 
-feedback_pass = 0
+// Pass 2: Shadow Mask
+shader2 = nicelines_mask.slang
+filter_linear2 = false
