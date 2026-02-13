@@ -189,10 +189,9 @@ void main() {
     float totalGreen = avgColor.g * 3.0;
     float totalBlue = avgColor.b * 3.0;
 
-    // Spillover distribution
-    float redLeft, redMiddle, redRight;
-    float greenLeft, greenMiddle, greenRight;
-    float blueLeft, blueMiddle, blueRight;
+    // Spillover distribution: compute per-phosphor values for ALL 3 phosphors
+    // Left phosphor (idx 0), Middle phosphor (idx 1), Right phosphor (idx 2)
+    vec3 phosphorLeft, phosphorMiddle, phosphorRight;
 
     if(global.SPILLOVER_MODE < 0.5) {
         // === PROPORTIONAL SPILLOVER ===
@@ -206,18 +205,20 @@ void main() {
         float rWsec = pow(rNorm, exponent);
         float rWter = pow(rNorm, exponent * 2.0);
         float rSum = rWpri + rWsec + rWter;
-        redLeft   = totalRed * rWpri / rSum;
-        redMiddle = totalRed * rWsec / rSum;
-        redRight  = totalRed * rWter / rSum;
+        float redLeft   = totalRed * rWpri / rSum;
+        float redMiddle = totalRed * rWsec / rSum;
+        float redRight  = totalRed * rWter / rSum;
 
-        // GREEN: primary=middle, secondary=left+right (both adjacent, split equally)
+        // GREEN: primary=middle, secondary=left (adjacent), tertiary=right (far)
+        // Uses same pri/sec/ter chain as R and B for consistent white balance
         float gNorm = clamp(totalGreen / 3.0, 0.0, 1.0);
         float gWpri = 1.0;
-        float gWsec = pow(gNorm, exponent);  // shared between left and right
-        float gSum = gWpri + 2.0 * gWsec;
-        greenMiddle = totalGreen * gWpri / gSum;
-        greenLeft   = totalGreen * gWsec / gSum;
-        greenRight  = totalGreen * gWsec / gSum;
+        float gWsec = pow(gNorm, exponent);
+        float gWter = pow(gNorm, exponent * 2.0);
+        float gSum = gWpri + gWsec + gWter;
+        float greenMiddle = totalGreen * gWpri / gSum;
+        float greenLeft   = totalGreen * gWsec / gSum;
+        float greenRight  = totalGreen * gWter / gSum;
 
         // BLUE: primary=right, secondary=middle (adjacent), tertiary=left (far)
         float bNorm = clamp(totalBlue / 3.0, 0.0, 1.0);
@@ -225,9 +226,14 @@ void main() {
         float bWsec = pow(bNorm, exponent);
         float bWter = pow(bNorm, exponent * 2.0);
         float bSum = bWpri + bWsec + bWter;
-        blueRight  = totalBlue * bWpri / bSum;
-        blueMiddle = totalBlue * bWsec / bSum;
-        blueLeft   = totalBlue * bWter / bSum;
+        float blueRight  = totalBlue * bWpri / bSum;
+        float blueMiddle = totalBlue * bWsec / bSum;
+        float blueLeft   = totalBlue * bWter / bSum;
+
+        // Assemble per-phosphor vectors
+        phosphorLeft   = vec3(redLeft,   greenLeft,   blueLeft);
+        phosphorMiddle = vec3(redMiddle, greenMiddle, blueMiddle);
+        phosphorRight  = vec3(redRight,  greenRight,  blueRight);
     } else {
         // === CURVED SPILLOVER ===
         float expPrimary = pow(2.0, global.CURVE_PRIMARY);
@@ -236,31 +242,53 @@ void main() {
 
         // RED: primary=left, secondary=middle (adjacent), tertiary=right (far)
         float rNorm = totalRed / 3.0;
-        redLeft = pow(clamp(rNorm, 0.0, 1.0), expPrimary);
-        redMiddle = pow(clamp(rNorm, 0.0, 1.0), expSecondary);
-        redRight = pow(clamp(rNorm, 0.0, 1.0), expTertiary);
+        float redLeft = pow(clamp(rNorm, 0.0, 1.0), expPrimary);
+        float redMiddle = pow(clamp(rNorm, 0.0, 1.0), expSecondary);
+        float redRight = pow(clamp(rNorm, 0.0, 1.0), expTertiary);
 
-        // GREEN: primary=middle, secondary=left (adjacent), tertiary=right (adjacent)
+        // GREEN: primary=middle, secondary=left (adjacent), tertiary=right (far)
         float gNorm = totalGreen / 3.0;
-        greenMiddle = pow(clamp(gNorm, 0.0, 1.0), expPrimary);
-        greenLeft = pow(clamp(gNorm, 0.0, 1.0), expSecondary);
-        greenRight = pow(clamp(gNorm, 0.0, 1.0), expTertiary);
+        float greenMiddle = pow(clamp(gNorm, 0.0, 1.0), expPrimary);
+        float greenLeft = pow(clamp(gNorm, 0.0, 1.0), expSecondary);
+        float greenRight = pow(clamp(gNorm, 0.0, 1.0), expTertiary);
 
         // BLUE: primary=right, secondary=middle (adjacent), tertiary=left (far)
         float bNorm = totalBlue / 3.0;
-        blueRight = pow(clamp(bNorm, 0.0, 1.0), expPrimary);
-        blueMiddle = pow(clamp(bNorm, 0.0, 1.0), expSecondary);
-        blueLeft = pow(clamp(bNorm, 0.0, 1.0), expTertiary);
+        float blueRight = pow(clamp(bNorm, 0.0, 1.0), expPrimary);
+        float blueMiddle = pow(clamp(bNorm, 0.0, 1.0), expSecondary);
+        float blueLeft = pow(clamp(bNorm, 0.0, 1.0), expTertiary);
+
+        // Assemble per-phosphor vectors
+        phosphorLeft   = vec3(redLeft,   greenLeft,   blueLeft);
+        phosphorMiddle = vec3(redMiddle, greenMiddle, blueMiddle);
+        phosphorRight  = vec3(redRight,  greenRight,  blueRight);
     }
+
+    // === LOTTES-STYLE NORMALIZATION BOOST ===
+    // The triad spatially distributes energy so each phosphor only shows full
+    // primary brightness for 1/3 of the visual field. The eye perceives the
+    // spatial average across the 3 phosphors, which is dimmer than the input.
+    // Compute per-channel boost so that the average across all 3 phosphors
+    // matches the original avgColor, preserving perceived brightness.
+    vec3 spatialAvg = (phosphorLeft + phosphorMiddle + phosphorRight) / 3.0;
+    vec3 boost = vec3(1.0);
+    boost.r = (spatialAvg.r > 1e-6) ? (avgColor.r / spatialAvg.r) : 1.0;
+    boost.g = (spatialAvg.g > 1e-6) ? (avgColor.g / spatialAvg.g) : 1.0;
+    boost.b = (spatialAvg.b > 1e-6) ? (avgColor.b / spatialAvg.b) : 1.0;
+
+    // Apply boost to all phosphors
+    phosphorLeft   *= boost;
+    phosphorMiddle *= boost;
+    phosphorRight  *= boost;
 
     // Select the energy budget for this phosphor
     vec3 phosphorEnergy;
     if(phosphorIdx == 0) {
-        phosphorEnergy = vec3(redLeft, greenLeft, blueLeft);
+        phosphorEnergy = phosphorLeft;
     } else if(phosphorIdx == 1) {
-        phosphorEnergy = vec3(redMiddle, greenMiddle, blueMiddle);
+        phosphorEnergy = phosphorMiddle;
     } else {
-        phosphorEnergy = vec3(redRight, greenRight, blueRight);
+        phosphorEnergy = phosphorRight;
     }
 
     // === VERTICAL PHOSPHOR GRADATION ===
