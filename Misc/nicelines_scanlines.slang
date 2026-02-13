@@ -1,10 +1,12 @@
 #version 450
-// nicelines v1 (2026-02-13)
+// nicelines v5 (2026-02-13)
 
 // === PASS 1: SCANLINES ===
 // This pass handles: scanline simulation with energy preservation
 // Input: blurred linear-space image from pass 0
 // Output: scanline image in linear space (float framebuffer)
+//
+// TODO: add misconvergence effect (RGB channel offset) to this pass
 
 // === PARAMETERS ===
 #pragma parameter SCANLINE_MODE "SCANLINES MODE (224p / 240p / Manual)" 1.0 0.0 2.0 1.0

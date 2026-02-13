@@ -1,29 +1,27 @@
 #version 450
-// nicelines v4 (2026-02-13)
+// nicelines v5 (2026-02-13)
 
 // === PASS 2: SHADOW MASK ===
-// This pass handles: pixel swap mode, triad phosphor mask
+// Aperture-grille-style phosphor triad mask with clip-safe energy distribution.
 // Input: scanline image from pass 1 (linear space, float framebuffer)
 // Output: final image converted to sRGB for display
+//
+// Algorithm: Hard-primary distribution with global clip-avoidance blend.
+// Each phosphor starts as pure R, G, or B (×3 energy). When the brightest
+// channel would exceed 1.0, ALL phosphors blend toward avgColor by the
+// same factor, preserving both energy conservation and color balance.
+// Result: strong R/G/B separation in darks, graceful desaturation in brights.
+//
+// TODO: investigate shimmering/noise effect for shadow mask
+// TODO: investigate different phosphor patterns (dot trios, slot mask) vs current aperture grille
 
-// === SHADOW MASK PARAMETERS ===
-#pragma parameter SUBPIXEL_NOISE "SHADOW MASK Off/Swap/Triad/Dev" 3.0 0.0 3.0 1.0
-#pragma parameter SHADOW_STRENGTH "Shadow Mask STRENGTH (1-3)" 2.0 1.0 3.0 1.0
-#pragma parameter SHIMMER_NOISE "Shimmering NOISE Effect (Requires Shadow Mask Effect ON)" 0.0 0.0 1.0 1.0
+// === PARAMETERS ===
+#pragma parameter SHADOW_MASK "Shadow Mask Off/On" 1.0 0.0 1.0 1.0
+#pragma parameter PHOSPHOR_WIDTH "Phosphor Width (px)" 1.0 1.0 2.0 1.0
+#pragma parameter PHOSPHOR_HEIGHT "Phosphor Height (px)" 3.0 2.0 4.0 1.0
+#pragma parameter PHOSPHOR_GRADATION "Vertical Phosphor Gradation" 1.0 0.0 1.0 1.0
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
-
-// === TRIAD PARAMETERS ===
-#pragma parameter PHOSPHOR_WIDTH "TRIAD Phosphor Width (px)" 1.0 1.0 20.0 1.0
-#pragma parameter TRIAD_HEIGHT "TRIAD Height (px)" 3.0 1.0 20.0 1.0
-#pragma parameter SPILLOVER_MODE "TRIAD Spillover (Proportional/Curved)" 0.0 0.0 1.0 1.0
-#pragma parameter SPILLOVER_SHAPE "TRIAD Proportional Spillover Shape (0=concentrated, 1=spread)" 0.5 0.0 1.0 0.05
-#pragma parameter CURVE_PRIMARY "TRIAD Curve PRIMARY (0=linear, -=concave, +=convex)" -0.3 -3.0 3.0 0.1
-#pragma parameter CURVE_SECONDARY "TRIAD Curve SECONDARY (0=linear, -=concave, +=convex)" 0.0 -3.0 3.0 0.1
-#pragma parameter CURVE_TERTIARY "TRIAD Curve TERTIARY (0=linear, -=concave, +=convex)" 0.3 -3.0 3.0 0.1
-#pragma parameter PHOSPHOR_GRADATION "TRIAD Vertical Phosphor Gradation" 1.0 0.0 1.0 1.0
-
-// === DEV MODE PARAMETERS ===
-#pragma parameter DEV_STAGE "DEV Stage (0=flat 1=clipMap 2=safeHardPri 3=fullHardPri)" 0.0 0.0 3.0 1.0
+#pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -31,19 +29,12 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OriginalSize;
     vec4 OutputSize;
     uint FrameCount;
-    float SUBPIXEL_NOISE;
-    float SHADOW_STRENGTH;
-    float SHIMMER_NOISE;
-    float DEBUG_STAGES;
+    float SHADOW_MASK;
     float PHOSPHOR_WIDTH;
-    float TRIAD_HEIGHT;
-    float SPILLOVER_MODE;
-    float SPILLOVER_SHAPE;
-    float CURVE_PRIMARY;
-    float CURVE_SECONDARY;
-    float CURVE_TERTIARY;
+    float PHOSPHOR_HEIGHT;
     float PHOSPHOR_GRADATION;
-    float DEV_STAGE;
+    float DEBUG_STAGES;
+    float DEBUG_SPLIT;
 } global;
 
 // === VERTEX STAGE ===
@@ -75,92 +66,49 @@ vec3 LinearToSrgb3(vec3 c) {
 void main() {
     vec2 px = vTexCoord * global.OutputSize.xy;
 
-    // Debug mode: left 2/3 shows previous passes without mask
+    // === COMPARISON SPLIT ===
+    // Mode 1: top half = raw input (no mask), bottom half = processed
+    // Mode 2: bottom half = raw input, top half = processed
+    int splitMode = int(global.DEBUG_SPLIT + 0.5);
+    bool showRawHere = false;
+    if(splitMode == 1 && vTexCoord.y < 0.5) showRawHere = true;
+    if(splitMode == 2 && vTexCoord.y >= 0.5) showRawHere = true;
+
+    if(showRawHere) {
+        vec3 raw = texture(Source, vTexCoord).rgb;
+        FragColor = vec4(LinearToSrgb3(raw), 1.0);
+        return;
+    }
+
+    // === DEBUG SIDE-BY-SIDE ===
+    // Left 2/3 shows previous passes without mask
     if(global.DEBUG_STAGES > 0.5 && vTexCoord.x < (2.0 / 3.0)) {
         vec3 passthrough = texture(Source, vTexCoord).rgb;
         FragColor = vec4(LinearToSrgb3(passthrough), 1.0);
         return;
     }
 
-    // Mode selection: 0=off, 1=swap, 2=triad, 3=dev
-    int shadowMode = int(global.SUBPIXEL_NOISE + 0.5);
-
-    // === MODE 0: No shadow mask - passthrough ===
-    if(shadowMode == 0) {
+    // === MODE 0: No shadow mask — passthrough ===
+    if(global.SHADOW_MASK < 0.5) {
         vec3 color = texture(Source, vTexCoord).rgb;
         FragColor = vec4(LinearToSrgb3(color), 1.0);
         return;
     }
 
-    // === MODE 1: Pixel swap shadow mask ===
-    if(shadowMode == 1) {
-        // Seed: random each frame if shimmer enabled, otherwise fixed
-        float seed = (global.SHIMMER_NOISE > 0.5) ? float(global.FrameCount) : 0.0;
-
-        // Swap range directly from strength setting (1, 2, or 3)
-        float swapRange = global.SHADOW_STRENGTH;
-
-        // Calculate pixels per scanline (approximate from source/output ratio)
-        float pixelsPerScanline = global.OutputSize.y / global.SourceSize.y;
-
-        vec2 srcPx = px;
-
-        if(swapRange > 0.5) {
-            // Phase height is a factor of scanline pitch, rounded to integer fat-pixels (locked at 0.8)
-            float phaseH = max(1.0, floor(pixelsPerScanline * 0.8 + 0.5));
-
-            float groupWidth = swapRange * 2.0;
-            float groupIdx = floor(px.x / groupWidth);
-            float withinGroup = mod(px.x, groupWidth);
-
-            float rowPhase = floor(px.y / phaseH);
-
-            float swapOffset = 0.0;
-            if(mod(rowPhase, 2.0) < 1.0) {
-                swapOffset = groupWidth - 1.0 - 2.0 * withinGroup;
-            } else {
-                swapOffset = mod(withinGroup + swapRange, groupWidth) - withinGroup;
-            }
-
-            float chaos = sin((groupIdx + rowPhase) * 2.718 + seed) * swapRange * 0.5;
-            swapOffset += chaos;
-
-            srcPx.x += swapOffset;
-        }
-
-        // Convert displaced pixel position to UV and sample
-        vec2 displacedUV = srcPx / global.OutputSize.xy;
-        displacedUV = clamp(displacedUV, vec2(0.0), vec2(1.0));
-
-        vec3 color = texture(Source, displacedUV).rgb;
-        FragColor = vec4(LinearToSrgb3(color), 1.0);
-        return;
-    }
-
-    // === MODE 3: Dev mode — clipping diagnostic ladder ===
-    // Shares triad geometry and area sampling with mode 2,
-    // but applies features one at a time controlled by DEV_STAGE:
-    //   0 = flat avgColor (baseline — should match input brightness/color exactly)
-    //   1 = clip map: red=clipping zones, green=safe (no channel exceeds 1.0 at ×3)
-    //   2 = safe-only hard primary: hard primary where no clip, flat avgColor elsewhere
-    //   3 = full hard primary (clipping allowed, shows raw damage)
-    bool devMode = (shadowMode == 3);
-    int devStage = devMode ? int(global.DEV_STAGE + 0.5) : 99;
-
-    // === MODE 2 & 3: Triad-based shadow mask ===
+    // === SHADOW MASK ON: Phosphor triad ===
     float phosphorW = global.PHOSPHOR_WIDTH;
-    float triadW = phosphorW * 3.0;  // Total triad width = 3 phosphors
-    float triadH = global.TRIAD_HEIGHT;
+    float triadW = phosphorW * 3.0;
+    float triadH = global.PHOSPHOR_HEIGHT;
 
     // Which triad column are we in?
     float triadIdxX = floor(px.x / triadW);
     float withinTriadX = mod(px.x, triadW);
-    int phosphorIdx = int(floor(withinTriadX / phosphorW));  // 0=left, 1=middle, 2=right
-    phosphorIdx = min(phosphorIdx, 2);  // Clamp to valid range
+    int phosphorIdx = int(floor(withinTriadX / phosphorW));  // 0=R, 1=G, 2=B
+    phosphorIdx = min(phosphorIdx, 2);
 
-    // Vertical zigzag offset for alternating columns (when triad height > 1)
+    // Vertical zigzag offset for alternating triad columns
     float zigzagOffset = 0.0;
-    if(triadH > 1.0 && mod(triadIdxX, 2.0) >= 1.0) {
+    if(mod(triadIdxX, 2.0) >= 1.0) {
         zigzagOffset = ceil(triadH / 2.0);
     }
 
@@ -168,12 +116,10 @@ void main() {
     float adjustedPxY = px.y - zigzagOffset;
     float triadIdxY = floor(adjustedPxY / triadH);
 
-    // === AREA SAMPLING: Integrate the ENTIRE triad footprint ===
-    // Triad bounds in output pixel space (with zigzag applied)
+    // === AREA SAMPLING: Average the entire triad footprint ===
     float triadLeftPx = triadIdxX * triadW;
     float triadTopPx = triadIdxY * triadH + zigzagOffset;
 
-    // Sample grid: one sample per output pixel in the triad
     int samplesX = max(int(triadW), 1);
     int samplesY = max(int(triadH), 1);
 
@@ -188,209 +134,61 @@ void main() {
             vec2 sampleUV = vec2(samplePxX, samplePxY) / global.OutputSize.xy;
             sampleUV = clamp(sampleUV, vec2(0.0), vec2(1.0));
 
-            // Input is already in linear space from pass 1
             vec3 sampleColor = texture(Source, sampleUV).rgb;
-
             totalEnergy += sampleColor;
             sampleCount += 1.0;
         }
     }
 
-    // Average processed color in the triad area
     vec3 avgColor = totalEnergy / sampleCount;
 
-    // === DEV STAGE 0: Flat passthrough (baseline brightness/color check) ===
-    if(devMode && devStage == 0) {
-        FragColor = vec4(LinearToSrgb3(avgColor), 1.0);
-        return;
+    // === HARD PRIMARY DISTRIBUTION WITH CLIP-SAFE BLEND ===
+    //
+    // Hard primaries: R phosphor = (R×3, 0, 0), G = (0, G×3, 0), B = (0, 0, B×3)
+    //
+    // When max(R,G,B)×3 > 1.0, framebuffer clips and energy is lost.
+    // Fix: blend all 3 phosphors toward avgColor by a global factor t,
+    // computed so the hottest channel exactly reaches 1.0.
+    //
+    // Global factor preserves energy: avg(phosphors) = avgColor at any t.
+    //
+    // Math: for primary channel c, result = c×3×(1-t) + c×t = c×(3-2t)
+    //   Need c×(3-2t) ≤ 1.0 → t ≥ (3c-1)/(2c)
+    //   Use t = max(0, (3m-1)/(2m)) where m = max(avgColor.r, avgColor.g, avgColor.b)
+
+    float maxChan = max(avgColor.r, max(avgColor.g, avgColor.b));
+    float t = 0.0;
+    if(maxChan * 3.0 > 1.0) {
+        t = (3.0 * maxChan - 1.0) / (2.0 * maxChan);
     }
 
-    // === DEV STAGE 1: Clip detector map ===
-    // Shows where energy would be lost to framebuffer clipping:
-    //   Green tint = safe (all channels of avgColor*3 <= 1.0)
-    //   Red tint = clipping (at least one channel of avgColor*3 > 1.0)
-    if(devMode && devStage == 1) {
-        bool clips = (avgColor.r * 3.0 > 1.0) || (avgColor.g * 3.0 > 1.0) || (avgColor.b * 3.0 > 1.0);
-        vec3 tint = clips ? vec3(1.0, 0.0, 0.0) : vec3(0.0, 1.0, 0.0);
-        vec3 vis = mix(avgColor, tint, 0.5);
-        FragColor = vec4(LinearToSrgb3(vis), 1.0);
-        return;
-    }
-
-    // === DEV STAGE 2: Safe-only hard primary ===
-    // Hard primary only where NO channel clips; flat avgColor elsewhere.
-    // If non-clipping areas match stage 0 brightness, clipping is the sole cause.
-    // If they're STILL dim, there's a perceptual issue beyond clipping.
-    if(devMode && devStage == 2) {
-        bool clips = (avgColor.r * 3.0 > 1.0) || (avgColor.g * 3.0 > 1.0) || (avgColor.b * 3.0 > 1.0);
-        if(clips) {
-            FragColor = vec4(LinearToSrgb3(avgColor), 1.0);
-        } else {
-            vec3 phosphorEnergy;
-            if(phosphorIdx == 0) {
-                phosphorEnergy = vec3(avgColor.r * 3.0, 0.0, 0.0);
-            } else if(phosphorIdx == 1) {
-                phosphorEnergy = vec3(0.0, avgColor.g * 3.0, 0.0);
-            } else {
-                phosphorEnergy = vec3(0.0, 0.0, avgColor.b * 3.0);
-            }
-            FragColor = vec4(LinearToSrgb3(phosphorEnergy), 1.0);
-        }
-        return;
-    }
-
-    // === DEV STAGE 3: Full hard primary (clipping allowed) ===
-    // Maximum contrast triad with no protection against clipping.
-    // Compare to stage 2 to see the damage clipping adds.
-    if(devMode && devStage == 3) {
-        vec3 phosphorEnergy;
-        if(phosphorIdx == 0) {
-            phosphorEnergy = vec3(avgColor.r * 3.0, 0.0, 0.0);
-        } else if(phosphorIdx == 1) {
-            phosphorEnergy = vec3(0.0, avgColor.g * 3.0, 0.0);
-        } else {
-            phosphorEnergy = vec3(0.0, 0.0, avgColor.b * 3.0);
-        }
-        FragColor = vec4(LinearToSrgb3(phosphorEnergy), 1.0);
-        return;
-    }
-
-    // Total energy to distribute across 3 phosphors (multiply by 3)
-    float totalRed = avgColor.r * 3.0;
-    float totalGreen = avgColor.g * 3.0;
-    float totalBlue = avgColor.b * 3.0;
-
-    // Spillover distribution: compute per-phosphor values for ALL 3 phosphors
-    // Left phosphor (idx 0), Middle phosphor (idx 1), Right phosphor (idx 2)
-    vec3 phosphorLeft, phosphorMiddle, phosphorRight;
-
-    // Dev mode always uses proportional spillover for isolation
-    if(devMode || global.SPILLOVER_MODE < 0.5) {
-        // === PROPORTIONAL SPILLOVER ===
-        // Energy-preserving weighted distribution controlled by shape slider
-        // Shape 0 = concentrated (high exponent), Shape 1 = spread (low exponent)
-        float exponent = mix(4.0, 0.5, global.SPILLOVER_SHAPE);
-
-        // Compute weights from LUMINANCE (single shared value for all channels)
-        // This guarantees white balance: all channels use identical weight ratios
-        float luma = dot(avgColor, vec3(0.2126, 0.7152, 0.0722));
-        float lumaNorm = clamp(luma, 0.0, 1.0);
-        float wPri = 1.0;
-        float wSec = pow(lumaNorm, exponent);
-        float wTer = pow(lumaNorm, exponent * 2.0);
-        float wSum = wPri + wSec + wTer;
-
-        // Weight fractions (same for all channels)
-        float fPri = wPri / wSum;
-        float fSec = wSec / wSum;
-        float fTer = wTer / wSum;
-
-        // RED: primary=left, secondary=middle, tertiary=right
-        float redLeft   = totalRed * fPri;
-        float redMiddle = totalRed * fSec;
-        float redRight  = totalRed * fTer;
-
-        // GREEN: primary=middle, secondary=left, tertiary=right
-        float greenMiddle = totalGreen * fPri;
-        float greenLeft   = totalGreen * fSec;
-        float greenRight  = totalGreen * fTer;
-
-        // BLUE: primary=right, secondary=middle, tertiary=left
-        float blueRight  = totalBlue * fPri;
-        float blueMiddle = totalBlue * fSec;
-        float blueLeft   = totalBlue * fTer;
-
-        // Assemble per-phosphor vectors
-        phosphorLeft   = vec3(redLeft,   greenLeft,   blueLeft);
-        phosphorMiddle = vec3(redMiddle, greenMiddle, blueMiddle);
-        phosphorRight  = vec3(redRight,  greenRight,  blueRight);
-    } else {
-        // === CURVED SPILLOVER ===
-        float expPrimary = pow(2.0, global.CURVE_PRIMARY);
-        float expSecondary = pow(2.0, global.CURVE_SECONDARY);
-        float expTertiary = pow(2.0, global.CURVE_TERTIARY);
-
-        // RED: primary=left, secondary=middle (adjacent), tertiary=right (far)
-        float rNorm = totalRed / 3.0;
-        float redLeft = pow(clamp(rNorm, 0.0, 1.0), expPrimary);
-        float redMiddle = pow(clamp(rNorm, 0.0, 1.0), expSecondary);
-        float redRight = pow(clamp(rNorm, 0.0, 1.0), expTertiary);
-
-        // GREEN: primary=middle, secondary=left (adjacent), tertiary=right (far)
-        float gNorm = totalGreen / 3.0;
-        float greenMiddle = pow(clamp(gNorm, 0.0, 1.0), expPrimary);
-        float greenLeft = pow(clamp(gNorm, 0.0, 1.0), expSecondary);
-        float greenRight = pow(clamp(gNorm, 0.0, 1.0), expTertiary);
-
-        // BLUE: primary=right, secondary=middle (adjacent), tertiary=left (far)
-        float bNorm = totalBlue / 3.0;
-        float blueRight = pow(clamp(bNorm, 0.0, 1.0), expPrimary);
-        float blueMiddle = pow(clamp(bNorm, 0.0, 1.0), expSecondary);
-        float blueLeft = pow(clamp(bNorm, 0.0, 1.0), expTertiary);
-
-        // Assemble per-phosphor vectors
-        phosphorLeft   = vec3(redLeft,   greenLeft,   blueLeft);
-        phosphorMiddle = vec3(redMiddle, greenMiddle, blueMiddle);
-        phosphorRight  = vec3(redRight,  greenRight,  blueRight);
-    }
-
-    // === DEV STAGE 3: Luma-weighted proportional distribution (no boost, no gradation) ===
-    if(devMode && devStage == 3) {
-        vec3 phosphorEnergy;
-        if(phosphorIdx == 0) {
-            phosphorEnergy = phosphorLeft;
-        } else if(phosphorIdx == 1) {
-            phosphorEnergy = phosphorMiddle;
-        } else {
-            phosphorEnergy = phosphorRight;
-        }
-        FragColor = vec4(LinearToSrgb3(phosphorEnergy), 1.0);
-        return;
-    }
-
-    // === LOTTES-STYLE NORMALIZATION BOOST ===
-    // NOTE: For proportional mode, this boost is mathematically 1.0 (a no-op)
-    // because the weighted division already conserves total energy exactly.
-    // For curved mode, it corrects the non-conserving pow() outputs.
-    // Proportional dimness is a perceptual issue (visible triad structure),
-    // not a mathematical one — needs a different fix (TBD).
-    vec3 spatialAvg = (phosphorLeft + phosphorMiddle + phosphorRight) / 3.0;
-    vec3 boost = vec3(1.0);
-    boost.r = (spatialAvg.r > 1e-6) ? (avgColor.r / spatialAvg.r) : 1.0;
-    boost.g = (spatialAvg.g > 1e-6) ? (avgColor.g / spatialAvg.g) : 1.0;
-    boost.b = (spatialAvg.b > 1e-6) ? (avgColor.b / spatialAvg.b) : 1.0;
-
-    // Apply boost to all phosphors
-    phosphorLeft   *= boost;
-    phosphorMiddle *= boost;
-    phosphorRight  *= boost;
-
-    // Select the energy budget for this phosphor (normal mode 2)
-    vec3 phosphorEnergy;
+    // Hard-primary for this phosphor position
+    vec3 hardPri;
     if(phosphorIdx == 0) {
-        phosphorEnergy = phosphorLeft;
+        hardPri = vec3(avgColor.r * 3.0, 0.0, 0.0);
     } else if(phosphorIdx == 1) {
-        phosphorEnergy = phosphorMiddle;
+        hardPri = vec3(0.0, avgColor.g * 3.0, 0.0);
     } else {
-        phosphorEnergy = phosphorRight;
+        hardPri = vec3(0.0, 0.0, avgColor.b * 3.0);
     }
+
+    // Blend toward avgColor to prevent clipping
+    vec3 phosphorEnergy = mix(hardPri, avgColor, t);
 
     // === VERTICAL PHOSPHOR GRADATION ===
-    // Redistribute partial phosphor energy vertically based on scanline brightness rank
+    // Redistribute phosphor energy vertically by scanline brightness rank.
+    // NOTE: This currently operates on the clip-safe phosphor energy.
+    // May need revisiting once the primary distribution is finalized.
     vec3 finalColor;
     int numRows = max(int(triadH), 1);
 
     if(global.PHOSPHOR_GRADATION > 0.5 && numRows > 1) {
-        // Current row within the triad
         float rowInTriad = floor(px.y - triadTopPx);
         rowInTriad = clamp(rowInTriad, 0.0, float(numRows - 1));
         int myRowIdx = int(rowInTriad);
 
-        // Sample X position: center of this phosphor column
         float sampleX = triadLeftPx + float(phosphorIdx) * phosphorW + phosphorW * 0.5;
 
-        // Get brightness at each row in this phosphor column
-        // and compute rank of current row (0 = brightest)
         float myPxY = triadTopPx + rowInTriad + 0.5;
         vec2 myUV = vec2(sampleX, myPxY) / global.OutputSize.xy;
         myUV = clamp(myUV, vec2(0.0), vec2(1.0));
@@ -403,26 +201,19 @@ void main() {
             vec2 rowUV = vec2(sampleX, rowPxY) / global.OutputSize.xy;
             rowUV = clamp(rowUV, vec2(0.0), vec2(1.0));
             float rowLuma = dot(texture(Source, rowUV).rgb, vec3(0.2126, 0.7152, 0.0722));
-            // Higher luma = better rank (lower number); tiebreak by row index
             if(rowLuma > myLuma || (rowLuma == myLuma && r < myRowIdx)) {
                 myRank++;
             }
         }
 
-        // Linear energy distribution by rank:
-        // Weight for rank k = (N - k), sum of weights = N*(N+1)/2
-        // Scale factor redistributes so total across all rows = phosphorEnergy * N
         float weight = float(numRows - myRank);
         float sumWeights = float(numRows * (numRows + 1)) / 2.0;
         float scaleFactor = weight * float(numRows) / sumWeights;
 
-        // Apply gradation only to partial phosphors (energy < 1.0 for that channel)
-        // Fully saturated channels stay flat
         finalColor.r = (phosphorEnergy.r >= 1.0) ? phosphorEnergy.r : phosphorEnergy.r * scaleFactor;
         finalColor.g = (phosphorEnergy.g >= 1.0) ? phosphorEnergy.g : phosphorEnergy.g * scaleFactor;
         finalColor.b = (phosphorEnergy.b >= 1.0) ? phosphorEnergy.b : phosphorEnergy.b * scaleFactor;
     } else {
-        // No gradation — flat phosphor
         finalColor = phosphorEnergy;
     }
 
