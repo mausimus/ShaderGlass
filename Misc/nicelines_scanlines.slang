@@ -1,5 +1,5 @@
 #version 450
-// nicelines v5 (2026-02-13)
+// nicelines v6 (2026-02-13)
 
 // === PASS 1: SCANLINES ===
 // This pass handles: scanline simulation with energy preservation
@@ -14,6 +14,7 @@
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
+#pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -26,6 +27,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float FINETUNE_LINES;
     float AUTO_LINES;
     float DEBUG_STAGES;
+    float DEBUG_SPLIT;
 } global;
 
 // === VERTEX STAGE ===
@@ -90,6 +92,17 @@ void main() {
     float baseWidth = 0.3;   // Hardcoded thickness baseline
     float minWidth = 0.15;   // Hardcoded thickness min (must be ≤ baseWidth)
     float maxWidth = 1.0;    // Hardcoded thickness max
+
+    // === COMPARISON SPLIT: pass through input unchanged ===
+    int splitMode = int(global.DEBUG_SPLIT + 0.5);
+    bool showRawHere = false;
+    if(splitMode == 1 && vTexCoord.y < 0.5) showRawHere = true;
+    if(splitMode == 2 && vTexCoord.y >= 0.5) showRawHere = true;
+    if(showRawHere) {
+        // Input already in linear space from pass 0 (which also skipped)
+        FragColor = texture(Source, vTexCoord);
+        return;
+    }
 
     // Debug mode: left 1/3 shows blur-only passthrough
     if(global.DEBUG_STAGES > 0.5 && vTexCoord.x < (1.0 / 3.0)) {

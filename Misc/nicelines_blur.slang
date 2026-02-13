@@ -1,5 +1,5 @@
 #version 450
-// nicelines v5 (2026-02-13)
+// nicelines v6 (2026-02-13)
 
 // === PASS 0: DOWNSCALE BLUR ===
 // This pass handles: downscale blur prepass and horizontal blur
@@ -15,6 +15,7 @@
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
+#pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -28,6 +29,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float MANUAL_LINES;
     float FINETUNE_LINES;
     float AUTO_LINES;
+    float DEBUG_SPLIT;
 } global;
 
 // === VERTEX STAGE ===
@@ -125,6 +127,17 @@ vec3 sampleWithHBlur(vec2 uv, float effectiveScale, float hBlur) {
 }
 
 void main() {
+    // === COMPARISON SPLIT: pass through raw input (sRGB→linear) ===
+    int splitMode = int(global.DEBUG_SPLIT + 0.5);
+    bool showRawHere = false;
+    if(splitMode == 1 && vTexCoord.y < 0.5) showRawHere = true;
+    if(splitMode == 2 && vTexCoord.y >= 0.5) showRawHere = true;
+    if(showRawHere) {
+        // Pass through in linear space (downstream passes also skip)
+        FragColor = vec4(SrgbToLinear3(texture(Source, vTexCoord).rgb), 1.0);
+        return;
+    }
+
     float targetLines = getTargetLines();
     float baselineScale = targetLines / global.SourceSize.y;
     float effectiveScale = clamp(baselineScale + global.BLUR_OFFSET, 0.02, 1.0);

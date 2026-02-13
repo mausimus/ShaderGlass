@@ -1,5 +1,5 @@
 #version 450
-// nicelines v5 (2026-02-13)
+// nicelines v6 (2026-02-13)
 
 // === PASS 2: SHADOW MASK ===
 // Aperture-grille-style phosphor triad mask with clip-safe energy distribution.
@@ -19,7 +19,7 @@
 #pragma parameter SHADOW_MASK "Shadow Mask Off/On" 1.0 0.0 1.0 1.0
 #pragma parameter PHOSPHOR_WIDTH "Phosphor Width (px)" 1.0 1.0 2.0 1.0
 #pragma parameter PHOSPHOR_HEIGHT "Phosphor Height (px)" 3.0 2.0 4.0 1.0
-#pragma parameter PHOSPHOR_GRADATION "Vertical Phosphor Gradation" 1.0 0.0 1.0 1.0
+#pragma parameter PHOSPHOR_GRADATION "Vertical Phosphor Gradation" 0.0 0.0 1.0 1.0
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
