@@ -13,11 +13,11 @@
 
 // === TRIAD PARAMETERS ===
 #pragma parameter PHOSPHOR_WIDTH "TRIAD Phosphor Width (px)" 1.0 1.0 20.0 1.0
-#pragma parameter TRIAD_HEIGHT "TRIAD Height (px)" 1.0 1.0 20.0 1.0
-#pragma parameter SPILLOVER_MODE "TRIAD Spillover (Linear/Curved)" 0.0 0.0 1.0 1.0
-#pragma parameter CURVE_PRIMARY "TRIAD Curve PRIMARY (0=linear, -=concave, +=convex)" 0.0 -3.0 3.0 0.1
+#pragma parameter TRIAD_HEIGHT "TRIAD Height (px)" 3.0 1.0 20.0 1.0
+#pragma parameter SPILLOVER_MODE "TRIAD Spillover (Linear/Curved)" 1.0 0.0 1.0 1.0
+#pragma parameter CURVE_PRIMARY "TRIAD Curve PRIMARY (0=linear, -=concave, +=convex)" -0.3 -3.0 3.0 0.1
 #pragma parameter CURVE_SECONDARY "TRIAD Curve SECONDARY (0=linear, -=concave, +=convex)" 0.0 -3.0 3.0 0.1
-#pragma parameter CURVE_TERTIARY "TRIAD Curve TERTIARY (0=linear, -=concave, +=convex)" 0.0 -3.0 3.0 0.1
+#pragma parameter CURVE_TERTIARY "TRIAD Curve TERTIARY (0=linear, -=concave, +=convex)" 0.3 -3.0 3.0 0.1
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;

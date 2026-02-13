@@ -6,10 +6,12 @@
 // Output: scanline image in linear space (float framebuffer)
 
 // === PARAMETERS ===
-#pragma parameter SCANLINE_MODE "SCANLINES MODE (224p / 240p / Manual)" 0.0 0.0 2.0 1.0
+#pragma parameter SCANLINE_MODE "SCANLINES MODE (224p / 240p / Manual)" 1.0 0.0 2.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
+#pragma parameter ENERGY_PRESERVE "ENERGY Preservation Amount (0=off, 1=full)" 1.0 0.0 1.0 0.05
+#pragma parameter SCANLINE_FLOOR "SCANLINE Gap Minimum Brightness" 0.0 0.0 0.5 0.01
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -22,6 +24,8 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float MANUAL_LINES;
     float FINETUNE_LINES;
     float AUTO_LINES;
+    float ENERGY_PRESERVE;
+    float SCANLINE_FLOOR;
     float DEBUG_STAGES;
 } global;
 
@@ -116,12 +120,15 @@ void main() {
 
     // Calculate scanline width and energy-preserved color
     float scanlineWidth = calcScanlineWidth(color, baseWidth, minWidth, maxWidth);
-    vec3 outputColor = clamp(color / scanlineWidth, 0.0, 1.0);
+    // Blend between raw color and energy-preserved color
+    vec3 energyColor = clamp(color / scanlineWidth, 0.0, 1.0);
+    vec3 outputColor = mix(color, energyColor, global.ENERGY_PRESERVE);
 
-    // Scanline mask with soft edges
+    // Scanline mask with soft edges and floor
     float halfGap = (1.0 - scanlineWidth) * 0.5;
     float scanlineMask = smoothstep(halfGap - edgeSoftness, halfGap + edgeSoftness, withinScanline) *
                          smoothstep(1.0 - halfGap + edgeSoftness, 1.0 - halfGap - edgeSoftness, withinScanline);
+    scanlineMask = max(scanlineMask, global.SCANLINE_FLOOR);
 
     vec3 finalColor = outputColor * scanlineMask;
 
