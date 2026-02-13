@@ -1,5 +1,5 @@
 #version 450
-// nicelines v1 (2026-02-13)
+// nicelines v2 (2026-02-13)
 
 // === PASS 2: SHADOW MASK ===
 // This pass handles: pixel swap mode, triad phosphor mask
@@ -7,7 +7,7 @@
 // Output: final image converted to sRGB for display
 
 // === SHADOW MASK PARAMETERS ===
-#pragma parameter SUBPIXEL_NOISE "SHADOW MASK Off/Swap/Triad" 2.0 0.0 2.0 1.0
+#pragma parameter SUBPIXEL_NOISE "SHADOW MASK Off/Swap/Triad/Dev" 3.0 0.0 3.0 1.0
 #pragma parameter SHADOW_STRENGTH "Shadow Mask STRENGTH (1-3)" 2.0 1.0 3.0 1.0
 #pragma parameter SHIMMER_NOISE "Shimmering NOISE Effect (Requires Shadow Mask Effect ON)" 0.0 0.0 1.0 1.0
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
@@ -21,6 +21,9 @@
 #pragma parameter CURVE_SECONDARY "TRIAD Curve SECONDARY (0=linear, -=concave, +=convex)" 0.0 -3.0 3.0 0.1
 #pragma parameter CURVE_TERTIARY "TRIAD Curve TERTIARY (0=linear, -=concave, +=convex)" 0.3 -3.0 3.0 0.1
 #pragma parameter PHOSPHOR_GRADATION "TRIAD Vertical Phosphor Gradation" 1.0 0.0 1.0 1.0
+
+// === DEV MODE PARAMETERS ===
+#pragma parameter DEV_STAGE "DEV Stage (0=flat 1=distrib 2=boost 3=gradation)" 0.0 0.0 3.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -40,6 +43,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float CURVE_SECONDARY;
     float CURVE_TERTIARY;
     float PHOSPHOR_GRADATION;
+    float DEV_STAGE;
 } global;
 
 // === VERTEX STAGE ===
@@ -78,7 +82,7 @@ void main() {
         return;
     }
 
-    // Mode selection: 0=off, 1=swap, 2=triad
+    // Mode selection: 0=off, 1=swap, 2=triad, 3=dev
     int shadowMode = int(global.SUBPIXEL_NOISE + 0.5);
 
     // === MODE 0: No shadow mask - passthrough ===
@@ -133,7 +137,17 @@ void main() {
         return;
     }
 
-    // === MODE 2: Triad-based shadow mask ===
+    // === MODE 3: Dev mode — incremental triad build-up ===
+    // Shares triad geometry and area sampling with mode 2,
+    // but applies features one at a time controlled by DEV_STAGE:
+    //   0 = flat avgColor (baseline — should match input brightness/color exactly)
+    //   1 = proportional distribution only (no boost, no gradation)
+    //   2 = distribution + Lottes brightness boost
+    //   3 = distribution + boost + vertical gradation
+    bool devMode = (shadowMode == 3);
+    int devStage = devMode ? int(global.DEV_STAGE + 0.5) : 99;
+
+    // === MODE 2 & 3: Triad-based shadow mask ===
     float phosphorW = global.PHOSPHOR_WIDTH;
     float triadW = phosphorW * 3.0;  // Total triad width = 3 phosphors
     float triadH = global.TRIAD_HEIGHT;
@@ -185,6 +199,12 @@ void main() {
     // Average processed color in the triad area
     vec3 avgColor = totalEnergy / sampleCount;
 
+    // === DEV STAGE 0: Flat passthrough (baseline brightness/color check) ===
+    if(devMode && devStage == 0) {
+        FragColor = vec4(LinearToSrgb3(avgColor), 1.0);
+        return;
+    }
+
     // Total energy to distribute across 3 phosphors (multiply by 3)
     float totalRed = avgColor.r * 3.0;
     float totalGreen = avgColor.g * 3.0;
@@ -194,7 +214,8 @@ void main() {
     // Left phosphor (idx 0), Middle phosphor (idx 1), Right phosphor (idx 2)
     vec3 phosphorLeft, phosphorMiddle, phosphorRight;
 
-    if(global.SPILLOVER_MODE < 0.5) {
+    // Dev mode always uses proportional spillover for isolation
+    if(devMode || global.SPILLOVER_MODE < 0.5) {
         // === PROPORTIONAL SPILLOVER ===
         // Energy-preserving weighted distribution controlled by shape slider
         // Shape 0 = concentrated (high exponent), Shape 1 = spread (low exponent)
@@ -265,12 +286,26 @@ void main() {
         phosphorRight  = vec3(redRight,  greenRight,  blueRight);
     }
 
+    // === DEV STAGE 1: Distribution only, no boost, no gradation ===
+    if(devMode && devStage == 1) {
+        vec3 phosphorEnergy;
+        if(phosphorIdx == 0) {
+            phosphorEnergy = phosphorLeft;
+        } else if(phosphorIdx == 1) {
+            phosphorEnergy = phosphorMiddle;
+        } else {
+            phosphorEnergy = phosphorRight;
+        }
+        FragColor = vec4(LinearToSrgb3(phosphorEnergy), 1.0);
+        return;
+    }
+
     // === LOTTES-STYLE NORMALIZATION BOOST ===
-    // The triad spatially distributes energy so each phosphor only shows full
-    // primary brightness for 1/3 of the visual field. The eye perceives the
-    // spatial average across the 3 phosphors, which is dimmer than the input.
-    // Compute per-channel boost so that the average across all 3 phosphors
-    // matches the original avgColor, preserving perceived brightness.
+    // NOTE: For proportional mode, this boost is mathematically 1.0 (a no-op)
+    // because the weighted division already conserves total energy exactly.
+    // For curved mode, it corrects the non-conserving pow() outputs.
+    // Proportional dimness is a perceptual issue (visible triad structure),
+    // not a mathematical one — needs a different fix (TBD).
     vec3 spatialAvg = (phosphorLeft + phosphorMiddle + phosphorRight) / 3.0;
     vec3 boost = vec3(1.0);
     boost.r = (spatialAvg.r > 1e-6) ? (avgColor.r / spatialAvg.r) : 1.0;
@@ -282,7 +317,21 @@ void main() {
     phosphorMiddle *= boost;
     phosphorRight  *= boost;
 
-    // Select the energy budget for this phosphor
+    // === DEV STAGE 2: Distribution + boost, no gradation ===
+    if(devMode && devStage == 2) {
+        vec3 phosphorEnergy;
+        if(phosphorIdx == 0) {
+            phosphorEnergy = phosphorLeft;
+        } else if(phosphorIdx == 1) {
+            phosphorEnergy = phosphorMiddle;
+        } else {
+            phosphorEnergy = phosphorRight;
+        }
+        FragColor = vec4(LinearToSrgb3(phosphorEnergy), 1.0);
+        return;
+    }
+
+    // Select the energy budget for this phosphor (stage 3 / normal mode 2)
     vec3 phosphorEnergy;
     if(phosphorIdx == 0) {
         phosphorEnergy = phosphorLeft;
