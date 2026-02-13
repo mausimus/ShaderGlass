@@ -1,5 +1,5 @@
 #version 450
-// nicelines v2 (2026-02-13)
+// nicelines v3 (2026-02-13)
 
 // === PASS 2: SHADOW MASK ===
 // This pass handles: pixel swap mode, triad phosphor mask
@@ -23,7 +23,7 @@
 #pragma parameter PHOSPHOR_GRADATION "TRIAD Vertical Phosphor Gradation" 1.0 0.0 1.0 1.0
 
 // === DEV MODE PARAMETERS ===
-#pragma parameter DEV_STAGE "DEV Stage (0=flat 1=distrib 2=boost 3=gradation)" 0.0 0.0 3.0 1.0
+#pragma parameter DEV_STAGE "DEV Stage (0=flat 1=hardPri 2=equal1/3 3=lumaDistrib)" 0.0 0.0 3.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -137,13 +137,13 @@ void main() {
         return;
     }
 
-    // === MODE 3: Dev mode — incremental triad build-up ===
+    // === MODE 3: Dev mode — sanity-first diagnostic ladder ===
     // Shares triad geometry and area sampling with mode 2,
     // but applies features one at a time controlled by DEV_STAGE:
     //   0 = flat avgColor (baseline — should match input brightness/color exactly)
-    //   1 = proportional distribution only (no boost, no gradation)
-    //   2 = distribution + Lottes brightness boost
-    //   3 = distribution + boost + vertical gradation
+    //   1 = hard primary only: max contrast, zero spillover
+    //   2 = equal 1/3 to all phosphors (should match stage 0 exactly)
+    //   3 = luma-weighted proportional distribution (for comparison)
     bool devMode = (shadowMode == 3);
     int devStage = devMode ? int(global.DEV_STAGE + 0.5) : 99;
 
@@ -201,6 +201,30 @@ void main() {
 
     // === DEV STAGE 0: Flat passthrough (baseline brightness/color check) ===
     if(devMode && devStage == 0) {
+        FragColor = vec4(LinearToSrgb3(avgColor), 1.0);
+        return;
+    }
+
+    // === DEV STAGE 1: Hard primary only (maximum contrast, zero spillover) ===
+    // R phosphor = (avgR*3, 0, 0), G phosphor = (0, avgG*3, 0), B phosphor = (0, 0, avgB*3)
+    // Tests whether the fundamental act of making pixels different colors causes dimness.
+    if(devMode && devStage == 1) {
+        vec3 phosphorEnergy;
+        if(phosphorIdx == 0) {
+            phosphorEnergy = vec3(avgColor.r * 3.0, 0.0, 0.0);
+        } else if(phosphorIdx == 1) {
+            phosphorEnergy = vec3(0.0, avgColor.g * 3.0, 0.0);
+        } else {
+            phosphorEnergy = vec3(0.0, 0.0, avgColor.b * 3.0);
+        }
+        FragColor = vec4(LinearToSrgb3(phosphorEnergy), 1.0);
+        return;
+    }
+
+    // === DEV STAGE 2: Equal 1/3 to all phosphors (sanity check) ===
+    // Every phosphor gets avgColor — should be identical to stage 0.
+    // Validates that phosphor selection / area sampling path doesn't break anything.
+    if(devMode && devStage == 2) {
         FragColor = vec4(LinearToSrgb3(avgColor), 1.0);
         return;
     }
@@ -284,8 +308,8 @@ void main() {
         phosphorRight  = vec3(redRight,  greenRight,  blueRight);
     }
 
-    // === DEV STAGE 1: Distribution only, no boost, no gradation ===
-    if(devMode && devStage == 1) {
+    // === DEV STAGE 3: Luma-weighted proportional distribution (no boost, no gradation) ===
+    if(devMode && devStage == 3) {
         vec3 phosphorEnergy;
         if(phosphorIdx == 0) {
             phosphorEnergy = phosphorLeft;
@@ -315,21 +339,7 @@ void main() {
     phosphorMiddle *= boost;
     phosphorRight  *= boost;
 
-    // === DEV STAGE 2: Distribution + boost, no gradation ===
-    if(devMode && devStage == 2) {
-        vec3 phosphorEnergy;
-        if(phosphorIdx == 0) {
-            phosphorEnergy = phosphorLeft;
-        } else if(phosphorIdx == 1) {
-            phosphorEnergy = phosphorMiddle;
-        } else {
-            phosphorEnergy = phosphorRight;
-        }
-        FragColor = vec4(LinearToSrgb3(phosphorEnergy), 1.0);
-        return;
-    }
-
-    // Select the energy budget for this phosphor (stage 3 / normal mode 2)
+    // Select the energy budget for this phosphor (normal mode 2)
     vec3 phosphorEnergy;
     if(phosphorIdx == 0) {
         phosphorEnergy = phosphorLeft;
