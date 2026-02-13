@@ -1,3 +1,4 @@
+// nicelines multi-pass preset v1 (2026-02-13)
 shaders = 3
 
 // Pass 0: Downscale Blur + Horizontal Blur

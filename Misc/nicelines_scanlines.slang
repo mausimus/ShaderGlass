@@ -1,4 +1,5 @@
 #version 450
+// nicelines v1 (2026-02-13)
 
 // === PASS 1: SCANLINES ===
 // This pass handles: scanline simulation with energy preservation

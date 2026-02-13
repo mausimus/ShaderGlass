@@ -1,4 +1,5 @@
 #version 450
+// nicelines v1 (2026-02-13)
 
 // === PASS 0: DOWNSCALE BLUR ===
 // This pass handles: downscale blur prepass and horizontal blur

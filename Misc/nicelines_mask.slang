@@ -1,4 +1,5 @@
 #version 450
+// nicelines v1 (2026-02-13)
 
 // === PASS 2: SHADOW MASK ===
 // This pass handles: pixel swap mode, triad phosphor mask
