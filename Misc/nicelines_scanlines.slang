@@ -113,6 +113,9 @@ float processScanlineChannel(vec2 uv, int channel, float targetLines,
 
     // Per-channel width based on channel brightness
     float scanlineWidth = calcScanlineWidth1(chanValue, baseWidth, minWidth, maxWidth);
+    // Strict guard: prevent energy concentration from exceeding per-pixel channel max.
+    // If input chanValue <= 1.0, this guarantees outputValue <= 1.0.
+    scanlineWidth = max(scanlineWidth, chanValue);
     float outputValue = chanValue / scanlineWidth;
 
     // Scanline mask with soft edges

@@ -14,9 +14,12 @@
 //
 // TODO: investigate shimmering/noise effect for shadow mask
 // TODO: investigate different phosphor patterns (dot trios, slot mask) vs current aperture grille
+// TODO: investigate variable-width phosphors — each phosphor's width proportional to its
+//       channel energy in the triad area. Per-channel independent grids reading from shared
+//       triad input areas. Would eliminate clipping naturally (width encodes energy, not brightness).
 
 // === PARAMETERS ===
-#pragma parameter SHADOW_MASK "Shadow Mask Off/On" 1.0 0.0 1.0 1.0
+#pragma parameter SHADOW_MASK "Shadow Mask (Off / Standard / Gutter)" 1.0 0.0 2.0 1.0
 #pragma parameter PHOSPHOR_WIDTH "Phosphor Width (px)" 1.0 1.0 2.0 1.0
 #pragma parameter PHOSPHOR_HEIGHT "Phosphor Height (px)" 3.0 2.0 4.0 1.0
 #pragma parameter PHOSPHOR_GRADATION "Vertical Phosphor Gradation" 0.0 0.0 1.0 1.0
@@ -88,14 +91,82 @@ void main() {
         return;
     }
 
+    int shadowMaskMode = int(global.SHADOW_MASK + 0.5);
+
     // === MODE 0: No shadow mask — passthrough ===
-    if(global.SHADOW_MASK < 0.5) {
+    if(shadowMaskMode == 0) {
         vec3 color = texture(Source, vTexCoord).rgb;
         FragColor = vec4(LinearToSrgb3(color), 1.0);
         return;
     }
 
-    // === SHADOW MASK ON: Phosphor triad ===
+    // === MODE 2: GUTTER MASK (fixed 3x4) ===
+    // Layout per triad:
+    //   Rows 0-2: RGB columns (1x3 each), zigzag offset by +2 px every other column group
+    //   Row 3:    K gutter (3x1) shared overflow row
+    // Channel distribution per triad channel c:
+    //   primary(c)   = min(1, 4c)
+    //   secondary(c) = clamp((4c - 1)/2, 0, 1)
+    //   gutter(c)    = clamp(4c - 3, 0, 1)
+    // This keeps gutter black until c > 0.75.
+    if(shadowMaskMode == 2) {
+        float triadW = 3.0;
+        float triadH = 4.0;
+
+        float triadIdxX = floor(px.x / triadW);
+        float withinTriadX = mod(px.x, triadW);
+        int colIdx = min(int(floor(withinTriadX)), 2);  // 0=R col, 1=G col, 2=B col
+
+        float zigzagOffset = 0.0;
+        if(mod(triadIdxX, 2.0) >= 1.0) {
+            zigzagOffset = 2.0;
+        }
+
+        float adjustedPxY = px.y - zigzagOffset;
+        float triadIdxY = floor(adjustedPxY / triadH);
+        float triadLeftPx = triadIdxX * triadW;
+        float triadTopPx = triadIdxY * triadH + zigzagOffset;
+
+        float withinTriadY = mod(adjustedPxY, triadH);
+        int rowIdx = clamp(int(floor(withinTriadY)), 0, 3);
+
+        // Sample/average the full 3x4 triad input area
+        vec3 totalEnergy = vec3(0.0);
+        float sampleCount = 0.0;
+        for(int sy = 0; sy < 4; sy++) {
+            for(int sx = 0; sx < 3; sx++) {
+                float samplePxX = triadLeftPx + float(sx) + 0.5;
+                float samplePxY = triadTopPx + float(sy) + 0.5;
+                vec2 sampleUV = vec2(samplePxX, samplePxY) / global.OutputSize.xy;
+                sampleUV = clamp(sampleUV, vec2(0.0), vec2(1.0));
+                vec3 sampleColor = texture(Source, sampleUV).rgb;
+                totalEnergy += sampleColor;
+                sampleCount += 1.0;
+            }
+        }
+        vec3 avgColor = totalEnergy / sampleCount;
+
+        // Per-channel piecewise distribution
+        vec3 primaryVal   = min(avgColor * 4.0, vec3(1.0));
+        vec3 secondaryVal = clamp((avgColor * 4.0 - vec3(1.0)) * 0.5, vec3(0.0), vec3(1.0));
+        vec3 gutterVal    = clamp(avgColor * 4.0 - vec3(3.0), vec3(0.0), vec3(1.0));
+
+        vec3 finalColor;
+        if(rowIdx == 3) {
+            // Bottom gutter row (K): only receives overflow beyond 0.75 per channel
+            finalColor = gutterVal;
+        } else {
+            // RGB rows: primary column gets primaryVal, other columns get secondary spill
+            finalColor.r = (colIdx == 0) ? primaryVal.r : secondaryVal.r;
+            finalColor.g = (colIdx == 1) ? primaryVal.g : secondaryVal.g;
+            finalColor.b = (colIdx == 2) ? primaryVal.b : secondaryVal.b;
+        }
+
+        FragColor = vec4(LinearToSrgb3(finalColor), 1.0);
+        return;
+    }
+
+    // === MODE 1: STANDARD SHADOW MASK ===
     float phosphorW = global.PHOSPHOR_WIDTH;
     float triadW = phosphorW * 3.0;
     float triadH = global.PHOSPHOR_HEIGHT;
