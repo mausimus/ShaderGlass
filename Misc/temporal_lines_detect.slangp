@@ -1,0 +1,35 @@
+// Temporal candidate-resolution detector prototype
+//
+// Purpose:
+// - Estimate likely source line count from a fixed candidate set each frame
+// - Persist and smooth estimate across frames using feedback
+// - Visualize detector state
+//
+// Decode visualization (pass 1 output):
+// - Red   = smoothed estimated lines / 1024
+// - Green = smoothed confidence
+// - Blue  = current-frame raw estimate / 1024
+//
+// Notes:
+// - feedback_pass = 1 is required for temporal persistence.
+// - If feedback is unsupported, red will track blue with no smoothing memory.
+
+shaders = 2
+
+// Pass 0: current-frame candidate estimate
+shader0 = temporal_lines_detect_current.slang
+filter_linear0 = false
+scale_type0 = viewport
+scale0 = 1.0
+float_framebuffer0 = true
+alias0 = DetectCurrent
+
+// Pass 1: temporal smoothing using previous pass1 frame
+shader1 = temporal_lines_detect_temporal.slang
+filter_linear1 = false
+scale_type1 = viewport
+scale1 = 1.0
+float_framebuffer1 = true
+alias1 = DetectTemporal
+
+feedback_pass = 1
