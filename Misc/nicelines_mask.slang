@@ -15,6 +15,7 @@
 // === PARAMETERS ===
 #pragma parameter SHADOW_MASK_MODE "Gutter Shadow Mask (Off / Single Width / Double Width)" 1.0 0.0 2.0 1.0
 #pragma parameter GUTTER_CLIP_SAFE "Gutter Anti-Clip Blend" 0.35 0.0 1.0 0.01
+#pragma parameter GUTTER_BRIGHTNESS "Gutter Brightness" 1.18 0.8 1.8 0.01
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -25,6 +26,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     uint FrameCount;
     float SHADOW_MASK_MODE;
     float GUTTER_CLIP_SAFE;
+    float GUTTER_BRIGHTNESS;
     float DEBUG_STAGES;
 } global;
 
@@ -134,6 +136,10 @@ void main() {
     // This keeps triad-average energy stable while reducing dim/clippy appearance.
     float clipSafe = clamp(global.GUTTER_CLIP_SAFE, 0.0, 1.0);
     finalColor = mix(finalColor, avgColor, clipSafe);
+
+    // Explicit post-mask brightness compensation for displays where
+    // intra-triad redistribution is perceptually subtle.
+    finalColor *= global.GUTTER_BRIGHTNESS;
 
     FragColor = vec4(finalColor, 1.0);
 }
