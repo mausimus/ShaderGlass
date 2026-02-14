@@ -7,11 +7,13 @@
 
 // === PARAMETERS ===
 #pragma parameter BLUR_OFFSET "BEAM FOCUS" 0.05 -0.04 0.12 0.01
-#pragma parameter H_BLUR "HORIZONTAL BLUR (worn out tube look)" 1.0 0.0 8.0 0.1
+#pragma parameter H_BLUR "HORIZONTAL SMEAR" 1.0 0.0 8.0 0.1
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
-#pragma parameter AUTO_LINES "ROUND Scanline Count to Multiple of Resolution" 0.0 0.0 1.0 1.0
-#pragma parameter COMPARE "COMPARE (Off / On)" 0.0 0.0 1.0 1.0
+#pragma parameter AUTO_LINES "SCANLINE ROUNDING (for 3D; anti-moire)" 0.0 0.0 1.0 1.0
+#pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
+#pragma parameter DOT_CRAWL "DOT CRAWL (Off / On)" 0.0 0.0 1.0 1.0
+#pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL Intensity" 0.25 0.0 1.0 0.01
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -25,6 +27,8 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float MANUAL_LINES;
     float AUTO_LINES;
     float COMPARE;
+    float DOT_CRAWL;
+    float DOT_CRAWL_INTENSITY;
 } global;
 
 // === VERTEX STAGE ===
@@ -135,8 +139,39 @@ vec3 sampleWithHBlur(vec2 uv, float effectiveScale, float hBlur) {
     }
 }
 
+vec3 applyDotCrawl(vec3 linearColor, vec2 uv) {
+    if(global.DOT_CRAWL < 0.5) {
+        return linearColor;
+    }
+
+    float y = dot(linearColor, vec3(0.299, 0.587, 0.114));
+    float u = linearColor.b - y;
+    float v = linearColor.r - y;
+
+    float chroma = length(vec2(u, v));
+    float chromaGate = smoothstep(0.015, 0.20, chroma);
+
+    vec2 px = uv * global.OutputSize.xy;
+    float subcarrier = px.x * 2.15 + px.y * 1.57 + float(global.FrameCount) * 0.85;
+    float crawl = sin(subcarrier) * 0.75 + sin(subcarrier * 0.47 + 1.13) * 0.25;
+
+    float amount = 0.08 * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 1.0) * chromaGate;
+    u += crawl * amount;
+    v -= crawl * amount * 0.85;
+
+    float r = y + v;
+    float b = y + u;
+    float g = (y - 0.299 * r - 0.114 * b) / 0.587;
+
+    return clamp(vec3(r, g, b), 0.0, 1.0);
+}
+
 void main() {
-    if(global.COMPARE > 0.5 && vTexCoord.x < 0.5) {
+    int compareMode = int(global.COMPARE + 0.5);
+    bool showRawHere = false;
+    if(compareMode == 1 && vTexCoord.x < 0.5) showRawHere = true;
+    if(compareMode == 2 && vTexCoord.x >= 0.5) showRawHere = true;
+    if(showRawHere) {
         FragColor = vec4(SrgbToLinear3(texture(Source, vTexCoord).rgb), 1.0);
         return;
     }
@@ -147,6 +182,7 @@ void main() {
 
     // Apply downscale + horizontal blur, output in linear space
     vec3 color = sampleWithHBlur(vTexCoord, effectiveScale, global.H_BLUR);
+    color = applyDotCrawl(color, vTexCoord);
 
     FragColor = vec4(color, 1.0);
 }

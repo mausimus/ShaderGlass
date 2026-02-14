@@ -13,9 +13,9 @@
 // === PARAMETERS ===
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
-#pragma parameter AUTO_LINES "ROUND Scanline Count to Multiple of Resolution" 0.0 0.0 1.0 1.0
-#pragma parameter COMPARE "COMPARE (Off / On)" 0.0 0.0 1.0 1.0
-#pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.25 0.0 0.35 0.05
+#pragma parameter AUTO_LINES "SCANLINE ROUNDING (for 3D; anti-moire)" 0.0 0.0 1.0 1.0
+#pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
+#pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.25 0.0 0.5 0.05
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -144,7 +144,11 @@ void main() {
     float maxWidth = 1.0;    // Hardcoded thickness max
     float edgeSoftness = 0.3;
 
-    if(global.COMPARE > 0.5 && vTexCoord.x < 0.5) {
+    int compareMode = int(global.COMPARE + 0.5);
+    bool showRawHere = false;
+    if(compareMode == 1 && vTexCoord.x < 0.5) showRawHere = true;
+    if(compareMode == 2 && vTexCoord.x >= 0.5) showRawHere = true;
+    if(showRawHere) {
         FragColor = texture(Source, vTexCoord);
         return;
     }

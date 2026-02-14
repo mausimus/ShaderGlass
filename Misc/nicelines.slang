@@ -4,9 +4,9 @@
 #pragma parameter COMPARE_MODE "[v26] Half Screen COMPARE" 0.0 0.0 1.0 1.0
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
-#pragma parameter AUTO_LINES "ROUND Scanline Count to Multiple of Resolution" 0.0 0.0 1.0 1.0
+#pragma parameter AUTO_LINES "SCANLINE ROUNDING (for 3D; anti-moire)" 0.0 0.0 1.0 1.0
 #pragma parameter BLUR_OFFSET "BEAM FOCUS" 0.04 -0.04 0.12 0.01
-#pragma parameter H_BLUR "HORIZONTAL BLUR (worn out tube look)" 1.0 0.0 8.0 0.1
+#pragma parameter H_BLUR "HORIZONTAL SMEAR" 1.0 0.0 8.0 0.1
 
 // === SUBPIXEL NOISE PARAMETERS ===
 #pragma parameter SUBPIXEL_NOISE "SHADOW MASK Off/Swap/Triad" 2.0 0.0 2.0 1.0
