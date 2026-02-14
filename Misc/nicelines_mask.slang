@@ -130,12 +130,9 @@ void main() {
     }
 
     // Clip-safe blend (adapted from prior anti-clipping fix):
-    // In brighter triads, gently blend masked output toward triad average.
-    // This reduces perceived dim/clippy behavior on high-contrast displays,
-    // while preserving triad-average energy because avg(finalColor) == avgColor.
-    float bright = max(max(avgColor.r, avgColor.g), avgColor.b);
-    float brightBlend = smoothstep(0.45, 1.0, bright);
-    float clipSafe = clamp(global.GUTTER_CLIP_SAFE, 0.0, 1.0) * brightBlend;
+    // Blend masked output toward triad average by user amount.
+    // This keeps triad-average energy stable while reducing dim/clippy appearance.
+    float clipSafe = clamp(global.GUTTER_CLIP_SAFE, 0.0, 1.0);
     finalColor = mix(finalColor, avgColor, clipSafe);
 
     FragColor = vec4(finalColor, 1.0);
