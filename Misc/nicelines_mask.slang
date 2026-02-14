@@ -20,8 +20,6 @@
 #pragma parameter PHOSPHOR_WIDTH "Phosphor Width (px)" 1.0 1.0 2.0 1.0
 #pragma parameter PHOSPHOR_HEIGHT "Phosphor Height (px)" 3.0 2.0 4.0 1.0
 #pragma parameter PHOSPHOR_GRADATION "Vertical Phosphor Gradation" 0.0 0.0 1.0 1.0
-#pragma parameter MASK_STRENGTH "MASK Strength (1=Full Primaries, 0=None)" 1.0 0.0 1.0 0.05
-#pragma parameter MASK_THRESHOLD "MASK Midtone Desaturation (1=Natural, Lower=More)" 1.0 0.1 1.0 0.05
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
@@ -35,8 +33,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float PHOSPHOR_WIDTH;
     float PHOSPHOR_HEIGHT;
     float PHOSPHOR_GRADATION;
-    float MASK_STRENGTH;
-    float MASK_THRESHOLD;
     float DEBUG_STAGES;
     float DEBUG_SPLIT;
 } global;
@@ -161,27 +157,10 @@ void main() {
     //   Use t = max(0, (3m-1)/(2m)) where m = max(avgColor.r, avgColor.g, avgColor.b)
 
     float maxChan = max(avgColor.r, max(avgColor.g, avgColor.b));
-
-    // --- Clip-safe t: mandatory floor to prevent framebuffer clipping ---
-    float t_clip = 0.0;
+    float t = 0.0;
     if(maxChan * 3.0 > 1.0) {
-        t_clip = (3.0 * maxChan - 1.0) / (2.0 * maxChan);
+        t = (3.0 * maxChan - 1.0) / (2.0 * maxChan);
     }
-
-    // --- MASK_THRESHOLD: shift where desaturation starts (affects mids) ---
-    // At 1.0 = natural clip point only. Lower = mids desaturate earlier.
-    float t_threshold = 0.0;
-    float effectiveMax = maxChan / global.MASK_THRESHOLD;
-    if(effectiveMax * 3.0 > 1.0) {
-        t_threshold = (3.0 * effectiveMax - 1.0) / (2.0 * effectiveMax);
-    }
-
-    // --- MASK_STRENGTH: global separation amount (affects everything) ---
-    // At 1.0 = full primaries. At 0.0 = no mask. Inverted to blend factor.
-    float t_strength = 1.0 - global.MASK_STRENGTH;
-
-    // Final t: strictest constraint wins (most blending)
-    float t = max(max(t_clip, t_threshold), t_strength);
 
     // Hard-primary for this phosphor position
     vec3 hardPri;
@@ -193,7 +172,7 @@ void main() {
         hardPri = vec3(0.0, 0.0, avgColor.b * 3.0);
     }
 
-    // Blend toward avgColor: clip-safe + user adjustments
+    // Blend toward avgColor to prevent clipping
     vec3 phosphorEnergy = mix(hardPri, avgColor, t);
 
     // === VERTICAL PHOSPHOR GRADATION ===
