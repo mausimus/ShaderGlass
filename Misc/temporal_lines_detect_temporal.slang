@@ -1,8 +1,5 @@
 #version 450
 
-#pragma parameter TEMP_ALPHA "DETECT Temporal Alpha" 0.10 0.0 1.0 0.01
-#pragma parameter SWITCH_BIAS "DETECT Switch Bias" 0.08 0.0 0.5 0.01
-
 #pragma stage vertex
 layout(location = 0) in vec4 Position;
 layout(location = 1) in vec2 TexCoord;
@@ -19,6 +16,9 @@ layout(set = 0, binding = 2) uniform sampler2D Source;        // pass0 current e
 layout(set = 0, binding = 3) uniform sampler2D PassFeedback;  // previous pass1
 
 void main() {
+    const float TEMP_ALPHA = 0.10;
+    const float SWITCH_BIAS = 0.08;
+
     vec3 cur = texture(Source, vTexCoord).rgb;
     vec3 prev = texture(PassFeedback, vTexCoord).rgb;
 

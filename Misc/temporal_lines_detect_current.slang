@@ -1,7 +1,5 @@
 #version 450
 
-#pragma parameter DETECT_ENABLE "DETECT Candidate Set Off/On" 1.0 0.0 1.0 1.0
-
 #pragma stage vertex
 layout(location = 0) in vec4 Position;
 layout(location = 1) in vec2 TexCoord;
@@ -25,11 +23,6 @@ float scoreCandidate(float srcH, float cand) {
 }
 
 void main() {
-    if(DETECT_ENABLE < 0.5) {
-        FragColor = vec4(240.0 / 1024.0, 0.0, 240.0 / 1024.0, 1.0);
-        return;
-    }
-
     float srcH = float(textureSize(Source, 0).y);
 
     const int N = 12;
