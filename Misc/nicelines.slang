@@ -2,9 +2,8 @@
 
 // === PARAMETERS ===
 #pragma parameter COMPARE_MODE "[v26] Half Screen COMPARE" 0.0 0.0 1.0 1.0
-#pragma parameter SCANLINE_MODE "SCANLINES MODE (224p / 240p / Manual)" 0.0 0.0 2.0 1.0
+#pragma parameter SCANLINE_MODE "SCANLINES MODE (180p / 224p / 240p / 270p / 360p / Manual)" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
-#pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution (Recommend OFF for 2D games, ON for 3D;)" 0.0 0.0 1.0 1.0
 #pragma parameter BLUR_OFFSET "DOWNSCALING Prepass (Lower = Softer)" 0.04 -0.04 0.12 0.01
 #pragma parameter H_BLUR "HORIZONTAL BLUR (worn out tube look)" 1.0 0.0 8.0 0.1
@@ -31,7 +30,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float COMPARE_MODE;
     float SCANLINE_MODE;
     float MANUAL_LINES;
-    float FINETUNE_LINES;
     float AUTO_LINES;
     float BLUR_OFFSET;
     float H_BLUR;
@@ -152,15 +150,18 @@ void main() {
     float targetLines;
     int mode = int(global.SCANLINE_MODE + 0.5);
     if(mode == 0) {
-        targetLines = 224.0;
+        targetLines = 180.0;
     } else if(mode == 1) {
+        targetLines = 224.0;
+    } else if(mode == 2) {
         targetLines = 240.0;
+    } else if(mode == 3) {
+        targetLines = 270.0;
+    } else if(mode == 4) {
+        targetLines = 360.0;
     } else {
         targetLines = global.MANUAL_LINES;
     }
-    
-    // Apply finetune adjustment
-    targetLines += global.FINETUNE_LINES;
     
     // Auto-fit: find nearest factor of output height to target
     if(global.AUTO_LINES > 0.5) {

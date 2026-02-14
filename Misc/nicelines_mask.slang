@@ -16,7 +16,6 @@
 #pragma parameter SHADOW_MASK "Gutter Shadow Mask Off/On" 1.0 0.0 1.0 1.0
 #pragma parameter GUTTER_DOUBLE_WIDTH "Gutter Mask Double Width Off/On" 0.0 0.0 1.0 1.0
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
-#pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -27,7 +26,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float SHADOW_MASK;
     float GUTTER_DOUBLE_WIDTH;
     float DEBUG_STAGES;
-    float DEBUG_SPLIT;
 } global;
 
 // === VERTEX STAGE ===
@@ -49,20 +47,6 @@ layout(set = 0, binding = 2) uniform sampler2D Source;  // Pass 1 output (scanli
 
 void main() {
     vec2 px = vTexCoord * global.OutputSize.xy;
-
-    // === COMPARISON SPLIT ===
-    // Mode 1: top half = raw input (no mask), bottom half = processed
-    // Mode 2: bottom half = raw input, top half = processed
-    int splitMode = int(global.DEBUG_SPLIT + 0.5);
-    bool showRawHere = false;
-    if(splitMode == 1 && vTexCoord.y < 0.5) showRawHere = true;
-    if(splitMode == 2 && vTexCoord.y >= 0.5) showRawHere = true;
-
-    if(showRawHere) {
-        vec3 raw = texture(Source, vTexCoord).rgb;
-        FragColor = vec4(raw, 1.0);
-        return;
-    }
 
     // === DEBUG SIDE-BY-SIDE ===
     // Left 2/3 shows previous passes without mask

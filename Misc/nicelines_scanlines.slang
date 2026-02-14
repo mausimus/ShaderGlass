@@ -1,5 +1,5 @@
 #version 450
-// nicelines v8 (2026-02-14)
+// nicelines v9 (2026-02-14)
 
 // === PASS 1: SCANLINES ===
 // This pass handles: scanline simulation with energy preservation
@@ -11,14 +11,12 @@
 // Each channel gets its own independent scanline position and mask.
 
 // === PARAMETERS ===
-#pragma parameter SCANLINE_MODE "SCANLINES MODE (224p / 240p / Manual)" 1.0 0.0 2.0 1.0
+#pragma parameter SCANLINE_MODE "SCANLINES MODE (180p / 224p / 240p / 270p / 360p / Manual)" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
-#pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
 #pragma parameter MISCONVERGENCE "MISCONVERGENCE Off/On" 1.0 0.0 1.0 1.0
 #pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.25 0.0 0.35 0.05
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
-#pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -28,12 +26,10 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     uint FrameCount;
     float SCANLINE_MODE;
     float MANUAL_LINES;
-    float FINETUNE_LINES;
     float AUTO_LINES;
     float MISCONVERGENCE;
     float CONV_STRENGTH;
     float DEBUG_STAGES;
-    float DEBUG_SPLIT;
 } global;
 
 // === VERTEX STAGE ===
@@ -58,13 +54,18 @@ float getTargetLines() {
     float targetLines;
     int mode = int(global.SCANLINE_MODE + 0.5);
     if(mode == 0) {
-        targetLines = 224.0;
+        targetLines = 180.0;
     } else if(mode == 1) {
+        targetLines = 224.0;
+    } else if(mode == 2) {
         targetLines = 240.0;
+    } else if(mode == 3) {
+        targetLines = 270.0;
+    } else if(mode == 4) {
+        targetLines = 360.0;
     } else {
         targetLines = global.MANUAL_LINES;
     }
-    targetLines += global.FINETUNE_LINES;
 
     if(global.AUTO_LINES > 0.5) {
         float outputHeight = global.OutputSize.y;
@@ -73,14 +74,6 @@ float getTargetLines() {
         targetLines = outputHeight / pixelsPerLine;
     }
     return targetLines;
-}
-
-float getTargetLinesResolved() {
-    float linesNorm = texture(Source, vec2(0.5)).a;
-    if(linesNorm > 0.001) {
-        return linesNorm * 1024.0;
-    }
-    return getTargetLines();
 }
 
 // Calculate scanline width for a given color (single-channel version)
@@ -153,23 +146,13 @@ void main() {
     float maxWidth = 1.0;    // Hardcoded thickness max
     float edgeSoftness = 0.3;
 
-    // === COMPARISON SPLIT: pass through input unchanged ===
-    int splitMode = int(global.DEBUG_SPLIT + 0.5);
-    bool showRawHere = false;
-    if(splitMode == 1 && vTexCoord.y < 0.5) showRawHere = true;
-    if(splitMode == 2 && vTexCoord.y >= 0.5) showRawHere = true;
-    if(showRawHere) {
-        FragColor = texture(Source, vTexCoord);
-        return;
-    }
-
     // Debug mode: left 1/3 shows blur-only passthrough
     if(global.DEBUG_STAGES > 0.5 && vTexCoord.x < (1.0 / 3.0)) {
         FragColor = texture(Source, vTexCoord);
         return;
     }
 
-    float targetLines = getTargetLinesResolved();
+    float targetLines = getTargetLines();
 
     // === PER-CHANNEL SCANLINE PROCESSING WITH MISCONVERGENCE ===
     vec2 uvR = vTexCoord;
