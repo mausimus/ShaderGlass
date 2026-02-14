@@ -14,6 +14,7 @@
 
 // === PARAMETERS ===
 #pragma parameter SHADOW_MASK_MODE "Gutter Shadow Mask (Off / Single Width / Double Width)" 1.0 0.0 2.0 1.0
+#pragma parameter GUTTER_CLIP_SAFE "Gutter Anti-Clip Blend" 0.35 0.0 1.0 0.01
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -23,6 +24,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OutputSize;
     uint FrameCount;
     float SHADOW_MASK_MODE;
+    float GUTTER_CLIP_SAFE;
     float DEBUG_STAGES;
 } global;
 
@@ -126,6 +128,15 @@ void main() {
         finalColor.g = (colIdx == 1) ? primaryVal.g : secondaryVal.g;
         finalColor.b = (colIdx == 2) ? primaryVal.b : secondaryVal.b;
     }
+
+    // Clip-safe blend (adapted from prior anti-clipping fix):
+    // In brighter triads, gently blend masked output toward triad average.
+    // This reduces perceived dim/clippy behavior on high-contrast displays,
+    // while preserving triad-average energy because avg(finalColor) == avgColor.
+    float bright = max(max(avgColor.r, avgColor.g), avgColor.b);
+    float brightBlend = smoothstep(0.45, 1.0, bright);
+    float clipSafe = clamp(global.GUTTER_CLIP_SAFE, 0.0, 1.0) * brightBlend;
+    finalColor = mix(finalColor, avgColor, clipSafe);
 
     FragColor = vec4(finalColor, 1.0);
 }
