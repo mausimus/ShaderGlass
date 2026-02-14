@@ -1,5 +1,5 @@
 #version 450
-// nicelines v15 (2026-02-14)
+// nicelines v16 (2026-02-14)
 
 // === PASS 0: DOWNSCALE BLUR ===
 // This pass handles: downscale blur prepass and horizontal blur
@@ -20,7 +20,6 @@
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
 #pragma parameter TEMPORAL_LINES "AUTO 220-260 (Discrete, Off/On)" 1.0 0.0 1.0 1.0
-#pragma parameter AUTO_METHOD "AUTO Detect Method (ScaleFit / EdgePeaks)" 1.0 0.0 1.0 1.0
 #pragma parameter AUTO_LOCK_BIAS "AUTO Stability Bias (Higher = less switching)" 0.03 0.0 0.20 0.01
 #pragma parameter AUTO_DEBUG_VIEW "AUTO DEBUG HUD (Off/Lines/Confidence)" 0.0 0.0 2.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
@@ -39,7 +38,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float FINETUNE_LINES;
     float AUTO_LINES;
     float TEMPORAL_LINES;
-    float AUTO_METHOD;
     float AUTO_LOCK_BIAS;
     float AUTO_DEBUG_VIEW;
     float DEBUG_SPLIT;
@@ -94,82 +92,103 @@ float getTargetLines() {
     return targetLines;
 }
 
-float scoreCandidate(float srcH, float cand) {
-    float scale = srcH / cand;
-    float fracErr = abs(scale - round(scale));
-    float penalty = (scale < 1.0) ? (1.0 - scale) * 0.25 : 0.0;
-    return fracErr + penalty;
-}
-
-float detectTargetLines220To260(float srcH) {
-    float bestCand = 240.0;
-    float bestScore = 1e9;
-    for(int cand = 220; cand <= 260; cand++) {
-        float c = float(cand);
-        float s = scoreCandidate(srcH, c);
-        if(s < bestScore) {
-            bestScore = s;
-            bestCand = c;
-        }
-    }
-    return bestCand;
-}
-
 float lumaSrgb(vec3 c) {
     return dot(c, vec3(0.299, 0.587, 0.114));
 }
 
-float edgePeriodicityScore(float cand) {
-    const float PI2 = 6.28318530718;
-    const int YS = 40;
-    const int XS = 4;
-    const float XPOS[XS] = float[](0.14, 0.36, 0.64, 0.86);
-
+float rowEdgeEnergy(float yNorm) {
+    const int XS = 5;
+    const float XPOS[XS] = float[](0.10, 0.28, 0.50, 0.72, 0.90);
     vec2 texel = 1.0 / global.SourceSize.xy;
-    float re = 0.0;
-    float im = 0.0;
+
+    float edge = 0.0;
+    for(int xi = 0; xi < XS; xi++) {
+        vec2 uv = vec2(XPOS[xi], yNorm);
+        float up = lumaSrgb(texture(Source, clamp(uv + vec2(0.0, texel.y), vec2(0.0), vec2(1.0))).rgb);
+        float dn = lumaSrgb(texture(Source, clamp(uv - vec2(0.0, texel.y), vec2(0.0), vec2(1.0))).rgb);
+        edge += abs(up - dn);
+    }
+    return edge / float(XS);
+}
+
+void detectActiveWindow(out float yMin, out float yMax) {
+    const int YS = 56;
+    float eMax = 0.0;
+
+    for(int yi = 0; yi < YS; yi++) {
+        float y = (float(yi) + 0.5) / float(YS);
+        eMax = max(eMax, rowEdgeEnergy(y));
+    }
+
+    float threshold = max(0.006, eMax * 0.18);
+    yMin = 0.0;
+    yMax = 1.0;
+    bool found = false;
+
+    for(int yi = 0; yi < YS; yi++) {
+        float y = (float(yi) + 0.5) / float(YS);
+        float e = rowEdgeEnergy(y);
+        if(e > threshold) {
+            if(!found) {
+                yMin = y;
+                found = true;
+            }
+            yMax = y;
+        }
+    }
+
+    if(!found || (yMax - yMin) < 0.08) {
+        yMin = 0.0;
+        yMax = 1.0;
+    }
+}
+
+float signatureScore(float cand, float yMin, float yMax) {
+    const float PI2 = 6.28318530718;
+    const int YS = 52;
+
+    float re1 = 0.0;
+    float im1 = 0.0;
+    float re2 = 0.0;
+    float im2 = 0.0;
+    float hit = 0.0;
+    float off = 0.0;
     float totalEdge = 0.0;
+
     float srcH = global.SourceSize.y;
+    float span = max(yMax - yMin, 1e-4);
     float freq = cand / srcH;
 
-    for(int yi = 1; yi <= YS; yi++) {
-        float y = float(yi) / float(YS + 1);
-        float phase = PI2 * freq * (y * srcH);
-        float cs = cos(phase);
-        float sn = sin(phase);
-
-        float rowEdge = 0.0;
-        for(int xi = 0; xi < XS; xi++) {
-            float x = XPOS[xi];
-            vec2 uv = vec2(x, y);
-            float up = lumaSrgb(texture(Source, clamp(uv + vec2(0.0, texel.y), vec2(0.0), vec2(1.0))).rgb);
-            float dn = lumaSrgb(texture(Source, clamp(uv - vec2(0.0, texel.y), vec2(0.0), vec2(1.0))).rgb);
-            rowEdge += abs(up - dn);
-        }
-
-        re += rowEdge * cs;
-        im += rowEdge * sn;
+    for(int yi = 0; yi < YS; yi++) {
+        float t = (float(yi) + 0.5) / float(YS);
+        float y = mix(yMin, yMax, t);
+        float rowEdge = rowEdgeEnergy(y);
         totalEdge += rowEdge;
+
+        float yPix = y * srcH;
+        float ph1 = PI2 * freq * yPix;
+        float ph2 = PI2 * (2.0 * freq) * yPix;
+        re1 += rowEdge * cos(ph1);
+        im1 += rowEdge * sin(ph1);
+        re2 += rowEdge * cos(ph2);
+        im2 += rowEdge * sin(ph2);
+
+        float cyc = fract((y - yMin) * cand / span);
+        float dist = min(cyc, 1.0 - cyc);
+        float wHit = clamp(1.0 - dist * 8.0, 0.0, 1.0);
+        hit += rowEdge * wHit;
+        off += rowEdge * (1.0 - wHit);
     }
 
     if(totalEdge <= 1e-5) {
         return 0.0;
     }
-    return length(vec2(re, im)) / totalEdge;
-}
 
-float detectTargetLinesByEdges220To260() {
-    float bestCand = 240.0;
-    float bestScore = -1.0;
-    for(int cand = 220; cand <= 260; cand++) {
-        float c = float(cand);
-        float s = edgePeriodicityScore(c);
-        if(s > bestScore) {
-            bestScore = s;
-            bestCand = c;
-        }
-    }
-    return bestCand;
+    float fundamental = length(vec2(re1, im1)) / totalEdge;
+    float harmonic2 = length(vec2(re2, im2)) / totalEdge;
+    float hitRatio = hit / max(hit + off, 1e-5);
+
+    return fundamental * 0.70 + hitRatio * 0.45 - harmonic2 * 0.35;
 }
 
 void detectAutoStats(float srcH, out float bestLines, out float bestQ, out float secondQ) {
@@ -177,11 +196,13 @@ void detectAutoStats(float srcH, out float bestLines, out float bestQ, out float
     bestQ = -1e9;
     secondQ = -1e9;
 
+    float yMin;
+    float yMax;
+    detectActiveWindow(yMin, yMax);
+
     for(int cand = 220; cand <= 260; cand++) {
         float c = float(cand);
-        float q = (global.AUTO_METHOD > 0.5)
-            ? edgePeriodicityScore(c)
-            : -scoreCandidate(srcH, c);
+        float q = signatureScore(c, yMin, yMax);
 
         if(q > bestQ) {
             secondQ = bestQ;
@@ -217,9 +238,10 @@ float getTemporalTargetLines(float manualTargetLines,
     }
 
     float prevLines = clamp(round(prevLinesNorm * 1024.0), 220.0, 260.0);
-    float prevQ = (global.AUTO_METHOD > 0.5)
-        ? edgePeriodicityScore(prevLines)
-        : -scoreCandidate(srcH, prevLines);
+    float yMin;
+    float yMax;
+    detectActiveWindow(yMin, yMax);
+    float prevQ = signatureScore(prevLines, yMin, yMax);
 
     float bias = clamp(global.AUTO_LOCK_BIAS, 0.0, 0.20);
     if(prevQ + bias >= bestQ) {
