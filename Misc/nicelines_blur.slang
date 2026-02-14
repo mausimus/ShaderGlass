@@ -12,7 +12,7 @@
 //   3 = Gaussian prefilter
 
 // === PARAMETERS ===
-#pragma parameter DOWNSAMPLE_MODE "DOWNSAMPLE Mode (Area / StableBox / Bicubic / Gaussian)" 1.0 0.0 3.0 1.0
+#pragma parameter DOWNSAMPLE_MODE "DOWNSAMPLE Mode (Area / StableBox / Bicubic / Gaussian)" 2.0 0.0 3.0 1.0
 #pragma parameter BLUR_OFFSET "DOWNSCALING Prepass (Lower = Softer)" 0.05 -0.04 0.12 0.01
 #pragma parameter H_BLUR "HORIZONTAL BLUR (worn out tube look)" 1.0 0.0 8.0 0.1
 #pragma parameter SCANLINE_MODE "SCANLINES MODE (224p / 240p / Manual)" 1.0 0.0 2.0 1.0

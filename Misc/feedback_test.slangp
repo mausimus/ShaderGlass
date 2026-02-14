@@ -1,0 +1,29 @@
+// feedback support test preset
+// Purpose: verify whether prior-frame feedback/history is available in this runtime.
+//
+// How to use:
+// 1) Load this preset.
+// 2) If feedback works, the screen should smoothly blend over time (temporal trail).
+// 3) If feedback does NOT work, you'll only see the live pulse/no accumulation.
+
+shaders = 2
+
+// Pass 0: generate a moving pulse pattern
+shader0 = feedback_test_gen.slang
+filter_linear0 = false
+scale_type0 = viewport
+scale0 = 1.0
+float_framebuffer0 = true
+alias0 = Gen
+
+// Pass 1: try to blend current frame with previous frame of itself
+shader1 = feedback_test_accum.slang
+filter_linear1 = false
+scale_type1 = viewport
+scale1 = 1.0
+float_framebuffer1 = true
+alias1 = Accum
+
+// Candidate feedback declaration used by many slang runtimes.
+// If unsupported by ShaderGlass, it will be ignored and test will fail (no accumulation).
+feedback_pass = 1
