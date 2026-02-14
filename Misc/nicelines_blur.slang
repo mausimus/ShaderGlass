@@ -1,5 +1,5 @@
 #version 450
-// nicelines v14 (2026-02-14)
+// nicelines v15 (2026-02-14)
 
 // === PASS 0: DOWNSCALE BLUR ===
 // This pass handles: downscale blur prepass and horizontal blur
@@ -19,9 +19,10 @@
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
-#pragma parameter TEMPORAL_LINES "AUTO-DETECT + STABILIZE (Off/On)" 1.0 0.0 1.0 1.0
-#pragma parameter DETECT_BLEND "AUTO-DETECT Amount (Manual <-> Auto)" 0.75 0.0 1.0 0.05
-#pragma parameter TEMP_ALPHA "STABILIZE Speed (Lower = steadier)" 0.12 0.02 0.5 0.01
+#pragma parameter TEMPORAL_LINES "AUTO 220-260 (Discrete, Off/On)" 1.0 0.0 1.0 1.0
+#pragma parameter AUTO_METHOD "AUTO Detect Method (ScaleFit / EdgePeaks)" 1.0 0.0 1.0 1.0
+#pragma parameter AUTO_LOCK_BIAS "AUTO Stability Bias (Higher = less switching)" 0.03 0.0 0.20 0.01
+#pragma parameter AUTO_DEBUG_VIEW "AUTO DEBUG HUD (Off/Lines/Confidence)" 0.0 0.0 2.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -38,8 +39,9 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float FINETUNE_LINES;
     float AUTO_LINES;
     float TEMPORAL_LINES;
-    float DETECT_BLEND;
-    float TEMP_ALPHA;
+    float AUTO_METHOD;
+    float AUTO_LOCK_BIAS;
+    float AUTO_DEBUG_VIEW;
     float DEBUG_SPLIT;
 } global;
 
@@ -99,40 +101,131 @@ float scoreCandidate(float srcH, float cand) {
     return fracErr + penalty;
 }
 
-float detectTargetLines(float srcH) {
-    const int N = 12;
-    const float CANDS[N] = float[](
-        192.0, 200.0, 224.0, 240.0, 256.0, 288.0,
-        320.0, 360.0, 384.0, 400.0, 448.0, 480.0
-    );
-
-    float bestCand = CANDS[0];
+float detectTargetLines220To260(float srcH) {
+    float bestCand = 240.0;
     float bestScore = 1e9;
-    for(int i = 0; i < N; i++) {
-        float s = scoreCandidate(srcH, CANDS[i]);
+    for(int cand = 220; cand <= 260; cand++) {
+        float c = float(cand);
+        float s = scoreCandidate(srcH, c);
         if(s < bestScore) {
             bestScore = s;
-            bestCand = CANDS[i];
+            bestCand = c;
         }
     }
     return bestCand;
 }
 
-float getTemporalTargetLines(float manualTargetLines) {
-    float detectedLines = detectTargetLines(global.SourceSize.y);
-    float detectBlend = (global.TEMPORAL_LINES > 0.5) ? global.DETECT_BLEND : 0.0;
-    float desired = mix(manualTargetLines, detectedLines, clamp(detectBlend, 0.0, 1.0));
+float lumaSrgb(vec3 c) {
+    return dot(c, vec3(0.299, 0.587, 0.114));
+}
+
+float edgePeriodicityScore(float cand) {
+    const float PI2 = 6.28318530718;
+    const int YS = 40;
+    const int XS = 4;
+    const float XPOS[XS] = float[](0.14, 0.36, 0.64, 0.86);
+
+    vec2 texel = 1.0 / global.SourceSize.xy;
+    float re = 0.0;
+    float im = 0.0;
+    float totalEdge = 0.0;
+    float srcH = global.SourceSize.y;
+    float freq = cand / srcH;
+
+    for(int yi = 1; yi <= YS; yi++) {
+        float y = float(yi) / float(YS + 1);
+        float phase = PI2 * freq * (y * srcH);
+        float cs = cos(phase);
+        float sn = sin(phase);
+
+        float rowEdge = 0.0;
+        for(int xi = 0; xi < XS; xi++) {
+            float x = XPOS[xi];
+            vec2 uv = vec2(x, y);
+            float up = lumaSrgb(texture(Source, clamp(uv + vec2(0.0, texel.y), vec2(0.0), vec2(1.0))).rgb);
+            float dn = lumaSrgb(texture(Source, clamp(uv - vec2(0.0, texel.y), vec2(0.0), vec2(1.0))).rgb);
+            rowEdge += abs(up - dn);
+        }
+
+        re += rowEdge * cs;
+        im += rowEdge * sn;
+        totalEdge += rowEdge;
+    }
+
+    if(totalEdge <= 1e-5) {
+        return 0.0;
+    }
+    return length(vec2(re, im)) / totalEdge;
+}
+
+float detectTargetLinesByEdges220To260() {
+    float bestCand = 240.0;
+    float bestScore = -1.0;
+    for(int cand = 220; cand <= 260; cand++) {
+        float c = float(cand);
+        float s = edgePeriodicityScore(c);
+        if(s > bestScore) {
+            bestScore = s;
+            bestCand = c;
+        }
+    }
+    return bestCand;
+}
+
+void detectAutoStats(float srcH, out float bestLines, out float bestQ, out float secondQ) {
+    bestLines = 240.0;
+    bestQ = -1e9;
+    secondQ = -1e9;
+
+    for(int cand = 220; cand <= 260; cand++) {
+        float c = float(cand);
+        float q = (global.AUTO_METHOD > 0.5)
+            ? edgePeriodicityScore(c)
+            : -scoreCandidate(srcH, c);
+
+        if(q > bestQ) {
+            secondQ = bestQ;
+            bestQ = q;
+            bestLines = c;
+        } else if(q > secondQ) {
+            secondQ = q;
+        }
+    }
+}
+
+float getTemporalTargetLines(float manualTargetLines,
+                             out float bestQ,
+                             out float secondQ,
+                             out float instantBestLines) {
+    if(global.TEMPORAL_LINES <= 0.5) {
+        bestQ = 0.0;
+        secondQ = 0.0;
+        instantBestLines = manualTargetLines;
+        return manualTargetLines;
+    }
+
+    float srcH = global.SourceSize.y;
+    float bestNow;
+    detectAutoStats(srcH, bestNow, bestQ, secondQ);
+    instantBestLines = bestNow;
 
     vec4 prevState = texture(PassFeedback, vec2(0.5));
     float prevLinesNorm = prevState.a;
     bool prevValid = prevLinesNorm > 0.001;
-    if(!prevValid || global.TEMPORAL_LINES <= 0.5) {
-        return desired;
+    if(!prevValid) {
+        return bestNow;
     }
 
-    float prevLines = prevLinesNorm * 1024.0;
-    float alpha = clamp(global.TEMP_ALPHA, 0.02, 0.5);
-    return mix(prevLines, desired, alpha);
+    float prevLines = clamp(round(prevLinesNorm * 1024.0), 220.0, 260.0);
+    float prevQ = (global.AUTO_METHOD > 0.5)
+        ? edgePeriodicityScore(prevLines)
+        : -scoreCandidate(srcH, prevLines);
+
+    float bias = clamp(global.AUTO_LOCK_BIAS, 0.0, 0.20);
+    if(prevQ + bias >= bestQ) {
+        return prevLines;
+    }
+    return bestNow;
 }
 
 // Area-average downsample: loops over all source texels covered by the output pixel
@@ -309,12 +402,63 @@ void main() {
         return;
     }
 
-    float targetLines = getTemporalTargetLines(getTargetLines());
+    float targetLines;
+    float bestQ = 0.0;
+    float secondQ = 0.0;
+    float instantBestLines = 0.0;
+    if(global.TEMPORAL_LINES > 0.5) {
+        vec4 prevState = texture(PassFeedback, vec2(0.5));
+        float prevLinesNorm = prevState.a;
+        float fallbackLines = (prevLinesNorm > 0.001) ? clamp(round(prevLinesNorm * 1024.0), 220.0, 260.0) : getTargetLines();
+
+        vec2 probe = global.OutputSize.xy * 0.5;
+        bool isProbePixel = abs(gl_FragCoord.x - probe.x) < 1.5 && abs(gl_FragCoord.y - probe.y) < 1.5;
+        targetLines = isProbePixel ? getTemporalTargetLines(getTargetLines(), bestQ, secondQ, instantBestLines) : fallbackLines;
+    } else {
+        targetLines = getTargetLines();
+    }
     float baselineScale = targetLines / global.SourceSize.y;
     float effectiveScale = clamp(baselineScale + global.BLUR_OFFSET, 0.02, 1.0);
 
     // Apply downscale + horizontal blur, output in linear space
     vec3 color = sampleWithHBlur(vTexCoord, effectiveScale, global.H_BLUR);
+
+    int autoDbg = int(global.AUTO_DEBUG_VIEW + 0.5);
+    if(autoDbg > 0) {
+        float hudW = min(260.0, global.OutputSize.x * 0.35);
+        float hudH = 26.0;
+        bool inHud = (gl_FragCoord.x <= hudW && gl_FragCoord.y >= (global.OutputSize.y - hudH));
+
+        if(inHud) {
+            float hudLines = targetLines;
+            float hudBestQ = bestQ;
+            float hudSecondQ = secondQ;
+            float hudInstantBest = instantBestLines;
+
+            if(global.TEMPORAL_LINES > 0.5) {
+                hudLines = getTemporalTargetLines(getTargetLines(), hudBestQ, hudSecondQ, hudInstantBest);
+            }
+
+            float x01 = clamp(gl_FragCoord.x / hudW, 0.0, 1.0);
+            float linePos = clamp((hudLines - 220.0) / 40.0, 0.0, 1.0);
+            float gap = max(0.0, hudBestQ - hudSecondQ);
+            float gapVis = clamp(gap * 8.0, 0.0, 1.0);
+
+            if(autoDbg == 1) {
+                vec3 bg = vec3(0.08, 0.08, 0.10);
+                vec3 fg = vec3(0.10, 0.75, 0.25);
+                color = (x01 <= linePos) ? fg : bg;
+
+                if(abs(x01 - linePos) < (1.5 / hudW)) {
+                    color = vec3(1.0, 0.95, 0.2);
+                }
+            } else {
+                vec3 bg = vec3(0.08, 0.08, 0.10);
+                vec3 fg = vec3(0.20, 0.55, 0.95);
+                color = (x01 <= gapVis) ? fg : bg;
+            }
+        }
+    }
 
     float linesNorm = clamp(targetLines / 1024.0, 0.0, 1.0);
 
