@@ -13,10 +13,9 @@
 #pragma parameter AUTO_LINES "SCANLINE ROUNDING (for 3D; anti-moire)" 0.0 0.0 1.0 1.0
 #pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
 #pragma parameter DOT_CRAWL "DOT CRAWL (Off / On)" 0.0 0.0 1.0 1.0
-#pragma parameter DOT_CRAWL_MODE "DOT CRAWL MODE (v3 Composite / v4 Refract)" 0.0 0.0 1.0 1.0
-#pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL Intensity" 0.25 0.0 1.0 0.01
+#pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL Intensity" 0.35 0.0 2.5 0.01
 #pragma parameter DOT_CRAWL_V4_SIZE "DOT CRAWL v4 Chunk Size" 3.0 1.0 12.0 1.0
-#pragma parameter DOT_CRAWL_V4_REFRACTION "DOT CRAWL v4 Refraction" 1.0 0.0 2.0 0.05
+#pragma parameter DOT_CRAWL_V4_REFRACTION "DOT CRAWL v4 Refraction" 1.2 0.0 6.0 0.05
 #pragma parameter DOT_CRAWL_DEBUG "DOT CRAWL Debug (Off / Bypass / Diff)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -32,7 +31,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float AUTO_LINES;
     float COMPARE;
     float DOT_CRAWL;
-    float DOT_CRAWL_MODE;
     float DOT_CRAWL_INTENSITY;
     float DOT_CRAWL_V4_SIZE;
     float DOT_CRAWL_V4_REFRACTION;
@@ -147,66 +145,34 @@ vec3 sampleWithHBlur(vec2 uv, float effectiveScale, float hBlur) {
     }
 }
 
-vec3 applyDotCrawlComposite(vec3 linearColor, vec2 uv) {
-    vec2 srcTexel = 1.0 / global.SourceSize.xy;
-
-    vec3 rgbL = SrgbToLinear3(texture(Source, clamp(uv - vec2(srcTexel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
-    vec3 rgbC = linearColor;
-    vec3 rgbR = SrgbToLinear3(texture(Source, clamp(uv + vec2(srcTexel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
-
-    float yL = dot(rgbL, vec3(0.299, 0.587, 0.114));
-    float yC = dot(rgbC, vec3(0.299, 0.587, 0.114));
-    float yR = dot(rgbR, vec3(0.299, 0.587, 0.114));
-
-    float yLp = (yL + 2.0 * yC + yR) * 0.25;
-    float yHp = yC - yLp;
-
-    vec3 d = rgbR - rgbL;
-    float edge = smoothstep(0.02, 0.14, length(d) * 1.5 + abs(yR - yL));
-
-    float i = dot(rgbC, vec3( 0.596, -0.275, -0.321));
-    float q = dot(rgbC, vec3( 0.212, -0.523,  0.311));
-
-    vec2 px = uv * global.OutputSize.xy;
-    float x = floor(px.x);
-    float y = floor(px.y);
-    float lineAlt = mod(y, 2.0) * 0.5;
-    float phase = 6.28318530718 * (x * 0.28 + lineAlt + float(global.FrameCount) * 0.025);
-
-    float leak = yHp * (0.62 * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 1.0)) * edge;
-    i += leak * cos(phase);
-    q += leak * sin(phase);
-
-    float r = yC + 0.956 * i + 0.621 * q;
-    float g = yC - 0.272 * i - 0.647 * q;
-    float b = yC - 1.106 * i + 1.703 * q;
-    return clamp(vec3(r, g, b), 0.0, 1.0);
-}
-
 vec3 applyDotCrawlRefract(vec3 linearColor, vec2 uv) {
     vec2 srcTexel = 1.0 / global.SourceSize.xy;
 
-    // Edge detection from source to target contrasting boundaries.
+    // Chroma-only edge detection from source (ignore luma changes).
     vec3 cL = SrgbToLinear3(texture(Source, clamp(uv - vec2(srcTexel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
     vec3 cR = SrgbToLinear3(texture(Source, clamp(uv + vec2(srcTexel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
     vec3 cU = SrgbToLinear3(texture(Source, clamp(uv - vec2(0.0, srcTexel.y), vec2(0.0), vec2(1.0))).rgb);
     vec3 cD = SrgbToLinear3(texture(Source, clamp(uv + vec2(0.0, srcTexel.y), vec2(0.0), vec2(1.0))).rgb);
 
-    float yL = dot(cL, vec3(0.299, 0.587, 0.114));
-    float yR = dot(cR, vec3(0.299, 0.587, 0.114));
-    float yU = dot(cU, vec3(0.299, 0.587, 0.114));
-    float yD = dot(cD, vec3(0.299, 0.587, 0.114));
+    const vec3 LUMA = vec3(0.299, 0.587, 0.114);
+    vec3 chL = cL - vec3(dot(cL, LUMA));
+    vec3 chR = cR - vec3(dot(cR, LUMA));
+    vec3 chU = cU - vec3(dot(cU, LUMA));
+    vec3 chD = cD - vec3(dot(cD, LUMA));
 
-    vec2 grad = vec2(yR - yL, yD - yU);
+    // Direction from chroma magnitude gradient only.
+    float mL = length(chL);
+    float mR = length(chR);
+    float mU = length(chU);
+    float mD = length(chD);
+    vec2 grad = vec2(mR - mL, mD - mU);
     float gradLen = length(grad);
     vec2 gradDir = (gradLen > 1e-5) ? (grad / gradLen) : vec2(0.0, 0.0);
 
-    vec3 dX = cR - cL;
-    vec3 dY = cD - cU;
-    float chromaEdge = length(dX - vec3(dot(dX, vec3(0.299, 0.587, 0.114))))
-                     + length(dY - vec3(dot(dY, vec3(0.299, 0.587, 0.114))));
+    // Chroma contrast across horizontal/vertical neighbors.
+    float chromaEdge = length(chR - chL) + length(chD - chU);
 
-    float edgeMask = smoothstep(0.02, 0.12, gradLen + chromaEdge * 0.55);
+    float edgeMask = smoothstep(0.01, 0.11, chromaEdge);
 
     // Refraction axis fixed at 45 degrees.
     vec2 refDir = normalize(vec2(1.0, 1.0));
@@ -220,8 +186,8 @@ vec3 applyDotCrawlRefract(vec3 linearColor, vec2 uv) {
     float wave = sin(diag * 1.25 + float(global.FrameCount) * 0.75)
                + 0.45 * sin(diag * 2.1 - float(global.FrameCount) * 0.55 + 1.3);
 
-    float refractScale = clamp(global.DOT_CRAWL_V4_REFRACTION, 0.0, 2.0);
-    float amount = 1.35 * refractScale * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 1.0) * edgeMask * orientMask;
+    float refractScale = clamp(global.DOT_CRAWL_V4_REFRACTION, 0.0, 6.0);
+    float amount = 1.35 * refractScale * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 2.5) * edgeMask * orientMask;
     vec2 refractUV = uv + refDir * (wave * amount) * srcTexel;
 
     vec3 refracted = SrgbToLinear3(texture(Source, clamp(refractUV, vec2(0.0), vec2(1.0))).rgb);
@@ -234,11 +200,7 @@ vec3 applyDotCrawl(vec3 linearColor, vec2 uv) {
         return linearColor;
     }
 
-    int mode = int(global.DOT_CRAWL_MODE + 0.5);
-    if(mode == 1) {
-        return applyDotCrawlRefract(linearColor, uv);
-    }
-    return applyDotCrawlComposite(linearColor, uv);
+    return applyDotCrawlRefract(linearColor, uv);
 }
 
 void main() {
