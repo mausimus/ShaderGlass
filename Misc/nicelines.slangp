@@ -39,3 +39,5 @@ filter_linear4 = false
 scale_type4 = viewport
 scale4 = 1.0
 alias4 = Halation
+
+feedback_pass = 0

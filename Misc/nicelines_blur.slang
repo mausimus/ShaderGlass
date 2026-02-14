@@ -1,5 +1,5 @@
 #version 450
-// nicelines v13 (2026-02-14)
+// nicelines v14 (2026-02-14)
 
 // === PASS 0: DOWNSCALE BLUR ===
 // This pass handles: downscale blur prepass and horizontal blur
@@ -19,6 +19,9 @@
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
+#pragma parameter TEMPORAL_LINES "TEMPORAL Target Lines (Off/On)" 1.0 0.0 1.0 1.0
+#pragma parameter DETECT_BLEND "TEMPORAL Detect Blend" 0.75 0.0 1.0 0.05
+#pragma parameter TEMP_ALPHA "TEMPORAL Smoothing" 0.12 0.02 0.5 0.01
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -34,6 +37,9 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float MANUAL_LINES;
     float FINETUNE_LINES;
     float AUTO_LINES;
+    float TEMPORAL_LINES;
+    float DETECT_BLEND;
+    float TEMP_ALPHA;
     float DEBUG_SPLIT;
 } global;
 
@@ -53,6 +59,7 @@ void main() {
 layout(location = 0) in vec2 vTexCoord;
 layout(location = 0) out vec4 FragColor;
 layout(set = 0, binding = 2) uniform sampler2D Source;
+layout(set = 0, binding = 3) uniform sampler2D PassFeedback;
 
 // sRGB to linear conversion (input is sRGB from the game)
 float SrgbToLinear(float c) {
@@ -83,6 +90,49 @@ float getTargetLines() {
         targetLines = outputHeight / pixelsPerLine;
     }
     return targetLines;
+}
+
+float scoreCandidate(float srcH, float cand) {
+    float scale = srcH / cand;
+    float fracErr = abs(scale - round(scale));
+    float penalty = (scale < 1.0) ? (1.0 - scale) * 0.25 : 0.0;
+    return fracErr + penalty;
+}
+
+float detectTargetLines(float srcH) {
+    const int N = 12;
+    const float CANDS[N] = float[](
+        192.0, 200.0, 224.0, 240.0, 256.0, 288.0,
+        320.0, 360.0, 384.0, 400.0, 448.0, 480.0
+    );
+
+    float bestCand = CANDS[0];
+    float bestScore = 1e9;
+    for(int i = 0; i < N; i++) {
+        float s = scoreCandidate(srcH, CANDS[i]);
+        if(s < bestScore) {
+            bestScore = s;
+            bestCand = CANDS[i];
+        }
+    }
+    return bestCand;
+}
+
+float getTemporalTargetLines(float manualTargetLines) {
+    float detectedLines = detectTargetLines(global.SourceSize.y);
+    float detectBlend = (global.TEMPORAL_LINES > 0.5) ? global.DETECT_BLEND : 0.0;
+    float desired = mix(manualTargetLines, detectedLines, clamp(detectBlend, 0.0, 1.0));
+
+    vec4 prevState = texture(PassFeedback, vec2(0.5));
+    float prevLinesNorm = prevState.a;
+    bool prevValid = prevLinesNorm > 0.001;
+    if(!prevValid || global.TEMPORAL_LINES <= 0.5) {
+        return desired;
+    }
+
+    float prevLines = prevLinesNorm * 1024.0;
+    float alpha = clamp(global.TEMP_ALPHA, 0.02, 0.5);
+    return mix(prevLines, desired, alpha);
 }
 
 // Area-average downsample: loops over all source texels covered by the output pixel
@@ -254,16 +304,19 @@ void main() {
     if(splitMode == 2 && vTexCoord.y >= 0.5) showRawHere = true;
     if(showRawHere) {
         // Pass through in linear space (downstream passes also skip)
-        FragColor = vec4(SrgbToLinear3(texture(Source, vTexCoord).rgb), 1.0);
+        float linesNormRaw = clamp(getTargetLines() / 1024.0, 0.0, 1.0);
+        FragColor = vec4(SrgbToLinear3(texture(Source, vTexCoord).rgb), linesNormRaw);
         return;
     }
 
-    float targetLines = getTargetLines();
+    float targetLines = getTemporalTargetLines(getTargetLines());
     float baselineScale = targetLines / global.SourceSize.y;
     float effectiveScale = clamp(baselineScale + global.BLUR_OFFSET, 0.02, 1.0);
 
     // Apply downscale + horizontal blur, output in linear space
     vec3 color = sampleWithHBlur(vTexCoord, effectiveScale, global.H_BLUR);
 
-    FragColor = vec4(color, 1.0);
+    float linesNorm = clamp(targetLines / 1024.0, 0.0, 1.0);
+
+    FragColor = vec4(color, linesNorm);
 }
