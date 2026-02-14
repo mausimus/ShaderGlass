@@ -1,13 +1,12 @@
 #version 450
-// nicelines v11 (2026-02-14)
+// nicelines v12 (2026-02-14)
 
 // === PASS 3: HALATION EXTRACT ===
 // Input: masked image from pass 2 (linear)
 // Output: extracted highlight mask in linear space
 
-#pragma parameter HALATION_THRESHOLD "HALATION Threshold" 0.79 0.6 0.99 0.01
-#pragma parameter HALATION_GROW_RADIUS "HALATION Extract Grow Radius" 1.2 0.0 8.0 0.1
-#pragma parameter HALATION_GROW_FILL "HALATION Extract Grow Fill" 0.75 0.0 1.0 0.05
+#pragma parameter HALATION_THRESHOLD "HALATION Threshold" 0.97 0.6 0.99 0.01
+#pragma parameter HALATION_GROW_RADIUS "HALATION Extract Grow Radius" 2.4 0.0 8.0 0.1
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -17,7 +16,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     uint FrameCount;
     float HALATION_THRESHOLD;
     float HALATION_GROW_RADIUS;
-    float HALATION_GROW_FILL;
 } global;
 
 #pragma stage vertex
@@ -44,7 +42,7 @@ vec3 sampleExtract(vec2 uv, float threshold) {
     return extractHighlights(c, threshold);
 }
 
-vec3 growHighlights(vec2 uv, float threshold, float radiusPx, float fill) {
+vec3 growHighlights(vec2 uv, float threshold, float radiusPx) {
     vec3 center = sampleExtract(uv, threshold);
     if(radiusPx <= 0.001) return center;
 
@@ -68,15 +66,14 @@ vec3 growHighlights(vec2 uv, float threshold, float radiusPx, float fill) {
     }
 
     vec3 avgV = sumV / 9.0;
-    return max(maxV, avgV * fill);
+    return max(maxV, avgV * 0.75);
 }
 
 void main() {
     vec3 grown = growHighlights(
         vTexCoord,
         global.HALATION_THRESHOLD,
-        global.HALATION_GROW_RADIUS,
-        global.HALATION_GROW_FILL
+        global.HALATION_GROW_RADIUS
     );
     FragColor = vec4(grown, 1.0);
 }

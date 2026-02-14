@@ -7,9 +7,9 @@
 // Output: final image in sRGB
 
 // === PARAMETERS ===
-#pragma parameter HALATION_AMOUNT "HALATION Amount" 0.12 0.0 2.0 0.01
-#pragma parameter HALATION_RADIUS "HALATION Radius" 2.0 0.0 12.0 0.1
-#pragma parameter HALATION_BLUR_MODE "HALATION Blur Mode (Gaussian / Bokeh / DualKawase / GooeyDual)" 2.0 0.0 3.0 1.0
+#pragma parameter HALATION_AMOUNT "HALATION Amount" 0.48 0.0 2.0 0.01
+#pragma parameter HALATION_RADIUS "HALATION Radius" 12.0 0.0 12.0 0.1
+#pragma parameter HALATION_BLUR_MODE "HALATION Blur Mode (Gaussian / Bokeh / DualKawase / GooeyDual)" 0.0 0.0 3.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
