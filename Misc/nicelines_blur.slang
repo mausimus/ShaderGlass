@@ -12,14 +12,13 @@
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
 #pragma parameter AUTO_LINES "SCANLINE ROUNDING (for 3D; anti-moire)" 0.0 0.0 1.0 1.0
 #pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
-#pragma parameter DOT_CRAWL "DOT CRAWL v6 (Off / On)" 0.0 0.0 1.0 1.0
-#pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL v6 Intensity" 0.6 0.0 3.0 0.01
-#pragma parameter V6_EDGE_GROW "DOT CRAWL v6 Edge Grow" 2.0 0.0 12.0 1.0
-#pragma parameter V6_LINE_THICKNESS "DOT CRAWL v6 Line Thickness" 1.0 0.25 4.0 0.05
-#pragma parameter V6_SWAP_SIZE "DOT CRAWL v6 Swap Size" 1.2 0.0 8.0 0.1
-#pragma parameter V6_SPEED "DOT CRAWL v6 Horizontal Speed" 0.8 0.0 6.0 0.05
-#pragma parameter V6_TARGET "DOT CRAWL v6 Target (RGB / Luma / Chroma)" 0.0 0.0 2.0 1.0
-#pragma parameter V6_COLOR_BIAS "DOT CRAWL v6 Color Select" 1.0 0.2 2.0 0.05
+#pragma parameter DOT_CRAWL "DOT CRAWL v6 (Off / On)" 1.0 0.0 1.0 1.0
+#pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL v6 Intensity" 3.0 0.0 6.0 0.01
+#pragma parameter V6_EDGE_GROW "DOT CRAWL v6 Edge Grow" 12.0 0.0 24.0 1.0
+#pragma parameter V6_LINE_THICKNESS "DOT CRAWL v6 Line Thickness" 0.65 0.1 1.0 0.05
+#pragma parameter V6_SWAP_SIZE "DOT CRAWL v6 Swap Size" 1.8 0.0 8.0 0.1
+#pragma parameter V6_SPEED "DOT CRAWL v6 Horizontal Speed" 1.1 0.0 3.0 0.05
+#pragma parameter V6_COLOR_BIAS "DOT CRAWL v6 Color Select" 2.0 0.2 4.0 0.05
 #pragma parameter DOT_CRAWL_DEBUG "DOT CRAWL Debug (Off / Bypass / Diff)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -40,7 +39,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float V6_LINE_THICKNESS;
     float V6_SWAP_SIZE;
     float V6_SPEED;
-    float V6_TARGET;
     float V6_COLOR_BIAS;
     float DOT_CRAWL_DEBUG;
 } global;
@@ -225,24 +223,11 @@ vec3 applyDotCrawlV6(vec3 linearColor, vec2 uv, float effectiveScale) {
     vec2 swapUV = uv + swapDir * (swapSign * swapPx) * srcTexel;
     vec3 swapped = sampleWithHBlur(clamp(swapUV, vec2(0.0), vec2(1.0)), effectiveScale, global.H_BLUR);
 
-    int targetMode = int(global.V6_TARGET + 0.5);
-    vec3 outColor;
-    if(targetMode == 1) {
-        // Luma-only masking
-        float y0 = dot(linearColor, vec3(0.299, 0.587, 0.114));
-        float y1 = dot(swapped,   vec3(0.299, 0.587, 0.114));
-        outColor = clamp(linearColor + vec3(y1 - y0), 0.0, 1.0);
-    } else if(targetMode == 2) {
-        // Chroma-only masking
-        float y0 = dot(linearColor, vec3(0.299, 0.587, 0.114));
-        float y1 = dot(swapped,     vec3(0.299, 0.587, 0.114));
-        vec3 ch0 = linearColor - vec3(y0);
-        vec3 ch1 = swapped - vec3(y1);
-        outColor = clamp(vec3(y0) + ch1, 0.0, 1.0);
-    } else {
-        // Full RGB masking
-        outColor = swapped;
-    }
+    // Chroma-only masking (fixed for v6)
+    float y0 = dot(linearColor, vec3(0.299, 0.587, 0.114));
+    float y1 = dot(swapped,     vec3(0.299, 0.587, 0.114));
+    vec3 ch1 = swapped - vec3(y1);
+    vec3 outColor = clamp(vec3(y0) + ch1, 0.0, 1.0);
 
     return mix(linearColor, outColor, clamp(edgeMask, 0.0, 1.0));
 }
