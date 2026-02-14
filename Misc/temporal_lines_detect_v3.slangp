@@ -1,0 +1,18 @@
+// Temporal candidate-resolution detector prototype (v3 cache-buster + debug views)
+shaders = 2
+
+shader0 = temporal_lines_detect_current_v3.slang
+filter_linear0 = false
+scale_type0 = viewport
+scale0 = 1.0
+float_framebuffer0 = true
+alias0 = DetectCurrent
+
+shader1 = temporal_lines_detect_temporal_v3.slang
+filter_linear1 = false
+scale_type1 = viewport
+scale1 = 1.0
+float_framebuffer1 = true
+alias1 = DetectTemporal
+
+feedback_pass = 1
