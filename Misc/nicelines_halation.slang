@@ -13,6 +13,7 @@
 #pragma parameter HALATION_AMOUNT "HALATION Amount" 0.12 0.0 0.5 0.01
 #pragma parameter HALATION_THRESHOLD "HALATION Threshold" 0.9 0.6 0.99 0.01
 #pragma parameter HALATION_RADIUS "HALATION Radius" 2.0 0.0 12.0 0.1
+#pragma parameter HALATION_BLUR_MODE "HALATION Blur Mode (Fast / Gaussian / Bokeh / Kawase / DualKawase / GooeyDual)" 4.0 0.0 5.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -24,6 +25,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float HALATION_AMOUNT;
     float HALATION_THRESHOLD;
     float HALATION_RADIUS;
+    float HALATION_BLUR_MODE;
     float DEBUG_SPLIT;
 } global;
 
@@ -64,7 +66,7 @@ vec3 sampleHighlightAt(vec2 uv, float threshold) {
     return extractHighlights(src, threshold);
 }
 
-vec3 blurHighlights(vec2 uv, float threshold, float radiusPx, vec2 texel) {
+vec3 blurHighlightsFast(vec2 uv, float threshold, float radiusPx, vec2 texel) {
     const int TAP_COUNT = 12;
     const vec2 OFFSETS[TAP_COUNT] = vec2[](
         vec2( 0.00, -1.00),
@@ -94,6 +96,94 @@ vec3 blurHighlights(vec2 uv, float threshold, float radiusPx, vec2 texel) {
     return sum / sumW;
 }
 
+// Heavier true convolution blur on a 5x5 kernel.
+vec3 blurHighlightsGaussian(vec2 uv, float threshold, float radiusPx, vec2 texel) {
+    // Radius maps to sampling step; keeps response smooth as slider changes.
+    float stepPx = max(0.35, radiusPx * 0.5);
+    vec3 sum = vec3(0.0);
+    float sumW = 0.0;
+
+    for(int y = -2; y <= 2; y++) {
+        for(int x = -2; x <= 2; x++) {
+            vec2 offset = vec2(float(x), float(y));
+            float d2 = dot(offset, offset);
+            float w = exp(-d2 * 0.5);
+            vec2 tapUV = uv + offset * stepPx * texel;
+            sum += sampleHighlightAt(tapUV, threshold) * w;
+            sumW += w;
+        }
+    }
+    return sum / sumW;
+}
+
+// Wide circular bokeh-ish blur with many taps to reduce visible stamp artifacts.
+vec3 blurHighlightsBokeh(vec2 uv, float threshold, float radiusPx, vec2 texel) {
+    const int TAP_COUNT = 24;
+    const vec2 DISK[TAP_COUNT] = vec2[](
+        vec2( 1.00,  0.00), vec2( 0.87,  0.50), vec2( 0.50,  0.87), vec2( 0.00,  1.00),
+        vec2(-0.50,  0.87), vec2(-0.87,  0.50), vec2(-1.00,  0.00), vec2(-0.87, -0.50),
+        vec2(-0.50, -0.87), vec2( 0.00, -1.00), vec2( 0.50, -0.87), vec2( 0.87, -0.50),
+        vec2( 0.55,  0.00), vec2( 0.48,  0.28), vec2( 0.28,  0.48), vec2( 0.00,  0.55),
+        vec2(-0.28,  0.48), vec2(-0.48,  0.28), vec2(-0.55,  0.00), vec2(-0.48, -0.28),
+        vec2(-0.28, -0.48), vec2( 0.00, -0.55), vec2( 0.28, -0.48), vec2( 0.48, -0.28)
+    );
+
+    vec3 sum = sampleHighlightAt(uv, threshold);
+    float sumW = 1.0;
+
+    for(int i = 0; i < TAP_COUNT; i++) {
+        float d = length(DISK[i]);
+        float w = (d > 0.8) ? 0.65 : 1.0;
+        vec2 tapUV = uv + DISK[i] * radiusPx * texel;
+        sum += sampleHighlightAt(tapUV, threshold) * w;
+        sumW += w;
+    }
+    return sum / sumW;
+}
+
+// Classic Kawase-like diagonal blur (single iteration style)
+vec3 blurHighlightsKawase(vec2 uv, float threshold, float radiusPx, vec2 texel) {
+    vec2 d = texel * max(0.5, radiusPx);
+    vec3 sum = vec3(0.0);
+    sum += sampleHighlightAt(uv + vec2( d.x,  d.y), threshold);
+    sum += sampleHighlightAt(uv + vec2(-d.x,  d.y), threshold);
+    sum += sampleHighlightAt(uv + vec2( d.x, -d.y), threshold);
+    sum += sampleHighlightAt(uv + vec2(-d.x, -d.y), threshold);
+    sum += sampleHighlightAt(uv, threshold) * 0.5;
+    return sum / 4.5;
+}
+
+// Dual-Kawase-style approximation in one pass:
+// combine a small "downsample-style" diagonal gather and a wider "upsample-style" gather.
+vec3 blurHighlightsDualKawase(vec2 uv, float threshold, float radiusPx, vec2 texel) {
+    float rDown = max(0.6, radiusPx * 0.65);
+    float rUp = max(0.9, radiusPx * 1.35);
+
+    vec3 down = blurHighlightsKawase(uv, threshold, rDown, texel);
+
+    vec2 du = texel * rUp;
+    vec3 up = vec3(0.0);
+    up += sampleHighlightAt(uv + vec2( du.x, 0.0), threshold);
+    up += sampleHighlightAt(uv + vec2(-du.x, 0.0), threshold);
+    up += sampleHighlightAt(uv + vec2(0.0,  du.y), threshold);
+    up += sampleHighlightAt(uv + vec2(0.0, -du.y), threshold);
+    up += sampleHighlightAt(uv + vec2( du.x,  du.y), threshold);
+    up += sampleHighlightAt(uv + vec2(-du.x,  du.y), threshold);
+    up += sampleHighlightAt(uv + vec2( du.x, -du.y), threshold);
+    up += sampleHighlightAt(uv + vec2(-du.x, -du.y), threshold);
+    up *= 1.0 / 8.0;
+
+    return down * 0.55 + up * 0.45;
+}
+
+// Gooey stacked Dual-Kawase-style blur: multiple strengths for natural roll-off.
+vec3 blurHighlightsGooeyDual(vec2 uv, float threshold, float radiusPx, vec2 texel) {
+    vec3 s1 = blurHighlightsDualKawase(uv, threshold, radiusPx * 0.70, texel);
+    vec3 s2 = blurHighlightsDualKawase(uv, threshold, radiusPx * 1.35, texel);
+    vec3 s3 = blurHighlightsDualKawase(uv, threshold, radiusPx * 2.25, texel);
+    return s1 * 0.50 + s2 * 0.33 + s3 * 0.17;
+}
+
 void main() {
     vec3 baseLinear = texture(Source, vTexCoord).rgb;
 
@@ -110,6 +200,7 @@ void main() {
     float amount = global.HALATION_AMOUNT;
     float threshold = global.HALATION_THRESHOLD;
     float radius = global.HALATION_RADIUS;
+    int blurMode = int(global.HALATION_BLUR_MODE + 0.5);
 
     if(amount <= 0.0001 || radius <= 0.0001) {
         FragColor = vec4(LinearToSrgb3(baseLinear), 1.0);
@@ -118,9 +209,33 @@ void main() {
 
     vec2 texel = 1.0 / global.OutputSize.xy;
 
-    // Two-scale smooth blur to avoid stamped/stepped ring artifacts
-    vec3 blurTight = blurHighlights(vTexCoord, threshold, radius, texel);
-    vec3 blurWide = blurHighlights(vTexCoord, threshold, radius * 2.2, texel);
+    vec3 blurTight;
+    vec3 blurWide;
+    if(blurMode == 5) {
+        // Gooey stacked dual-kawase style: smoothest falloff, heaviest
+        blurTight = blurHighlightsGooeyDual(vTexCoord, threshold, radius, texel);
+        blurWide = blurHighlightsGooeyDual(vTexCoord, threshold, radius * 1.6, texel);
+    } else if(blurMode == 4) {
+        // Dual-Kawase-style approximation
+        blurTight = blurHighlightsDualKawase(vTexCoord, threshold, radius, texel);
+        blurWide = blurHighlightsDualKawase(vTexCoord, threshold, radius * 1.8, texel);
+    } else if(blurMode == 3) {
+        // Kawase diagonal gather
+        blurTight = blurHighlightsKawase(vTexCoord, threshold, radius, texel);
+        blurWide = blurHighlightsKawase(vTexCoord, threshold, radius * 2.0, texel);
+    } else if(blurMode == 2) {
+        // Bokeh-ish: widest, soft circular halos
+        blurTight = blurHighlightsBokeh(vTexCoord, threshold, radius, texel);
+        blurWide = blurHighlightsBokeh(vTexCoord, threshold, radius * 1.9, texel);
+    } else if(blurMode == 1) {
+        // True convolution: smoother and more expensive
+        blurTight = blurHighlightsGaussian(vTexCoord, threshold, radius, texel);
+        blurWide = blurHighlightsGaussian(vTexCoord, threshold, radius * 1.8, texel);
+    } else {
+        // Fast mode
+        blurTight = blurHighlightsFast(vTexCoord, threshold, radius, texel);
+        blurWide = blurHighlightsFast(vTexCoord, threshold, radius * 2.2, texel);
+    }
     vec3 halation = blurTight * 0.7 + blurWide * 0.3;
 
     vec3 outLinear = baseLinear + halation * amount;

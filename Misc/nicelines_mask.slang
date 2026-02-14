@@ -23,7 +23,7 @@
 #pragma parameter PHOSPHOR_WIDTH "Phosphor Width (px)" 1.0 1.0 2.0 1.0
 #pragma parameter PHOSPHOR_HEIGHT "Phosphor Height (px)" 3.0 2.0 4.0 1.0
 #pragma parameter PHOSPHOR_GRADATION "Vertical Phosphor Gradation" 0.0 0.0 1.0 1.0
-#pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 1.0 0.0 1.0 1.0
+#pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
