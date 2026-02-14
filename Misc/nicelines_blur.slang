@@ -14,7 +14,7 @@
 #pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
 #pragma parameter DOT_CRAWL "DOT CRAWL (Off / On)" 0.0 0.0 1.0 1.0
 #pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL Intensity" 0.25 0.0 1.0 0.01
-#pragma parameter DOT_CRAWL_DEBUG "DOT CRAWL Debug (Off / Pre / Diff)" 0.0 0.0 2.0 1.0
+#pragma parameter DOT_CRAWL_DEBUG "DOT CRAWL Debug (Off / Bypass / Diff)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -151,13 +151,14 @@ vec3 applyDotCrawl(vec3 linearColor, vec2 uv) {
     float v = linearColor.r - y;
 
     float chroma = length(vec2(u, v));
-    float chromaGate = smoothstep(0.015, 0.20, chroma);
+    float chromaGate = smoothstep(0.004, 0.10, chroma);
 
     vec2 px = uv * global.OutputSize.xy;
-    float subcarrier = px.x * 2.15 + px.y * 1.57 + float(global.FrameCount) * 0.85;
-    float crawl = sin(subcarrier) * 0.75 + sin(subcarrier * 0.47 + 1.13) * 0.25;
+    float linePhase = mod(floor(px.y) + float(global.FrameCount), 2.0) * 3.14159265;
+    float subcarrier = px.x * 2.9 + px.y * 0.33 + float(global.FrameCount) * 0.9 + linePhase;
+    float crawl = sin(subcarrier) * 0.80 + sin(subcarrier * 0.55 + 0.9) * 0.20;
 
-    float amount = 0.08 * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 1.0) * chromaGate;
+    float amount = 0.22 * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 1.0) * chromaGate;
     u += crawl * amount;
     v -= crawl * amount * 0.85;
 
@@ -189,11 +190,11 @@ void main() {
     int crawlDebug = int(global.DOT_CRAWL_DEBUG + 0.5);
     vec3 color;
     if(crawlDebug == 1) {
-        // Show pre-pass output with crawl applied.
-        color = crawledColor;
+        // Bypass crawl to provide A/B verification against normal mode.
+        color = baseColor;
     } else if(crawlDebug == 2) {
         // Difference view (boosted) to reveal subtle crawl signal.
-        color = clamp(abs(crawledColor - baseColor) * 20.0, 0.0, 1.0);
+        color = clamp(abs(crawledColor - baseColor) * 35.0, 0.0, 1.0);
     } else {
         color = crawledColor;
     }
