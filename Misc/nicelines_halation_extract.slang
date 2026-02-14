@@ -1,12 +1,9 @@
 #version 450
-// nicelines v12 (2026-02-14)
+// nicelines v13 (2026-02-14)
 
 // === PASS 3: HALATION EXTRACT ===
 // Input: masked image from pass 2 (linear)
 // Output: extracted highlight mask in linear space
-
-#pragma parameter HALATION_THRESHOLD "HALATION Threshold" 0.97 0.6 0.99 0.01
-#pragma parameter HALATION_GROW_RADIUS "HALATION Extract Grow Radius" 2.4 0.0 8.0 0.1
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -14,8 +11,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OriginalSize;
     vec4 OutputSize;
     uint FrameCount;
-    float HALATION_THRESHOLD;
-    float HALATION_GROW_RADIUS;
 } global;
 
 #pragma stage vertex
@@ -70,10 +65,12 @@ vec3 growHighlights(vec2 uv, float threshold, float radiusPx) {
 }
 
 void main() {
+    const float HALATION_THRESHOLD = 0.97;
+    const float HALATION_GROW_RADIUS = 2.4;
     vec3 grown = growHighlights(
         vTexCoord,
-        global.HALATION_THRESHOLD,
-        global.HALATION_GROW_RADIUS
+        HALATION_THRESHOLD,
+        HALATION_GROW_RADIUS
     );
     FragColor = vec4(grown, 1.0);
 }

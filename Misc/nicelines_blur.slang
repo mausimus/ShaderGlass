@@ -8,7 +8,7 @@
 // === PARAMETERS ===
 #pragma parameter BLUR_OFFSET "BEAM FOCUS" 0.05 -0.04 0.12 0.01
 #pragma parameter H_BLUR "HORIZONTAL BLUR (worn out tube look)" 1.0 0.0 8.0 0.1
-#pragma parameter SCANLINE_MODE "180 / 224 / 240 / 270 / 360 / Manual" 2.0 0.0 5.0 1.0
+#pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
 #pragma parameter AUTO_LINES "ROUND Scanline Count to Multiple of Resolution" 0.0 0.0 1.0 1.0
 

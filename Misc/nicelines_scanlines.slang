@@ -11,7 +11,7 @@
 // Each channel gets its own independent scanline position and mask.
 
 // === PARAMETERS ===
-#pragma parameter SCANLINE_MODE "180 / 224 / 240 / 270 / 360 / Manual" 2.0 0.0 5.0 1.0
+#pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
 #pragma parameter AUTO_LINES "ROUND Scanline Count to Multiple of Resolution" 0.0 0.0 1.0 1.0
 #pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.25 0.0 0.35 0.05

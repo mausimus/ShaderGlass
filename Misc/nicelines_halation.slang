@@ -1,14 +1,10 @@
 #version 450
-// nicelines v10 (2026-02-14)
+// nicelines v11 (2026-02-14)
 
 // === PASS 4: HALATION BLUR + FINAL OUTPUT ===
 // Input A (Source): extracted highlights from pass 3 (linear)
 // Input B (Mask):   base masked image from pass 2 (linear, via alias)
 // Output: final image in sRGB
-
-// === PARAMETERS ===
-#pragma parameter HALATION_AMOUNT "HALATION Amount" 0.48 0.0 2.0 0.01
-#pragma parameter HALATION_RADIUS "HALATION Radius" 12.0 0.0 12.0 0.1
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -16,8 +12,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OriginalSize;
     vec4 OutputSize;
     uint FrameCount;
-    float HALATION_AMOUNT;
-    float HALATION_RADIUS;
 } global;
 
 // === VERTEX STAGE ===
@@ -73,8 +67,8 @@ vec3 blurHighlightsGaussian(vec2 uv, float radiusPx, vec2 texel) {
 void main() {
     vec3 baseLinear = texture(Mask, vTexCoord).rgb;
 
-    float amount = global.HALATION_AMOUNT;
-    float radius = global.HALATION_RADIUS;
+    const float amount = 0.48;
+    const float radius = 12.0;
 
     if(amount <= 0.0001 || radius <= 0.0001) {
         FragColor = vec4(LinearToSrgb3(baseLinear), 1.0);
