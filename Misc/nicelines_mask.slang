@@ -1,10 +1,10 @@
 #version 450
-// nicelines v7 (2026-02-13)
+// nicelines v8 (2026-02-14)
 
 // === PASS 2: SHADOW MASK ===
 // Aperture-grille-style phosphor triad mask with clip-safe energy distribution.
 // Input: scanline image from pass 1 (linear space, float framebuffer)
-// Output: final image converted to sRGB for display
+// Output: masked image in linear space (for final post-processing pass)
 //
 // Algorithm: Hard-primary distribution with global clip-avoidance blend.
 // Each phosphor starts as pure R, G, or B (×3 energy). When the brightest
@@ -57,15 +57,6 @@ layout(location = 0) in vec2 vTexCoord;
 layout(location = 0) out vec4 FragColor;
 layout(set = 0, binding = 2) uniform sampler2D Source;  // Pass 1 output (scanlines, linear space)
 
-// Linear to sRGB conversion (only needed at final output)
-float LinearToSrgb(float c) {
-    return c <= 0.0031308 ? c * 12.92 : 1.055 * pow(c, 1.0/2.4) - 0.055;
-}
-
-vec3 LinearToSrgb3(vec3 c) {
-    return vec3(LinearToSrgb(c.r), LinearToSrgb(c.g), LinearToSrgb(c.b));
-}
-
 void main() {
     vec2 px = vTexCoord * global.OutputSize.xy;
 
@@ -79,7 +70,7 @@ void main() {
 
     if(showRawHere) {
         vec3 raw = texture(Source, vTexCoord).rgb;
-        FragColor = vec4(LinearToSrgb3(raw), 1.0);
+        FragColor = vec4(raw, 1.0);
         return;
     }
 
@@ -87,7 +78,7 @@ void main() {
     // Left 2/3 shows previous passes without mask
     if(global.DEBUG_STAGES > 0.5 && vTexCoord.x < (2.0 / 3.0)) {
         vec3 passthrough = texture(Source, vTexCoord).rgb;
-        FragColor = vec4(LinearToSrgb3(passthrough), 1.0);
+        FragColor = vec4(passthrough, 1.0);
         return;
     }
 
@@ -96,7 +87,7 @@ void main() {
     // === MODE 0: No shadow mask — passthrough ===
     if(shadowMaskMode == 0) {
         vec3 color = texture(Source, vTexCoord).rgb;
-        FragColor = vec4(LinearToSrgb3(color), 1.0);
+        FragColor = vec4(color, 1.0);
         return;
     }
 
@@ -162,7 +153,7 @@ void main() {
             finalColor.b = (colIdx == 2) ? primaryVal.b : secondaryVal.b;
         }
 
-        FragColor = vec4(LinearToSrgb3(finalColor), 1.0);
+        FragColor = vec4(finalColor, 1.0);
         return;
     }
 
@@ -286,6 +277,5 @@ void main() {
         finalColor = phosphorEnergy;
     }
 
-    // Convert from linear to sRGB for final display output
-    FragColor = vec4(LinearToSrgb3(finalColor), 1.0);
+    FragColor = vec4(finalColor, 1.0);
 }

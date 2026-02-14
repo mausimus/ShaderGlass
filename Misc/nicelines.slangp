@@ -1,5 +1,5 @@
-// nicelines multi-pass preset v7 (2026-02-13)
-shaders = 3
+// nicelines multi-pass preset v8 (2026-02-14)
+shaders = 4
 
 // Pass 0: Downscale Blur + Horizontal Blur
 shader0 = nicelines_blur.slang
@@ -20,3 +20,14 @@ alias1 = Scanlines
 // Pass 2: Shadow Mask
 shader2 = nicelines_mask.slang
 filter_linear2 = false
+scale_type2 = viewport
+scale2 = 1.0
+float_framebuffer2 = true
+alias2 = Mask
+
+// Pass 3: Halation + Final Output
+shader3 = nicelines_halation.slang
+filter_linear3 = false
+scale_type3 = viewport
+scale3 = 1.0
+alias3 = Halation
