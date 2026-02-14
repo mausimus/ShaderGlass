@@ -11,7 +11,7 @@
 
 // === PARAMETERS ===
 #pragma parameter HALATION_AMOUNT "HALATION Amount" 0.12 0.0 0.5 0.01
-#pragma parameter HALATION_THRESHOLD "HALATION Threshold" 0.9 0.6 1.0 0.01
+#pragma parameter HALATION_THRESHOLD "HALATION Threshold" 0.9 0.6 0.99 0.01
 #pragma parameter HALATION_RADIUS "HALATION Radius" 2.0 0.0 12.0 0.1
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
@@ -53,14 +53,45 @@ vec3 LinearToSrgb3(vec3 c) {
 }
 
 // Near-clipped highlight extraction (per channel)
+// Linear extraction gives consistent response across threshold values.
+// At threshold=1.0, only values above 1.0 contribute.
 vec3 extractHighlights(vec3 c, float threshold) {
-    vec3 t = smoothstep(vec3(threshold), vec3(1.0), c);
-    return t * c;
+    return max(c - vec3(threshold), vec3(0.0));
 }
 
 vec3 sampleHighlightAt(vec2 uv, float threshold) {
     vec3 src = texture(Source, clamp(uv, vec2(0.0), vec2(1.0))).rgb;
     return extractHighlights(src, threshold);
+}
+
+vec3 blurHighlights(vec2 uv, float threshold, float radiusPx, vec2 texel) {
+    const int TAP_COUNT = 12;
+    const vec2 OFFSETS[TAP_COUNT] = vec2[](
+        vec2( 0.00, -1.00),
+        vec2( 0.86, -0.50),
+        vec2( 0.86,  0.50),
+        vec2( 0.00,  1.00),
+        vec2(-0.86,  0.50),
+        vec2(-0.86, -0.50),
+        vec2( 0.45, -0.20),
+        vec2( 0.55,  0.30),
+        vec2( 0.05,  0.60),
+        vec2(-0.50,  0.25),
+        vec2(-0.55, -0.25),
+        vec2(-0.05, -0.60)
+    );
+
+    vec3 sum = sampleHighlightAt(uv, threshold);
+    float sumW = 1.0;
+
+    for(int i = 0; i < TAP_COUNT; i++) {
+        float d = length(OFFSETS[i]);
+        float w = exp(-d * d * 1.8);
+        vec2 tapUV = uv + OFFSETS[i] * radiusPx * texel;
+        sum += sampleHighlightAt(tapUV, threshold) * w;
+        sumW += w;
+    }
+    return sum / sumW;
 }
 
 void main() {
@@ -87,36 +118,10 @@ void main() {
 
     vec2 texel = 1.0 / global.OutputSize.xy;
 
-    // Two-lobe isotropic-ish kernel via cardinal + diagonal taps
-    float r1 = radius * 0.8;
-    float r2 = radius * 2.6;
-
-    vec3 center = sampleHighlightAt(vTexCoord, threshold);
-
-    vec3 ring1 = vec3(0.0);
-    ring1 += sampleHighlightAt(vTexCoord + vec2( r1, 0.0) * texel, threshold);
-    ring1 += sampleHighlightAt(vTexCoord + vec2(-r1, 0.0) * texel, threshold);
-    ring1 += sampleHighlightAt(vTexCoord + vec2(0.0,  r1) * texel, threshold);
-    ring1 += sampleHighlightAt(vTexCoord + vec2(0.0, -r1) * texel, threshold);
-    ring1 += sampleHighlightAt(vTexCoord + vec2( r1,  r1) * texel, threshold);
-    ring1 += sampleHighlightAt(vTexCoord + vec2(-r1,  r1) * texel, threshold);
-    ring1 += sampleHighlightAt(vTexCoord + vec2( r1, -r1) * texel, threshold);
-    ring1 += sampleHighlightAt(vTexCoord + vec2(-r1, -r1) * texel, threshold);
-    ring1 *= 1.0 / 8.0;
-
-    vec3 ring2 = vec3(0.0);
-    ring2 += sampleHighlightAt(vTexCoord + vec2( r2, 0.0) * texel, threshold);
-    ring2 += sampleHighlightAt(vTexCoord + vec2(-r2, 0.0) * texel, threshold);
-    ring2 += sampleHighlightAt(vTexCoord + vec2(0.0,  r2) * texel, threshold);
-    ring2 += sampleHighlightAt(vTexCoord + vec2(0.0, -r2) * texel, threshold);
-    ring2 += sampleHighlightAt(vTexCoord + vec2( r2,  r2) * texel, threshold);
-    ring2 += sampleHighlightAt(vTexCoord + vec2(-r2,  r2) * texel, threshold);
-    ring2 += sampleHighlightAt(vTexCoord + vec2( r2, -r2) * texel, threshold);
-    ring2 += sampleHighlightAt(vTexCoord + vec2(-r2, -r2) * texel, threshold);
-    ring2 *= 1.0 / 8.0;
-
-    // Weighted two-lobe composite
-    vec3 halation = center * 0.25 + ring1 * 0.50 + ring2 * 0.25;
+    // Two-scale smooth blur to avoid stamped/stepped ring artifacts
+    vec3 blurTight = blurHighlights(vTexCoord, threshold, radius, texel);
+    vec3 blurWide = blurHighlights(vTexCoord, threshold, radius * 2.2, texel);
+    vec3 halation = blurTight * 0.7 + blurWide * 0.3;
 
     vec3 outLinear = baseLinear + halation * amount;
     FragColor = vec4(LinearToSrgb3(outLinear), 1.0);

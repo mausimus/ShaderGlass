@@ -19,7 +19,7 @@
 //       triad input areas. Would eliminate clipping naturally (width encodes energy, not brightness).
 
 // === PARAMETERS ===
-#pragma parameter SHADOW_MASK "Shadow Mask (Off / Standard / Gutter)" 1.0 0.0 2.0 1.0
+#pragma parameter SHADOW_MASK "Shadow Mask (Off / Standard / Gutter)" 2.0 0.0 2.0 1.0
 #pragma parameter PHOSPHOR_WIDTH "Phosphor Width (px)" 1.0 1.0 2.0 1.0
 #pragma parameter PHOSPHOR_HEIGHT "Phosphor Height (px)" 3.0 2.0 4.0 1.0
 #pragma parameter PHOSPHOR_GRADATION "Vertical Phosphor Gradation" 0.0 0.0 1.0 1.0
