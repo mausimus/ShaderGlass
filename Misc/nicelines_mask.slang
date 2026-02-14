@@ -14,7 +14,7 @@
 
 // === PARAMETERS ===
 #pragma parameter SHADOW_MASK_MODE "SHADOW MASK (Off / Single Width / Double Width)" 1.0 0.0 2.0 1.0
-#pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
+#pragma parameter COMPARE "COMPARE (Off / On)" 0.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -23,7 +23,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OutputSize;
     uint FrameCount;
     float SHADOW_MASK_MODE;
-    float DEBUG_STAGES;
+    float COMPARE;
 } global;
 
 // === VERTEX STAGE ===
@@ -46,9 +46,7 @@ layout(set = 0, binding = 2) uniform sampler2D Source;  // Pass 1 output (scanli
 void main() {
     vec2 px = vTexCoord * global.OutputSize.xy;
 
-    // === DEBUG SIDE-BY-SIDE ===
-    // Left 2/3 shows previous passes without mask
-    if(global.DEBUG_STAGES > 0.5 && vTexCoord.x < (2.0 / 3.0)) {
+    if(global.COMPARE > 0.5 && vTexCoord.x < 0.5) {
         vec3 passthrough = texture(Source, vTexCoord).rgb;
         FragColor = vec4(passthrough, 1.0);
         return;

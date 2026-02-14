@@ -14,8 +14,8 @@
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
 #pragma parameter AUTO_LINES "ROUND Scanline Count to Multiple of Resolution" 0.0 0.0 1.0 1.0
+#pragma parameter COMPARE "COMPARE (Off / On)" 0.0 0.0 1.0 1.0
 #pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.25 0.0 0.35 0.05
-#pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -26,8 +26,8 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float SCANLINE_MODE;
     float MANUAL_LINES;
     float AUTO_LINES;
+    float COMPARE;
     float CONV_STRENGTH;
-    float DEBUG_STAGES;
 } global;
 
 // === VERTEX STAGE ===
@@ -144,8 +144,7 @@ void main() {
     float maxWidth = 1.0;    // Hardcoded thickness max
     float edgeSoftness = 0.3;
 
-    // Debug mode: left 1/3 shows blur-only passthrough
-    if(global.DEBUG_STAGES > 0.5 && vTexCoord.x < (1.0 / 3.0)) {
+    if(global.COMPARE > 0.5 && vTexCoord.x < 0.5) {
         FragColor = texture(Source, vTexCoord);
         return;
     }

@@ -11,6 +11,7 @@
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
 #pragma parameter AUTO_LINES "ROUND Scanline Count to Multiple of Resolution" 0.0 0.0 1.0 1.0
+#pragma parameter COMPARE "COMPARE (Off / On)" 0.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -23,6 +24,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float SCANLINE_MODE;
     float MANUAL_LINES;
     float AUTO_LINES;
+    float COMPARE;
 } global;
 
 // === VERTEX STAGE ===
@@ -134,6 +136,11 @@ vec3 sampleWithHBlur(vec2 uv, float effectiveScale, float hBlur) {
 }
 
 void main() {
+    if(global.COMPARE > 0.5 && vTexCoord.x < 0.5) {
+        FragColor = vec4(SrgbToLinear3(texture(Source, vTexCoord).rgb), 1.0);
+        return;
+    }
+
     float targetLines = getTargetLines();
     float baselineScale = targetLines / global.SourceSize.y;
     float effectiveScale = clamp(baselineScale + global.BLUR_OFFSET, 0.02, 1.0);
