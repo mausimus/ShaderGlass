@@ -4,20 +4,13 @@
 // === PASS 0: DOWNSCALE BLUR ===
 // This pass handles: downscale blur prepass and horizontal blur
 // Output: blurred image in linear space (float framebuffer)
-//
-// Downsample options:
-//   0 = Area (current)
-//   1 = Stable Box (texel-center integrated)
-//   2 = Bicubic (catmull-rom)
-//   3 = Gaussian prefilter
 
 // === PARAMETERS ===
-#pragma parameter DOWNSAMPLE_MODE "DOWNSAMPLE Mode (Area / StableBox / Bicubic / Gaussian)" 2.0 0.0 3.0 1.0
-#pragma parameter BLUR_OFFSET "DOWNSCALING Prepass (Lower = Softer)" 0.05 -0.04 0.12 0.01
+#pragma parameter BLUR_OFFSET "BEAM FOCUS" 0.05 -0.04 0.12 0.01
 #pragma parameter H_BLUR "HORIZONTAL BLUR (worn out tube look)" 1.0 0.0 8.0 0.1
-#pragma parameter SCANLINE_MODE "SCANLINES MODE (180p / 224p / 240p / 270p / 360p / Manual)" 2.0 0.0 5.0 1.0
-#pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
-#pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
+#pragma parameter SCANLINE_MODE "180 / 224 / 240 / 270 / 360 / Manual" 2.0 0.0 5.0 1.0
+#pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
+#pragma parameter AUTO_LINES "ROUND Scanline Count to Multiple of Resolution" 0.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -25,7 +18,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OriginalSize;
     vec4 OutputSize;
     uint FrameCount;
-    float DOWNSAMPLE_MODE;
     float BLUR_OFFSET;
     float H_BLUR;
     float SCANLINE_MODE;
@@ -114,117 +106,12 @@ vec3 areaAverage(vec2 uv, float effectiveScale) {
     return sum / count;
 }
 
-// Stable box downsample: integrates over texel centers in source pixel space.
-// More temporally stable under subpixel motion than sparse pattern samples.
-vec3 stableBoxAverage(vec2 uv, float effectiveScale) {
-    vec2 srcSize = global.SourceSize.xy;
-    vec2 uvMin = clamp(uv - vec2(0.5 / effectiveScale) / srcSize, vec2(0.0), vec2(1.0));
-    vec2 uvMax = clamp(uv + vec2(0.5 / effectiveScale) / srcSize, vec2(0.0), vec2(1.0));
-
-    // Convert to source texel index range (center-based)
-    int x0 = int(floor(uvMin.x * srcSize.x));
-    int x1 = int(ceil (uvMax.x * srcSize.x));
-    int y0 = int(floor(uvMin.y * srcSize.y));
-    int y1 = int(ceil (uvMax.y * srcSize.y));
-
-    // Cap bounds for performance
-    x0 = clamp(x0, 0, int(srcSize.x) - 1);
-    y0 = clamp(y0, 0, int(srcSize.y) - 1);
-    x1 = clamp(x1, 0, int(srcSize.x) - 1);
-    y1 = clamp(y1, 0, int(srcSize.y) - 1);
-
-    vec3 sum = vec3(0.0);
-    float count = 0.0;
-
-    for(int y = y0; y <= y1; y++) {
-        for(int x = x0; x <= x1; x++) {
-            vec2 sampleUV = (vec2(float(x), float(y)) + 0.5) / srcSize;
-            sum += SrgbToLinear3(texture(Source, sampleUV).rgb);
-            count += 1.0;
-        }
-    }
-
-    if(count <= 0.0) {
-        return SrgbToLinear3(texture(Source, uv).rgb);
-    }
-    return sum / count;
-}
-
-float cubicWeight(float x) {
-    float a = -0.5; // Catmull-Rom
-    x = abs(x);
-    if(x <= 1.0) {
-        return (a + 2.0) * x * x * x - (a + 3.0) * x * x + 1.0;
-    } else if(x < 2.0) {
-        return a * x * x * x - 5.0 * a * x * x + 8.0 * a * x - 4.0 * a;
-    }
-    return 0.0;
-}
-
-vec3 bicubicSample(vec2 uv) {
-    vec2 size = global.SourceSize.xy;
-    vec2 p = uv * size - 0.5;
-    vec2 base = floor(p);
-    vec2 f = fract(p);
-
-    vec3 sum = vec3(0.0);
-    float sumW = 0.0;
-
-    for(int j = -1; j <= 2; j++) {
-        for(int i = -1; i <= 2; i++) {
-            float wx = cubicWeight(float(i) - f.x);
-            float wy = cubicWeight(float(j) - f.y);
-            float w = wx * wy;
-
-            vec2 tap = (base + vec2(float(i), float(j)) + 0.5) / size;
-            tap = clamp(tap, vec2(0.0), vec2(1.0));
-            sum += SrgbToLinear3(texture(Source, tap).rgb) * w;
-            sumW += w;
-        }
-    }
-
-    if(sumW <= 0.0) {
-        return SrgbToLinear3(texture(Source, uv).rgb);
-    }
-    return sum / sumW;
-}
-
-vec3 gaussianPrefilter(vec2 uv, float effectiveScale) {
-    vec2 texel = 1.0 / global.SourceSize.xy;
-    float radiusPx = max(0.35, (1.0 / effectiveScale - 1.0) * 0.65);
-    float sigma = max(0.5, radiusPx * 0.75);
-
-    vec3 sum = vec3(0.0);
-    float sumW = 0.0;
-
-    for(int y = -2; y <= 2; y++) {
-        for(int x = -2; x <= 2; x++) {
-            vec2 o = vec2(float(x), float(y));
-            float d2 = dot(o, o);
-            float w = exp(-d2 / (2.0 * sigma * sigma));
-            vec2 tap = clamp(uv + o * radiusPx * texel, vec2(0.0), vec2(1.0));
-            sum += SrgbToLinear3(texture(Source, tap).rgb) * w;
-            sumW += w;
-        }
-    }
-
-    return sum / sumW;
-}
-
 // Sample source with area-average downscale
 vec3 sampleWithBlur(vec2 uv, float effectiveScale) {
     if(effectiveScale >= 0.999) {
         return SrgbToLinear3(texture(Source, uv).rgb);
     }
 
-    int mode = int(global.DOWNSAMPLE_MODE + 0.5);
-    if(mode == 3) {
-        return gaussianPrefilter(uv, effectiveScale);
-    } else if(mode == 2) {
-        return bicubicSample(uv);
-    } else if(mode == 1) {
-        return stableBoxAverage(uv, effectiveScale);
-    }
     return areaAverage(uv, effectiveScale);
 }
 

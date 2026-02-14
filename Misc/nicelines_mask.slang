@@ -13,8 +13,7 @@
 //       triad input areas. Would eliminate clipping naturally (width encodes energy, not brightness).
 
 // === PARAMETERS ===
-#pragma parameter SHADOW_MASK "Gutter Shadow Mask Off/On" 1.0 0.0 1.0 1.0
-#pragma parameter GUTTER_DOUBLE_WIDTH "Gutter Mask Double Width Off/On" 0.0 0.0 1.0 1.0
+#pragma parameter SHADOW_MASK_MODE "Gutter Shadow Mask (Off / Single Width / Double Width)" 1.0 0.0 2.0 1.0
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
@@ -23,8 +22,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OriginalSize;
     vec4 OutputSize;
     uint FrameCount;
-    float SHADOW_MASK;
-    float GUTTER_DOUBLE_WIDTH;
+    float SHADOW_MASK_MODE;
     float DEBUG_STAGES;
 } global;
 
@@ -57,7 +55,8 @@ void main() {
     }
 
     // === MODE 0: No shadow mask — passthrough ===
-    if(global.SHADOW_MASK < 0.5) {
+    int maskMode = int(global.SHADOW_MASK_MODE + 0.5);
+    if(maskMode == 0) {
         vec3 color = texture(Source, vTexCoord).rgb;
         FragColor = vec4(color, 1.0);
         return;
@@ -73,7 +72,7 @@ void main() {
     //   secondary(c) = clamp((4c - 1)/2, 0, 1)
     //   gutter(c)    = clamp(4c - 3, 0, 1)
     // This keeps gutter black until c > 0.75.
-    float phosphorW = (global.GUTTER_DOUBLE_WIDTH > 0.5) ? 2.0 : 1.0;
+    float phosphorW = (maskMode >= 2) ? 2.0 : 1.0;
     float triadW = phosphorW * 3.0;
     float triadH = 4.0;
 

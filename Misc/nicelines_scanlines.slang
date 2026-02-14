@@ -11,10 +11,9 @@
 // Each channel gets its own independent scanline position and mask.
 
 // === PARAMETERS ===
-#pragma parameter SCANLINE_MODE "SCANLINES MODE (180p / 224p / 240p / 270p / 360p / Manual)" 2.0 0.0 5.0 1.0
-#pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
-#pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
-#pragma parameter MISCONVERGENCE "MISCONVERGENCE Off/On" 1.0 0.0 1.0 1.0
+#pragma parameter SCANLINE_MODE "180 / 224 / 240 / 270 / 360 / Manual" 2.0 0.0 5.0 1.0
+#pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
+#pragma parameter AUTO_LINES "ROUND Scanline Count to Multiple of Resolution" 0.0 0.0 1.0 1.0
 #pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.25 0.0 0.35 0.05
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
 
@@ -27,7 +26,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float SCANLINE_MODE;
     float MANUAL_LINES;
     float AUTO_LINES;
-    float MISCONVERGENCE;
     float CONV_STRENGTH;
     float DEBUG_STAGES;
 } global;
@@ -159,10 +157,9 @@ void main() {
     vec2 uvG = vTexCoord;
     vec2 uvB = vTexCoord;
 
-    if(global.MISCONVERGENCE > 0.5) {
+    float convStrength = global.CONV_STRENGTH * (240.0 / targetLines);
+    if(convStrength > 0.0001) {
         // R and B beams offset in opposite directions, G stays centered
-        // Scale strength relative to scanline size (normalized to 240p baseline)
-        float convStrength = global.CONV_STRENGTH * (240.0 / targetLines);
         uvR += calcConvergenceOffset(vTexCoord, convStrength, 1.0);
         uvB += calcConvergenceOffset(vTexCoord, convStrength, -1.0);
         // Clamp to valid UV range
