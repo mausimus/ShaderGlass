@@ -13,6 +13,7 @@
 #pragma parameter AUTO_LINES "SCANLINE ROUNDING (for 3D; anti-moire)" 0.0 0.0 1.0 1.0
 #pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
 #pragma parameter DOT_CRAWL "DOT CRAWL (Off / On)" 0.0 0.0 1.0 1.0
+#pragma parameter DOT_CRAWL_MODE "DOT CRAWL MODE (Chunky / Composite)" 0.0 0.0 1.0 1.0
 #pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL Intensity" 0.25 0.0 1.0 0.01
 #pragma parameter DOT_CRAWL_DEBUG "DOT CRAWL Debug (Off / Bypass / Diff)" 0.0 0.0 2.0 1.0
 
@@ -29,6 +30,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float AUTO_LINES;
     float COMPARE;
     float DOT_CRAWL;
+    float DOT_CRAWL_MODE;
     float DOT_CRAWL_INTENSITY;
     float DOT_CRAWL_DEBUG;
 } global;
@@ -141,32 +143,78 @@ vec3 sampleWithHBlur(vec2 uv, float effectiveScale, float hBlur) {
     }
 }
 
+vec3 applyDotCrawlChunky(vec3 linearColor, vec2 uv) {
+    vec2 srcTexel = 1.0 / global.SourceSize.xy;
+    vec3 cL = SrgbToLinear3(texture(Source, clamp(uv - vec2(srcTexel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
+    vec3 cR = SrgbToLinear3(texture(Source, clamp(uv + vec2(srcTexel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
+
+    vec3 d = cR - cL;
+    float edgeLuma = abs(dot(d, vec3(0.299, 0.587, 0.114)));
+    vec3 chromaVec = d - vec3(dot(d, vec3(0.299, 0.587, 0.114)));
+    float edgeChroma = length(chromaVec);
+
+    // Emphasize contrasting color edges (e.g., yellow/blue boundaries)
+    float edgeMask = smoothstep(0.02, 0.16, edgeLuma + edgeChroma * 1.35);
+
+    // Chunky horizontal checker that advances over time (single-direction crawl)
+    vec2 px = uv * global.OutputSize.xy;
+    float blockX = floor(px.x / 3.0);
+    float lineParity = mod(floor(px.y), 2.0);
+    float phase = blockX + float(global.FrameCount) * 0.65 + lineParity * 0.5;
+    float crawlBit = (mod(floor(phase), 2.0) < 1.0) ? -1.0 : 1.0;
+
+    // Zero-mean luminance perturbation preserves average color better
+    float amount = 0.08 * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 1.0) * edgeMask;
+    float delta = crawlBit * amount;
+    return clamp(linearColor + vec3(delta), 0.0, 1.0);
+}
+
+vec3 applyDotCrawlComposite(vec3 linearColor, vec2 uv) {
+    vec2 srcTexel = 1.0 / global.SourceSize.xy;
+
+    vec3 rgbL = SrgbToLinear3(texture(Source, clamp(uv - vec2(srcTexel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
+    vec3 rgbC = linearColor;
+    vec3 rgbR = SrgbToLinear3(texture(Source, clamp(uv + vec2(srcTexel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
+
+    float yL = dot(rgbL, vec3(0.299, 0.587, 0.114));
+    float yC = dot(rgbC, vec3(0.299, 0.587, 0.114));
+    float yR = dot(rgbR, vec3(0.299, 0.587, 0.114));
+
+    float yLp = (yL + 2.0 * yC + yR) * 0.25;
+    float yHp = yC - yLp;
+
+    vec3 d = rgbR - rgbL;
+    float edge = smoothstep(0.03, 0.20, length(d) * 1.4 + abs(yR - yL));
+
+    float i = dot(rgbC, vec3( 0.596, -0.275, -0.321));
+    float q = dot(rgbC, vec3( 0.212, -0.523,  0.311));
+
+    vec2 px = uv * global.OutputSize.xy;
+    float x = floor(px.x);
+    float y = floor(px.y);
+    float lineAlt = mod(y, 2.0) * 0.5;
+    float phase = 6.28318530718 * (x * 0.28 + lineAlt + float(global.FrameCount) * 0.025);
+
+    float leak = yHp * (0.35 * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 1.0)) * edge;
+    i += leak * cos(phase);
+    q += leak * sin(phase);
+
+    float r = yC + 0.956 * i + 0.621 * q;
+    float g = yC - 0.272 * i - 0.647 * q;
+    float b = yC - 1.106 * i + 1.703 * q;
+    return clamp(vec3(r, g, b), 0.0, 1.0);
+}
+
 vec3 applyDotCrawl(vec3 linearColor, vec2 uv) {
     if(global.DOT_CRAWL < 0.5) {
         return linearColor;
     }
 
-    float y = dot(linearColor, vec3(0.299, 0.587, 0.114));
-    float u = linearColor.b - y;
-    float v = linearColor.r - y;
-
-    float chroma = length(vec2(u, v));
-    float chromaGate = smoothstep(0.004, 0.10, chroma);
-
-    vec2 px = uv * global.OutputSize.xy;
-    float linePhase = mod(floor(px.y) + float(global.FrameCount), 2.0) * 3.14159265;
-    float subcarrier = px.x * 2.9 + px.y * 0.33 + float(global.FrameCount) * 0.9 + linePhase;
-    float crawl = sin(subcarrier) * 0.80 + sin(subcarrier * 0.55 + 0.9) * 0.20;
-
-    float amount = 0.22 * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 1.0) * chromaGate;
-    u += crawl * amount;
-    v -= crawl * amount * 0.85;
-
-    float r = y + v;
-    float b = y + u;
-    float g = (y - 0.299 * r - 0.114 * b) / 0.587;
-
-    return clamp(vec3(r, g, b), 0.0, 1.0);
+    int mode = int(global.DOT_CRAWL_MODE + 0.5);
+    if(mode == 1) {
+        return applyDotCrawlComposite(linearColor, uv);
+    }
+    return applyDotCrawlChunky(linearColor, uv);
 }
 
 void main() {
