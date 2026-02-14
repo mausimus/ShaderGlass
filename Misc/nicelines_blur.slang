@@ -14,6 +14,7 @@
 #pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
 #pragma parameter DOT_CRAWL "DOT CRAWL (Off / On)" 0.0 0.0 1.0 1.0
 #pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL Intensity" 0.25 0.0 1.0 0.01
+#pragma parameter DOT_CRAWL_DEBUG "DOT CRAWL Debug (Off / Pre / Diff)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -29,6 +30,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float COMPARE;
     float DOT_CRAWL;
     float DOT_CRAWL_INTENSITY;
+    float DOT_CRAWL_DEBUG;
 } global;
 
 // === VERTEX STAGE ===
@@ -181,8 +183,20 @@ void main() {
     float effectiveScale = clamp(baselineScale + global.BLUR_OFFSET, 0.02, 1.0);
 
     // Apply downscale + horizontal blur, output in linear space
-    vec3 color = sampleWithHBlur(vTexCoord, effectiveScale, global.H_BLUR);
-    color = applyDotCrawl(color, vTexCoord);
+    vec3 baseColor = sampleWithHBlur(vTexCoord, effectiveScale, global.H_BLUR);
+    vec3 crawledColor = applyDotCrawl(baseColor, vTexCoord);
+
+    int crawlDebug = int(global.DOT_CRAWL_DEBUG + 0.5);
+    vec3 color;
+    if(crawlDebug == 1) {
+        // Show pre-pass output with crawl applied.
+        color = crawledColor;
+    } else if(crawlDebug == 2) {
+        // Difference view (boosted) to reveal subtle crawl signal.
+        color = clamp(abs(crawledColor - baseColor) * 20.0, 0.0, 1.0);
+    } else {
+        color = crawledColor;
+    }
 
     FragColor = vec4(color, 1.0);
 }
