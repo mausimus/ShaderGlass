@@ -5,7 +5,7 @@ layout(location = 0) in vec4 Position;
 layout(location = 1) in vec2 TexCoord;
 layout(location = 0) out vec2 vTexCoord;
 void main() {
-    gl_Position = Position;
+    gl_Position = vec4(Position.xy * 2.0 - 1.0, Position.z, Position.w);
     vTexCoord = TexCoord;
 }
 
