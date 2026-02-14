@@ -19,9 +19,9 @@
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
-#pragma parameter TEMPORAL_LINES "TEMPORAL Target Lines (Off/On)" 1.0 0.0 1.0 1.0
-#pragma parameter DETECT_BLEND "TEMPORAL Detect Blend" 0.75 0.0 1.0 0.05
-#pragma parameter TEMP_ALPHA "TEMPORAL Smoothing" 0.12 0.02 0.5 0.01
+#pragma parameter TEMPORAL_LINES "AUTO-DETECT + STABILIZE (Off/On)" 1.0 0.0 1.0 1.0
+#pragma parameter DETECT_BLEND "AUTO-DETECT Amount (Manual <-> Auto)" 0.75 0.0 1.0 0.05
+#pragma parameter TEMP_ALPHA "STABILIZE Speed (Lower = steadier)" 0.12 0.02 0.5 0.01
 #pragma parameter DEBUG_SPLIT "DEBUG: Comparison Split (Off/Top=Input/Bot=Input)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {

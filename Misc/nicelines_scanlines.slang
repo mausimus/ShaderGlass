@@ -15,7 +15,6 @@
 #pragma parameter MANUAL_LINES "MANUAL Mode: Number of Scanlines" 360.0 120.0 480.0 5.0
 #pragma parameter FINETUNE_LINES "FINETUNE Number of Scanlines" 0.0 -5.0 5.0 1.0
 #pragma parameter AUTO_LINES "ROUND Number of Scanlines to Nearest Multiple of Resolution" 0.0 0.0 1.0 1.0
-#pragma parameter USE_TEMPORAL_LINES "TEMPORAL Target Lines (Off/On)" 1.0 0.0 1.0 1.0
 #pragma parameter MISCONVERGENCE "MISCONVERGENCE Off/On" 1.0 0.0 1.0 1.0
 #pragma parameter CONV_STRENGTH "MISCONVERGENCE Strength" 0.25 0.0 0.35 0.05
 #pragma parameter DEBUG_STAGES "DEBUG: Show Processing Stages Side-by-Side" 0.0 0.0 1.0 1.0
@@ -31,7 +30,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float MANUAL_LINES;
     float FINETUNE_LINES;
     float AUTO_LINES;
-    float USE_TEMPORAL_LINES;
     float MISCONVERGENCE;
     float CONV_STRENGTH;
     float DEBUG_STAGES;
@@ -78,11 +76,9 @@ float getTargetLines() {
 }
 
 float getTargetLinesResolved() {
-    if(global.USE_TEMPORAL_LINES > 0.5) {
-        float linesNorm = texture(Source, vec2(0.5)).a;
-        if(linesNorm > 0.001) {
-            return linesNorm * 1024.0;
-        }
+    float linesNorm = texture(Source, vec2(0.5)).a;
+    if(linesNorm > 0.001) {
+        return linesNorm * 1024.0;
     }
     return getTargetLines();
 }
