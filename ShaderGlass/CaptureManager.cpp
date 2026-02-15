@@ -125,7 +125,7 @@ bool CaptureManager::StartSession()
     winrt::Windows::Graphics::Capture::GraphicsCaptureItem captureItem {nullptr};
 
     auto isCaptureAPI = !m_options.imageFile.size() && m_options.deviceFormatNo == 0;
-    if(isCaptureAPI)
+    if(isCaptureAPI && HasCaptureAPI())
     {
         try
         {
@@ -207,7 +207,7 @@ bool CaptureManager::StartSession()
         winrt::Windows::Graphics::DirectX::DirectXPixelFormat pixelFormat = m_options.useHDR ? winrt::Windows::Graphics::DirectX::DirectXPixelFormat::R16G16B16A16Float
                                                                                              : winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized;
 
-        m_session = make_unique<CaptureSession>(m_d3dDevice, captureItem, pixelFormat, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent);
+        m_session = make_unique<CaptureSession>(m_d3dDevice, captureItem, m_options.captureWindow, pixelFormat, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent);
     }
 
     m_active = true;
@@ -316,6 +316,19 @@ void CaptureManager::ProcessFrame()
     }
     catch(...)
     { }
+}
+
+void CaptureManager::GetCaptureSize(LONG& width, LONG& height)
+{
+    if(m_session.get())
+    {
+        m_session->GetContentSize(width, height);
+    }
+    else
+    {
+        width  = 0;
+        height = 0;
+    }
 }
 
 void CaptureManager::StopSession()

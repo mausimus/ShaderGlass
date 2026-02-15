@@ -8,10 +8,12 @@ GNU General Public License v3.0
 #include "pch.h"
 
 #include "Helpers.h"
+#include "CaptureLib.h"
 
 #define MAX_WINDOW_TITLE 200
 
 static std::optional<bool> hasCaptureAPI;
+static std::optional<bool> hasCaptureLib;
 
 wchar_t* convertCharArrayToLPCWSTR(const char* charArray)
 {
@@ -44,8 +46,25 @@ std::wstring GetWindowStringText(HWND hwnd)
     return std::wstring(title);
 }
 
+bool HasCaptureLib()
+{
+    if(!hasCaptureLib.has_value())
+    {
+        try
+        {
+            hasCaptureLib = CaptureLib::EnsureInit();
+        }
+        catch(...)
+        {
+            hasCaptureLib = false;
+        }
+    }
+    return hasCaptureLib.value();
+}
+
 bool HasCaptureAPI()
 {
+    return false;
     if(!hasCaptureAPI.has_value())
     {
         try

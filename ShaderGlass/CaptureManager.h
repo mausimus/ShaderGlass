@@ -85,6 +85,7 @@ public:
     void  ForgetLastPreset();
     void  SaveOutput(LPWSTR fileName);
     void  ProcessFrame();
+    void  GetCaptureSize(LONG& width, LONG& height);
     void  ThreadFunc();
     void  Exit();
     float InFPS();

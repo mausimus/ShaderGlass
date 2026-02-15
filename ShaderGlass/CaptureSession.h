@@ -8,12 +8,14 @@ GNU General Public License v3.0
 #pragma once
 
 #include "ShaderGlass.h"
+#include "CaptureLib.h"
 
 class CaptureSession
 {
 public:
     CaptureSession(winrt::com_ptr<ID3D11Device>                                  d3dDevice,
                    winrt::Windows::Graphics::Capture::GraphicsCaptureItem const& item,
+                   bool                                                          window,
                    winrt::Windows::Graphics::DirectX::DirectXPixelFormat         pixelFormat,
                    ShaderGlass&                                                  shaderGlass,
                    bool                                                          maxCaptureRate,
@@ -31,13 +33,14 @@ public:
 
     void ProcessInput();
 
+    void GetContentSize(LONG& width, LONG& height);
+
     float FPS()
     {
         return m_fps;
     }
 
-    // CaptureLib
-    void OnCaptureLibArrived(void* data, UINT width, UINT height);
+    void OnCaptureLibArrived(UINT width, UINT height);
 
 private:
     void Reset();
@@ -58,11 +61,5 @@ private:
     int                                                            m_prevInputFrames {0};
     HANDLE                                                         m_frameEvent {nullptr};
     ShaderGlass&                                                   m_shaderGlass;
-
-    // CaptureLib
-    bool                                         UseCaptureLib();
-    std::mutex                                   m_mutex;
-    std::vector<winrt::com_ptr<ID3D11Texture2D>> m_inputFrames;
-    winrt::com_ptr<ID3D11DeviceContext>          m_context;
-    int                                          m_nextInput {0};
+    CaptureLib                                                     m_captureLib;
 };

@@ -11,22 +11,29 @@ static int    sFrameNo = 0;
 
 static DWORD __stdcall ThreadFunc(LPVOID data)
 {
-    while(sActive)
+    do
     {
+        Sleep(10);
         int o = 0;
         for(int y = 0; y < 480; y++)
             for(int x = 0; x < 640; x++)
                 sData[o++] = 0xff000000 + (((x + sFrameNo) % 255) << 16) + (((x + y) % 255) << 8) + 0xff;
-        sCallbackFunc(sData, 640, 480, sContext);
+        sCallbackFunc(sData, 640, 480, 640 * 4, sContext);
         sFrameNo++;
-        Sleep(100);
-    }
+    } while(sActive);
+    free(sData);
+    sData         = NULL;
     sCallbackFunc = NULL;
     sContext      = NULL;
     return 0;
 }
 
-CAPTURELIB_API HRESULT CaptureLibStart(CAPTURE_CALLBACK_FUNC callbackFunc, void* context)
+CAPTURELIB_API UINT CaptureLibVersion()
+{
+    return 1;
+}
+
+CAPTURELIB_API HRESULT CaptureLibStart(CAPTURE_CALLBACK_FUNC callbackFunc, UINT type, void* context)
 {
     if(sActive)
         return E_FAIL;
@@ -44,8 +51,6 @@ CAPTURELIB_API HRESULT CaptureLibStop()
 {
     if(!sActive)
         return E_FAIL;
-    free(sData);
-    sData   = NULL;
     sActive = 0;
     return S_OK;
 }

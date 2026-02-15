@@ -11,13 +11,6 @@ GNU General Public License v3.0
 
 #include "Util/direct3d11.interop.h"
 
-#define USE_CAPTURELIB
-
-extern "C"
-{
-#include "CaptureLib.h"
-}
-
 namespace winrt
 {
 using namespace Windows::Foundation;
@@ -31,34 +24,19 @@ using namespace Windows::UI;
 using namespace Windows::UI::Composition;
 } // namespace winrt
 
-static void CaptureLibCallback(void* data, UINT width, UINT height, void* context)
-{
-    static_cast<CaptureSession*>(context)->OnCaptureLibArrived(data, width, height);
-}
-
 CaptureSession::CaptureSession(winrt::com_ptr<ID3D11Device>      d3dDevice,
                                winrt::GraphicsCaptureItem const& item,
+                               bool                              window,
                                winrt::DirectXPixelFormat         pixelFormat,
                                ShaderGlass&                      shaderGlass,
                                bool                              maxCaptureRate,
-                               HANDLE frameEvent) : m_d3dDevice {d3dDevice}, m_item {item}, m_pixelFormat {pixelFormat}, m_shaderGlass {shaderGlass}, m_frameEvent(frameEvent)
+                               HANDLE                            frameEvent) :
+    m_d3dDevice {d3dDevice}, m_item {item}, m_pixelFormat {pixelFormat}, m_shaderGlass {shaderGlass}, m_frameEvent(frameEvent), m_captureLib(*this)
 {
-    if(UseCaptureLib())
+    if(HasCaptureAPI())
     {
-        m_d3dDevice->GetImmediateContext(m_context.put());
-        CaptureLibStart(CaptureLibCallback, (void*)this);
-    }
-    else
-    {
-        if(HasCaptureAPI())
-        {
-            auto dxgiDevice = m_d3dDevice.as<IDXGIDevice>();
-            m_device        = CreateDirect3DDevice(dxgiDevice.get());
-        }
-        else
-        {
-            m_device = nullptr;
-        }
+        auto dxgiDevice = m_d3dDevice.as<IDXGIDevice>();
+        m_device        = CreateDirect3DDevice(dxgiDevice.get());
 
         m_contentSize = m_item.Size();
         m_framePool   = winrt::Direct3D11CaptureFramePool::CreateFreeThreaded(m_device, pixelFormat, 2, m_contentSize);
@@ -95,10 +73,14 @@ CaptureSession::CaptureSession(winrt::com_ptr<ID3D11Device>      d3dDevice,
 
         WINRT_ASSERT(m_session != nullptr);
     }
+    else if(HasCaptureLib())
+    {
+        m_captureLib.Start(d3dDevice, window);
+    }
 }
 
 CaptureSession::CaptureSession(winrt::com_ptr<ID3D11Texture2D> inputImage, ShaderGlass& shaderGlass, HANDLE frameEvent) :
-    m_d3dDevice(nullptr), m_inputImage {inputImage}, m_device(nullptr), m_shaderGlass {shaderGlass}, m_frameEvent {frameEvent}
+    m_d3dDevice(nullptr), m_inputImage {inputImage}, m_device(nullptr), m_shaderGlass {shaderGlass}, m_frameEvent {frameEvent}, m_captureLib(*this)
 {
     Reset();
     ProcessInput();
@@ -114,10 +96,11 @@ void CaptureSession::Reset()
 
 void CaptureSession::UpdateCursor(bool captureCursor)
 {
-#ifndef USE_CAPTURELIB
-    if(m_session && CanUpdateCursor())
-        m_session.IsCursorCaptureEnabled(captureCursor);
-#endif
+    if(HasCaptureAPI())
+    {
+        if(m_session && CanUpdateCursor())
+            m_session.IsCursorCaptureEnabled(captureCursor);
+    }
 }
 
 void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sender, winrt::IInspectable const&)
@@ -137,48 +120,10 @@ void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sen
     OnInputFrame();
 }
 
-void CaptureSession::OnCaptureLibArrived(void* data, UINT width, UINT height)
+void CaptureSession::OnCaptureLibArrived(UINT width, UINT height)
 {
-    if(width == 0 || height == 0 || data == NULL)
-        return;
-
-    {
-        std::unique_lock lock(m_mutex);
-
-        if(width != m_contentSize.Width || height != m_contentSize.Height || m_inputFrames.empty())
-        {
-            // recreate
-            m_inputFrames.clear();
-            for(int i = 0; i < 1; i++)
-            {
-                D3D11_TEXTURE2D_DESC desc {};
-                desc.Usage              = D3D11_USAGE_DYNAMIC;
-                desc.BindFlags          = D3D11_BIND_SHADER_RESOURCE;
-                desc.CPUAccessFlags     = D3D11_CPU_ACCESS_WRITE;
-                desc.MipLevels          = 1;
-                desc.SampleDesc.Count   = 1;
-                desc.SampleDesc.Quality = 0;
-                desc.ArraySize          = 1;
-                desc.MiscFlags          = 0;
-                desc.Format             = DXGI_FORMAT_B8G8R8A8_UNORM;
-                desc.Width              = width;
-                desc.Height             = height;
-                winrt::com_ptr<ID3D11Texture2D> texture;
-                assert(SUCCEEDED(m_d3dDevice->CreateTexture2D(&desc, NULL, texture.put())));
-                m_inputFrames.push_back(texture);
-            }
-            m_nextInput          = 0;
-            m_contentSize.Width  = width;
-            m_contentSize.Height = height;
-        }
-
-        D3D11_MAPPED_SUBRESOURCE mappedResource;
-        ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-        auto input = m_inputFrames[m_nextInput].get();
-        m_context->Map(input, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-        memcpy(mappedResource.pData, data, width * height * 4);
-        m_context->Unmap(input, 0);
-    }
+    m_contentSize.Width = width;
+    m_contentSize.Height = height;
     SetEvent(m_frameEvent);
     OnInputFrame();
 }
@@ -197,44 +142,32 @@ void CaptureSession::OnInputFrame()
     }
 }
 
-bool CaptureSession::UseCaptureLib()
-{
-#ifdef USE_CAPTURELIB
-    return true;
-#else
-    return false;
-#endif
-}
-
 void CaptureSession::ProcessInput()
 {
     if(m_inputImage.get())
     {
         m_shaderGlass.Process(m_inputImage, m_frameTicks, m_numInputFrames);
     }
-    else if(UseCaptureLib() && m_inputFrames.size())
-    {
-        std::unique_lock lock(m_mutex);
-
-        auto nextInput = m_nextInput;
-        m_nextInput++;
-        m_nextInput %= m_inputFrames.size();
-        m_shaderGlass.Process(m_inputFrames[nextInput], m_frameTicks, m_numInputFrames);
-    }
-    else
+    else if(HasCaptureAPI())
     {
         m_shaderGlass.Process(m_inputFrame, m_frameTicks, m_numInputFrames);
     }
+    else if(m_captureLib.Active())
+    {
+        auto lock = m_captureLib.Lock();
+        m_shaderGlass.Process(m_captureLib.GetInputFrame(), m_frameTicks, m_numInputFrames);
+    }
+}
+
+void CaptureSession::GetContentSize(LONG& width, LONG& height)
+{
+    width  = m_contentSize.Width;
+    height = m_contentSize.Height;
 }
 
 void CaptureSession::Stop()
 {
-    if(UseCaptureLib())
-    {
-        CaptureLibStop();
-        m_inputFrames.clear();
-    }
-    else
+    if(HasCaptureAPI())
     {
         if(m_session)
             m_session.Close();
@@ -242,10 +175,13 @@ void CaptureSession::Stop()
         if(m_framePool)
             m_framePool.Close();
     }
+    if(m_captureLib.Active())
+    {
+        m_captureLib.Stop();
+    }
 
     m_framePool = nullptr;
     m_session   = nullptr;
     m_item      = nullptr;
     m_d3dDevice = nullptr;
-    m_context   = nullptr;
 }

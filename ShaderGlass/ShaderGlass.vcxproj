@@ -130,16 +130,16 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/await /Zc:twoPhase- /bigobj %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)ShaderGC;$(SolutionDir)CaptureLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ShaderGC;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Delayimp.lib;ShaderGC.lib;CaptureLib.lib;mf.lib;mfuuid.lib;Comctl32.lib;dwmapi.lib;windowsapp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Delayimp.lib;ShaderGC.lib;mf.lib;mfuuid.lib;Comctl32.lib;dwmapi.lib;windowsapp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <StackReserveSize>4096000</StackReserveSize>
-      <DelayLoadDLLs>D3DCOMPILER_47.dll;MF.dll;MFReadWrite.dll;MFPlat.dll;CaptureLib.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>D3DCOMPILER_47.dll;MF.dll;MFReadWrite.dll;MFPlat.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -175,6 +175,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BrowserWindow.h" />
+    <ClInclude Include="CaptureLib.h" />
     <ClInclude Include="CompileWindow.h" />
     <ClInclude Include="CropDialog.h" />
     <ClInclude Include="CursorEmulator.h" />
@@ -211,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BrowserWindow.cpp" />
+    <ClCompile Include="CaptureLib.cpp" />
     <ClCompile Include="CaptureManager.cpp" />
     <ClCompile Include="CaptureSession.cpp" />
     <ClCompile Include="CompileWindow.cpp" />

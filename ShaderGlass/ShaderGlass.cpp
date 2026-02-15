@@ -401,17 +401,21 @@ void ShaderGlass::DestroyPasses()
 
 void ShaderGlass::PresentFrame()
 {
-    DXGI_PRESENT_PARAMETERS presentParameters {};
-    UINT                    presentFlags = 0;
+    UINT presentFlags = 0;
     if(m_flipMode)
     {
+        DXGI_PRESENT_PARAMETERS presentParameters {};
         presentFlags |= DXGI_PRESENT_RESTART;
         if(m_allowTearing)
         {
             presentFlags |= DXGI_PRESENT_ALLOW_TEARING;
         }
+        m_swapChain->Present1(0, presentFlags, &presentParameters);
     }
-    m_swapChain->Present1(0, presentFlags, &presentParameters);
+    else
+    {
+        m_swapChain->Present(0, presentFlags);
+    }
     PostMessage(m_outputWindow, WM_PAINT, 0, 0); // necessary for click-through
 }
 
@@ -493,10 +497,21 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     bool outputMoved = false;
     if(m_captureWindow)
     {
-        ClientToScreen(m_captureWindow, &captureTopLeft);
-        GetClientRect(m_captureWindow, &captureClient);
+        if(m_captureWindow != HWND_BROADCAST)
+        {
+            ClientToScreen(m_captureWindow, &captureTopLeft);
+            GetClientRect(m_captureWindow, &captureClient);
 
-        DwmGetWindowAttribute(m_captureWindow, DWMWA_EXTENDED_FRAME_BOUNDS, &captureRect, sizeof(RECT));
+            DwmGetWindowAttribute(m_captureWindow, DWMWA_EXTENDED_FRAME_BOUNDS, &captureRect, sizeof(RECT));
+        }
+        else
+        {
+            captureRect.left   = 0;
+            captureRect.right  = capturedTextureDesc.Width;
+            captureRect.top    = 0;
+            captureRect.bottom = capturedTextureDesc.Height;
+            captureClient      = captureRect;
+        }
         captureTopLeft.x += m_croppedArea.left;
         captureTopLeft.y += m_croppedArea.top;
         captureClient.right -= (m_croppedArea.left + m_croppedArea.right);

@@ -10,11 +10,12 @@ GNU General Public License v3.0
 #define MAX_WINDOW_TITLE 200
 #define MAX_DEVICE_NAME 200
 
-wchar_t* convertCharArrayToLPCWSTR(const char* charArray);
-BOOL IsAltTabWindow(HWND hwnd);
+wchar_t*     convertCharArrayToLPCWSTR(const char* charArray);
+BOOL         IsAltTabWindow(HWND hwnd);
 std::wstring GetWindowStringText(HWND hwnd);
-bool HasCaptureAPI();
-bool Is1903();
-bool CanDisableBorder();
-bool CanSetCaptureRate();
-bool CanUpdateCursor();
+bool         HasCaptureAPI();
+bool         HasCaptureLib();
+bool         Is1903();
+bool         CanDisableBorder();
+bool         CanSetCaptureRate();
+bool         CanUpdateCursor();
