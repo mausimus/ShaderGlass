@@ -1569,7 +1569,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             break;
         case IDM_SHADER_RELOAD: {
             const auto& shader = m_captureManager.Presets().at(m_captureOptions.presetNo);
-            if(shader && shader->Category == "Imported" && shader->ImportPath.size())
+            if(shader && shader->Category == "Imported" && !shader->ImportPath.empty())
             {
                 ImportShader(shader->ImportPath, false);
             }
