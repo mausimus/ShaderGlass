@@ -70,24 +70,43 @@ float getTargetLines() {
     return targetLines;
 }
 
-float rednessRatio(vec3 c) {
-    return c.r / max(c.g + c.b, 0.0001);
-}
-
 float redSignal(vec3 c) {
     return max(c.r - 0.5 * (c.g + c.b), 0.0);
 }
 
-float verticalRedEdgeAtBoundary(float boundaryY, float columnCenterX, float segmentHeight) {
+float redFraction(vec3 c) {
+    return c.r / max(c.r + c.g + c.b, 0.0001);
+}
+
+vec3 sampleCellColor(float xCenter, float yCenter, float columnWidth, float segmentHeight) {
+    float xOff = 0.25 * columnWidth;
+    float yOff = 0.25 * segmentHeight;
+
+    vec3 c0 = texture(Source, vec2(clamp(xCenter - xOff, 0.0, 1.0), clamp(yCenter - yOff, 0.0, 1.0))).rgb;
+    vec3 c1 = texture(Source, vec2(clamp(xCenter,        0.0, 1.0), clamp(yCenter - yOff, 0.0, 1.0))).rgb;
+    vec3 c2 = texture(Source, vec2(clamp(xCenter + xOff, 0.0, 1.0), clamp(yCenter - yOff, 0.0, 1.0))).rgb;
+
+    vec3 c3 = texture(Source, vec2(clamp(xCenter - xOff, 0.0, 1.0), clamp(yCenter,        0.0, 1.0))).rgb;
+    vec3 c4 = texture(Source, vec2(clamp(xCenter,        0.0, 1.0), clamp(yCenter,        0.0, 1.0))).rgb;
+    vec3 c5 = texture(Source, vec2(clamp(xCenter + xOff, 0.0, 1.0), clamp(yCenter,        0.0, 1.0))).rgb;
+
+    vec3 c6 = texture(Source, vec2(clamp(xCenter - xOff, 0.0, 1.0), clamp(yCenter + yOff, 0.0, 1.0))).rgb;
+    vec3 c7 = texture(Source, vec2(clamp(xCenter,        0.0, 1.0), clamp(yCenter + yOff, 0.0, 1.0))).rgb;
+    vec3 c8 = texture(Source, vec2(clamp(xCenter + xOff, 0.0, 1.0), clamp(yCenter + yOff, 0.0, 1.0))).rgb;
+
+    return (c0 + c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8) / 9.0;
+}
+
+float verticalRedEdgeAtBoundary(float boundaryY, float columnCenterX, float columnWidth, float segmentHeight) {
     float yTop = clamp(boundaryY - 0.5 * segmentHeight, 0.0, 1.0);
     float yBottom = clamp(boundaryY + 0.5 * segmentHeight, 0.0, 1.0);
 
-    vec3 cTop = texture(Source, vec2(columnCenterX, yTop)).rgb;
-    vec3 cBottom = texture(Source, vec2(columnCenterX, yBottom)).rgb;
+    vec3 cTop = sampleCellColor(columnCenterX, yTop, columnWidth, segmentHeight);
+    vec3 cBottom = sampleCellColor(columnCenterX, yBottom, columnWidth, segmentHeight);
 
-    float ratioTop = rednessRatio(cTop);
-    float ratioBottom = rednessRatio(cBottom);
-    float ratioDelta = abs(ratioBottom - ratioTop);
+    float fracTop = redFraction(cTop);
+    float fracBottom = redFraction(cBottom);
+    float fracDelta = abs(fracBottom - fracTop);
 
     float signalTop = redSignal(cTop);
     float signalBottom = redSignal(cBottom);
@@ -95,9 +114,9 @@ float verticalRedEdgeAtBoundary(float boundaryY, float columnCenterX, float segm
     float maxSignal = max(signalTop, signalBottom);
 
     float threshold = max(global.V7_VRED_DELTA, 0.0001);
-    float combinedDelta = max(ratioDelta, signalDelta * 1.5);
+    float combinedDelta = max(fracDelta * 1.2, signalDelta * 1.5);
     float edge = smoothstep(threshold, threshold * 2.0, combinedDelta);
-    float redPresence = smoothstep(0.02, 0.10, maxSignal);
+    float redPresence = smoothstep(0.05, 0.16, maxSignal);
     return edge * redPresence;
 }
 
@@ -118,7 +137,7 @@ float verticalRedSliverMask(vec2 uv, vec2 texel, float targetLines) {
     for(int k = 0; k <= 8; k++) {
         if(k <= maxRowsBack) {
             float candidateBoundaryY = boundaryY - float(k) * segmentHeight;
-            float edge = verticalRedEdgeAtBoundary(candidateBoundaryY, columnCenterX, segmentHeight);
+            float edge = verticalRedEdgeAtBoundary(candidateBoundaryY, columnCenterX, columnWidth, segmentHeight);
 
             float yTop = candidateBoundaryY;
             float yBottom = candidateBoundaryY + sliverRows * segmentHeight;
