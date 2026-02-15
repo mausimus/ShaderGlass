@@ -3,12 +3,17 @@
 
 // === PASS 1: DOT CRAWL MASK DEBUG (V-Red) ===
 // Input: blurred linear-space image from pass 0
-// Output: unchanged image or direct mask visualization for tuning
+// Output: dot-crawl processed image or direct mask visualization for tuning
 
-#pragma parameter V7_MASK_DEBUG "DOT CRAWL Mask View (Off / On)" 1.0 0.0 1.0 1.0
-#pragma parameter V7_VRED_SEGMENT_X "DOT CRAWL V-Red Segment X/n" 1.0 0.25 4.0 0.05
-#pragma parameter V7_VRED_DELTA "DOT CRAWL V-Red Delta Threshold" 0.06 0.01 1.0 0.01
-#pragma parameter V7_VRED_ONSET_BIAS "DOT CRAWL V-Red Black->Red Bias" 0.65 0.0 1.0 0.01
+#pragma parameter DOT_CRAWL "DOT CRAWL v7 (Off / On)" 1.0 0.0 1.0 1.0
+#pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL v7 Intensity" 6.0 0.0 6.0 0.01
+#pragma parameter V7_LINE_THICKNESS "DOT CRAWL v7 Line Thickness" 0.4 0.1 1.0 0.05
+#pragma parameter V7_SWAP_SIZE "DOT CRAWL v7 Swap Size" 1.0 0.0 8.0 0.1
+#pragma parameter V7_SPEED "DOT CRAWL v7 Horizontal Speed" 1.1 0.0 3.0 0.05
+#pragma parameter V7_MASK_DEBUG "DOT CRAWL Mask View (Off / On)" 0.0 0.0 1.0 1.0
+#pragma parameter V7_VRED_SEGMENT_X "DOT CRAWL V-Red Segment X/n" 1.0 1.0 3.0 1.0
+#pragma parameter V7_VRED_DELTA "DOT CRAWL V-Red Delta Threshold" 0.09 0.01 1.0 0.01
+#pragma parameter V7_VRED_ONSET_BIAS "DOT CRAWL V-Red Black->Red Bias" 0.66 0.0 1.0 0.01
 #pragma parameter V7_VRED_SLIVER_EXTRA "DOT CRAWL V-Red Sliver Extra" 0.0 0.0 3.0 0.05
 
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
@@ -21,6 +26,11 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OriginalSize;
     vec4 OutputSize;
     uint FrameCount;
+    float DOT_CRAWL;
+    float DOT_CRAWL_INTENSITY;
+    float V7_LINE_THICKNESS;
+    float V7_SWAP_SIZE;
+    float V7_SPEED;
     float V7_MASK_DEBUG;
     float V7_VRED_SEGMENT_X;
     float V7_VRED_DELTA;
@@ -157,6 +167,36 @@ float verticalRedSliverMask(vec2 uv, vec2 texel, float targetLines) {
     return edgeAndCoverage;
 }
 
+vec3 applyDotCrawlV7(vec3 linearColor, vec2 uv, float mask, float targetLines) {
+    vec2 srcTexel = 1.0 / global.SourceSize.xy;
+    float scanlinePx = max(1.0, global.OutputSize.y / targetLines);
+    float lineThicknessPx = max(0.5, global.V7_LINE_THICKNESS * scanlinePx);
+
+    vec2 px = uv * global.OutputSize.xy;
+    float travelPx = float(global.FrameCount) * global.V7_SPEED;
+
+    float lineCoord = (px.x + travelPx + px.y) / lineThicknessPx;
+    float lineId = floor(lineCoord);
+
+    float pairId = floor(lineId / 2.0);
+    float lineInPair = mod(lineId, 2.0);
+    float pairSign = (mod(pairId, 2.0) < 1.0) ? -1.0 : 1.0;
+    float intraSign = (lineInPair < 1.0) ? 1.0 : -1.0;
+    float swapSign = pairSign * intraSign;
+
+    vec2 swapDir = normalize(vec2(1.0, 1.0));
+    float swapPx = global.V7_SWAP_SIZE * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 6.0) * mask;
+    vec2 swapUV = uv + swapDir * (swapSign * swapPx) * srcTexel;
+    vec3 swapped = texture(Source, clamp(swapUV, vec2(0.0), vec2(1.0))).rgb;
+
+    float y0 = dot(linearColor, vec3(0.299, 0.587, 0.114));
+    float y1 = dot(swapped,     vec3(0.299, 0.587, 0.114));
+    vec3 ch1 = swapped - vec3(y1);
+    vec3 outColor = clamp(vec3(y0) + ch1, 0.0, 1.0);
+
+    return mix(linearColor, outColor, clamp(mask, 0.0, 1.0));
+}
+
 void main() {
     vec3 baseColor = texture(Source, vTexCoord).rgb;
     vec2 srcTexel = 1.0 / global.SourceSize.xy;
@@ -166,6 +206,9 @@ void main() {
     if(global.V7_MASK_DEBUG > 0.5) {
         FragColor = vec4(vec3(clamp(mask, 0.0, 1.0)), 1.0);
     } else {
-        FragColor = vec4(baseColor, 1.0);
+        vec3 crawledColor = (global.DOT_CRAWL > 0.5)
+            ? applyDotCrawlV7(baseColor, vTexCoord, mask, targetLines)
+            : baseColor;
+        FragColor = vec4(crawledColor, 1.0);
     }
 }
