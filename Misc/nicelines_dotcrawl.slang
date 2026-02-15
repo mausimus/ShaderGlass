@@ -6,11 +6,6 @@
 // Output: unchanged image or direct mask visualization for tuning
 
 #pragma parameter V7_MASK_DEBUG "DOT CRAWL Mask View (Off / On)" 1.0 0.0 1.0 1.0
-#pragma parameter V7_MASK_USE_GATES "DOT CRAWL Mask Gates (Off / On)" 1.0 0.0 1.0 1.0
-#pragma parameter V7_MASK_CENTER_SAT "DOT CRAWL Mask Center Sat Clamp" 0.10 0.0 0.6 0.01
-#pragma parameter V7_MASK_SAT_LOW "DOT CRAWL Mask Sat Low" 0.08 0.0 0.6 0.01
-#pragma parameter V7_MASK_SAT_HIGH "DOT CRAWL Mask Sat High" 0.32 0.0 0.8 0.01
-#pragma parameter V7_MASK_NEUTRAL_REJECT "DOT CRAWL Mask Neutral Reject" 0.10 0.0 0.6 0.01
 #pragma parameter V7_VRED_SEGMENT_X "DOT CRAWL V-Red Segment X/n" 1.0 0.25 4.0 0.05
 #pragma parameter V7_VRED_DELTA "DOT CRAWL V-Red Delta Threshold" 0.18 0.01 1.0 0.01
 #pragma parameter V7_VRED_SLIVER_EXTRA "DOT CRAWL V-Red Sliver Extra" 0.0 0.0 3.0 0.05
@@ -26,11 +21,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OutputSize;
     uint FrameCount;
     float V7_MASK_DEBUG;
-    float V7_MASK_USE_GATES;
-    float V7_MASK_CENTER_SAT;
-    float V7_MASK_SAT_LOW;
-    float V7_MASK_SAT_HIGH;
-    float V7_MASK_NEUTRAL_REJECT;
     float V7_VRED_SEGMENT_X;
     float V7_VRED_DELTA;
     float V7_VRED_SLIVER_EXTRA;
@@ -80,12 +70,12 @@ float getTargetLines() {
     return targetLines;
 }
 
-float satAmount(vec3 c) {
-    return max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
-}
-
 float rednessRatio(vec3 c) {
     return c.r / max(c.g + c.b, 0.0001);
+}
+
+float redSignal(vec3 c) {
+    return max(c.r - 0.5 * (c.g + c.b), 0.0);
 }
 
 float verticalRedEdgeAtBoundary(float boundaryY, float columnCenterX, float segmentHeight) {
@@ -95,11 +85,20 @@ float verticalRedEdgeAtBoundary(float boundaryY, float columnCenterX, float segm
     vec3 cTop = texture(Source, vec2(columnCenterX, yTop)).rgb;
     vec3 cBottom = texture(Source, vec2(columnCenterX, yBottom)).rgb;
 
-    float rTop = rednessRatio(cTop);
-    float rBottom = rednessRatio(cBottom);
-    float redDelta = abs(rBottom - rTop);
+    float ratioTop = rednessRatio(cTop);
+    float ratioBottom = rednessRatio(cBottom);
+    float ratioDelta = abs(ratioBottom - ratioTop);
+
+    float signalTop = redSignal(cTop);
+    float signalBottom = redSignal(cBottom);
+    float signalDelta = abs(signalBottom - signalTop);
+    float maxSignal = max(signalTop, signalBottom);
+
     float threshold = max(global.V7_VRED_DELTA, 0.0001);
-    return smoothstep(threshold, threshold * 2.0, redDelta);
+    float combinedDelta = max(ratioDelta, signalDelta * 1.5);
+    float edge = smoothstep(threshold, threshold * 2.0, combinedDelta);
+    float redPresence = smoothstep(0.02, 0.10, maxSignal);
+    return edge * redPresence;
 }
 
 float verticalRedSliverMask(vec2 uv, vec2 texel, float targetLines) {
@@ -111,17 +110,6 @@ float verticalRedSliverMask(vec2 uv, vec2 texel, float targetLines) {
 
     float rowIndex = floor(uv.y / segmentHeight);
     float boundaryY = rowIndex * segmentHeight;
-
-    float satLow = min(global.V7_MASK_SAT_LOW, global.V7_MASK_SAT_HIGH);
-    float satHigh = max(global.V7_MASK_SAT_LOW, global.V7_MASK_SAT_HIGH);
-
-    vec3 cCenter = texture(Source, vec2(columnCenterX, clamp(uv.y, 0.0, 1.0))).rgb;
-    float centerSat = satAmount(cCenter);
-    float centerGate = smoothstep(global.V7_MASK_CENTER_SAT, global.V7_MASK_CENTER_SAT + 0.08, centerSat);
-
-    const vec3 LUMA = vec3(0.299, 0.587, 0.114);
-    float centerChroma = length(cCenter - vec3(dot(cCenter, LUMA)));
-    float neutralGate = smoothstep(global.V7_MASK_NEUTRAL_REJECT, global.V7_MASK_NEUTRAL_REJECT + 0.10, centerChroma);
 
     float sliverRows = 1.0 + max(global.V7_VRED_SLIVER_EXTRA, 0.0);
     int maxRowsBack = clamp(int(ceil(sliverRows)) - 1, 0, 8);
@@ -136,17 +124,7 @@ float verticalRedSliverMask(vec2 uv, vec2 texel, float targetLines) {
             float yBottom = candidateBoundaryY + sliverRows * segmentHeight;
             float below = step(yTop, uv.y) * step(uv.y, yBottom);
 
-            float ySampleTop = clamp(candidateBoundaryY - 0.5 * segmentHeight, 0.0, 1.0);
-            float ySampleBottom = clamp(candidateBoundaryY + 0.5 * segmentHeight, 0.0, 1.0);
-            vec3 cTop = texture(Source, vec2(columnCenterX, ySampleTop)).rgb;
-            vec3 cBottom = texture(Source, vec2(columnCenterX, ySampleBottom)).rgb;
-            float satGate = smoothstep(satLow, satHigh, min(satAmount(cTop), satAmount(cBottom)));
-
-            float gates = (global.V7_MASK_USE_GATES > 0.5)
-                ? (satGate * centerGate * neutralGate)
-                : 1.0;
-
-            edgeAndCoverage = max(edgeAndCoverage, edge * below * gates);
+            edgeAndCoverage = max(edgeAndCoverage, edge * below);
         }
     }
 
