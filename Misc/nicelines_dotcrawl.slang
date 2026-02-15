@@ -7,14 +7,14 @@
 
 #pragma parameter DOT_CRAWL "DOT CRAWL v7 (Off / On)" 1.0 0.0 1.0 1.0
 #pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL v7 Intensity" 6.0 0.0 6.0 0.01
-#pragma parameter V7_LINE_THICKNESS "DOT CRAWL v7 Line Thickness" 0.4 0.1 1.0 0.05
-#pragma parameter V7_SWAP_SIZE "DOT CRAWL v7 Swap Size" 1.0 0.0 8.0 0.1
+#pragma parameter V7_LINE_THICKNESS "DOT CRAWL v7 Line Thickness" 0.3 0.1 1.0 0.05
+#pragma parameter V7_SWAP_SIZE "DOT CRAWL v7 Swap Size" 1.2 0.0 8.0 0.1
 #pragma parameter V7_SPEED "DOT CRAWL v7 Horizontal Speed" 1.1 0.0 3.0 0.05
 #pragma parameter V7_MASK_DEBUG "DOT CRAWL Mask View (Off / On)" 0.0 0.0 1.0 1.0
 #pragma parameter V7_VRED_SEGMENT_X "DOT CRAWL V-Red Segment X/n" 1.0 1.0 3.0 1.0
-#pragma parameter V7_VRED_DELTA "DOT CRAWL V-Red Delta Threshold" 0.09 0.01 1.0 0.01
+#pragma parameter V7_VRED_DELTA "DOT CRAWL V-Red Delta Threshold" 0.04 0.01 1.0 0.01
 #pragma parameter V7_VRED_ONSET_BIAS "DOT CRAWL V-Red Black->Red Bias" 0.66 0.0 1.0 0.01
-#pragma parameter V7_VRED_SLIVER_EXTRA "DOT CRAWL V-Red Sliver Extra" 0.0 0.0 3.0 0.05
+#pragma parameter V7_VRED_SLIVER_EXTRA "DOT CRAWL V-Red Sliver Extra" 2.55 0.0 3.0 0.05
 
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
@@ -90,6 +90,31 @@ float redFraction(vec3 c) {
     return c.r / max(c.r + c.g + c.b, 0.0001);
 }
 
+float greenSignal(vec3 c) {
+    return max(c.g - 0.5 * (c.r + c.b), 0.0);
+}
+
+float greenFraction(vec3 c) {
+    return c.g / max(c.r + c.g + c.b, 0.0001);
+}
+
+float channelEdgeScore(float fracTop, float fracBottom, float signalTop, float signalBottom) {
+    float fracDelta = abs(fracBottom - fracTop);
+    float signalDelta = abs(signalBottom - signalTop);
+    float maxSignal = max(signalTop, signalBottom);
+    float onset = max(signalBottom - signalTop, 0.0);
+
+    float threshold = max(global.V7_VRED_DELTA, 0.0001);
+    float onsetBias = clamp(global.V7_VRED_ONSET_BIAS, 0.0, 1.0);
+    float onsetTerm = onset * mix(1.0, 2.4, onsetBias);
+    float textureTerm = signalDelta * mix(1.8, 0.7, onsetBias);
+    float ratioTerm = fracDelta * mix(1.3, 0.8, onsetBias);
+    float combinedDelta = max(onsetTerm, max(textureTerm, ratioTerm));
+    float edge = smoothstep(threshold, threshold * 2.0, combinedDelta);
+    float presence = smoothstep(0.05, 0.16, maxSignal);
+    return edge * presence;
+}
+
 vec3 sampleCellColor(float xCenter, float yCenter, float columnWidth, float segmentHeight) {
     float xOff = 0.25 * columnWidth;
     float yOff = 0.25 * segmentHeight;
@@ -116,25 +141,21 @@ float verticalRedEdgeAtBoundary(float boundaryY, float columnCenterX, float colu
     vec3 cTop = sampleCellColor(columnCenterX, yTop, columnWidth, segmentHeight);
     vec3 cBottom = sampleCellColor(columnCenterX, yBottom, columnWidth, segmentHeight);
 
-    float fracTop = redFraction(cTop);
-    float fracBottom = redFraction(cBottom);
-    float fracDelta = abs(fracBottom - fracTop);
+    float redEdge = channelEdgeScore(
+        redFraction(cTop),
+        redFraction(cBottom),
+        redSignal(cTop),
+        redSignal(cBottom)
+    );
 
-    float signalTop = redSignal(cTop);
-    float signalBottom = redSignal(cBottom);
-    float signalDelta = abs(signalBottom - signalTop);
-    float maxSignal = max(signalTop, signalBottom);
-    float onset = max(signalBottom - signalTop, 0.0);
+    float greenEdge = channelEdgeScore(
+        greenFraction(cTop),
+        greenFraction(cBottom),
+        greenSignal(cTop),
+        greenSignal(cBottom)
+    );
 
-    float threshold = max(global.V7_VRED_DELTA, 0.0001);
-    float onsetBias = clamp(global.V7_VRED_ONSET_BIAS, 0.0, 1.0);
-    float onsetTerm = onset * mix(1.0, 2.4, onsetBias);
-    float textureTerm = signalDelta * mix(1.8, 0.7, onsetBias);
-    float ratioTerm = fracDelta * mix(1.3, 0.8, onsetBias);
-    float combinedDelta = max(onsetTerm, max(textureTerm, ratioTerm));
-    float edge = smoothstep(threshold, threshold * 2.0, combinedDelta);
-    float redPresence = smoothstep(0.05, 0.16, maxSignal);
-    return edge * redPresence;
+    return max(redEdge, greenEdge);
 }
 
 float verticalRedSliverMask(vec2 uv, vec2 texel, float targetLines) {
