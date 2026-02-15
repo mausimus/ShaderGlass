@@ -14,7 +14,6 @@
 
 // === PARAMETERS ===
 #pragma parameter SHADOW_MASK_MODE "SHADOW MASK (Off / Single / Double)" 1.0 0.0 2.0 1.0
-#pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -23,7 +22,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     vec4 OutputSize;
     uint FrameCount;
     float SHADOW_MASK_MODE;
-    float COMPARE;
 } global;
 
 // === VERTEX STAGE ===
@@ -45,16 +43,6 @@ layout(set = 0, binding = 2) uniform sampler2D Source;  // Pass 1 output (scanli
 
 void main() {
     vec2 px = vTexCoord * global.OutputSize.xy;
-
-    int compareMode = int(global.COMPARE + 0.5);
-    bool showRawHere = false;
-    if(compareMode == 1 && vTexCoord.x < 0.5) showRawHere = true;
-    if(compareMode == 2 && vTexCoord.x >= 0.5) showRawHere = true;
-    if(showRawHere) {
-        vec3 passthrough = texture(Source, vTexCoord).rgb;
-        FragColor = vec4(passthrough, 1.0);
-        return;
-    }
 
     // === MODE 0: No shadow mask — passthrough ===
     int maskMode = int(global.SHADOW_MASK_MODE + 0.5);

@@ -6,15 +6,12 @@
 // Input B (Mask):   base masked image from pass 2 (linear, via alias)
 // Output: final image in sRGB
 
-#pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
-
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
     vec4 SourceSize;
     vec4 OriginalSize;
     vec4 OutputSize;
     uint FrameCount;
-    float COMPARE;
 } global;
 
 // === VERTEX STAGE ===
@@ -69,15 +66,6 @@ vec3 blurHighlightsGaussian(vec2 uv, float radiusPx, vec2 texel) {
 
 void main() {
     vec3 baseLinear = texture(Mask, vTexCoord).rgb;
-
-    int compareMode = int(global.COMPARE + 0.5);
-    bool showRawHere = false;
-    if(compareMode == 1 && vTexCoord.x < 0.5) showRawHere = true;
-    if(compareMode == 2 && vTexCoord.x >= 0.5) showRawHere = true;
-    if(showRawHere) {
-        FragColor = vec4(LinearToSrgb3(baseLinear), 1.0);
-        return;
-    }
 
     const float amount = 0.48;
     const float radius = 12.0;

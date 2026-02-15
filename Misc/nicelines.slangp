@@ -1,5 +1,5 @@
-// nicelines multi-pass preset v9 (2026-02-14)
-shaders = 5
+// nicelines multi-pass preset v10 (2026-02-14)
+shaders = 6
 
 // Pass 0: Downscale Blur + Horizontal Blur
 shader0 = nicelines_blur.slang
@@ -9,33 +9,41 @@ scale0 = 1.0
 float_framebuffer0 = true
 alias0 = Blur
 
-// Pass 1: Scanlines
-shader1 = nicelines_scanlines.slang
+// Pass 1: Dot Crawl (v7)
+shader1 = nicelines_dotcrawl.slang
 filter_linear1 = false
 scale_type1 = viewport
 scale1 = 1.0
 float_framebuffer1 = true
-alias1 = Scanlines
+alias1 = DotCrawl
 
-// Pass 2: Shadow Mask
-shader2 = nicelines_mask.slang
+// Pass 2: Scanlines
+shader2 = nicelines_scanlines.slang
 filter_linear2 = false
 scale_type2 = viewport
 scale2 = 1.0
 float_framebuffer2 = true
-alias2 = Mask
+alias2 = Scanlines
 
-// Pass 3: Halation Extraction (linear)
-shader3 = nicelines_halation_extract.slang
+// Pass 3: Shadow Mask
+shader3 = nicelines_mask.slang
 filter_linear3 = false
 scale_type3 = viewport
 scale3 = 1.0
 float_framebuffer3 = true
-alias3 = HalationExtract
+alias3 = Mask
 
-// Pass 4: Halation Blur + Final Output
-shader4 = nicelines_halation.slang
+// Pass 4: Halation Extraction (linear)
+shader4 = nicelines_halation_extract.slang
 filter_linear4 = false
 scale_type4 = viewport
 scale4 = 1.0
-alias4 = Halation
+float_framebuffer4 = true
+alias4 = HalationExtract
+
+// Pass 5: Halation Blur + Final Output
+shader5 = nicelines_halation.slang
+filter_linear5 = false
+scale_type5 = viewport
+scale5 = 1.0
+alias5 = Halation

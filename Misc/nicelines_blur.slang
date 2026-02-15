@@ -1,5 +1,5 @@
 #version 450
-// nicelines v17 (2026-02-14)
+// nicelines v18 (2026-02-14)
 
 // === PASS 0: DOWNSCALE BLUR ===
 // This pass handles: downscale blur prepass and horizontal blur
@@ -11,15 +11,6 @@
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
 #pragma parameter AUTO_LINES "SCANLINE ROUNDING (for 3D; anti-moire)" 0.0 0.0 1.0 1.0
-#pragma parameter COMPARE "COMPARE (Off / Left / Right)" 0.0 0.0 2.0 1.0
-#pragma parameter DOT_CRAWL "DOT CRAWL v6 (Off / On)" 1.0 0.0 1.0 1.0
-#pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL v6 Intensity" 3.0 0.0 6.0 0.01
-#pragma parameter V6_EDGE_GROW "DOT CRAWL v6 Edge Grow" 12.0 0.0 24.0 1.0
-#pragma parameter V6_LINE_THICKNESS "DOT CRAWL v6 Line Thickness" 0.65 0.1 1.0 0.05
-#pragma parameter V6_SWAP_SIZE "DOT CRAWL v6 Swap Size" 1.8 0.0 8.0 0.1
-#pragma parameter V6_SPEED "DOT CRAWL v6 Horizontal Speed" 1.1 0.0 3.0 0.05
-#pragma parameter V6_COLOR_BIAS "DOT CRAWL v6 Color Select" 2.0 0.2 4.0 0.05
-#pragma parameter DOT_CRAWL_DEBUG "DOT CRAWL Debug (Off / Bypass / Diff)" 0.0 0.0 2.0 1.0
 
 layout(std140, set = 0, binding = 0) uniform UBO {
     mat4 MVP;
@@ -32,18 +23,8 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float SCANLINE_MODE;
     float MANUAL_LINES;
     float AUTO_LINES;
-    float COMPARE;
-    float DOT_CRAWL;
-    float DOT_CRAWL_INTENSITY;
-    float V6_EDGE_GROW;
-    float V6_LINE_THICKNESS;
-    float V6_SWAP_SIZE;
-    float V6_SPEED;
-    float V6_COLOR_BIAS;
-    float DOT_CRAWL_DEBUG;
 } global;
 
-// === VERTEX STAGE ===
 #pragma stage vertex
 layout(location = 0) in vec4 Position;
 layout(location = 1) in vec2 TexCoord;
@@ -54,13 +35,11 @@ void main() {
     vTexCoord = TexCoord;
 }
 
-// === FRAGMENT STAGE ===
 #pragma stage fragment
 layout(location = 0) in vec2 vTexCoord;
 layout(location = 0) out vec4 FragColor;
 layout(set = 0, binding = 2) uniform sampler2D Source;
 
-// sRGB to linear conversion (input is sRGB from the game)
 float SrgbToLinear(float c) {
     return c <= 0.04045 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4);
 }
@@ -69,7 +48,6 @@ vec3 SrgbToLinear3(vec3 c) {
     return vec3(SrgbToLinear(c.r), SrgbToLinear(c.g), SrgbToLinear(c.b));
 }
 
-// Calculate target scanline count (needed for blur radius)
 float getTargetLines() {
     float targetLines;
     int mode = int(global.SCANLINE_MODE + 0.5);
@@ -86,6 +64,7 @@ float getTargetLines() {
     } else {
         targetLines = global.MANUAL_LINES;
     }
+
     if(global.AUTO_LINES > 0.5) {
         float outputHeight = global.OutputSize.y;
         float idealPixelsPerLine = outputHeight / targetLines;
@@ -95,15 +74,11 @@ float getTargetLines() {
     return targetLines;
 }
 
-// Area-average downsample: loops over all source texels covered by the output pixel
 vec3 areaAverage(vec2 uv, float effectiveScale) {
     vec2 texelSize = 1.0 / global.SourceSize.xy;
-    // How many source texels per output pixel
     float coverage = 1.0 / effectiveScale;
-    // Half-width of the footprint in UV space
     vec2 halfExtent = texelSize * coverage * 0.5;
 
-    // Number of samples per axis (at least 1, cap at 8 for performance)
     int samplesX = clamp(int(ceil(coverage)), 1, 8);
     int samplesY = clamp(int(ceil(coverage)), 1, 8);
 
@@ -124,16 +99,13 @@ vec3 areaAverage(vec2 uv, float effectiveScale) {
     return sum / count;
 }
 
-// Sample source with area-average downscale
 vec3 sampleWithBlur(vec2 uv, float effectiveScale) {
     if(effectiveScale >= 0.999) {
         return SrgbToLinear3(texture(Source, uv).rgb);
     }
-
     return areaAverage(uv, effectiveScale);
 }
 
-// Sample with horizontal blur (5-tap tent filter, operates in linear space)
 vec3 sampleWithHBlur(vec2 uv, float effectiveScale, float hBlur) {
     if(hBlur > 0.001) {
         float pixelSize = 1.0 / global.OutputSize.x;
@@ -146,123 +118,15 @@ vec3 sampleWithHBlur(vec2 uv, float effectiveScale, float hBlur) {
         vec3 cR2 = sampleWithBlur(vec2(uv.x + blurRadius, uv.y), effectiveScale);
 
         return cL2 * 0.1 + cL1 * 0.2 + cC * 0.4 + cR1 * 0.2 + cR2 * 0.1;
-    } else {
-        return sampleWithBlur(uv, effectiveScale);
     }
-}
-
-float coolScore(vec3 c) {
-    float cool = (c.b + c.g * 0.55) - c.r * 0.75;
-    return smoothstep(0.02, 0.25, cool);
-}
-
-float warmScore(vec3 c) {
-    float warm = (c.r + c.g * 0.45) - c.b * 0.85;
-    return smoothstep(0.02, 0.25, warm);
-}
-
-float v6TransitionAt(vec2 uv, vec2 texel) {
-    const vec3 LUMA = vec3(0.299, 0.587, 0.114);
-
-    vec3 cL = SrgbToLinear3(texture(Source, clamp(uv - vec2(texel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
-    vec3 cR = SrgbToLinear3(texture(Source, clamp(uv + vec2(texel.x, 0.0), vec2(0.0), vec2(1.0))).rgb);
-
-    float coolL = coolScore(cL);
-    float warmL = warmScore(cL);
-    float coolR = coolScore(cR);
-    float warmR = warmScore(cR);
-
-    // Horizontal transition between cool-group and warm-group colors.
-    float groupTransition = max(coolL * warmR, warmL * coolR);
-
-    vec3 chL = cL - vec3(dot(cL, LUMA));
-    vec3 chR = cR - vec3(dot(cR, LUMA));
-    float chromaContrast = length(chR - chL);
-
-    float colorBias = clamp(global.V6_COLOR_BIAS, 0.2, 2.0);
-    float edge = smoothstep(0.015, 0.13, chromaContrast * colorBias);
-    return groupTransition * edge;
-}
-
-float v6TransitionGrown(vec2 uv, vec2 texel) {
-    int grow = clamp(int(floor(global.V6_EDGE_GROW + 0.5)), 0, 12);
-    float best = 0.0;
-    for(int i = -12; i <= 12; i++) {
-        if(abs(i) <= grow) {
-            float t = v6TransitionAt(uv + vec2(float(i) * texel.x, 0.0), texel);
-            best = max(best, t);
-        }
-    }
-    return best;
-}
-
-vec3 applyDotCrawlV6(vec3 linearColor, vec2 uv, float effectiveScale) {
-    vec2 srcTexel = 1.0 / global.SourceSize.xy;
-    float edgeMask = v6TransitionGrown(uv, srcTexel);
-
-    float targetLines = getTargetLines();
-    float scanlinePx = max(1.0, global.OutputSize.y / targetLines);
-    float lineThicknessPx = max(0.5, global.V6_LINE_THICKNESS * scanlinePx);
-
-    vec2 px = uv * global.OutputSize.xy;
-    float travelPx = float(global.FrameCount) * global.V6_SPEED;
-
-    // NE->SW diagonal lines: constant (x + y).
-    float lineCoord = (px.x + travelPx + px.y) / lineThicknessPx;
-    float lineId = floor(lineCoord);
-
-    // Two-line swap grouping with alternating pair direction.
-    float pairId = floor(lineId / 2.0);
-    float lineInPair = mod(lineId, 2.0);
-    float pairSign = (mod(pairId, 2.0) < 1.0) ? -1.0 : 1.0;
-    float intraSign = (lineInPair < 1.0) ? 1.0 : -1.0;
-    float swapSign = pairSign * intraSign;
-
-    vec2 swapDir = normalize(vec2(1.0, 1.0)); // NW -> SE
-    float swapPx = global.V6_SWAP_SIZE * clamp(global.DOT_CRAWL_INTENSITY, 0.0, 3.0) * edgeMask;
-    vec2 swapUV = uv + swapDir * (swapSign * swapPx) * srcTexel;
-    vec3 swapped = sampleWithHBlur(clamp(swapUV, vec2(0.0), vec2(1.0)), effectiveScale, global.H_BLUR);
-
-    // Chroma-only masking (fixed for v6)
-    float y0 = dot(linearColor, vec3(0.299, 0.587, 0.114));
-    float y1 = dot(swapped,     vec3(0.299, 0.587, 0.114));
-    vec3 ch1 = swapped - vec3(y1);
-    vec3 outColor = clamp(vec3(y0) + ch1, 0.0, 1.0);
-
-    return mix(linearColor, outColor, clamp(edgeMask, 0.0, 1.0));
+    return sampleWithBlur(uv, effectiveScale);
 }
 
 void main() {
-    int compareMode = int(global.COMPARE + 0.5);
-    bool showRawHere = false;
-    if(compareMode == 1 && vTexCoord.x < 0.5) showRawHere = true;
-    if(compareMode == 2 && vTexCoord.x >= 0.5) showRawHere = true;
-    if(showRawHere) {
-        FragColor = vec4(SrgbToLinear3(texture(Source, vTexCoord).rgb), 1.0);
-        return;
-    }
-
     float targetLines = getTargetLines();
     float baselineScale = targetLines / global.SourceSize.y;
     float effectiveScale = clamp(baselineScale + global.BLUR_OFFSET, 0.02, 1.0);
 
-    // Apply downscale + horizontal blur, output in linear space
-    vec3 baseColor = sampleWithHBlur(vTexCoord, effectiveScale, global.H_BLUR);
-    vec3 crawledColor = (global.DOT_CRAWL > 0.5)
-        ? applyDotCrawlV6(baseColor, vTexCoord, effectiveScale)
-        : baseColor;
-
-    int crawlDebug = int(global.DOT_CRAWL_DEBUG + 0.5);
-    vec3 color;
-    if(crawlDebug == 1) {
-        // Bypass crawl to provide A/B verification against normal mode.
-        color = baseColor;
-    } else if(crawlDebug == 2) {
-        // Difference view (boosted) to reveal subtle crawl signal.
-        color = clamp(abs(crawledColor - baseColor) * 35.0, 0.0, 1.0);
-    } else {
-        color = crawledColor;
-    }
-
+    vec3 color = sampleWithHBlur(vTexCoord, effectiveScale, global.H_BLUR);
     FragColor = vec4(color, 1.0);
 }
