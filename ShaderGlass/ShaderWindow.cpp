@@ -2898,9 +2898,9 @@ void ShaderWindow::UpdateHotkey(const HotkeyInfo& hk, bool globalState)
         ModifyMenu(m_hotkeysMenu, ID_GLOBALHOTKEYS_PARAMETERS, MF_BYCOMMAND | MF_STRING, ID_GLOBALHOTKEYS_PARAMETERS, text);
         break;
     case ID_GLOBALHOTKEYS_RELOAD:
-        _snwprintf_s(text, 60, L"Reload/Recompile...\t%s", keyString.c_str());
+        _snwprintf_s(text, 60, L"Reload Current Shader\t%s", keyString.c_str());
         ModifyMenu(m_shaderMenu, IDM_SHADER_RELOAD, MF_BYCOMMAND | MF_STRING, IDM_SHADER_RELOAD, text);
-        _snwprintf_s(text, 100, L"Reload/Recompile... (%s)", menuKeyString.c_str());
+        _snwprintf_s(text, 100, L"Reload Current Shader... (%s)", menuKeyString.c_str());
         ModifyMenu(m_hotkeysMenu, ID_GLOBALHOTKEYS_RELOAD, MF_BYCOMMAND | MF_STRING, ID_GLOBALHOTKEYS_RELOAD, text);
         break;
     }
