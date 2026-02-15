@@ -6,10 +6,10 @@
 // Output: dot-crawl processed linear image for scanlines pass
 
 #pragma parameter DOT_CRAWL "DOT CRAWL v7 (Off / On)" 1.0 0.0 1.0 1.0
-#pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL v7 Intensity" 3.0 0.0 6.0 0.01
-#pragma parameter V7_EDGE_GROW "DOT CRAWL v7 Edge Grow" 12.0 0.0 24.0 1.0
-#pragma parameter V7_LINE_THICKNESS "DOT CRAWL v7 Line Thickness" 0.65 0.1 1.0 0.05
-#pragma parameter V7_SWAP_SIZE "DOT CRAWL v7 Swap Size" 1.8 0.0 8.0 0.1
+#pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL v7 Intensity" 6.0 0.0 6.0 0.01
+#pragma parameter V7_EDGE_GROW "DOT CRAWL v7 Edge Grow" 5.0 0.0 24.0 1.0
+#pragma parameter V7_LINE_THICKNESS "DOT CRAWL v7 Line Thickness" 0.4 0.1 1.0 0.05
+#pragma parameter V7_SWAP_SIZE "DOT CRAWL v7 Swap Size" 1.0 0.0 8.0 0.1
 #pragma parameter V7_SPEED "DOT CRAWL v7 Horizontal Speed" 1.1 0.0 3.0 0.05
 #pragma parameter V7_COLOR_BIAS "DOT CRAWL v7 Color Select" 2.0 0.2 4.0 0.05
 #pragma parameter DOT_CRAWL_DEBUG "DOT CRAWL Debug (Off / Bypass / Diff)" 0.0 0.0 2.0 1.0
@@ -90,6 +90,8 @@ float warmScore(vec3 c) {
 
 float transitionAt(vec2 uv, vec2 texel) {
     const vec3 LUMA = vec3(0.299, 0.587, 0.114);
+    const float SAT_MIN = 0.06;
+    const float SAT_MAX = 0.28;
 
     vec3 cL = texture(Source, clamp(uv - vec2(texel.x, 0.0), vec2(0.0), vec2(1.0))).rgb;
     vec3 cR = texture(Source, clamp(uv + vec2(texel.x, 0.0), vec2(0.0), vec2(1.0))).rgb;
@@ -105,9 +107,13 @@ float transitionAt(vec2 uv, vec2 texel) {
     vec3 chR = cR - vec3(dot(cR, LUMA));
     float chromaContrast = length(chR - chL);
 
+    float satL = max(cL.r, max(cL.g, cL.b)) - min(cL.r, min(cL.g, cL.b));
+    float satR = max(cR.r, max(cR.g, cR.b)) - min(cR.r, min(cR.g, cR.b));
+    float saturationGate = smoothstep(SAT_MIN, SAT_MAX, max(satL, satR));
+
     float colorBias = clamp(global.V7_COLOR_BIAS, 0.2, 4.0);
     float edge = smoothstep(0.015, 0.13, chromaContrast * colorBias);
-    return groupTransition * edge;
+    return groupTransition * edge * saturationGate;
 }
 
 float transitionGrown(vec2 uv, vec2 texel) {
