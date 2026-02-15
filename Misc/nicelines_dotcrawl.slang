@@ -10,13 +10,12 @@
 #pragma parameter V7_LINE_THICKNESS "DOT CRAWL v7 Line Thickness" 0.3 0.1 1.0 0.05
 #pragma parameter V7_SWAP_SIZE "DOT CRAWL v7 Swap Size" 1.2 0.0 8.0 0.1
 #pragma parameter V7_SPEED "DOT CRAWL v7 Horizontal Speed" 1.1 0.0 3.0 0.05
-#pragma parameter V7_SWAP_DOMAIN "DOT CRAWL v7 Swap Domain (Chroma / Luma)" 0.0 0.0 1.0 1.0
 #pragma parameter V7_MASK_DEBUG "DOT CRAWL Mask View (Off / On)" 0.0 0.0 1.0 1.0
 #pragma parameter V7_VRED_SEGMENT_X "DOT CRAWL V-Red Segment X/n" 1.0 1.0 3.0 1.0
 #pragma parameter V7_VRED_DELTA "DOT CRAWL V-Red Delta Threshold" 0.04 0.01 1.0 0.01
-#pragma parameter V7_VGREEN_DELTA "DOT CRAWL V-Green Delta Threshold" 0.04 0.01 1.0 0.01
+#pragma parameter V7_VGREEN_DELTA "DOT CRAWL V-Green Delta Threshold" 0.22 0.01 1.0 0.01
 #pragma parameter V7_VRED_ONSET_BIAS "DOT CRAWL V-Red Black->Red Bias" 0.66 0.0 1.0 0.01
-#pragma parameter V7_VRED_SLIVER_EXTRA "DOT CRAWL V-Red Sliver Extra" 2.55 0.0 3.0 0.05
+#pragma parameter V7_VRED_SLIVER_EXTRA "DOT CRAWL V-Red Sliver Extra" 0.0 0.0 3.0 0.05
 
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
 #pragma parameter MANUAL_LINES "MANUAL Scanline Count" 360.0 120.0 480.0 5.0
@@ -33,7 +32,6 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float V7_LINE_THICKNESS;
     float V7_SWAP_SIZE;
     float V7_SPEED;
-    float V7_SWAP_DOMAIN;
     float V7_MASK_DEBUG;
     float V7_VRED_SEGMENT_X;
     float V7_VRED_DELTA;
@@ -218,13 +216,8 @@ vec3 applyDotCrawlV7(vec3 linearColor, vec2 uv, float mask, float targetLines) {
 
     float y0 = dot(linearColor, vec3(0.299, 0.587, 0.114));
     float y1 = dot(swapped,     vec3(0.299, 0.587, 0.114));
-    vec3 ch0 = linearColor - vec3(y0);
     vec3 ch1 = swapped - vec3(y1);
-
-    int domain = int(global.V7_SWAP_DOMAIN + 0.5);
-    vec3 outChroma = clamp(vec3(y0) + ch1, 0.0, 1.0);
-    vec3 outLuma = clamp(vec3(y1) + ch0, 0.0, 1.0);
-    vec3 outColor = (domain == 1) ? outLuma : outChroma;
+    vec3 outColor = clamp(vec3(y0) + ch1, 0.0, 1.0);
 
     return mix(linearColor, outColor, clamp(mask, 0.0, 1.0));
 }
