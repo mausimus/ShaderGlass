@@ -5,7 +5,7 @@ class CaptureSession;
 class CaptureLib
 {
 public:
-    static bool EnsureInit();
+    static bool Load();
 
     CaptureLib(CaptureSession& session);
     void                            Start(winrt::com_ptr<ID3D11Device> device, bool window);
@@ -25,9 +25,9 @@ private:
     static CaptureLibVersionFunc CaptureLibVersion;
     static CaptureLibStartFunc   CaptureLibStart;
     static CaptureLibStopFunc    CaptureLibStop;
-    static const UINT            CaptureLibSupportedVersion = 1;
-    static const UINT            CaptureTypeDesktop         = 0;
-    static const UINT            CaptureTypeWindow          = 1;
+    static const UINT            CaptureLibExpectedVersion = 1;
+    static const UINT            CaptureTypeDesktop        = 0;
+    static const UINT            CaptureTypeWindow         = 1;
 
     std::mutex                          m_mutex;
     winrt::com_ptr<ID3D11Texture2D>     m_inputFrame;

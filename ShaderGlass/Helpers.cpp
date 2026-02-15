@@ -52,7 +52,7 @@ bool HasCaptureLib()
     {
         try
         {
-            hasCaptureLib = CaptureLib::EnsureInit();
+            hasCaptureLib = CaptureLib::Load();
         }
         catch(...)
         {

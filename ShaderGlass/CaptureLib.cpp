@@ -14,7 +14,7 @@ static void CaptureLibCallback(void* data, UINT width, UINT height, UINT pitch, 
 
 CaptureLib::CaptureLib(CaptureSession& session) : m_session(session), m_width {0}, m_height {0}, m_active {false} { }
 
-bool CaptureLib::EnsureInit()
+bool CaptureLib::Load()
 {
     if(CaptureLibModule == NULL)
     {
