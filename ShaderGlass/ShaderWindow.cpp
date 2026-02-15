@@ -1567,6 +1567,19 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case IDM_SHADER_RANDOM:
             SendMessage(hWnd, WM_COMMAND, WM_SHADER(rand() % m_numPresets), 0);
             break;
+        case IDM_SHADER_RELOAD: {
+            const auto& shader = m_captureManager.Presets().at(m_captureOptions.presetNo);
+            if(shader && shader->Category == "Imported" && shader->ImportPath.size())
+            {
+                ImportShader(shader->ImportPath, false);
+            }
+            else
+            {
+                m_captureManager.UpdateShaderPreset();
+                UpdateWindowState();
+            }
+        }
+            break;
         case IDM_FULLSCREEN:
             ToggleBorderless(hWnd);
             break;
@@ -1788,6 +1801,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case ID_GLOBALHOTKEYS_ACTIVE:
         case ID_GLOBALHOTKEYS_SHOWMENU:
         case ID_GLOBALHOTKEYS_PARAMETERS:
+        case ID_GLOBALHOTKEYS_RELOAD:
         case ID_GLOBALHOTKEYS_CURSOR: {
             auto globalState = GetHotkeyState();
             if(globalState)
@@ -2036,6 +2050,9 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             break;
         case ID_GLOBALHOTKEYS_PARAMETERS:
             SendMessage(hWnd, WM_COMMAND, IDM_SHADER_PARAMETERS, 0);
+            break;
+        case ID_GLOBALHOTKEYS_RELOAD:
+            SendMessage(hWnd, WM_COMMAND, IDM_SHADER_RELOAD, 0);
             break;
         case ID_GLOBALHOTKEYS_PAUSE:
             if(m_captureManager.IsActive())
@@ -2880,6 +2897,12 @@ void ShaderWindow::UpdateHotkey(const HotkeyInfo& hk, bool globalState)
         _snwprintf_s(text, 100, L"Parameters... (%s)", menuKeyString.c_str());
         ModifyMenu(m_hotkeysMenu, ID_GLOBALHOTKEYS_PARAMETERS, MF_BYCOMMAND | MF_STRING, ID_GLOBALHOTKEYS_PARAMETERS, text);
         break;
+    case ID_GLOBALHOTKEYS_RELOAD:
+        _snwprintf_s(text, 60, L"Reload/Recompile...\t%s", keyString.c_str());
+        ModifyMenu(m_shaderMenu, IDM_SHADER_RELOAD, MF_BYCOMMAND | MF_STRING, IDM_SHADER_RELOAD, text);
+        _snwprintf_s(text, 100, L"Reload/Recompile... (%s)", menuKeyString.c_str());
+        ModifyMenu(m_hotkeysMenu, ID_GLOBALHOTKEYS_RELOAD, MF_BYCOMMAND | MF_STRING, ID_GLOBALHOTKEYS_RELOAD, text);
+        break;
     }
 }
 
@@ -2892,6 +2915,7 @@ void ShaderWindow::LoadHotkeys()
     m_hotkeys.emplace(ID_GLOBALHOTKEYS_ACTIVE, HotkeyInfo(ID_GLOBALHOTKEYS_ACTIVE, 0, L"Active Key", L"a"));
     m_hotkeys.emplace(ID_GLOBALHOTKEYS_SHOWMENU, HotkeyInfo(ID_GLOBALHOTKEYS_SHOWMENU, 0, L"Menu Key", L"m"));
     m_hotkeys.emplace(ID_GLOBALHOTKEYS_PARAMETERS, HotkeyInfo(ID_GLOBALHOTKEYS_PARAMETERS, MAKEWORD('P', MOD_CONTROL | MOD_SHIFT), L"Parameters Key", L"p"));
+    m_hotkeys.emplace(ID_GLOBALHOTKEYS_RELOAD, HotkeyInfo(ID_GLOBALHOTKEYS_RELOAD, MAKEWORD('R', MOD_CONTROL | MOD_SHIFT), L"Reload Shader Key", L"r"));
 }
 
 void ShaderWindow::UpdateHotkeys(bool globalHotkeys)
