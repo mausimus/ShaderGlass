@@ -30,7 +30,7 @@ bool CaptureLib::Load()
             CaptureLibModule = NULL;
             throw new std::runtime_error("Invalid CaptureLib interface");
         }
-        if(CaptureLibVersion() != CaptureLibSupportedVersion)
+        if(CaptureLibVersion() != CaptureLibExpectedVersion)
         {
             CaptureLibModule = NULL;
             throw new std::runtime_error("Unsupported CaptureLib version");

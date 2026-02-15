@@ -76,6 +76,11 @@ CaptureSession::CaptureSession(winrt::com_ptr<ID3D11Device>      d3dDevice,
     else if(HasCaptureLib())
     {
         m_captureLib.Start(d3dDevice, window);
+        // wait for first frame to get size
+        while(m_contentSize.Width == 0 && m_contentSize.Height == 0)
+        {
+            Sleep(1000);
+        }
     }
 }
 
@@ -122,7 +127,7 @@ void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sen
 
 void CaptureSession::OnCaptureLibArrived(UINT width, UINT height)
 {
-    m_contentSize.Width = width;
+    m_contentSize.Width  = width;
     m_contentSize.Height = height;
     SetEvent(m_frameEvent);
     OnInputFrame();

@@ -1856,11 +1856,11 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     {
                         m_captureManager.UpdateCursor();
                     }
-                    else if(!HasCaptureAPI() && HasCaptureLib())
+                    TryUpdateInput();
+                    if(!m_captureManager.IsActive() && !HasCaptureAPI() && HasCaptureLib())
                     {
                         Start();
                     }
-                    TryUpdateInput();
                     UpdateWindowState();
                     SetFreeScale();
                     break;
@@ -1898,11 +1898,11 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     {
                         m_captureManager.UpdateCursor();
                     }
-                    else if(!HasCaptureAPI() && HasCaptureLib())
+                    TryUpdateInput();
+                    if(!m_captureManager.IsActive() && !HasCaptureAPI() && HasCaptureLib())
                     {
                         Start();
                     }
-                    TryUpdateInput();
                     UpdateWindowState();
                     break;
                 }
