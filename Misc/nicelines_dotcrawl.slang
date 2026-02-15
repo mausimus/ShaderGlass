@@ -5,7 +5,7 @@
 // Input: blurred linear-space image from pass 0
 // Output: dot-crawl processed image or direct mask visualization for tuning
 
-#pragma parameter DOT_CRAWL "DOT CRAWL v7 (Off / On)" 1.0 0.0 1.0 1.0
+#pragma parameter DOT_CRAWL "DOT CRAWL v7 (Off / On)" 0.0 0.0 1.0 1.0
 #pragma parameter DOT_CRAWL_INTENSITY "DOT CRAWL v7 Intensity" 6.0 0.0 6.0 0.01
 #pragma parameter V7_LINE_THICKNESS "DOT CRAWL v7 Line Thickness" 0.3 0.1 1.0 0.05
 #pragma parameter V7_SWAP_SIZE "DOT CRAWL v7 Swap Size" 1.2 0.0 8.0 0.1
