@@ -12,6 +12,16 @@
 #pragma parameter V7_SWAP_SIZE "DOT CRAWL v7 Swap Size" 1.0 0.0 8.0 0.1
 #pragma parameter V7_SPEED "DOT CRAWL v7 Horizontal Speed" 1.1 0.0 3.0 0.05
 #pragma parameter V7_COLOR_BIAS "DOT CRAWL v7 Color Select" 2.0 0.2 4.0 0.05
+#pragma parameter V7_MASK_MODE "DOT CRAWL Mask Mode (Color / Vertical Red)" 0.0 0.0 1.0 1.0
+#pragma parameter V7_MASK_SAMPLE_SPAN "DOT CRAWL Mask Sample Span (scanlines)" 2.5 0.5 6.0 0.1
+#pragma parameter V7_MASK_GROW_MODE "DOT CRAWL Mask Grow Mode (Max / Avg / Falloff)" 0.0 0.0 2.0 1.0
+#pragma parameter V7_MASK_CENTER_SAT "DOT CRAWL Mask Center Sat Clamp" 0.10 0.0 0.6 0.01
+#pragma parameter V7_MASK_SAT_LOW "DOT CRAWL Mask Sat Low" 0.08 0.0 0.6 0.01
+#pragma parameter V7_MASK_SAT_HIGH "DOT CRAWL Mask Sat High" 0.32 0.0 0.8 0.01
+#pragma parameter V7_MASK_NEUTRAL_REJECT "DOT CRAWL Mask Neutral Reject" 0.10 0.0 0.6 0.01
+#pragma parameter V7_VRED_SEGMENT_X "DOT CRAWL V-Red Segment X/n" 1.0 0.25 4.0 0.05
+#pragma parameter V7_VRED_DELTA "DOT CRAWL V-Red Delta Threshold" 0.18 0.01 1.0 0.01
+#pragma parameter V7_VRED_SLIVER_EXTRA "DOT CRAWL V-Red Sliver Extra" 0.0 0.0 3.0 0.05
 #pragma parameter DOT_CRAWL_DEBUG "DOT CRAWL Debug (Off / Bypass / Diff)" 0.0 0.0 2.0 1.0
 
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
@@ -31,6 +41,16 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float V7_SWAP_SIZE;
     float V7_SPEED;
     float V7_COLOR_BIAS;
+    float V7_MASK_MODE;
+    float V7_MASK_SAMPLE_SPAN;
+    float V7_MASK_GROW_MODE;
+    float V7_MASK_CENTER_SAT;
+    float V7_MASK_SAT_LOW;
+    float V7_MASK_SAT_HIGH;
+    float V7_MASK_NEUTRAL_REJECT;
+    float V7_VRED_SEGMENT_X;
+    float V7_VRED_DELTA;
+    float V7_VRED_SLIVER_EXTRA;
     float DOT_CRAWL_DEBUG;
     float SCANLINE_MODE;
     float MANUAL_LINES;
@@ -88,13 +108,20 @@ float warmScore(vec3 c) {
     return smoothstep(0.02, 0.25, warm);
 }
 
-float transitionAt(vec2 uv, vec2 texel) {
-    const vec3 LUMA = vec3(0.299, 0.587, 0.114);
-    const float SAT_MIN = 0.06;
-    const float SAT_MAX = 0.28;
+float satAmount(vec3 c) {
+    return max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
+}
 
-    vec3 cL = texture(Source, clamp(uv - vec2(texel.x, 0.0), vec2(0.0), vec2(1.0))).rgb;
-    vec3 cR = texture(Source, clamp(uv + vec2(texel.x, 0.0), vec2(0.0), vec2(1.0))).rgb;
+float rednessRatio(vec3 c) {
+    return c.r / max(c.g + c.b, 0.0001);
+}
+
+float transitionAt(vec2 uv, float sampleStepX) {
+    const vec3 LUMA = vec3(0.299, 0.587, 0.114);
+
+    vec3 cL = texture(Source, clamp(uv - vec2(sampleStepX, 0.0), vec2(0.0), vec2(1.0))).rgb;
+    vec3 cR = texture(Source, clamp(uv + vec2(sampleStepX, 0.0), vec2(0.0), vec2(1.0))).rgb;
+    vec3 cC = texture(Source, clamp(uv, vec2(0.0), vec2(1.0))).rgb;
 
     float coolL = coolScore(cL);
     float warmL = warmScore(cL);
@@ -107,34 +134,97 @@ float transitionAt(vec2 uv, vec2 texel) {
     vec3 chR = cR - vec3(dot(cR, LUMA));
     float chromaContrast = length(chR - chL);
 
-    float satL = max(cL.r, max(cL.g, cL.b)) - min(cL.r, min(cL.g, cL.b));
-    float satR = max(cR.r, max(cR.g, cR.b)) - min(cR.r, min(cR.g, cR.b));
-    float saturationGate = smoothstep(SAT_MIN, SAT_MAX, max(satL, satR));
+    float satL = satAmount(cL);
+    float satR = satAmount(cR);
+    float satC = satAmount(cC);
+    float satLow = min(global.V7_MASK_SAT_LOW, global.V7_MASK_SAT_HIGH);
+    float satHigh = max(global.V7_MASK_SAT_LOW, global.V7_MASK_SAT_HIGH);
+    float saturationGate = smoothstep(satLow, satHigh, min(satL, satR));
+    float centerGate = smoothstep(global.V7_MASK_CENTER_SAT, global.V7_MASK_CENTER_SAT + 0.08, satC);
 
     float colorBias = clamp(global.V7_COLOR_BIAS, 0.2, 4.0);
     float edge = smoothstep(0.015, 0.13, chromaContrast * colorBias);
-    return groupTransition * edge * saturationGate;
+    float centerChroma = length(cC - vec3(dot(cC, LUMA)));
+    float neutralGate = smoothstep(global.V7_MASK_NEUTRAL_REJECT, global.V7_MASK_NEUTRAL_REJECT + 0.10, centerChroma);
+    return groupTransition * edge * saturationGate * centerGate * neutralGate;
 }
 
-float transitionGrown(vec2 uv, vec2 texel) {
+float transitionGrown(vec2 uv, vec2 texel, float sampleStepX) {
     int grow = clamp(int(floor(global.V7_EDGE_GROW + 0.5)), 0, 24);
+    int growMode = clamp(int(floor(global.V7_MASK_GROW_MODE + 0.5)), 0, 2);
     float best = 0.0;
+    float sum = 0.0;
+    float weighted = 0.0;
+    float weightSum = 0.0;
+    float count = 0.0;
     for(int i = -24; i <= 24; i++) {
         if(abs(i) <= grow) {
-            float t = transitionAt(uv + vec2(float(i) * texel.x, 0.0), texel);
+            float t = transitionAt(uv + vec2(float(i) * texel.x, 0.0), sampleStepX);
             best = max(best, t);
+            sum += t;
+            count += 1.0;
+            float w = max(0.0, 1.0 - (float(abs(i)) / float(grow + 1)));
+            weighted += t * w;
+            weightSum += w;
         }
+    }
+
+    if(growMode == 1) {
+        return sum / max(count, 1.0);
+    }
+    if(growMode == 2) {
+        return weighted / max(weightSum, 0.0001);
     }
     return best;
 }
 
+float verticalRedSliverMask(vec2 uv, vec2 texel, float targetLines) {
+    float n = max(targetLines, 1.0);
+    float segmentHeight = clamp(global.V7_VRED_SEGMENT_X / n, texel.y, 0.25);
+    float boundaryY = floor(uv.y / segmentHeight) * segmentHeight;
+
+    float yTop = clamp(boundaryY - 0.5 * segmentHeight, 0.0, 1.0);
+    float yBottom = clamp(boundaryY + 0.5 * segmentHeight, 0.0, 1.0);
+    vec3 cTop = texture(Source, vec2(uv.x, yTop)).rgb;
+    vec3 cBottom = texture(Source, vec2(uv.x, yBottom)).rgb;
+
+    float rTop = rednessRatio(cTop);
+    float rBottom = rednessRatio(cBottom);
+    float redDelta = abs(rBottom - rTop);
+    float threshold = max(global.V7_VRED_DELTA, 0.0001);
+    float edge = smoothstep(threshold, threshold * 2.0, redDelta);
+
+    float satLow = min(global.V7_MASK_SAT_LOW, global.V7_MASK_SAT_HIGH);
+    float satHigh = max(global.V7_MASK_SAT_LOW, global.V7_MASK_SAT_HIGH);
+    float satGate = smoothstep(satLow, satHigh, min(satAmount(cTop), satAmount(cBottom)));
+
+    const vec3 LUMA = vec3(0.299, 0.587, 0.114);
+    vec3 cCenter = texture(Source, clamp(uv, vec2(0.0), vec2(1.0))).rgb;
+    float centerSat = satAmount(cCenter);
+    float centerGate = smoothstep(global.V7_MASK_CENTER_SAT, global.V7_MASK_CENTER_SAT + 0.08, centerSat);
+    float centerChroma = length(cCenter - vec3(dot(cCenter, LUMA)));
+    float neutralGate = smoothstep(global.V7_MASK_NEUTRAL_REJECT, global.V7_MASK_NEUTRAL_REJECT + 0.10, centerChroma);
+
+    float sliverBase = 1.0 / n;
+    float sliverHeight = sliverBase + sliverBase * max(global.V7_VRED_SLIVER_EXTRA, 0.0);
+    float localY = uv.y - boundaryY;
+    float below = step(0.0, localY) * step(localY, sliverHeight);
+
+    return edge * satGate * centerGate * neutralGate * below;
+}
+
 vec3 applyDotCrawlV7(vec3 linearColor, vec2 uv) {
     vec2 srcTexel = 1.0 / global.SourceSize.xy;
-    float edgeMask = transitionGrown(uv, srcTexel);
-
     float targetLines = getTargetLines();
     float scanlinePx = max(1.0, global.OutputSize.y / targetLines);
     float lineThicknessPx = max(0.5, global.V7_LINE_THICKNESS * scanlinePx);
+    float coarseSpanPx = scanlinePx * max(global.V7_MASK_SAMPLE_SPAN, 0.5);
+    float coarseStepX = clamp(coarseSpanPx / global.OutputSize.x, srcTexel.x, srcTexel.x * 16.0);
+
+    int maskMode = clamp(int(floor(global.V7_MASK_MODE + 0.5)), 0, 1);
+    float edgeMask = (maskMode == 0)
+        ? transitionGrown(uv, srcTexel, coarseStepX)
+        : verticalRedSliverMask(uv, srcTexel, targetLines);
 
     vec2 px = uv * global.OutputSize.xy;
     float travelPx = float(global.FrameCount) * global.V7_SPEED;
