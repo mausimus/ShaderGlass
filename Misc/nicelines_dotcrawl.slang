@@ -7,7 +7,8 @@
 
 #pragma parameter V7_MASK_DEBUG "DOT CRAWL Mask View (Off / On)" 1.0 0.0 1.0 1.0
 #pragma parameter V7_VRED_SEGMENT_X "DOT CRAWL V-Red Segment X/n" 1.0 0.25 4.0 0.05
-#pragma parameter V7_VRED_DELTA "DOT CRAWL V-Red Delta Threshold" 0.18 0.01 1.0 0.01
+#pragma parameter V7_VRED_DELTA "DOT CRAWL V-Red Delta Threshold" 0.06 0.01 1.0 0.01
+#pragma parameter V7_VRED_ONSET_BIAS "DOT CRAWL V-Red Black->Red Bias" 0.65 0.0 1.0 0.01
 #pragma parameter V7_VRED_SLIVER_EXTRA "DOT CRAWL V-Red Sliver Extra" 0.0 0.0 3.0 0.05
 
 #pragma parameter SCANLINE_MODE "180p / 224p / 240p / 270p / 360p / MANUAL" 2.0 0.0 5.0 1.0
@@ -23,6 +24,7 @@ layout(std140, set = 0, binding = 0) uniform UBO {
     float V7_MASK_DEBUG;
     float V7_VRED_SEGMENT_X;
     float V7_VRED_DELTA;
+    float V7_VRED_ONSET_BIAS;
     float V7_VRED_SLIVER_EXTRA;
     float SCANLINE_MODE;
     float MANUAL_LINES;
@@ -112,9 +114,14 @@ float verticalRedEdgeAtBoundary(float boundaryY, float columnCenterX, float colu
     float signalBottom = redSignal(cBottom);
     float signalDelta = abs(signalBottom - signalTop);
     float maxSignal = max(signalTop, signalBottom);
+    float onset = max(signalBottom - signalTop, 0.0);
 
     float threshold = max(global.V7_VRED_DELTA, 0.0001);
-    float combinedDelta = max(fracDelta * 1.2, signalDelta * 1.5);
+    float onsetBias = clamp(global.V7_VRED_ONSET_BIAS, 0.0, 1.0);
+    float onsetTerm = onset * mix(1.0, 2.4, onsetBias);
+    float textureTerm = signalDelta * mix(1.8, 0.7, onsetBias);
+    float ratioTerm = fracDelta * mix(1.3, 0.8, onsetBias);
+    float combinedDelta = max(onsetTerm, max(textureTerm, ratioTerm));
     float edge = smoothstep(threshold, threshold * 2.0, combinedDelta);
     float redPresence = smoothstep(0.05, 0.16, maxSignal);
     return edge * redPresence;
@@ -123,7 +130,7 @@ float verticalRedEdgeAtBoundary(float boundaryY, float columnCenterX, float colu
 float verticalRedSliverMask(vec2 uv, vec2 texel, float targetLines) {
     float n = max(targetLines, 1.0);
     float segmentHeight = clamp(global.V7_VRED_SEGMENT_X / n, texel.y, 0.25);
-    float columnWidth = clamp(global.V7_VRED_SEGMENT_X / n, texel.x, 0.25);
+    float columnWidth = clamp(1.0 / n, texel.x, 0.25);
     float colIndex = floor(uv.x / columnWidth);
     float columnCenterX = clamp((colIndex + 0.5) * columnWidth, 0.0, 1.0);
 
