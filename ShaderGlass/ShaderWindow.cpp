@@ -1323,6 +1323,10 @@ void ShaderWindow::UpdateTitle()
                      advancedFlags);
         SetWindowTextW(m_mainWindow, title);
     }
+    else if(m_firstStart)
+    {
+        SetWindowTextW(m_mainWindow, _T("ShaderGlass (no input selected)"));
+    }
     else
     {
         SetWindowTextW(m_mainWindow, _T("ShaderGlass (stopped)"));
@@ -1651,6 +1655,8 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             UpdateWindowState();
             break;
         case IDM_WINDOW_TRANSPARENT:
+            if(!HasCaptureAPI())
+                break;
             m_captureOptions.transparent = true;
             if(m_captureManager.IsActive())
             {
@@ -1862,7 +1868,10 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                         Start();
                     }
                     UpdateWindowState();
-                    SetFreeScale();
+                    if(HasCaptureAPI())
+                    {
+                        SetFreeScale();
+                    }
                     break;
                 }
                 if(wmId >= WM_CAPTURE_DISPLAY(0) && wmId < WM_CAPTURE_DISPLAY(MAX_CAPTURE_DISPLAYS))
@@ -1874,7 +1883,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     m_captureOptions.captureWindow = NULL;
                     m_captureOptions.monitor       = m_captureDisplays.at(wmId - WM_CAPTURE_DISPLAY(0)).monitor;
                     m_captureOptions.clone         = false;
-                    m_captureOptions.transparent   = true;
+                    m_captureOptions.transparent   = HasCaptureAPI();
                     if(m_captureOptions.freeScale)
                     {
                         CheckMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_UNCHECKED | MF_BYCOMMAND);
@@ -2103,6 +2112,10 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         AdjustWindowSize(hWnd);
         return 0;
     }
+    case WM_USER_FIRST_FRAME:
+        AdjustWindowSize(hWnd);
+        SetFreeScale();
+        return 0;
     case WM_ERASEBKGND:
     case WM_SIZING: {
         // prevent flicker
@@ -2218,6 +2231,7 @@ bool ShaderWindow::Start()
         EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_DISABLED);
         EnableMenuItem(m_programMenu, IDM_STOP, MF_BYCOMMAND | MF_ENABLED);
         UpdateGPUName();
+        m_firstStart = false;
     }
     else
     {

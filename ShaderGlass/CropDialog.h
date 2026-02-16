@@ -7,8 +7,6 @@ GNU General Public License v3.0
 
 #pragma once
 
-#define WM_USER_CROP_UPDATED (WM_USER + 5000)
-
 class CropDialog
 {
 public:

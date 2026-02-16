@@ -10,6 +10,7 @@ GNU General Public License v3.0
 #include "resource.h"
 #include "Helpers.h"
 #include "CropDialog.h"
+#include "Options.h"
 
 static float   inputValue;
 static LPCWSTR labelText;

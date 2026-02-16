@@ -15,7 +15,8 @@ class CaptureSession
 public:
     CaptureSession(winrt::com_ptr<ID3D11Device>                                  d3dDevice,
                    winrt::Windows::Graphics::Capture::GraphicsCaptureItem const& item,
-                   bool                                                          window,
+                   bool                                                          windowInput,
+                   HWND                                                          outputWindow,
                    winrt::Windows::Graphics::DirectX::DirectXPixelFormat         pixelFormat,
                    ShaderGlass&                                                  shaderGlass,
                    bool                                                          maxCaptureRate,
@@ -60,6 +61,8 @@ private:
     ULONGLONG                                                      m_prevTicks {0};
     int                                                            m_prevInputFrames {0};
     HANDLE                                                         m_frameEvent {nullptr};
+    HWND                                                           m_outputWindow {nullptr};
+    bool                                                           m_notifySize {false};
     ShaderGlass&                                                   m_shaderGlass;
     CaptureLib                                                     m_captureLib;
 };

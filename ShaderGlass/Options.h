@@ -29,6 +29,9 @@ GNU General Public License v3.0
 #define WM_RECENT_IMPORT(i) (static_cast<UINT> WM_RECENT_PROFILE(MAX_RECENT_PROFILES) + i)
 #define WM_CAPTURE_DEVICE_FORMAT(i) (static_cast<UINT> WM_RECENT_IMPORT(MAX_RECENT_IMPORTS) + i)
 
+#define WM_USER_CROP_UPDATED (WM_USER + 5000)
+#define WM_USER_FIRST_FRAME (WM_USER + 5001)
+
 #define CUSTOM_MNEMONIC "Custom"
 
 struct PixelSizeInfo

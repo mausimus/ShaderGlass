@@ -8,6 +8,7 @@ GNU General Public License v3.0
 #include "pch.h"
 #include "CaptureSession.h"
 #include "Helpers.h"
+#include "Options.h"
 
 #include "Util/direct3d11.interop.h"
 
@@ -26,12 +27,13 @@ using namespace Windows::UI::Composition;
 
 CaptureSession::CaptureSession(winrt::com_ptr<ID3D11Device>      d3dDevice,
                                winrt::GraphicsCaptureItem const& item,
-                               bool                              window,
+                               bool                              windowInput,
+                               HWND                              outputWindow,
                                winrt::DirectXPixelFormat         pixelFormat,
                                ShaderGlass&                      shaderGlass,
                                bool                              maxCaptureRate,
                                HANDLE                            frameEvent) :
-    m_d3dDevice {d3dDevice}, m_item {item}, m_pixelFormat {pixelFormat}, m_shaderGlass {shaderGlass}, m_frameEvent(frameEvent), m_captureLib(*this)
+    m_d3dDevice {d3dDevice}, m_item {item}, m_pixelFormat {pixelFormat}, m_shaderGlass {shaderGlass}, m_frameEvent(frameEvent), m_outputWindow(outputWindow), m_captureLib(*this)
 {
     if(HasCaptureAPI())
     {
@@ -75,12 +77,8 @@ CaptureSession::CaptureSession(winrt::com_ptr<ID3D11Device>      d3dDevice,
     }
     else if(HasCaptureLib())
     {
-        m_captureLib.Start(d3dDevice, window);
-        // wait for first frame to get size
-        while(m_contentSize.Width == 0 && m_contentSize.Height == 0)
-        {
-            Sleep(1000);
-        }
+        m_notifySize = true;
+        m_captureLib.Start(d3dDevice, windowInput);
     }
 }
 
@@ -127,10 +125,16 @@ void CaptureSession::OnFrameArrived(winrt::Direct3D11CaptureFramePool const& sen
 
 void CaptureSession::OnCaptureLibArrived(UINT width, UINT height)
 {
+    auto notifySize      = m_notifySize && m_contentSize.Width == 0 && m_contentSize.Height == 0;
     m_contentSize.Width  = width;
     m_contentSize.Height = height;
     SetEvent(m_frameEvent);
     OnInputFrame();
+    if(notifySize)
+    {
+        m_notifySize = 0;
+        PostMessage(m_outputWindow, WM_USER_FIRST_FRAME, 0, 0);
+    }
 }
 
 void CaptureSession::OnInputFrame()
