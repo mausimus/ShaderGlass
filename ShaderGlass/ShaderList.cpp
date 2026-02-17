@@ -12,11 +12,11 @@ GNU General Public License v3.0
 #include "ShaderCache.h"
 #include "ShaderList.h"
 
-//#include "shaders\RetroArch.h"
+#include "shaders\RetroArch.h"
 
-std::vector<PresetDef*> RetroArchPresetList;// = RetroArch::PresetList;
+std::vector<PresetDef*> RetroArchPresetList = RetroArch::PresetList;
 
 std::vector<CachedShader> RetroArchCachedShaders()
 {
-    return std::vector<CachedShader>();//RetroArch::CachedShaders();
+    return RetroArch::CachedShaders();
 }

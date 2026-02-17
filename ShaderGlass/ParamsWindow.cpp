@@ -55,7 +55,7 @@ ATOM ParamsWindow::MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance     = hInstance;
     wcex.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SHADERGLASS));
     wcex.hCursor       = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)GetSysColorBrush(COLOR_MENU);
+    wcex.hbrBackground = (HBRUSH)GetSysColorBrush(COLOR_3DFACE);
     wcex.lpszMenuName  = 0;
     wcex.lpszClassName = m_windowClass;
     wcex.hIconSm       = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -300,6 +300,11 @@ LRESULT CALLBACK ParamsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
     case WM_SIZE: {
         Resize();
         break;
+    }
+    case WM_CTLCOLORSTATIC: {
+        HDC hdcStatic = (HDC)wParam;
+        SetBkColor(hdcStatic, GetSysColor(COLOR_3DFACE));
+        return (LRESULT)(HBRUSH)GetSysColorBrush(COLOR_3DFACE);
     }
     case WM_MOUSEWHEEL:
     case WM_VSCROLL: {

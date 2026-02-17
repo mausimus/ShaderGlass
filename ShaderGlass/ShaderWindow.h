@@ -88,6 +88,7 @@ private:
     std::map<UINT, HotkeyInfo>    m_hotkeys;
     std::filesystem::path         m_importPath;
     volatile bool                 m_forceStart {false};
+    bool                          m_firstPaint {true};
 
     bool         LoadProfile(const std::wstring& fileName, bool forceStart = false);
     void         LoadProfile();

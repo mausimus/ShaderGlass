@@ -22,16 +22,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    if(!HasCaptureAPI())
+    if(!HasCaptureAPI() && !HasCaptureLib())
     {
-        if(!HasCaptureLib())
-        {
-            MessageBox(NULL, L"No Capture API not present! Only file input will be possible.", L"ShaderGlass", MB_OK | MB_ICONERROR);
-        }
-        else
-        {
-            MessageBox(NULL, L"External Capture API detected!\r\nGlass mode won't be supported.", L"ShaderGlass", MB_OK | MB_ICONERROR);
-        }
+        MessageBox(NULL, L"No Capture API not present! Only file input will be possible.", L"ShaderGlass", MB_OK | MB_ICONERROR);
     }
 
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
