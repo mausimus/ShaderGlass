@@ -5,6 +5,7 @@ class CaptureSession;
 class CaptureLib
 {
 public:
+    static void Disable();
     static bool Load();
 
     CaptureLib(CaptureSession& session);
@@ -21,6 +22,7 @@ private:
     typedef HRESULT(__stdcall* CaptureLibStartFunc)(CAPTURE_CALLBACK_FUNC, UINT, void*);
     typedef HRESULT(__stdcall* CaptureLibStopFunc)();
 
+    static bool                  Enabled;
     static HMODULE               CaptureLibModule;
     static CaptureLibVersionFunc CaptureLibVersion;
     static CaptureLibStartFunc   CaptureLibStart;

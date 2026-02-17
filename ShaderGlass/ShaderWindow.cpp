@@ -2144,8 +2144,8 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             if(!m_captureManager.IsActive())
             {
                 PAINTSTRUCT ps;
-                HDC         hdc = BeginPaint(hWnd, &ps);
-                HBRUSH hBrush = CreateSolidBrush(RGB(64, 64, 64));
+                HDC         hdc    = BeginPaint(hWnd, &ps);
+                HBRUSH      hBrush = CreateSolidBrush(RGB(64, 64, 64));
                 FillRect(hdc, &ps.rcPaint, hBrush);
                 DeleteObject(hBrush);
                 EndPaint(hWnd, &ps);
@@ -2496,6 +2496,11 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
         }
         else
         {
+            if(HasCaptureLib())
+            {
+                ScanWindows();
+                SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_WINDOW(0), 0);
+            }
             SendMessage(m_mainWindow, WM_COMMAND, IDM_MODE_CLONE, 0);
         }
     }
@@ -2983,6 +2988,10 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
                 autoStart = false;
             else if(wcscmp(args[a], L"-fullscreen") == 0 || wcscmp(args[a], L"-f") == 0)
                 fullScreen = true;
+            else if(wcscmp(args[a], L"-safe") == 0 || wcscmp(args[a], L"-s") == 0)
+                CaptureLib::Disable();
+            else if(wcscmp(args[a], L"-reset") == 0 || wcscmp(args[a], L"-r") == 0)
+                ForgetStartingPosition();
             else if(a == numArgs - 1)
             {
                 std::wstring ws(args[a]);
@@ -2999,7 +3008,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
     m_cropDialog.reset(new CropDialog(m_instance, m_mainWindow));
     m_hotkeyDialog.reset(new HotkeyDialog(m_instance, m_mainWindow));
 
-    if(autoStart && HasCaptureAPI() && !m_forceStart)
+    if(autoStart && (HasCaptureAPI() || HasCaptureLib()) && !m_forceStart)
     {
         SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
         SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);

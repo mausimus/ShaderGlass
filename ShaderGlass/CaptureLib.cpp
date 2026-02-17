@@ -2,10 +2,11 @@
 #include "CaptureLib.h"
 #include "CaptureSession.h"
 
-HMODULE                           CaptureLib::CaptureLibModule;
-CaptureLib::CaptureLibVersionFunc CaptureLib::CaptureLibVersion;
-CaptureLib::CaptureLibStartFunc   CaptureLib::CaptureLibStart;
-CaptureLib::CaptureLibStopFunc    CaptureLib::CaptureLibStop;
+bool                              CaptureLib::Enabled           = true;
+HMODULE                           CaptureLib::CaptureLibModule  = NULL;
+CaptureLib::CaptureLibVersionFunc CaptureLib::CaptureLibVersion = NULL;
+CaptureLib::CaptureLibStartFunc   CaptureLib::CaptureLibStart   = NULL;
+CaptureLib::CaptureLibStopFunc    CaptureLib::CaptureLibStop    = NULL;
 
 static void CaptureLibCallback(void* data, UINT width, UINT height, UINT pitch, void* context)
 {
@@ -14,8 +15,16 @@ static void CaptureLibCallback(void* data, UINT width, UINT height, UINT pitch, 
 
 CaptureLib::CaptureLib(CaptureSession& session) : m_session(session), m_width {0}, m_height {0}, m_active {false} { }
 
+void CaptureLib::Disable()
+{
+    Enabled = false;
+}
+
 bool CaptureLib::Load()
 {
+    if(!Enabled)
+        return false;
+
     if(CaptureLibModule == NULL)
     {
         CaptureLibModule = LoadLibrary(L"CaptureLib.dll");
