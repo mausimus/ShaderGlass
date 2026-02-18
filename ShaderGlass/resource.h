@@ -198,6 +198,10 @@
 #define ID_GLOBALHOTKEYS_SHOWMENU       32937
 #define ID_PROCESSING_RENDERER          32938
 #define ID_RENDERER_DIRECT3D11          32939
+#define ID_GLOBALHOTKEYS_PARAMETERS     32940
+#define IDM_SHADER_RELOAD               32941
+#define ID_GLOBALHOTKEYS_RELOAD         32942
+#define ID_GLOBALHOTKEYS_SETLABEL       32943
 #define IDC_STATIC                      -1
 #define IDC_STATIC_LABEL                -1
 
@@ -207,7 +211,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        142
-#define _APS_NEXT_COMMAND_VALUE         32940
+#define _APS_NEXT_COMMAND_VALUE         32944
 #define _APS_NEXT_CONTROL_VALUE         1004
 #define _APS_NEXT_SYMED_VALUE           116
 #endif
