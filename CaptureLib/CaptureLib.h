@@ -10,5 +10,6 @@
 typedef void(__stdcall* CAPTURE_CALLBACK_FUNC)(void* data, UINT width, UINT height, UINT pitch, void* context);
 
 CAPTURELIB_API UINT    CaptureLibVersion();
-CAPTURELIB_API HRESULT CaptureLibStart(CAPTURE_CALLBACK_FUNC callbackFunc, UINT type, void* context);
+CAPTURELIB_API HRESULT CaptureLibInit();
+CAPTURELIB_API HRESULT CaptureLibStart(UINT type, UINT cursor, CAPTURE_CALLBACK_FUNC callbackFunc, void* context);
 CAPTURELIB_API HRESULT CaptureLibStop();

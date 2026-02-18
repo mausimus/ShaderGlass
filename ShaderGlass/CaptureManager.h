@@ -85,6 +85,7 @@ public:
     void  ForgetLastPreset();
     void  SaveOutput(LPWSTR fileName);
     void  ProcessFrame();
+    bool  WaitingOnFirstFrame();
     void  GetCaptureSize(LONG& width, LONG& height);
     void  ThreadFunc();
     void  Exit();

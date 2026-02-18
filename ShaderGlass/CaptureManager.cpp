@@ -207,7 +207,8 @@ bool CaptureManager::StartSession()
         winrt::Windows::Graphics::DirectX::DirectXPixelFormat pixelFormat = m_options.useHDR ? winrt::Windows::Graphics::DirectX::DirectXPixelFormat::R16G16B16A16Float
                                                                                              : winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized;
 
-        m_session = make_unique<CaptureSession>(m_d3dDevice, captureItem, m_options.captureWindow, m_options.outputWindow, pixelFormat, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent);
+        m_session = make_unique<CaptureSession>(
+            m_d3dDevice, captureItem, m_options.captureWindow, m_options.outputWindow, pixelFormat, *m_shaderGlass, m_options.maxCaptureRate, m_frameEvent);
     }
 
     m_active = true;
@@ -316,6 +317,17 @@ void CaptureManager::ProcessFrame()
     }
     catch(...)
     { }
+}
+
+bool CaptureManager::WaitingOnFirstFrame()
+{
+    if(m_options.captureWindow == HWND_BROADCAST)
+    {
+        LONG w = 0, h = 0;
+        GetCaptureSize(w, h);
+        return w == 0 && h == 0;
+    }
+    return false;
 }
 
 void CaptureManager::GetCaptureSize(LONG& width, LONG& height)

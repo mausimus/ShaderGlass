@@ -77,8 +77,10 @@ CaptureSession::CaptureSession(winrt::com_ptr<ID3D11Device>      d3dDevice,
     }
     else if(HasCaptureLib())
     {
+        m_contentSize.Width = 0;
+        m_contentSize.Height = 0;
         m_notifySize = true;
-        m_captureLib.Start(d3dDevice, windowInput);
+        m_captureLib.Start(d3dDevice, windowInput, true);
     }
 }
 

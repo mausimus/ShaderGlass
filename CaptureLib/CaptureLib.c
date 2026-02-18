@@ -33,7 +33,12 @@ CAPTURELIB_API UINT CaptureLibVersion()
     return 1;
 }
 
-CAPTURELIB_API HRESULT CaptureLibStart(CAPTURE_CALLBACK_FUNC callbackFunc, UINT type, void* context)
+CAPTURELIB_API HRESULT CaptureLibInit()
+{
+    return S_OK;
+}
+
+CAPTURELIB_API HRESULT CaptureLibStart(UINT type, UINT cursor, CAPTURE_CALLBACK_FUNC callbackFunc, void* context)
 {
     if(sActive)
         return E_FAIL;

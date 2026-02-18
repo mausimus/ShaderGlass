@@ -1230,7 +1230,7 @@ void ShaderWindow::AdjustWindowSize(HWND hWnd)
 void ShaderWindow::UpdateWindowState()
 {
     // always topmost when processing
-    if(m_captureManager.IsActive() && !m_inDialog)
+    if(m_captureManager.IsActive() && !m_inDialog && !m_captureManager.WaitingOnFirstFrame())
         SetWindowPos(m_mainWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
     else
         SetWindowPos(m_mainWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
@@ -2501,7 +2501,10 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
                 ScanWindows();
                 SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_WINDOW(0), 0);
             }
-            SendMessage(m_mainWindow, WM_COMMAND, IDM_MODE_CLONE, 0);
+            else
+            {
+                SendMessage(m_mainWindow, WM_COMMAND, IDM_MODE_CLONE, 0);
+            }
         }
     }
     return TRUE;

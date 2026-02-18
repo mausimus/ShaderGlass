@@ -9,7 +9,7 @@ public:
     static bool Load();
 
     CaptureLib(CaptureSession& session);
-    void                            Start(winrt::com_ptr<ID3D11Device> device, bool window);
+    void                            Start(winrt::com_ptr<ID3D11Device> device, bool window, bool cursor);
     void                            OnFrameArrived(void* data, UINT width, UINT height, UINT pitch);
     std::unique_lock<std::mutex>    Lock();
     winrt::com_ptr<ID3D11Texture2D> GetInputFrame();
@@ -19,12 +19,14 @@ public:
 private:
     typedef void(__stdcall* CAPTURE_CALLBACK_FUNC)(void* data, UINT width, UINT height, UINT pitch, void* context);
     typedef UINT(__stdcall* CaptureLibVersionFunc)();
-    typedef HRESULT(__stdcall* CaptureLibStartFunc)(CAPTURE_CALLBACK_FUNC, UINT, void*);
+    typedef HRESULT(__stdcall* CaptureLibInitFunc)();
+    typedef HRESULT(__stdcall* CaptureLibStartFunc)(UINT, UINT, CAPTURE_CALLBACK_FUNC, void*);
     typedef HRESULT(__stdcall* CaptureLibStopFunc)();
 
     static bool                  Enabled;
     static HMODULE               CaptureLibModule;
     static CaptureLibVersionFunc CaptureLibVersion;
+    static CaptureLibInitFunc    CaptureLibInit;
     static CaptureLibStartFunc   CaptureLibStart;
     static CaptureLibStopFunc    CaptureLibStop;
     static const UINT            CaptureLibExpectedVersion = 1;

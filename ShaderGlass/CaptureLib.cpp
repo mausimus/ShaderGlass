@@ -5,6 +5,7 @@
 bool                              CaptureLib::Enabled           = true;
 HMODULE                           CaptureLib::CaptureLibModule  = NULL;
 CaptureLib::CaptureLibVersionFunc CaptureLib::CaptureLibVersion = NULL;
+CaptureLib::CaptureLibInitFunc    CaptureLib::CaptureLibInit    = NULL;
 CaptureLib::CaptureLibStartFunc   CaptureLib::CaptureLibStart   = NULL;
 CaptureLib::CaptureLibStopFunc    CaptureLib::CaptureLibStop    = NULL;
 
@@ -45,6 +46,18 @@ bool CaptureLib::Load()
             throw new std::runtime_error("Unsupported CaptureLib version");
         }
 
+        CaptureLibInit = (CaptureLibInitFunc)GetProcAddress(CaptureLibModule, "CaptureLibInit");
+        if(CaptureLibInit == NULL)
+        {
+            CaptureLibModule = NULL;
+            throw new std::runtime_error("Invalid CaptureLib interface");
+        }
+        if(CaptureLibInit() != S_OK)
+        {
+            CaptureLibModule = NULL;
+            throw new std::runtime_error("Failed to initialize CaptureLib");
+        }
+
         CaptureLibStart = (CaptureLibStartFunc)GetProcAddress(CaptureLibModule, "CaptureLibStart");
         CaptureLibStop  = (CaptureLibStopFunc)GetProcAddress(CaptureLibModule, "CaptureLibStop");
         if(CaptureLibStart == NULL || CaptureLibStop == NULL)
@@ -56,12 +69,12 @@ bool CaptureLib::Load()
     return true;
 }
 
-void CaptureLib::Start(winrt::com_ptr<ID3D11Device> device, bool window)
+void CaptureLib::Start(winrt::com_ptr<ID3D11Device> device, bool window, bool cursor)
 {
     m_device = device;
     m_device->GetImmediateContext(m_context.put());
     m_active = true;
-    if(CaptureLibStart(CaptureLibCallback, window ? CaptureTypeWindow : CaptureTypeDesktop, (void*)this) != S_OK)
+    if(CaptureLibStart(window ? CaptureTypeWindow : CaptureTypeDesktop, cursor ? 1 : 0, CaptureLibCallback, (void*)this) != S_OK)
     {
         throw new std::runtime_error("Unable to start CaptureLib");
     }
