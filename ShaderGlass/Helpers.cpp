@@ -64,7 +64,7 @@ bool HasCaptureLib()
 
 bool HasCaptureAPI()
 {
-    return false;
+//    return false;
     if(!hasCaptureAPI.has_value())
     {
         try
