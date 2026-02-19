@@ -28,11 +28,15 @@ bool CaptureLib::Load()
 
     if(CaptureLibModule == NULL)
     {
-        CaptureLibModule = LoadLibrary(L"CaptureLib.dll");
+        DWORD oldMode;
+        SetThreadErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX, &oldMode);
+        CaptureLibModule = LoadLibrary(L"WineCap.dll");
         if(CaptureLibModule == NULL)
         {
+            SetThreadErrorMode(oldMode, NULL);
             throw new std::runtime_error("Unable to load CaptureLib");
         }
+        SetThreadErrorMode(oldMode, NULL);
 
         CaptureLibVersion = (CaptureLibVersionFunc)GetProcAddress(CaptureLibModule, "CaptureLibVersion");
         if(CaptureLibVersion == NULL)
