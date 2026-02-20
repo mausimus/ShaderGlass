@@ -1,0 +1,33 @@
+name: Build WineCap
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:    
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget gnupg
+        sudo dpkg --add-architecture i386
+        sudo mkdir -pm755 /etc/apt/keyrings
+        sudo wget -O - https://dl.winehq.org/wine-builds/winehq.key | gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key -
+        sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/jammy/winehq-jammy.sources
+        sudo apt-get update
+        sudo apt-get install -y libpipewire-0.3-dev libglib2.0-dev gcc g++ make
+        sudo apt-get install -y --install-recommends wine-devel-dev winehq-devel 
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}/WineCap
+      run: make all
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: WineCap.dll
+        path: WineCap/WineCap.dll
+        overwrite: true
