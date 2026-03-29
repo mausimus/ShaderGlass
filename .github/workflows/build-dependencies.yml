@@ -37,6 +37,6 @@ jobs:
       with:
         name: 'ShaderGlass_Dependencies_${{ matrix.platform }}_${{ matrix.configuration }}'
         path: |
-          Dependencies/${{ matrix.configuration }}/glslang/glslang/${{ matrix.configuration }}/*.lib
+          Dependencies/${{ matrix.configuration }}/glslang/glslang/${{ matrix.configuration }}/glslang*.lib
           Dependencies/${{ matrix.configuration }}/SPIRV-Cross/${{ matrix.configuration }}/*.lib
         overwrite: true
