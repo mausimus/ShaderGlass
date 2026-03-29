@@ -1,6 +1,6 @@
 name: Build Dependencies
 
-on: [workflow_dispatch, pull_request]
+on: workflow_dispatch
 
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
     steps:    
     - run: Get-PSDrive
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -33,7 +33,7 @@ jobs:
       shell: cmd
 
     - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: 'ShaderGlass_Dependencies_${{ matrix.platform }}_${{ matrix.configuration }}'
         path: |
