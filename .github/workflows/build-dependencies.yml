@@ -8,7 +8,7 @@ jobs:
     
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Debug, Release, Tools]
         platform: [x64]
 
     steps:    
@@ -32,15 +32,13 @@ jobs:
       run: 'Build_SPIRV-Cross_${{ matrix.configuration }}.bat'
       shell: cmd
 
-  package:
-    runs-on: windows-2022
-    needs: build
-    steps:
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v6
       with:
-        name: 'ShaderGlass_Dependencies'
+        name: 'ShaderGlass_Dependencies_${{ matrix.platform }}_${{ matrix.configuration }}'
         path: |
           Dependencies/lib/glslang*.lib
           Dependencies/lib/spirv-cross*.lib
+          Dependencies/bin/*.exe
         overwrite: true
+        if-no-files-found: ignore
