@@ -23,11 +23,13 @@ jobs:
 
     - name: Build glslang
       working-directory: ./Dependencies
-      run: Build_glslang_${{ matrix.configuration }}.bat
+      run: 'Build_glslang_${{ matrix.configuration }}.bat'
+      shell: cmd
 
     - name: Build SPIRV-Cross
       working-directory: ./Dependencies
-      run: Build_SPIRV-Cross_${{ matrix.configuration }}.bat
+      run: 'Build_SPIRV-Cross_${{ matrix.configuration }}.bat'
+      shell: cmd
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
