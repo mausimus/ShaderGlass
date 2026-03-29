@@ -22,11 +22,11 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Build glslang
-      working-directory: ${{env.GITHUB_WORKSPACE}}\\Dependencies
+      working-directory: '${{env.GITHUB_WORKSPACE}}\\Dependencies'
       run: Build_glslang_${{ matrix.configuration }}.bat
 
     - name: Build SPIRV-Cross
-      working-directory: ${{env.GITHUB_WORKSPACE}}\\Dependencies
+      working-directory: '${{env.GITHUB_WORKSPACE}}\\Dependencies'
       run: Build_SPIRV-Cross_${{ matrix.configuration }}.bat
 
     - name: Upload Build Artifacts
