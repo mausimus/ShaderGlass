@@ -1,2 +1,3 @@
 cmake -S glslang -B Release\glslang -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release -DENABLE_HLSL=False -DGLSLANG_TESTS=False -DENABLE_SPVREMAPPER=False -DGLSLANG_ENABLE_INSTALL=False -DENABLE_OPT=False -DBUILD_EXTERNAL=False -DENABLE_PCH=False -DENABLE_GLSLANG_BINARIES=False -DENABLE_EXCEPTIONS=TRue -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
-cmake --build Release\glslang
+cmake --build Release\glslang --config Release
+
