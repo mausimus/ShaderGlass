@@ -30,11 +30,11 @@ GNU General Public License v3.0
 
 using namespace std;
 
-// paths relative to starting in Scripts directory
+// paths relative to starting in Shaders directory
 const char* _libName      = "RetroArch";
 const char* _inputPath    = "slang-shaders";
 const char* _templatePath = "..\\ShaderGen\\";
-const char* _toolsPath    = "..\\Tools\\";
+const char* _toolsPath    = "..\\Dependencies\\bin\\";
 const char* _outputPath   = "..\\ShaderGlass\\Shaders\\";
 const char* _tempPath     = "temp";
 

@@ -1,0 +1,9 @@
+[submodule "Shaders/slang-shaders"]
+	path = Shaders/slang-shaders
+	url = https://github.com/mausimus/slang-shaders.git
+[submodule "Dependencies/glslang"]
+	path = Dependencies/glslang
+	url = https://github.com/KhronosGroup/glslang.git
+[submodule "Dependencies/SPIRV-Cross"]
+	path = Dependencies/SPIRV-Cross
+	url = https://github.com/KhronosGroup/SPIRV-Cross.git
