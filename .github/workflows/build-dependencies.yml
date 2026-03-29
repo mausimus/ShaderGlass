@@ -18,8 +18,9 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v2
+    - name: Setup MSVC environment manually
+      shell: cmd # Must use cmd shell to correctly execute the .bat file
+      run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
 
     - name: Build glslang
       working-directory: ./Dependencies
@@ -36,6 +37,6 @@ jobs:
       with:
         name: 'ShaderGlass_Dependencies_${{ matrix.platform }}_${{ matrix.configuration }}'
         path: |
-          '.\\Dependencies\\${{ matrix.configuration }}\\glslang\\glslang\\*.lib'
-          '.\\Dependencies\\${{ matrix.configuration }}\\SPIRV-Cross\\*.lib'
+          'Dependencies\\${{ matrix.configuration }}\\glslang\\glslang\\*.lib'
+          'Dependencies\\${{ matrix.configuration }}\\SPIRV-Cross\\*.lib'
         overwrite: true
