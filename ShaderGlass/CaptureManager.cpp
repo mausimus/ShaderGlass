@@ -28,7 +28,7 @@ bool CaptureManager::Initialize()
 {
     m_presetList.push_back(make_unique<PassthroughPresetDef>());
     m_presetList.insert(m_presetList.end(), RetroArchPresetList.begin(), RetroArchPresetList.end());
-    m_frameEvent = CreateEvent(NULL, FALSE, FALSE, L"FrameEvent");
+    m_frameEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
     return false;
 }
 

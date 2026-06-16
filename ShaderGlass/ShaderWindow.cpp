@@ -694,7 +694,7 @@ bool ShaderWindow::ImportShader(const std::wstring& fileName, bool forceStart)
         EnableWindow(m_mainWindow, false);
         if(!m_compileEvent)
         {
-            m_compileEvent = CreateEvent(NULL, TRUE, FALSE, TEXT("CompileEvent"));
+            m_compileEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         }
         if(!m_compileThread)
         {
