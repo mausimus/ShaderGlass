@@ -571,6 +571,19 @@ void ShaderWindow::SaveProfile(const std::wstring& fileName)
         WideCharToMultiByte(CP_UTF8, 0, info.szDevice, -1, utfName, MAX_WINDOW_TITLE, NULL, NULL);
         outfile << "CaptureDesktop " << std::quoted(utfName) << std::endl;
     }
+    else if(HasCaptureAPI() && m_captureOptions.imageFile.empty() && m_captureOptions.deviceFormatNo == 0)
+    {
+        // "All Displays" capture has a NULL monitor; persist it by name so it (and its menu
+        // selection) is restored on load instead of falling through to nothing selected.
+        for(const auto& d : m_captureDisplays)
+        {
+            if(d.monitor == nullptr)
+            {
+                outfile << "CaptureDesktop " << std::quoted(d.name) << std::endl;
+                break;
+            }
+        }
+    }
     for(const auto& pt : m_captureManager.Params())
     {
         const auto& s = std::get<0>(pt);
@@ -2346,19 +2359,40 @@ void ShaderWindow::ToggleBorderless(HWND hWnd)
 
     if(m_isBorderless)
     {
-        RECT        clientRect;
-        auto        monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
-        MONITORINFO info;
-        info.cbSize = sizeof(info);
-        GetMonitorInfo(monitor, &info);
-        clientRect.top    = info.rcMonitor.top;
-        clientRect.left   = info.rcMonitor.left;
-        clientRect.right  = info.rcMonitor.right;
-        clientRect.bottom = info.rcMonitor.bottom;
+        // "All Displays" capture uses a NULL monitor and spans the whole virtual desktop, so
+        // fullscreen should cover every monitor; any other capture covers just the nearest one.
+        const bool allDisplays = HasCaptureAPI() && !m_captureOptions.captureWindow && m_captureOptions.monitor == NULL &&
+            m_captureOptions.imageFile.empty() && m_captureOptions.deviceFormatNo == 0;
+
+        LONG left, top, width, height;
+        if(allDisplays)
+        {
+            left   = GetSystemMetrics(SM_XVIRTUALSCREEN);
+            top    = GetSystemMetrics(SM_YVIRTUALSCREEN);
+            width  = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+            height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+        }
+        else
+        {
+            auto        monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+            MONITORINFO info;
+            info.cbSize = sizeof(info);
+            GetMonitorInfo(monitor, &info);
+            left   = info.rcMonitor.left;
+            top    = info.rcMonitor.top;
+            width  = info.rcMonitor.right - info.rcMonitor.left;
+            height = info.rcMonitor.bottom - info.rcMonitor.top;
+        }
+
+        RECT clientRect;
+        clientRect.left   = left;
+        clientRect.top    = top;
+        clientRect.right  = left + width;
+        clientRect.bottom = top + height;
         AdjustWindowRect(&clientRect, GetWindowLong(hWnd, GWL_STYLE), GetMenu(hWnd) != 0);
 
         GetWindowRect(hWnd, &m_lastPosition);
-        SetWindowPos(hWnd, HWND_TOPMOST, info.rcMonitor.left, info.rcMonitor.top, clientRect.right - clientRect.left, clientRect.bottom - clientRect.top, 0);
+        SetWindowPos(hWnd, HWND_TOPMOST, left, top, clientRect.right - clientRect.left, clientRect.bottom - clientRect.top, 0);
     }
     else
     {
