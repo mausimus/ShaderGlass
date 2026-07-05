@@ -1,0 +1,44 @@
+name: Build Dependencies
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-2022
+    
+    strategy:
+      matrix:
+        configuration: [Debug, Release, Tools]
+        platform: [x64]
+
+    steps:    
+    - run: Get-PSDrive
+
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+
+    - name: Setup MSVC environment manually
+      shell: cmd # Must use cmd shell to correctly execute the .bat file
+      run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+
+    - name: Build glslang
+      working-directory: ./Dependencies
+      run: 'Build_glslang_${{ matrix.configuration }}.bat'
+      shell: cmd
+
+    - name: Build SPIRV-Cross
+      working-directory: ./Dependencies
+      run: 'Build_SPIRV-Cross_${{ matrix.configuration }}.bat'
+      shell: cmd
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v6
+      with:
+        name: 'ShaderGlass_Dependencies_${{ matrix.platform }}_${{ matrix.configuration }}'
+        path: |
+          Dependencies/lib/glslang*.lib
+          Dependencies/lib/spirv-cross*.lib
+          Dependencies/bin/*.exe
+        overwrite: true
+        if-no-files-found: ignore
