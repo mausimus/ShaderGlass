@@ -132,6 +132,8 @@ private:
     bool         GetMaxCaptureRateState();
     void         SaveUseHDRState(bool state);
     bool         GetUseHDRState();
+    void         SaveFullscreenAllDisplaysState(bool state);
+    bool         GetFullscreenAllDisplaysState();
     void         SaveRememberFPS(int fps);
     bool         RememberFPS();
     int          GetRememberFPS();

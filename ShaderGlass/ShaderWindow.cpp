@@ -575,6 +575,19 @@ void ShaderWindow::SaveProfile(const std::wstring& fileName)
         WideCharToMultiByte(CP_UTF8, 0, info.szDevice, -1, utfName, MAX_WINDOW_TITLE, NULL, NULL);
         outfile << "CaptureDesktop " << std::quoted(utfName) << std::endl;
     }
+    else if(HasCaptureAPI() && m_captureOptions.imageFile.empty() && m_captureOptions.deviceFormatNo == 0)
+    {
+        // "All Displays" capture has a NULL monitor; persist it by name so it (and its menu
+        // selection) is restored on load instead of falling through to nothing selected.
+        for(const auto& d : m_captureDisplays)
+        {
+            if(d.monitor == nullptr)
+            {
+                outfile << "CaptureDesktop " << std::quoted(d.name) << std::endl;
+                break;
+            }
+        }
+    }
     for(const auto& pt : m_captureManager.Params())
     {
         const auto& s = std::get<0>(pt);
@@ -966,6 +979,7 @@ void ShaderWindow::BuildOutputMenu()
     m_orientationMenu = GetSubMenu(m_outputMenu, 5);
 
     InsertMenu(m_outputMenu, 6, MF_BYPOSITION | MF_STRING, ID_PROCESSING_FULLSCREEN, L"Fullscreen\tCtrl+Shift+G");
+    InsertMenu(m_outputMenu, 7, MF_BYPOSITION | MF_STRING, ID_OUTPUT_FULLSCREENALLDISPLAYS, L"Fullscreen on All Displays");
 }
 
 void ShaderWindow::BuildShaderMenu()
@@ -1486,6 +1500,18 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             {
                 CheckMenuItem(m_advancedMenu, ID_PRESENTATION_USEFLIPMODE, MF_CHECKED);
                 SaveFlipModeState(true);
+            }
+            break;
+        case ID_OUTPUT_FULLSCREENALLDISPLAYS:
+            if(GetMenuState(m_outputMenu, ID_OUTPUT_FULLSCREENALLDISPLAYS, MF_BYCOMMAND) & MF_CHECKED)
+            {
+                CheckMenuItem(m_outputMenu, ID_OUTPUT_FULLSCREENALLDISPLAYS, MF_UNCHECKED);
+                SaveFullscreenAllDisplaysState(false);
+            }
+            else
+            {
+                CheckMenuItem(m_outputMenu, ID_OUTPUT_FULLSCREENALLDISPLAYS, MF_CHECKED);
+                SaveFullscreenAllDisplaysState(true);
             }
             break;
         case ID_ADVANCED_ALLOWTEARING:
@@ -2350,19 +2376,41 @@ void ShaderWindow::ToggleBorderless(HWND hWnd)
 
     if(m_isBorderless)
     {
-        RECT        clientRect;
-        auto        monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
-        MONITORINFO info;
-        info.cbSize = sizeof(info);
-        GetMonitorInfo(monitor, &info);
-        clientRect.top    = info.rcMonitor.top;
-        clientRect.left   = info.rcMonitor.left;
-        clientRect.right  = info.rcMonitor.right;
-        clientRect.bottom = info.rcMonitor.bottom;
+        // Span the whole virtual desktop only when "Fullscreen on All Displays" is ticked AND the
+        // "All Displays" capture (NULL monitor) is active, since only that capture provides content
+        // for every monitor; otherwise cover just the monitor nearest the ShaderGlass window.
+        const bool allDisplays = GetFullscreenAllDisplaysState() && HasCaptureAPI() && !m_captureOptions.captureWindow &&
+            m_captureOptions.monitor == NULL && m_captureOptions.imageFile.empty() && m_captureOptions.deviceFormatNo == 0;
+
+        LONG left, top, width, height;
+        if(allDisplays)
+        {
+            left   = GetSystemMetrics(SM_XVIRTUALSCREEN);
+            top    = GetSystemMetrics(SM_YVIRTUALSCREEN);
+            width  = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+            height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+        }
+        else
+        {
+            auto        monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+            MONITORINFO info;
+            info.cbSize = sizeof(info);
+            GetMonitorInfo(monitor, &info);
+            left   = info.rcMonitor.left;
+            top    = info.rcMonitor.top;
+            width  = info.rcMonitor.right - info.rcMonitor.left;
+            height = info.rcMonitor.bottom - info.rcMonitor.top;
+        }
+
+        RECT clientRect;
+        clientRect.left   = left;
+        clientRect.top    = top;
+        clientRect.right  = left + width;
+        clientRect.bottom = top + height;
         AdjustWindowRect(&clientRect, GetWindowLong(hWnd, GWL_STYLE), GetMenu(hWnd) != 0);
 
         GetWindowRect(hWnd, &m_lastPosition);
-        SetWindowPos(hWnd, HWND_TOPMOST, info.rcMonitor.left, info.rcMonitor.top, clientRect.right - clientRect.left, clientRect.bottom - clientRect.top, 0);
+        SetWindowPos(hWnd, HWND_TOPMOST, left, top, clientRect.right - clientRect.left, clientRect.bottom - clientRect.top, 0);
     }
     else
     {
@@ -2471,6 +2519,10 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     if(GetStartingPositionState())
     {
         CheckMenuItem(m_programMenu, ID_PROCESSING_REMEMBERPOSITION, MF_BYCOMMAND | MF_CHECKED);
+    }
+    if(GetFullscreenAllDisplaysState())
+    {
+        CheckMenuItem(m_outputMenu, ID_OUTPUT_FULLSCREENALLDISPLAYS, MF_BYCOMMAND | MF_CHECKED);
     }
     if(RememberFPS())
     {
@@ -2649,6 +2701,16 @@ void ShaderWindow::SaveUseHDRState(bool state)
 bool ShaderWindow::GetUseHDRState()
 {
     return GetRegistryOption(TEXT("Use HDR"), false);
+}
+
+void ShaderWindow::SaveFullscreenAllDisplaysState(bool state)
+{
+    SaveRegistryOption(TEXT("Fullscreen All Displays"), state);
+}
+
+bool ShaderWindow::GetFullscreenAllDisplaysState()
+{
+    return GetRegistryOption(TEXT("Fullscreen All Displays"), false);
 }
 
 void ShaderWindow::SaveRememberFPS(int fps)
