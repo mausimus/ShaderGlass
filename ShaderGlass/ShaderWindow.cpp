@@ -2018,6 +2018,12 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     CheckMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_UNCHECKED | MF_BYCOMMAND);
                     m_captureOptions.outputScale = outputScale->second.s;
                     m_captureOptions.freeScale   = false;
+                    if(m_captureOptions.aspectRatio == 0)
+                    {
+                        // don't allow stretch if we have scale set
+                        m_captureOptions.aspectRatio = 1;
+                        CheckMenuRadioItem(m_aspectRatioMenu, 0, static_cast<UINT>(aspectRatios.size()), 0, MF_BYPOSITION);
+                    }
                     m_captureManager.UpdateOutputSize();
                     UpdateWindowState();
                     break;
@@ -2047,6 +2053,13 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
                     m_selectedAspectRatio = wmId - WM_ASPECT_RATIO(0);
                     CheckMenuRadioItem(m_aspectRatioMenu, 0, static_cast<UINT>(aspectRatios.size()), wmId - WM_ASPECT_RATIO(0), MF_BYPOSITION);
                     m_captureOptions.aspectRatio = aspectRatio->second.r;
+                    if(m_captureOptions.aspectRatio == 0)
+                    {
+                        // use freescale if we want stretch
+                        CheckMenuRadioItem(m_outputScaleMenu, WM_OUTPUT_SCALE(0), WM_OUTPUT_SCALE(static_cast<UINT>(outputScales.size() - 1)), 0, MF_BYCOMMAND);
+                        CheckMenuItem(m_outputScaleMenu, IDM_OUTPUT_FREESCALE, MF_CHECKED | MF_BYCOMMAND);
+                        m_captureOptions.freeScale = true;
+                    }
                     m_captureManager.UpdateOutputSize();
                     UpdateWindowState();
                     break;
