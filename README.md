@@ -29,13 +29,18 @@ Check out [Online Manual](https://mausimus.github.io/ShaderGlass/MANUAL.html) fo
 
 ### Download
 
-Latest stable release (v1.3.0, 19 Mar 2026):
+Latest __stable__ release (v1.3.0, 19 Mar 2026):
 * desktop/window capture under Linux/Wine
 * shader search function
 * shader library update
 * minor enhancements
 
 [https://github.com/mausimus/ShaderGlass/releases/download/v1.3.0/ShaderGlass-1.3.0.win-x64.zip](https://github.com/mausimus/ShaderGlass/releases/download/v1.3.0/ShaderGlass-1.3.0-win-x64.zip)
+
+Latest __beta__ release (v1.3.1, 18 Oct 2026):
+* minor fixes and enhancements, see [ShaderGlass v1.3.1 Release Notes](https://github.com/mausimus/ShaderGlass/releases/tag/v1.3.1)
+
+[https://github.com/mausimus/ShaderGlass/releases/download/v1.3.1/ShaderGlass-1.3.1-beta-win-x64.zip](https://github.com/mausimus/ShaderGlass/releases/download/v1.3.1/ShaderGlass-1.3.1-beta-win-x64.zip)
 
 [Betas and older versions available here](https://github.com/mausimus/ShaderGlass/releases)
 
