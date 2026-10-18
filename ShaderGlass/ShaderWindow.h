@@ -112,6 +112,7 @@ private:
     void         Stop();
     void         TryUpdateInput();
     void         SetCaptureWindow(const std::wstring& name);
+    void         CheckAutoClose();
     void         Screenshot();
     void         LoadInputImage();
     void         StartImage(bool autoScale, int pixelSize);

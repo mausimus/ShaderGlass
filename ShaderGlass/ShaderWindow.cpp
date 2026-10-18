@@ -2264,6 +2264,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             return 0;
         case TIMER_TITLE:
             UpdateTitle();
+            CheckAutoClose();
             return 0;
         }
         break;
@@ -2276,6 +2277,14 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
+}
+
+void ShaderWindow::CheckAutoClose()
+{
+    if(m_captureOptions.autoClose && m_captureOptions.captureWindow && m_captureManager.IsActive() && !IsWindow(m_captureOptions.captureWindow))
+    {
+        PostMessage(m_mainWindow, WM_COMMAND, IDM_EXIT, 0);
+    }
 }
 
 bool ShaderWindow::Start()
@@ -3046,6 +3055,8 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
                 if(a < numArgs - 1)
                     overrideInput = std::wstring(args[++a]);
             }
+            else if(wcscmp(args[a], L"-autoclose") == 0 || wcscmp(args[a], L"-ac") == 0)
+                m_captureOptions.autoClose = true;
             else if(a == numArgs - 1)
             {
                 std::wstring ws(args[a]);

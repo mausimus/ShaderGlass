@@ -29,6 +29,7 @@ struct CaptureOptions
     bool         transparent {false};
     bool         paused {false};
     bool         captureCursor {false};
+    bool         autoClose {false};
     std::wstring imageFile {};
     int          imageWidth {0};
     int          imageHeight {0};
