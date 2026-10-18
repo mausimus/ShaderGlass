@@ -145,6 +145,7 @@ static std::map<UINT, AspectRatioInfo> aspectRatios = {
     {WM_ASPECT_RATIO(5), AspectRatioInfo(0.5f, L"x0.5 (double wide)", "0.5")},
     {WM_ASPECT_RATIO(6), AspectRatioInfo(2.0f, L"x2.0 (double tall)", "2.0")},
     {WM_ASPECT_RATIO(7), AspectRatioInfo(1.0f, L"Custom", CUSTOM_MNEMONIC)},
+    {WM_ASPECT_RATIO(8), AspectRatioInfo(0.0f, L"Stretch", "0")},
 };
 
 static const std::map<UINT, FrameSkipInfo> frameSkips = {{WM_FRAME_SKIP(0), FrameSkipInfo(0, L"100% (VSync)", "1")},

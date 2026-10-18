@@ -571,14 +571,14 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
         const auto captureW = (captureClient.right - captureClient.left);
         const auto captureH = (captureClient.bottom - captureClient.top);
 
-        if(!m_freeScale)
+        if(!m_freeScale && m_outputScaleH != 0 && m_outputScaleW != 0)
         {
             clientWidth  = (LONG)roundf(captureW / m_outputScaleW);
             clientHeight = (LONG)roundf(captureH / m_outputScaleH);
         }
 
         // box if needed
-        if(captureW != 0 && captureH != 0)
+        if(captureW != 0 && captureH != 0 && m_outputScaleW != 0 && m_outputScaleH != 0)
         {
             auto inputAspectRatio  = captureW / (float)captureH;
             auto outputAspectRatio = (clientWidth * m_outputScaleW) / (clientHeight * m_outputScaleH);
@@ -617,8 +617,8 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
     UINT viewportWidth  = static_cast<UINT>(clientWidth);
     UINT viewportHeight = static_cast<UINT>(clientHeight);
 
-    auto destWidth  = static_cast<long>(clientWidth * m_outputScaleW);
-    auto destHeight = static_cast<long>(clientHeight * m_outputScaleH);
+    auto destWidth  = static_cast<long>(clientWidth * (m_outputScaleW == 0 ? 1 : m_outputScaleW));
+    auto destHeight = static_cast<long>(clientHeight * (m_outputScaleH == 0 ? 1 : m_outputScaleH));
 
     if(destWidth <= (int)m_inputScaleW || destHeight <= (int)m_inputScaleH)
         return;

@@ -393,7 +393,9 @@ void CaptureManager::UpdateOutputSize()
 {
     if(m_shaderGlass)
     {
-        if(m_options.vertical)
+        if(m_options.aspectRatio == 0)
+            m_shaderGlass->SetOutputScale(0.0f, 0.0f);
+        else if(m_options.vertical)
             m_shaderGlass->SetOutputScale(1.0f / m_options.outputScale, 1.0f / m_options.aspectRatio / m_options.outputScale);
         else
             m_shaderGlass->SetOutputScale(1.0f * m_options.aspectRatio / m_options.outputScale, 1.0f / m_options.outputScale);
