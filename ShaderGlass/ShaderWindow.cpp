@@ -20,7 +20,7 @@ ShaderWindow::ShaderWindow(CaptureManager& captureManager) :
     m_captureManager(captureManager), m_captureOptions(captureManager.m_options), m_title(), m_windowClass(), m_toggledNone(false)
 { }
 
-bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart)
+bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart, const std::wstring& overrideInput)
 {
     try
     {
@@ -50,6 +50,8 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart)
         std::optional<bool>                               clone;
         std::vector<std::tuple<int, std::string, double>> params;
         bool                                              isImport = false;
+        if(overrideInput.size())
+            windowName = overrideInput;
         while(!infile.eof())
         {
             std::string key;
@@ -61,23 +63,23 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart)
                 if(!value.starts_with("1."))
                     return true;
             }
-            else if(key == "CaptureWindow")
+            else if(key == "CaptureWindow" && !overrideInput.size())
             {
                 wchar_t wideName[MAX_WINDOW_TITLE];
                 MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, wideName, MAX_WINDOW_TITLE);
                 windowName = std::wstring(wideName);
             }
-            else if(key == "CaptureDevice")
+            else if(key == "CaptureDevice" && !overrideInput.size())
             {
                 wchar_t wideName[MAX_DEVICE_NAME];
                 MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, wideName, MAX_DEVICE_NAME);
                 deviceName = std::wstring(wideName);
             }
-            else if(key == "CaptureFormat")
+            else if(key == "CaptureFormat" && !overrideInput.size())
             {
                 deviceFormat = value;
             }
-            else if(key == "CaptureDesktop")
+            else if(key == "CaptureDesktop" && !overrideInput.size())
             {
                 desktopName = value;
             }
@@ -285,15 +287,7 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart)
         }
         else if(windowName.has_value() && windowName.value().size())
         {
-            ScanWindows();
-            for(unsigned i = 0; i < m_captureWindows.size(); i++)
-            {
-                if(m_captureWindows.at(i).name == windowName.value())
-                {
-                    SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_WINDOW(i), 0);
-                    break;
-                }
-            }
+            SetCaptureWindow(windowName.value());
         }
         else if(desktopName.has_value() && desktopName.value().size())
         {
@@ -355,6 +349,33 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart)
     }
 
     return true;
+}
+
+void ShaderWindow::SetCaptureWindow(const std::wstring& name)
+{
+    ScanWindows();
+    bool found = false;
+    for(unsigned i = 0; i < m_captureWindows.size(); i++)
+    {
+        if(m_captureWindows.at(i).name == name)
+        {
+            SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_WINDOW(i), 0);
+            found = true;
+            break;
+        }
+    }
+    if(!found)
+    {
+        // try prefix match if exact match not found
+        for(unsigned i = 0; i < m_captureWindows.size(); i++)
+        {
+            if(m_captureWindows.at(i).name.starts_with(name))
+            {
+                SendMessage(m_mainWindow, WM_COMMAND, WM_CAPTURE_WINDOW(i), 0);
+                break;
+            }
+        }
+    }
 }
 
 void ShaderWindow::StartDialog()
@@ -3004,9 +3025,11 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
 
     if(lpCmdLine)
     {
-        int  numArgs;
-        auto cmdLine = GetCommandLineW();
-        auto args    = CommandLineToArgvW(cmdLine, &numArgs);
+        int          numArgs;
+        auto         cmdLine = GetCommandLineW();
+        auto         args    = CommandLineToArgvW(cmdLine, &numArgs);
+        std::wstring overrideInput;
+        bool         hasProfile = false;
 
         for(int a = 1; a < numArgs; a++)
         {
@@ -3018,12 +3041,25 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
                 CaptureLib::Disable();
             else if(wcscmp(args[a], L"-reset") == 0 || wcscmp(args[a], L"-r") == 0)
                 ForgetStartingPosition();
+            else if(wcscmp(args[a], L"-input") == 0 || wcscmp(args[a], L"-i") == 0)
+            {
+                if(a < numArgs - 1)
+                    overrideInput = std::wstring(args[++a]);
+            }
             else if(a == numArgs - 1)
             {
                 std::wstring ws(args[a]);
                 if(ws.size())
-                    LoadProfile(ws, autoStart);
+                {
+                    LoadProfile(ws, autoStart, overrideInput);
+                    hasProfile = true;
+                }
             }
+        }
+
+        if(overrideInput.size() && !hasProfile)
+        {
+            SetCaptureWindow(overrideInput);
         }
     }
 

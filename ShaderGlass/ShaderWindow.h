@@ -90,7 +90,7 @@ private:
     volatile bool                 m_forceStart {false};
     bool                          m_firstPaint {true};
 
-    bool         LoadProfile(const std::wstring& fileName, bool forceStart = false);
+    bool         LoadProfile(const std::wstring& fileName, bool forceStart = false, const std::wstring& overrideInput = std::wstring());
     void         LoadProfile();
     void         SaveProfile(const std::wstring& fileName);
     void         SaveProfile();
@@ -111,6 +111,7 @@ private:
     bool         Start();
     void         Stop();
     void         TryUpdateInput();
+    void         SetCaptureWindow(const std::wstring& name);
     void         Screenshot();
     void         LoadInputImage();
     void         StartImage(bool autoScale, int pixelSize);
