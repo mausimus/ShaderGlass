@@ -769,6 +769,10 @@ void ShaderGlass::Process(winrt::com_ptr<ID3D11Texture2D> texture, ULONGLONG fra
                     outputHeight = static_cast<UINT>(shaderPass.m_shader.m_scaleY);
                 else
                     outputHeight = static_cast<UINT>(sourceHeight * shaderPass.m_shader.m_scaleY);
+                if(outputWidth > D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION)
+                    outputWidth = D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION;
+                if(outputHeight > D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION)
+                    outputHeight = D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION;
                 passSizes.push_back({sourceWidth, sourceHeight, outputWidth, outputHeight});
                 if(!shaderPass.m_shader.m_alias.empty())
                 {
