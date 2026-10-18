@@ -944,6 +944,19 @@ LRESULT CALLBACK BrowserWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, 
             }
             return 0;
         };
+        case IDM_UPDATE_PARAMS: {
+            wchar_t paramsCaption[50];
+            std::unordered_set<std::string> params;
+            for(const auto& pt : m_captureManager.Params())
+            {
+                const auto& p = std::get<1>(pt);
+                if(p->maxValue != p->minValue)
+                    params.insert(p->name);
+            }
+            _snwprintf_s(paramsCaption, 50, _T("Parameters (%lu)"), params.size());
+            SetWindowText(m_paramsButton, paramsCaption);
+            return 0;
+        }
         case BN_CLICKED: {
             if(lParam == (LPARAM)m_addFavButton)
             {

@@ -1427,6 +1427,7 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             break;
         case IDM_UPDATE_PARAMS:
             PostMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
+            PostMessage(m_browserWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
             break;
         case ID_SHADER_BROWSE: {
             if(!m_browserPositioned)
@@ -2358,6 +2359,7 @@ void ShaderWindow::Stop()
     EnableMenuItem(m_programMenu, IDM_START, MF_BYCOMMAND | MF_ENABLED);
     UpdateWindowState();
     SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
+    SendMessage(m_browserWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
 }
 
 void ShaderWindow::TryUpdateInput()
@@ -3126,6 +3128,7 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
     {
         SendMessage(m_mainWindow, WM_COMMAND, IDM_START, 0);
         SendMessage(m_paramsWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
+        SendMessage(m_browserWindow, WM_COMMAND, IDM_UPDATE_PARAMS, 0);
     }
     if(fullScreen)
     {
