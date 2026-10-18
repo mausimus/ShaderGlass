@@ -176,7 +176,10 @@ static const std::map<UINT, OutputScaleInfo> outputScales = {{WM_OUTPUT_SCALE(0)
                                                              {WM_OUTPUT_SCALE(9), OutputScaleInfo(7.0f, L"700%", "700")},
                                                              {WM_OUTPUT_SCALE(10), OutputScaleInfo(8.0f, L"800%", "800")},
                                                              {WM_OUTPUT_SCALE(11), OutputScaleInfo(9.0f, L"900%", "900")},
-                                                             {WM_OUTPUT_SCALE(12), OutputScaleInfo(10.0f, L"1000%", "1000")}};
+                                                             {WM_OUTPUT_SCALE(12), OutputScaleInfo(10.0f, L"1000%", "1000")},
+                                                             {WM_OUTPUT_SCALE(13), OutputScaleInfo(0.75f, L"75%", "75")},
+                                                             {WM_OUTPUT_SCALE(14), OutputScaleInfo(0.5f, L"50%", "50")},
+                                                             {WM_OUTPUT_SCALE(15), OutputScaleInfo(0.25f, L"25%", "25")}};
 
 static const char* defaultPreset     = "newpixie-crt";
 static const char* favoritePresets[] = {"bayer_4x4",
