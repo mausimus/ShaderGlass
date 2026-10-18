@@ -147,6 +147,9 @@ private:
     void         ForgetStartingPosition();
     bool         GetStartingPositionState();
     void         SaveStartingPositionState(bool state);
+    bool         GetKeepAwakeState();
+    void         SetKeepAwakeState(bool state);
+    void         EnableKeepAwake(bool state);
     void         SaveRecentProfiles();
     void         LoadRecentProfiles();
     void         AddRecentProfile(const std::wstring& path);

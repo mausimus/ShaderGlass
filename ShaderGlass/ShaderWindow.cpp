@@ -907,22 +907,22 @@ void ShaderWindow::CropWindow()
 
 void ShaderWindow::BuildProgramMenu()
 {
-    m_frameSkipMenu = GetSubMenu(m_programMenu, 9);
+    m_frameSkipMenu = GetSubMenu(m_programMenu, 10);
     for(const auto& fs : frameSkips)
     {
         AppendMenu(m_frameSkipMenu, MF_STRING, fs.first, fs.second.text);
     }
 
     m_recentMenu = CreatePopupMenu();
-    InsertMenu(m_programMenu, 14, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_recentMenu, L"Recent profiles");
+    InsertMenu(m_programMenu, 15, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)m_recentMenu, L"Recent profiles");
     LoadRecentProfiles();
 
     m_hotkeysMenu  = GetSubMenu(m_programMenu, 3);
-    m_gpuMenu      = GetSubMenu(m_programMenu, 7);
-    m_advancedMenu = GetSubMenu(m_programMenu, 10);
+    m_gpuMenu      = GetSubMenu(m_programMenu, 8);
+    m_advancedMenu = GetSubMenu(m_programMenu, 11);
     if(!HasCaptureAPI())
     {
-        EnableMenuItem(m_programMenu, 10, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+        EnableMenuItem(m_programMenu, 11, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
     }
 }
 
@@ -1046,6 +1046,28 @@ ATOM ShaderWindow::MyRegisterClass(HINSTANCE hInstance)
     //wcex.hCursor = NULL;
 
     return RegisterClassExW(&wcex);
+}
+
+bool ShaderWindow::GetKeepAwakeState()
+{
+    return GetRegistryOption(L"Keep Awake", false);
+}
+
+void ShaderWindow::SetKeepAwakeState(bool state)
+{
+    SaveRegistryOption(L"Keep Awake", state);
+}
+
+void ShaderWindow::EnableKeepAwake(bool state)
+{
+    if(state)
+    {
+        SetThreadExecutionState(ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED);
+    }
+    else
+    {
+        SetThreadExecutionState(ES_CONTINUOUS);
+    }
 }
 
 bool ShaderWindow::GetStartingPositionState()
@@ -1495,6 +1517,20 @@ LRESULT CALLBACK ShaderWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             {
                 SaveStartingPositionState(true);
                 CheckMenuItem(m_programMenu, ID_PROCESSING_REMEMBERPOSITION, MF_CHECKED);
+            }
+            break;
+        case ID_PROCESSING_KEEPAWAKE:
+            if(GetMenuState(m_programMenu, ID_PROCESSING_KEEPAWAKE, MF_BYCOMMAND) & MF_CHECKED)
+            {
+                SetKeepAwakeState(false);
+                EnableKeepAwake(false);
+                CheckMenuItem(m_programMenu, ID_PROCESSING_KEEPAWAKE, MF_UNCHECKED);
+            }
+            else
+            {
+                SetKeepAwakeState(true);
+                EnableKeepAwake(true);
+                CheckMenuItem(m_programMenu, ID_PROCESSING_KEEPAWAKE, MF_CHECKED);
             }
             break;
         case ID_PRESENTATION_USEFLIPMODE:
@@ -2501,6 +2537,11 @@ bool ShaderWindow::Create(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
     if(GetStartingPositionState())
     {
         CheckMenuItem(m_programMenu, ID_PROCESSING_REMEMBERPOSITION, MF_BYCOMMAND | MF_CHECKED);
+    }
+    if(GetKeepAwakeState())
+    {
+        CheckMenuItem(m_programMenu, ID_PROCESSING_KEEPAWAKE, MF_BYCOMMAND | MF_CHECKED);
+        EnableKeepAwake(true);
     }
     if(RememberFPS())
     {
