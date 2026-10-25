@@ -122,7 +122,16 @@ bool ShaderWindow::LoadProfile(const std::wstring& fileName, bool forceStart, co
                     {
                         float customValue = std::stof(value);
                         if(customValue != 0 && !std::isnan(customValue))
-                            SendMessage(m_mainWindow, WM_COMMAND, aspectRatios.rbegin()->first, (LPARAM)(customValue * CUSTOM_PARAM_SCALE));
+                        {
+                            for(const auto& p : aspectRatios)
+                            {
+                                if(p.second.mnemonic == CUSTOM_MNEMONIC)
+                                {
+                                    SendMessage(m_mainWindow, WM_COMMAND, p.first, (LPARAM)(customValue * CUSTOM_PARAM_SCALE));
+                                    break;
+                                }
+                            }
+                        }
                     }
                     catch(std::exception&)
                     {
