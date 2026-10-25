@@ -3115,6 +3115,39 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
                 CaptureLib::Disable();
             else if(wcscmp(args[a], L"-reset") == 0 || wcscmp(args[a], L"-r") == 0)
                 ForgetStartingPosition();
+            else if(wcscmp(args[a], L"-display") == 0 || wcscmp(args[a], L"-d") == 0)
+            {
+                if(a < numArgs - 1)
+                {
+                    try
+                    {
+                        auto outputDisplayNo = std::to_string(std::stoi(std::wstring(args[++a])));
+                        for(const auto& d : m_captureDisplays)
+                        {
+                            MONITORINFO monitorInfo;
+                            RECT        windowRect;
+                            monitorInfo.cbSize = sizeof(monitorInfo);
+                            if(d.name.ends_with(outputDisplayNo) && GetMonitorInfo(d.monitor, &monitorInfo) && GetWindowRect(m_mainWindow, &windowRect))
+                            {
+                                int windowW  = windowRect.right - windowRect.left;
+                                int windowH  = windowRect.bottom - windowRect.top;
+                                int monitorW = monitorInfo.rcWork.right - monitorInfo.rcWork.left;
+                                int monitorH = monitorInfo.rcWork.bottom - monitorInfo.rcWork.top;
+                                if(windowW > monitorW || windowH > monitorH)
+                                {
+                                    SetWindowPos(m_mainWindow, NULL, min(windowW, monitorW), min(windowH, monitorH), 0, 0, SWP_NOZORDER);
+                                }
+                                else
+                                {
+                                    SetWindowPos(m_mainWindow, NULL, monitorInfo.rcWork.left, monitorInfo.rcWork.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+                                }
+                            }
+                        }
+                    }
+                    catch(...)
+                    { }
+                }
+            }
             else if(wcscmp(args[a], L"-input") == 0 || wcscmp(args[a], L"-i") == 0)
             {
                 if(a < numArgs - 1)
