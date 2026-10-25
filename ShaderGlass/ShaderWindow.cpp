@@ -3135,7 +3135,13 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
                                 int monitorH = monitorInfo.rcWork.bottom - monitorInfo.rcWork.top;
                                 if(windowW > monitorW || windowH > monitorH)
                                 {
-                                    SetWindowPos(m_mainWindow, NULL, min(windowW, monitorW), min(windowH, monitorH), 0, 0, SWP_NOZORDER | SWP_NOACTIVATE);
+                                    SetWindowPos(m_mainWindow,
+                                                 NULL,
+                                                 monitorInfo.rcWork.left,
+                                                 monitorInfo.rcWork.top,
+                                                 min(windowW, monitorW),
+                                                 min(windowH, monitorH),
+                                                 SWP_NOZORDER | SWP_NOACTIVATE);
                                 }
                                 else
                                 {
