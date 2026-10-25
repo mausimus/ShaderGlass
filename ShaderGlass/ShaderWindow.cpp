@@ -3135,11 +3135,11 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
                                 int monitorH = monitorInfo.rcWork.bottom - monitorInfo.rcWork.top;
                                 if(windowW > monitorW || windowH > monitorH)
                                 {
-                                    SetWindowPos(m_mainWindow, NULL, min(windowW, monitorW), min(windowH, monitorH), 0, 0, SWP_NOZORDER);
+                                    SetWindowPos(m_mainWindow, NULL, min(windowW, monitorW), min(windowH, monitorH), 0, 0, SWP_NOZORDER | SWP_NOACTIVATE);
                                 }
                                 else
                                 {
-                                    SetWindowPos(m_mainWindow, NULL, monitorInfo.rcWork.left, monitorInfo.rcWork.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+                                    SetWindowPos(m_mainWindow, NULL, monitorInfo.rcWork.left, monitorInfo.rcWork.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
                                 }
                             }
                         }
