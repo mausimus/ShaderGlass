@@ -67,7 +67,7 @@ into a new app [ShaderBeam](https://github.com/mausimus/ShaderBeam).
   * will work on version 1903 but in limited capacity (no Desktop Glass mode)
   * Windows 11 allows the __removal of yellow border__ (see [FAQ](FAQ.md#windows-10) for tips on avoiding it on Windows 10)
 * DirectX 11-capable GPU
-* __Linux__: running under Wine/Proton is supported since 1.3 using ScreenCast/PipeWire for capture (clone mode only)
+* __Linux__: running under Wine/Proton is supported since 1.3 using ScreenCast+PipeWire for capture (clone mode only)
 
 <br/>
 

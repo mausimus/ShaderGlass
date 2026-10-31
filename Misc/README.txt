@@ -1,4 +1,4 @@
-ShaderGlass v1.3.0
+ShaderGlass v1.3.2
 
 ShaderGlass - overlay for running GPU shaders over Windows desktop and Wine
 https://github.com/mausimus/ShaderGlass

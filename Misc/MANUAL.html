@@ -76,6 +76,7 @@
             </ul>
             <li><p><strong>Toggle Menu</strong> - toggle menu bar ('m' or global hotkey); this will also work in fullscreen</p></li>
             <li><p><strong>Remember Position</strong> - remember previous window position and size on startup</p></li>
+            <li><p><strong>Keep PC Awake</strong> - prevent PC from going to sleep</p></li>
             <li><p><strong>GPU</strong> - shows the GPU which Windows assigned to ShaderGlass (read-only)</p></li>
             <li><p><strong>FPS</strong> - by default ShaderGlass runs at V-Sync, you can reduce GPU load by lowering the frame rate (for pixel art etc.)</p></li>
             <ul><li><p><strong>Remember FPS</strong> - tick so that ShaderGlass remembers and always uses current FPS setting (this overrides any preset)</p></li></ul>
@@ -101,8 +102,7 @@
             <ul>
                 <li>
                     <p>
-                        <strong>Adjust for DPI Scale</strong> - if your source always applies Windows DPI Scaling when displaying images<br />
-                        (for example browsers) enable this option to take it into account; most emulators don't do this however
+                        <strong>Adjust for DPI Scale</strong> - if your source always applies Windows DPI Scaling when displaying images (for example browsers) enable this option to take it into account; most emulators don't do this however
                     </p>
                 </li>
             </ul>
@@ -136,6 +136,7 @@
                 If you select <em>Custom</em> you can enter your own correction ratio expressed as pixel height (1.0 being square pixel). For example,
                 in MS-DOS era a picture of 320x200 resolution (16:10) was displayed on a 4:3 screen meaning each pixel was 1.2x tall on screen, 1.2 = (16/10) / (4/3)
             </p>
+            <p><em>Stretch</em> resizes input to output window aspect ratio (fill)</p>
             <li><p><strong>Orientation</strong> - direction of shader effect, "Vertical" emulates display rotated 90 degrees, like in arcade cabinets</p></li>
             <li>
                 <p>
@@ -168,15 +169,31 @@
         <p>If you associate ShaderGlass with .sgp extension in Windows (double-click .sgp file and choose ShaderGlass) you will be able to start it up by double-clicking a profile file.</p>
         <p><br /></p>
         <h2 id="command-line">Command Line</h2>
-<pre><code><span>ShaderGlass.exe [-p|--paused]</span> <span>[-f|--fullscreen]</span> <span>[profile.sgp]</span>
-</code></pre>
+        <p><code><span>ShaderGlass.exe &lt;options&gt; [profile.sgp]</span><br /></code></p>
+        <p style="margin-top: 10px;">
+            Supported options:<br />
+            <ul>
+                <li><code><span> [-p|-paused]</span></code> - starts paused</li>
+                <li><code><span> [-f|-fullscreen]</span></code> - starts in fullscreen</li>
+                <li><code><span> [-r|-reset]</span></code> - forget starting on-screen location</li>
+                <li><code><span> [-i|-input] WindowName</span></code> - override Input Window name (prefix match)</li>
+                <li><code><span> [-ac|-autoclose]</span></code> - automatically exit once Input Window closes</li>
+                <li>
+                    <code><span> [-d|-display] N</span></code> - start on display N, where N is:
+                    <ul>
+                        <li><code>0</code> - primary display</li>
+                        <li><code>&gt; 0</code> - Nth display from the left/top</li>
+                        <li><code>&lt; 0</code> - Nth display from the right/bottom</li>
+                    </ul>
+                </li>
+            </ul>
+        </p>
         <p>
-            You can pass profile filename as a command-line parameter to ShaderGlass.exe and it will be auto-loaded.
+            If you pass profile filename as a command-line parameter to ShaderGlass.exe it will be auto-loaded.
             If your profile file name contains spaces please put it in quotes.
         </p>
-        <p>In addition -p will launch in paused mode, and -f will launch in fullscreen mode.</p>
         <p class="screen-only"><br /></p>
-        <h2 id="tuning">Tuning</h2>
+        <h2 id="tuning" style="page-break-before: always;">Tuning</h2>
         <p>In order to achieve the best effect it's necessary to tune parameters to match your input:</p>
         <ul>
             <li><p>if you use scaling in your input, use nearest-neighbour (i.e. no smoothing) and set <em>Input -> Pixel Size</em> to match</p></li>
@@ -189,8 +206,7 @@
             The none shader should display a pixelated image with no smoothing whatsoever,
             try to match Input Pixel Size setting with your input's size to achieve that.
         </p>
-        <p><br /></p>
-        <div class="break"></div>
+        <p><br /></p>        
         <h2 id="parameters">Parameters</h2>
         <p>
             All shaders start using default Parameters as defined by their authors, but you can also tweak them using
@@ -205,7 +221,7 @@
         </p>
         <h3 id="dosbox">DOSBox</h3>
         <p>
-            DOSBox often defaults to exclusive fullscreen - for best results, run it in Windowed or Borderless Fullscreen.
+            DOSBox defaults to exclusive fullscreen - for best results run it in Windowed or Borderless Fullscreen.
         </p>
         <p>
             You may also find mouse input doesn't work correctly with DOSBox. To remedy, tick Output -> Window -> Click-through in ShaderGlass.
@@ -225,8 +241,7 @@
             the game window until you press Ctrl-M again. You can apply output scaling
             and/or aspect ratio correction in ShaderGlass and enjoy the game.
         </p>
-        <p><br /></p>
-        <div class="break"></div>
+        <p><br /></p>        
         <h2 id="parameters">Importing Custom Shaders</h2>
         <p>
             ShaderGlass comes with a large built-in library of shaders, but you can also import custom ones
@@ -259,7 +274,7 @@
             make changes and import.
         </p>
         <p><br /></p>
-        <h2 id="frequently-asked-questions" style="page-break-before: always;">Frequently Asked Questions</h2>
+        <h2 id="frequently-asked-questions">Frequently Asked Questions</h2>
         <h3 id="-im-seeing-black-only">&gt; I'm seeing black only</h3>
         <p>Make sure you're using <strong>Windows 10, version 2004</strong> (build 19041) or <strong>Windows 11</strong>.</p>
         <h3 id="-can-i-use-it-with-reshade">&gt; Can I use it with Reshade?</h3>
@@ -291,7 +306,7 @@
             ShaderGlass includes majority of RetroArch repository at time of release, but some shaders had to be excluded because of features SG doesn't yet support.
             Differences versus upstream RetroArch shader repository are tracked <a href="https://github.com/mausimus/slang-shaders/pull/1" target="_blank">in this PR</a>.
         </p>
-        <h3 id="-shaderglass-cant-capture-some-windows" style="page-break-before: always;">&gt; ShaderGlass can't capture some windows</h3>
+        <h3 id="-shaderglass-cant-capture-some-windows">&gt; ShaderGlass can't capture some windows</h3>
         <p>Unfortunately some old-style rendering windows are not supported by modern Windows Capture API. Please use Desktop mode to capture those.</p>
         <h3 id="-mouse-cursor">&gt; Mouse cursor isn't properly captured (duplicate and/or wrong image)</h3>
         <p>
@@ -325,7 +340,7 @@
         <p>
             Running under Linux using Wine or Proton is partially supported (Clone mode only, no Glass mode).
             <ul>
-                <li>Requires Desktop Environment supporting PipeWire/ScreenCast (KDE, GNOME) using shared memory</li>
+                <li>Requires Desktop Environment supporting ScreenCast+PipeWire (KDE, GNOME) using shared memory</li>
                 <li>X11 and Wayland are both supported</li>
                 <li>Not currently supported: Niri, Cinnamon, MATE</li>
                 <li>Will work with a default Wine installation (<code>wine ShaderGlass.exe</code>)
@@ -343,7 +358,9 @@
         </p>
         <h3 id="-different-issue">&gt; A different issue...</h3>
         <p>
-            Check <a href="https://github.com/mausimus/ShaderGlass/issues?q=is%3Aissue" target="_blank">Issues section on GitHub</a> for known problems and workarounds.
+            Check <a href="https://github.com/mausimus/ShaderGlass/issues?q=is%3Aissue" target="_blank">Issues section on GitHub</a> and
+                  <a href="https://steamcommunity.com/app/3613770/discussions/" target="_blank">Steam Community Forum</a>
+            for known problems and workarounds.
         <p><br /></p>
         <h2 id="notices">Notices</h2>
         <ul>
