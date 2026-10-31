@@ -3121,31 +3121,65 @@ void ShaderWindow::Start(_In_ LPWSTR lpCmdLine, HWND paramsWindow, HWND browserW
                 {
                     try
                     {
-                        auto outputDisplayNo = std::to_string(std::stoi(std::wstring(args[++a])));
+                        auto outputDisplayNo = std::stoi(std::wstring(args[++a]));
+
+                        std::vector<RECT> orderedDisplays;
                         for(const auto& d : m_captureDisplays)
                         {
+                            if(d.monitor == NULL)
+                                continue;
+
                             MONITORINFO monitorInfo;
-                            RECT        windowRect;
                             monitorInfo.cbSize = sizeof(monitorInfo);
-                            if(d.name.ends_with(outputDisplayNo) && GetMonitorInfo(d.monitor, &monitorInfo) && GetWindowRect(m_mainWindow, &windowRect))
+                            if(GetMonitorInfo(d.monitor, &monitorInfo))
+                            {
+                                if(outputDisplayNo != 0 || (monitorInfo.dwFlags & MONITORINFOF_PRIMARY) == MONITORINFOF_PRIMARY)
+                                {
+                                    orderedDisplays.push_back(monitorInfo.rcWork);
+                                }
+                            }
+                        }
+
+                        int numDisplays = orderedDisplays.size();
+                        if(numDisplays > 0)
+                        {
+                            RECT monitorRect {0, 0, 0, 0};
+                            if(numDisplays == 1)
+                                monitorRect = *orderedDisplays.begin();
+                            else
+                            {
+                                // sort left to right, top to bottom
+                                std::sort(orderedDisplays.begin(), orderedDisplays.end(), [](const RECT& a, const RECT& b) {
+                                    if(a.left == b.left)
+                                        return a.top < b.top;
+                                    return a.left < b.left;
+                                });
+
+                                if(outputDisplayNo > 0 && outputDisplayNo <= numDisplays)
+                                {
+                                    monitorRect = orderedDisplays[outputDisplayNo - 1];
+                                }
+                                if(outputDisplayNo < 0 && outputDisplayNo >= -numDisplays)
+                                {
+                                    monitorRect = orderedDisplays[numDisplays + outputDisplayNo];
+                                }
+                            }
+
+                            RECT windowRect;
+                            if(monitorRect.right != monitorRect.left && monitorRect.top != monitorRect.bottom && GetWindowRect(m_mainWindow, &windowRect))
                             {
                                 int windowW  = windowRect.right - windowRect.left;
                                 int windowH  = windowRect.bottom - windowRect.top;
-                                int monitorW = monitorInfo.rcWork.right - monitorInfo.rcWork.left;
-                                int monitorH = monitorInfo.rcWork.bottom - monitorInfo.rcWork.top;
+                                int monitorW = monitorRect.right - monitorRect.left;
+                                int monitorH = monitorRect.bottom - monitorRect.top;
                                 if(windowW > monitorW || windowH > monitorH)
                                 {
-                                    SetWindowPos(m_mainWindow,
-                                                 NULL,
-                                                 monitorInfo.rcWork.left,
-                                                 monitorInfo.rcWork.top,
-                                                 min(windowW, monitorW),
-                                                 min(windowH, monitorH),
-                                                 SWP_NOZORDER | SWP_NOACTIVATE);
+                                    SetWindowPos(
+                                        m_mainWindow, NULL, monitorRect.left, monitorRect.top, min(windowW, monitorW), min(windowH, monitorH), SWP_NOZORDER | SWP_NOACTIVATE);
                                 }
                                 else
                                 {
-                                    SetWindowPos(m_mainWindow, NULL, monitorInfo.rcWork.left, monitorInfo.rcWork.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
+                                    SetWindowPos(m_mainWindow, NULL, monitorRect.left, monitorRect.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
                                 }
                             }
                         }
