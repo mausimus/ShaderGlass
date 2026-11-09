@@ -1,0 +1,3 @@
+cmake -S glslang -B Release\glslang-tools -G "Visual Studio 17 2022" -DENABLE_HLSL=False -DGLSLANG_TESTS=False -DENABLE_SPVREMAPPER=False -DGLSLANG_ENABLE_INSTALL=False -DENABLE_OPT=False -DBUILD_EXTERNAL=False -DENABLE_PCH=False -DENABLE_GLSLANG_BINARIES=True -DENABLE_EXCEPTIONS=False -DENABLE_RTTI=False -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=../../../bin
+cmake --build Release\glslang-tools --config Release
+
